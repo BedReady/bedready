@@ -129,16 +129,21 @@ export function absoluteUrl(path: string): string {
 }
 
 /**
- * Paths served identically on BOTH hosts, and therefore never redirected.
+ * Nothing is served on both hosts from here — which is why there is no `SHARED_ROUTES` list.
  *
- * The legal pages from the allocation. They are library-owned for canonical purposes — one canonical
- * URL, so the two copies do not compete as duplicate content — but a converter with no privacy
- * policy of its own is not a thing that can ship, so both hosts serve them until they fork.
+ * MakerRun carries one: `privacy`, `terms`, `licenses` and `age` are exempt from the 301 there,
+ * because while one deployment served both sites those four pages genuinely existed on both, and
+ * redirecting a page a host already serves is a pointless hop.
  *
- * Kept identical to MakerRun's copy on purpose: the two lists describe the same agreement between
- * the two hosts, and a path that is shared on one side and redirected on the other is a loop.
+ * This repository has none of them. Copying the exemption across produced the worst of both
+ * outcomes — the rule declined to redirect them, and there was no page to serve, so all four 404\'d
+ * on a host where they return 200 today. A converter with no privacy policy is not a thing that can
+ * ship, and a 404 is a worse answer than MakerRun\'s copy.
+ *
+ * So they redirect, like every other library path. **If this repository ever grows its own legal
+ * pages, they must be exempted here on the day they land** — otherwise the 301 will shadow them and
+ * the new pages will be unreachable.
  */
-const SHARED_ROUTES = ["privacy", "terms", "licenses", "age"];
 
 /**
  * Where a request for `pathname` on `host` should be 301'd, or `null` to serve it here.
@@ -202,9 +207,6 @@ export function redirectTargetFor(
 ): string | null {
   if (converterOrigin === libraryOrigin) return null; // single origin: nothing to redirect
   if (!host) return null;
-
-  const segment = withoutLocale(pathname).split("/")[1] ?? "";
-  if (SHARED_ROUTES.includes(segment)) return null;
 
   // Compare bare hostnames: the request header carries no scheme, and may carry a port.
   const bare = host.split(":")[0]!.toLowerCase();

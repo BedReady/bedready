@@ -76,6 +76,15 @@ const CSP = [
   "worker-src 'self' blob:",
 ].join("; ");
 
+/**
+ * Where `/api/*` on this host is proxied to.
+ *
+ * Read from the same variable `origin.ts` uses for the library, so the two cannot disagree about
+ * where MakerRun is. Same default, for the same reason: this repository ships knowing it is the
+ * converter, and the library is somewhere else.
+ */
+const LIBRARY_ORIGIN = (process.env.NEXT_PUBLIC_LIBRARY_ORIGIN || "https://makerrun.com").replace(/\/+$/, "");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Pin the workspace root to this folder. Without this, Next gets confused by an
@@ -89,6 +98,41 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "/docs": ["./docs/API.md"],
     "/docs/api.md": ["./docs/API.md"],
+  },
+  /**
+   * `/api/*` is proxied to MakerRun, not served and not redirected.
+   *
+   * ── TWO CALLERS, ONE OF WHICH IS THIS APP ─────────────────────────────────────────────────────
+   *
+   *   · **`/api/v1/*`** is MakerRun\'s public API under its old address. `docs/API.md` documents
+   *     `https://bedready.io/api/v1` as a live compatibility alias and Khayt still calls it. It
+   *     returns 200 on that host today, and the deployment split is what would end that.
+   *   · **The converter\'s own four calls** — `/api/convert-count`, `/api/report-conversion`,
+   *     `/api/convert`, `/api/waitlist` — which `convert-api.ts` emits as bare same-origin paths
+   *     whenever `NEXT_PUBLIC_CONVERT_API_ORIGIN` is unset. It is unset on this project.
+   *
+   * Without this the counter silently stops, an opt-in failure report goes nowhere, the notify box
+   * fails and the server-side conversion fallback dies — none of it visible server-side, which is
+   * the failure mode `convertApiCspSources` above already warns about at length.
+   *
+   * ── WHY A REWRITE AND NOT A REDIRECT, OR THE ENVIRONMENT VARIABLE ─────────────────────────────
+   *
+   * A redirect loses the request: a 301 makes most clients re-issue a POST as a bodiless GET, and
+   * `/api/convert` uploads a file. `Authorization` is stripped across origins too, which the
+   * documented API needs.
+   *
+   * Pointing `NEXT_PUBLIC_CONVERT_API_ORIGIN` at MakerRun instead would fix this app\'s four calls
+   * and nothing else — Khayt would still 404 — and it makes those calls cross-origin, which then
+   * needs the CSP to name the origin AND needs MakerRun to answer with CORS headers. A rewrite is
+   * server-side, so the browser sees a same-origin response, `connect-src \'self\'` stays
+   * sufficient, and no CSP change is required.
+   *
+   * Returned as a bare array, which Next applies AFTER the filesystem. So if this repository ever
+   * grows a real route at one of these paths, its own route wins and the proxy stops applying to it
+   * — the right precedence, and not the one a `beforeFiles` rewrite would give.
+   */
+  async rewrites() {
+    return [{ source: "/api/:path*", destination: `${LIBRARY_ORIGIN}/api/:path*` }];
   },
   // three.js ships ESM example modules (loaders/controls); transpile to be safe.
   transpilePackages: ["three"],
