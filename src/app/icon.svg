@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="0.55" stop-color="#06b6d4"/>
+      <stop offset="1" stop-color="#84cc16"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#0b1120"/>
+  <!-- heated-bed grid hint -->
+  <g stroke="url(#sweep)" stroke-width="3" stroke-linecap="round" opacity="0.4">
+    <line x1="17" y1="46" x2="47" y2="46"/>
+    <line x1="17" y1="52" x2="47" y2="52"/>
+  </g>
+  <!-- "ready" check -->
+  <path d="M18 33 L28 43 L47 20" fill="none" stroke="url(#sweep)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

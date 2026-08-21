@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.35"/></filter></defs>
+  <rect x="14" y="14" width="172" height="172" rx="40" fill="#0f172a" stroke="#fff" stroke-width="9" filter="url(#s)"/>
+  <g transform="translate(100 96) rotate(-18)">
+    <rect x="-58" y="-30" width="116" height="60" rx="6" fill="#1e293b" stroke="#f97316" stroke-width="4"/>
+    <path d="M-58 -10 H58 M-58 10 H58 M-38 -30 V30 M-18 -30 V30 M2 -30 V30 M22 -30 V30 M42 -30 V30" stroke="#334155" stroke-width="2"/>
+  </g>
+  <text x="100" y="158" font-family="system-ui,Arial,sans-serif" font-size="23" font-weight="800" letter-spacing="1" fill="#fff" text-anchor="middle">BED <tspan fill="#f97316">READY</tspan></text>
+</svg>

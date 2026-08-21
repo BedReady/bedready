@@ -1,0 +1,43 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local data (dev waitlist fallback)
+/.data/
+
+# env files (NEVER commit secrets)
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# local tooling config
+/.claude/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# built extension bundles
+extension/dist/
+samples/
+bedready-extension-source.zip
+/safari/
+.safari-src/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+
+# CI checks out the desktop app here for the engine-parity test (see .github/workflows/ci.yml)
+.khayt-app/

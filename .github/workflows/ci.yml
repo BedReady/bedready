@@ -1,0 +1,68 @@
+name: CI
+
+# Deliberately simpler than the workflow this project was carved from.
+#
+# That one ran on a private repository with an Actions allowance it had already exhausted once, so
+# it carried a build cache, a concurrency group, a path filter and a gate that decided whether the
+# browser suite was worth 175 seconds. None of that is needed yet here, and a CI file that is
+# cleverer than its repository is a maintenance cost with no payer.
+#
+# What it does keep is the shape: typecheck, unit tests and lint are cheap and run always; the build
+# and the browser suite run against a real production bundle, because dev-mode hydration differs
+# enough that a page can render with no handlers attached.
+#
+# Node 20 on purpose. The upstream project lost time twice to a local toolchain being newer than
+# CI's — most recently a test using `--experimental-strip-types`, which needs 22.6 and simply could
+# not run here.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # `npm install`, not `npm ci`: the dev toolchain runs a newer npm than CI's Node 20 ships, and
+      # the two dedupe a transitive peer differently, which `npm ci`'s strict lock match rejects.
+      - run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      # No credentials are supplied, and none are needed. That is the property
+      # `convert-backend-free.test.mts` exists to defend, and this step is where it would show up as
+      # a broken build rather than a passing test.
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E
+        run: npm run test:e2e
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Upload E2E report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
