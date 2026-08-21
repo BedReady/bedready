@@ -128,14 +128,91 @@ export function absoluteUrl(path: string): string {
   return `${originFor(p || "/")}${p}`;
 }
 
-/*
- * ── THE CROSS-ORIGIN REDIRECTS ARE NOT HERE ─────────────────────────────────────────────────────
+/**
+ * Paths served identically on BOTH hosts, and therefore never redirected.
  *
- * `SHARED_ROUTES`, `crossOriginRedirect` and `redirectTargetFor` stayed with MakerRun. They decide
- * where a path arriving on the WRONG host should go, and this deployment only ever answers for
- * converter routes — a library path reaches a 404, not a redirect. The host that serves both is the
- * library's, so the rule lives there.
+ * The legal pages from the allocation. They are library-owned for canonical purposes — one canonical
+ * URL, so the two copies do not compete as duplicate content — but a converter with no privacy
+ * policy of its own is not a thing that can ship, so both hosts serve them until they fork.
  *
- * What remains is the half this repository actually needs: which origin owns a path, so canonical
- * tags, hreflang alternates and share links name the right site.
+ * Kept identical to MakerRun's copy on purpose: the two lists describe the same agreement between
+ * the two hosts, and a path that is shared on one side and redirected on the other is a loop.
  */
+const SHARED_ROUTES = ["privacy", "terms", "licenses", "age"];
+
+/**
+ * Where a request for `pathname` on `host` should be 301'd, or `null` to serve it here.
+ *
+ * ── WHY THIS CAME BACK, HAVING ONCE BEEN DELIBERATELY LEFT OUT ──────────────────────────────────
+ *
+ * This file used to carry a note saying the rule belonged to MakerRun, because "this deployment only
+ * ever answers for converter routes — a library path reaches a 404, not a redirect. The host that
+ * serves both is the library\'s, so the rule lives there."
+ *
+ * Every clause of that was true, and it stopped being true at the cutover. `bedready.io` is served
+ * by THIS deployment now, and it is no longer a host that serves both. Nothing else is left to
+ * forward a library path, so the 404 that used to be a shrug is now the terminus for every link
+ * ever published to `bedready.io/designs` — and the library lived at that host until the day of the
+ * split, so those links are the entire pre-split web.
+ *
+ * A 301 rather than a 404 is also what moves the ranking signal to MakerRun instead of discarding
+ * it. That is the whole reason the private repository shipped this rule months before it could fire.
+ *
+ * ── IT ONLY ACTS ON THE TWO HOSTS IT KNOWS ──────────────────────────────────────────────────────
+ *
+ * A host matching neither origin is served as-is: `localhost` has no match, and every Vercel preview
+ * deployment has a generated hostname. Redirecting an unrecognised host would send `npm start` and
+ * every preview to production the moment they were asked for a library path — the kind of failure
+ * that only appears on the one branch nobody tests on.
+ *
+ * Note what this means here, and it is worth stating because it is a real gap: on this repository
+ * the rule cannot be exercised end-to-end by visiting the deployment\'s own `.vercel.app` URL, since
+ * that host is neither origin. `redirectTargetFor` is a pure function precisely so the behaviour can
+ * be proven without one.
+ */
+export function crossOriginRedirect(host: string | null | undefined, pathname: string): string | null {
+  return redirectTargetFor(host, pathname, CONVERTER_ORIGIN, LIBRARY_ORIGIN);
+}
+
+/**
+ * `crossOriginRedirect` with the origins passed in — the whole rule, as a pure function.
+ *
+ * Exported for tests. The module reads its origins from the environment at import time, so a test
+ * using the module constants can only ever exercise whatever configuration the test runner happens
+ * to have. Passing them in makes every configuration an ordinary call, on any Node version.
+ *
+ * ── THE EQUALITY CHECK IS NOT DEAD CODE HERE, THOUGH IT LOOKS IT ────────────────────────────────
+ *
+ * In this repository the two origins differ by default (`bedready.io` and `makerrun.com`), so unlike
+ * MakerRun — where they default to the same string and this rule stays inert until the day of the
+ * cutover — the first line never fires in production. It is kept because the rule is a statement
+ * about two origins rather than about this deployment: hand it one origin twice and the honest
+ * answer is "nothing to redirect", not a 301 from a host to itself. That self-redirect is a total
+ * outage, and it is the first case the tests pin.
+ *
+ * Both directions are implemented, though only one can fire here: `makerrun.com` does not route to
+ * this deployment, so the library-host branch is unreachable in production. It stays because the
+ * rule the two repositories share is the same rule, and a half-copy is the thing that drifts.
+ */
+export function redirectTargetFor(
+  host: string | null | undefined,
+  pathname: string,
+  converterOrigin: string,
+  libraryOrigin: string,
+): string | null {
+  if (converterOrigin === libraryOrigin) return null; // single origin: nothing to redirect
+  if (!host) return null;
+
+  const segment = withoutLocale(pathname).split("/")[1] ?? "";
+  if (SHARED_ROUTES.includes(segment)) return null;
+
+  // Compare bare hostnames: the request header carries no scheme, and may carry a port.
+  const bare = host.split(":")[0]!.toLowerCase();
+  const converterHost = new URL(converterOrigin).hostname.toLowerCase();
+  const libraryHost = new URL(libraryOrigin).hostname.toLowerCase();
+
+  const owner = ownerOrigin(pathname, converterOrigin, libraryOrigin);
+  if (bare === libraryHost && owner === converterOrigin) return converterOrigin;
+  if (bare === converterHost && owner === libraryOrigin) return libraryOrigin;
+  return null;
+}
