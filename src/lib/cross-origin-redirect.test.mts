@@ -20,6 +20,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { crossOriginRedirect, redirectTargetFor, CONVERTER_ORIGIN, LIBRARY_ORIGIN } from "./origin.ts";
+import nextConfig from "../../next.config.mjs";
 
 const CONV = "https://bedready.io";
 const LIB = "https://makerrun.com";
@@ -86,10 +87,13 @@ test("an unrecognised host is never redirected", () => {
   }
 });
 
-test("shared legal pages are served on both hosts", () => {
+test("legal pages redirect rather than 404, because this repo has none of them", () => {
+  // MakerRun exempts these four from the rule: it serves them, and redirecting a page a host
+  // already has is a pointless hop. Copying that exemption here was the worst of both — the rule
+  // declined to redirect and there was no page to serve, so all four 404\'d on a host where they
+  // return 200 today.
   for (const p of ["/privacy", "/terms", "/licenses", "/age", "/de/privacy"]) {
-    assert.equal(split("bedready.io", p), null, p);
-    assert.equal(split("makerrun.com", p), null, p);
+    assert.equal(split("bedready.io", p), LIB, p);
   }
 });
 
@@ -110,19 +114,34 @@ test("the front door is decided before the cross-origin rule", () => {
   assert.ok(frontDoor < redirect, "the cross-origin redirect moved above the front door — / now 301s to MakerRun");
 });
 
-test("the middleware excludes /api and /auth from redirects", () => {
-  // Structural, not behavioural: those paths never reach the rule. `bedready.io/api/v1` is a
-  // documented, live compatibility alias for MakerRun's API. A 301 makes a client re-issue a POST
-  // as a bodiless GET and strips Authorization across origins, so the alias needs a rewrite rather
-  // than a redirect. Until that decision is taken, /api must 404 rather than half-work.
+test("route handlers leave the middleware before intl or any redirect touches them", () => {
+  // `/api/*` carries two live callers — MakerRun\'s public API under its old address, and this
+  // app\'s own four backend calls, which convert-api.ts emits as bare same-origin paths. Both are
+  // proxied by the rewrite in next.config.mjs.
+  //
+  // The guard has to come first, not merely before the redirect. Falling through to next-intl
+  // rewrites /api/v1/designs to /en/api/v1/designs, and the rewrite\'s /api/:path* source then
+  // matches nothing — a proxy that fails for a reason visible nowhere near its configuration.
   const src = readFileSync("src/middleware.ts", "utf8");
-  const guard = src.indexOf("if (!isRouteHandler(pathname)) {");
-  const redirect = src.indexOf("const redirectOrigin = crossOriginRedirect(");
-  assert.ok(guard !== -1, "the /api and /auth guard is gone from the middleware");
-  assert.ok(redirect !== -1, "the cross-origin redirect is gone from the middleware");
+  const guard = src.indexOf("if (isRouteHandler(pathname)) return NextResponse.next();");
+  const frontDoor = src.indexOf("frontDoorPath(pathname)");
+  const redirect = src.indexOf("crossOriginRedirect(");
+  const intl = src.indexOf("return intlMiddleware(request);");
+  assert.ok(guard !== -1, "the route-handler early return is gone from the middleware");
   assert.ok(
-    guard < redirect,
-    "the cross-origin redirect escaped the /api and /auth guard. That 301s API calls on the " +
-      "compatibility alias, and a 301 on a POST drops the body.",
+    guard < frontDoor && guard < redirect && guard < intl,
+    "a middleware rule moved above the route-handler early return — /api is no longer reaching " +
+      "the rewrite untouched",
+  );
+});
+
+test("/api is proxied to the library, at the same origin the redirect rule sends paths to", async () => {
+  const rules = await nextConfig.rewrites();
+  const api = (Array.isArray(rules) ? rules : (rules.afterFiles ?? [])).find((r) => r.source === "/api/:path*");
+  assert.ok(api, "the /api rewrite is gone — Khayt 404s and the converter\'s own four calls die silently");
+  assert.equal(
+    api.destination,
+    `${LIBRARY_ORIGIN}/api/:path*`,
+    "the proxy and the 301s disagree about where MakerRun is",
   );
 });

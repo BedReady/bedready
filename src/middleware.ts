@@ -44,18 +44,28 @@ import { crossOriginRedirect } from "./lib/origin";
 const intlMiddleware = createMiddleware(routing);
 
 /**
- * Route handlers, which the cross-origin rule must not touch.
+ * Route handlers, which must leave the middleware untouched.
  *
- * There are none in this repository today — the converter is backend-free — so this looks like a
- * guard against nothing. It is not. `bedready.io/api/v1` is a **documented, live compatibility
- * alias** for MakerRun's API (`docs/API.md`), and the matcher below covers `/api`, so without this
- * line the cutover would start 301ing it to `makerrun.com`.
+ * There are none in this repository — the converter is backend-free — but `/api/*` on this host is
+ * not idle. Two different things arrive there and both are proxied to MakerRun by a rewrite in
+ * `next.config.mjs`:
  *
- * A redirect is the wrong shim for an authenticated API and would fail quietly rather than loudly:
- * a 301 makes most clients re-issue a POST as a bodiless GET, and both browsers and `fetch` strip
- * `Authorization` across origins. The alias needs a rewrite (a proxy), not a redirect — a separate
- * decision, deliberately not taken here. Until it is, `/api` on this host 404s exactly as it did
- * before this file changed, which is at least a failure a client can see.
+ *   · **`/api/v1/*`** — the documented compatibility alias for MakerRun\'s public API
+ *     (`docs/API.md`). Khayt still calls it, and it returns 200 on `bedready.io` today.
+ *   · **The converter\'s own four calls** — `/api/convert-count`, `/api/report-conversion`,
+ *     `/api/convert` and `/api/waitlist`. `convert-api.ts` emits them as BARE SAME-ORIGIN PATHS
+ *     unless `NEXT_PUBLIC_CONVERT_API_ORIGIN` is set, so they land here too.
+ *
+ * Hence a bare `NextResponse.next()` rather than a skip of the redirect alone. Falling through to
+ * the intl middleware would rewrite `/api/v1/designs` to `/en/api/v1/designs` before the rewrite in
+ * `next.config.mjs` ever sees it, and its `/api/:path*` source would then match nothing. The proxy
+ * would fail for a reason visible nowhere near the file that configures it.
+ *
+ * A redirect is the wrong shim for either caller: a 301 makes a client re-issue a POST as a bodiless
+ * GET — `/api/convert` uploads a file and `docs/API.md` documents POST upload endpoints — and
+ * `Authorization` is stripped across origins. A rewrite is server-side, so method, body and headers
+ * all survive, and the browser still sees a same-origin response, which is what keeps `connect-src
+ * \'self\'` sufficient and the CSP untouched.
  */
 function isRouteHandler(pathname: string): boolean {
   return pathname.startsWith("/api/") || pathname === "/api" || pathname.startsWith("/auth/");
@@ -63,6 +73,9 @@ function isRouteHandler(pathname: string): boolean {
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // First, and before the intl middleware can touch the path — see `isRouteHandler`.
+  if (isRouteHandler(pathname)) return NextResponse.next();
 
   const target = frontDoorPath(pathname);
   if (target) {
@@ -72,14 +85,12 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(target + request.nextUrl.search, request.url), 301);
   }
 
-  if (!isRouteHandler(pathname)) {
-    const redirectOrigin = crossOriginRedirect(request.headers.get("host"), pathname);
-    if (redirectOrigin) {
-      // Only the origin changes; the path and query survive. 301 rather than the default 307,
-      // because a temporary redirect tells Google to keep indexing the old host — and consolidating
-      // the pre-split ranking signal onto MakerRun is most of the point.
-      return NextResponse.redirect(new URL(pathname + request.nextUrl.search, redirectOrigin), 301);
-    }
+  const redirectOrigin = crossOriginRedirect(request.headers.get("host"), pathname);
+  if (redirectOrigin) {
+    // Only the origin changes; the path and query survive. 301 rather than the default 307, because
+    // a temporary redirect tells Google to keep indexing the old host — and consolidating the
+    // pre-split ranking signal onto MakerRun is most of the point.
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, redirectOrigin), 301);
   }
 
   return intlMiddleware(request);
