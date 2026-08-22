@@ -341,6 +341,7 @@
     "warnOverhangYes": "Steep overhangs detected (~{percent}% of the surface). Supports are recommended — the converter keeps your source file’s support setting, so if it didn’t already have them, turn Supports on in Snapmaker Orca before slicing.",
     "warnOverhangNo": "No significant overhangs detected — this model likely prints without supports. The converter keeps whatever support setting your source file had.",
     "warnTooBig": "This model is {x}×{y}×{z} mm — larger than the Snapmaker U1’s {maxXY}×{maxXY}×{maxZ} mm build volume. It may not fit; rotate or rescale in your slicer.",
+    "warnLayoutTooBig": "These parts are arranged across {x}×{y} mm — wider than the Snapmaker U1’s {maxXY}×{maxXY} mm bed. Each one fits on its own; rearrange them in your slicer.",
     "photoCtaTitle": "No file? Turn a photo into a U1 print",
     "photoCtaBody": "Drop in a photo, logo or piece of art and get a flat multicolor plate — coasters, signs, keychains — ready for the U1.",
     "photoCtaOpen": "Open →",

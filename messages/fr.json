@@ -341,6 +341,7 @@
     "warnOverhangYes": "Surplombs marqués détectés (~{percent}% de la surface). Des supports sont recommandés — le convertisseur conserve le réglage de supports de ton fichier source, donc s’il n’en avait pas, active les supports dans Snapmaker Orca avant de trancher.",
     "warnOverhangNo": "Aucun surplomb significatif détecté — ce modèle s’imprime probablement sans supports. Le convertisseur conserve le réglage de supports de ton fichier source.",
     "warnTooBig": "Ce modèle fait {x}×{y}×{z} mm — plus que le volume d’impression du Snapmaker U1 de {maxXY}×{maxXY}×{maxZ} mm. Il risque de ne pas tenir ; fais-le pivoter ou redimensionne-le dans ton trancheur.",
+    "warnLayoutTooBig": "Ces pièces s’étendent sur {x}×{y} mm — plus que le plateau de {maxXY}×{maxXY} mm du Snapmaker U1. Chacune tient séparément ; réorganise-les dans ton trancheur.",
     "photoCtaTitle": "Pas de fichier ? Transforme une photo en impression U1",
     "photoCtaBody": "Dépose une photo, un logo ou une illustration et obtiens une plaque multicolore plate — sous-verres, panneaux, porte-clés — prête pour l’U1.",
     "photoCtaOpen": "Ouvrir →",

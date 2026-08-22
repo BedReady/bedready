@@ -341,6 +341,7 @@
     "warnOverhangYes": "Steile Überhänge erkannt (~{percent}% der Oberfläche). Stützen werden empfohlen — der Konverter übernimmt die Stützeinstellung deiner Quelldatei; falls sie keine hatte, aktiviere Stützen in Snapmaker Orca vor dem Slicen.",
     "warnOverhangNo": "Keine nennenswerten Überhänge erkannt — dieses Modell druckt wahrscheinlich ohne Stützen. Der Konverter behält die Stützeinstellung deiner Quelldatei bei.",
     "warnTooBig": "Dieses Modell ist {x}×{y}×{z} mm — größer als der Bauraum des Snapmaker U1 von {maxXY}×{maxXY}×{maxZ} mm. Es passt möglicherweise nicht; drehe oder skaliere es in deinem Slicer.",
+    "warnLayoutTooBig": "Diese Teile sind über {x}×{y} mm verteilt — breiter als das {maxXY}×{maxXY} mm große Druckbett des Snapmaker U1. Einzeln passt jedes Teil; ordne sie in deinem Slicer neu an.",
     "photoCtaTitle": "Keine Datei? Mach aus einem Foto einen U1-Druck",
     "photoCtaBody": "Lade ein Foto, Logo oder Kunstwerk hoch und erhalte eine flache Mehrfarbplatte — Untersetzer, Schilder, Schlüsselanhänger — fertig für den U1.",
     "photoCtaOpen": "Öffnen →",

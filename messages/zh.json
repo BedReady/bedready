@@ -341,6 +341,7 @@
     "warnOverhangYes": "检测到陡峭悬垂（约占表面 {percent}%）。建议使用支撑——转换器会保留源文件的支撑设置，如果原本没有，请在切片前于 Snapmaker Orca 中开启支撑。",
     "warnOverhangNo": "未检测到明显悬垂——此模型很可能无需支撑即可打印。转换器会保留源文件原有的支撑设置。",
     "warnTooBig": "此模型为 {x}×{y}×{z} 毫米——超过 Snapmaker U1 的 {maxXY}×{maxXY}×{maxZ} 毫米成型空间。可能放不下；请在切片软件中旋转或缩放。",
+    "warnLayoutTooBig": "这些零件铺开了 {x}×{y} 毫米——超过 Snapmaker U1 的 {maxXY}×{maxXY} 毫米热床。单个零件都放得下；请在切片软件中重新排列。",
     "photoCtaTitle": "没有文件？把照片变成 U1 打印件",
     "photoCtaBody": "上传照片、标志或艺术作品，获得一块平面多色板——杯垫、标牌、钥匙扣——即可用 U1 打印。",
     "photoCtaOpen": "打开 →",
