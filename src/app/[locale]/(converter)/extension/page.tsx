@@ -15,10 +15,33 @@ const CHROME_WEBSTORE_URL = "https://chromewebstore.google.com/detail/bedready-%
 const FIREFOX_AMO_URL = "https://addons.mozilla.org/firefox/addon/bedready-3mf-snapmaker-u1/"; // live on AMO
 const SAFARI_APPSTORE_URL = ""; // set once approved on the Mac App Store
 
-const primaryBtn =
-  "mt-3 inline-flex items-center gap-2 rounded-md brand-gradient px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90";
-const secondaryBtn =
-  "mt-3 inline-flex items-center gap-2 rounded-md border border-line bg-surface-2 px-4 py-2 text-sm font-medium text-fg transition hover:bg-surface-3";
+// ── WHY THESE STOPPED BEING THE GRADIENT ────────────────────────────────────────────────────────
+//
+// Both install buttons carried `brand-gradient`, and on the rendered page they were different
+// colours: "Add to Chrome" read violet and "Add to Firefox" read green. Not two decisions — ONE
+// class, whose `linear-gradient(100deg, …)` is sized to each element, so two buttons of different
+// widths sample different parts of the sweep. Two identical actions at identical priority, drawn in
+// two different colours by a rule that looked like consistency.
+//
+// `globals.css` had already written down why: "the spectrum sweep is the brand's identity and stays
+// on the wordmark and the rule motif; it is not what a call to action should be, because the page's
+// one saturated accent has to mean 'this is the action'." These two were the leftovers that sentence
+// was about.
+const primaryBtn = "btn-primary btn-md mt-3";
+const secondaryBtn = "btn-secondary btn-sm mt-3";
+// A `<details>` marker is a browser default in the middle of a hand-built interface, and it points
+// the wrong way in RTL. The arrow is drawn, and rotates on open.
+const summaryCls =
+  "flex cursor-pointer list-none items-center gap-1.5 text-fg-muted transition hover:text-fg [&::-webkit-details-marker]:hidden";
+
+/** The disclosure arrow, drawn rather than inherited from the browser. */
+function Caret() {
+  return (
+    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 transition-transform duration-150 group-open:rotate-90 rtl:-scale-x-100 [details[open]_&]:rotate-90">
+      <path d="m6 3 5 5-5 5" />
+    </svg>
+  );
+}
 
 export default async function ExtensionPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -28,7 +51,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
   const firefoxSteps = t.raw("firefoxSteps") as string[];
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
 
@@ -41,10 +64,13 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
               {t("addChrome")}
             </a>
           ) : (
-            <p className="mt-3 text-sm text-fg-muted">On the Chrome Web Store.</p>
+            <p className="mt-3 text-sm text-fg-muted">{t("chromeStoreOnly")}</p>
           )}
           <details className="mt-4 text-sm text-fg-muted">
-            <summary className="cursor-pointer text-fg-muted hover:text-fg">Or install manually (advanced)</summary>
+            <summary className={summaryCls}>
+              <Caret />
+              {t("installManually")}
+            </summary>
             <a href="/bedready-extension.zip" download className={secondaryBtn}>{t("download")}</a>
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-fg-muted">
               {steps.map((s) => (
@@ -65,7 +91,10 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
             <p className="mt-3 text-sm text-fg-muted">{t("firefoxPending")}</p>
           )}
           <details className="mt-4 text-sm text-fg-muted">
-            <summary className="cursor-pointer text-fg-muted hover:text-fg">Or install manually (advanced)</summary>
+            <summary className={summaryCls}>
+              <Caret />
+              {t("installManually")}
+            </summary>
             <a href="/bedready-firefox.zip" download className={secondaryBtn}>{t("download")}</a>
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-fg-muted">
               {firefoxSteps.map((s) => (

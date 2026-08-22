@@ -52,8 +52,12 @@ export default function CalibratePage() {
 
   const swatch = (hex: string) => (HEX.test(hex) ? hex : "transparent");
 
+  // No `id="main-content"` on the <main> below: the group layout already renders one for the skip
+  // link, and two elements sharing an id is invalid HTML — the skip link then lands on whichever the
+  // browser picks first, which is not a thing to leave to chance on the one control a keyboard user
+  // reaches before anything else.
   return (
-    <main id="main-content" className="mx-auto w-full max-w-3xl px-4 py-10">
+    <main className="shell py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
       <p className="mt-2 text-sm text-fg-subtle">{t("oneSpool")}</p>
@@ -126,7 +130,7 @@ export default function CalibratePage() {
       </button>
 
       {card && (
-        <div className="mt-5 rounded-md border border-line bg-surface-2 px-4 py-3 text-sm text-fg-muted">
+        <div className="mt-5 rounded-lg border border-line bg-surface-2 px-4 py-3 text-sm text-fg-muted">
           <p>{t("built", {
             x: card.sizeMm.x, y: card.sizeMm.y,
             pads: card.steps.length,

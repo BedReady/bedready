@@ -24,7 +24,7 @@ export default function StickersPage({ params }: { params: Promise<{ locale: str
   const t = useTranslations("stickers");
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
       <p className="mt-3 max-w-2xl text-fg-muted">{t("intro")}</p>
 
@@ -45,7 +45,7 @@ export default function StickersPage({ params }: { params: Promise<{ locale: str
         ))}
       </div>
 
-      <p className="mt-8 rounded-md border border-line bg-surface-2 p-4 text-xs text-fg-muted">{t("note")}</p>
+      <p className="mt-8 rounded-lg border border-line bg-surface-2 p-4 text-xs text-fg-muted">{t("note")}</p>
     </main>
   );
 }

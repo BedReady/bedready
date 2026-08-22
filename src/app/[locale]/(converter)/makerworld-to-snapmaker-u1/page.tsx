@@ -13,7 +13,7 @@ export const metadata = {
 const faq = [
   {
     q: "Why won't MakerWorld files print right on the Snapmaker U1?",
-    a: "A MakerWorld or Bambu .3mf is sliced for a Bambu printer — the painted colors and print settings are stored in that printer's profile. Open it in Snapmaker Orca and you get the wrong profile, colors mapped to the wrong slots (or dropped to plain grey geometry), and broken filament-change behavior. BedReady rewrites the file for the U1 so it opens correctly.",
+    a: "A MakerWorld or Bambu .3mf is sliced for a Bambu printer — the painted colors and print settings are stored in that printer's profile. Open it in Snapmaker Orca and you get the wrong profile, colors mapped to the wrong slots (or dropped to plain gray geometry), and broken filament-change behavior. BedReady rewrites the file for the U1 so it opens correctly.",
   },
   {
     q: "Does it keep the colors?",
@@ -34,7 +34,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Print MakerWorld &amp; Bambu files on the Snapmaker U1
       </h1>
@@ -48,7 +48,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <Link href="/convert" className="btn-primary btn-lg">
           Convert a file — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -58,7 +58,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <p className="mt-2 text-fg-muted">
         MakerWorld and Bambu Studio slice for Bambu printers. Open one of those <code>.3mf</code> files in
         Snapmaker Orca and it loads with a foreign printer profile, the painted colors land in the wrong
-        slots — or drop out entirely as plain grey geometry — and the filament-change and prime-tower setup
+        slots — or drop out entirely as plain gray geometry — and the filament-change and prime-tower setup
         is wrong for the U1. Re-painting by hand takes hours.
       </p>
 

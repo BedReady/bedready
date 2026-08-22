@@ -13,7 +13,7 @@ export const metadata = {
 const faq = [
   {
     q: "Will my U1 colors transfer to PrusaSlicer?",
-    a: "The geometry transfers exactly. Painted color is the caveat: the Snapmaker U1 uses an OrcaSlicer-family project, while PrusaSlicer stores its multi-material painting in a different format. BedReady saves a clean 3MF that PrusaSlicer opens without a foreign profile — but you may need to re-apply multicolor with PrusaSlicer's paint tool. We tell you this up front rather than shipping a file that silently imports grey.",
+    a: "The geometry transfers exactly. Painted color is the caveat: the Snapmaker U1 uses an OrcaSlicer-family project, while PrusaSlicer stores its multi-material painting in a different format. BedReady saves a clean 3MF that PrusaSlicer opens without a foreign profile — but you may need to re-apply multicolor with PrusaSlicer's paint tool. We tell you this up front rather than shipping a file that silently imports gray.",
   },
   {
     q: "Why not fully translate the colors like the Bambu conversion does?",
@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Convert a Snapmaker U1 file to PrusaSlicer (MK4 + MMU3)
       </h1>
@@ -47,10 +47,10 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         MMU3? Drop it into BedReady and get back a clean 3MF that PrusaSlicer accepts — the U1 profile stripped
         and the geometry preserved. Free, in your browser, nothing uploaded.
       </p>
-      <div className="mt-5 rounded-md border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted">
+      <div className="mt-5 rounded-lg border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted">
         <span className="font-semibold text-fg">Heads up on color:</span> PrusaSlicer uses a different project
         format than the U1&apos;s Orca-based one, so geometry carries over but painted multicolor may need
-        re-applying in PrusaSlicer&apos;s paint tool. We say so up front — no silent grey imports.
+        re-applying in PrusaSlicer&apos;s paint tool. We say so up front — no silent gray imports.
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
@@ -60,7 +60,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         >
           Convert for Prusa — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -80,7 +80,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           "Strips the Snapmaker U1 profile so PrusaSlicer opens the file cleanly, no foreign profile",
           "Preserves the geometry exactly — models, parts and plates intact",
           "Targets the Prusa MK4 + MMU3 (5 slots) so you assign paint there",
-          "Tells you up front when painted color needs re-applying — no silent grey imports",
+          "Tells you up front when painted color needs re-applying — no silent gray imports",
           "Runs 100% in your browser — nothing uploaded, free, no account",
         ].map((s) => (
           <li key={s} className="flex gap-2">

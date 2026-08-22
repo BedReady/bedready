@@ -5,9 +5,25 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Icon from "@/components/Icon";
+import { SOURCE_REPO_URL } from "@/lib/links";
 
-/** Hamburger menu for small screens (the inline nav is hidden < sm). */
-export default function MobileNav() {
+/**
+ * Hamburger menu for small screens (the inline nav is hidden < sm).
+ *
+ * ── ONE LIST FOR TWO PRODUCTS WAS THE BUG ───────────────────────────────────────────────────────
+ *
+ * The headers were split — `ConverterHeader` and `SiteHeader` — and this was not, so on
+ * `bedready.io` the menu offered **Your profile**, **Notifications** and **Share a file**: three
+ * routes that require an account the converter deliberately does not have, and one of which
+ * (`/upload`) `SPLIT-DECISION-2026-08.md` records as permanently unreachable from the converter once
+ * the origins diverge. It also reordered and renamed the desktop nav rather than mirroring it, and
+ * pointed **Help & FAQ** at `/help` while the desktop header pointed the same label at `/guides` —
+ * one label, two destinations, decided by viewport width.
+ *
+ * `variant` is what stops that from being a coincidence of two lists staying in step: the converter
+ * gets the converter's items, in the converter header's order.
+ */
+export default function MobileNav({ variant = "library" }: { variant?: "converter" | "library" }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const t = useTranslations("nav");
@@ -42,7 +58,20 @@ export default function MobileNav() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const links = [
+  type Item = { href: string; label: string; external?: boolean; sister?: boolean };
+  // Same items as the inline nav directly above it, in the same order — a menu that reshuffles the
+  // page's own navigation makes the small screen a different site.
+  const converterLinks: Item[] = [
+    { href: "/convert", label: t("converter") },
+    { href: "/orca-filaments", label: t("filaments") },
+    { href: "/guides", label: t("guides") },
+    { href: "/app", label: t("app") },
+    { href: "/mixer", label: t("mixer") },
+    { href: "/calibrate", label: t("calibrate") },
+    { href: "/extension", label: t("extension") },
+    { href: "/verified", label: t("makerrun"), sister: true },
+  ];
+  const libraryLinks: Item[] = [
     { href: "/verified", label: t("library") },
     { href: "/convert", label: t("converter") },
     { href: "/orca-filaments", label: t("filaments") },
@@ -51,8 +80,9 @@ export default function MobileNav() {
     { href: "/help", label: t("help") },
     { href: "/account", label: t("profile") },
     { href: "/notifications", label: t("notifications") },
-    { href: "/upload", label: t("share"), highlight: true },
+    { href: "/upload", label: t("share"), sister: false },
   ];
+  const links = variant === "converter" ? converterLinks : libraryLinks;
 
   return (
     <div className="sm:hidden">
@@ -61,14 +91,20 @@ export default function MobileNav() {
         onClick={() => setOpen((v) => !v)}
         aria-label="Menu"
         aria-expanded={open}
-        className="rounded-lg p-1.5 text-fg hover:bg-surface-3"
+        className="icon-btn text-fg"
       >
         {open ? <span aria-hidden>&times;</span> : <Icon name="menu" size={18} />}
       </button>
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={closeToTrigger} aria-hidden />
-          <nav ref={navRef} className="absolute right-4 top-14 z-50 w-52 overflow-hidden rounded-md border border-line bg-surface shadow-xl">
+          {/* The overlay had no background, so the panel floated over live text — the H1 read
+              through it, cut mid-word. A scrim is what tells a reader the page behind is inert. */}
+          <div
+            className="fixed inset-0 z-40 bg-app/60 backdrop-blur-[1px]"
+            onClick={closeToTrigger}
+            aria-hidden
+          />
+          <nav ref={navRef} className="absolute right-4 top-14 z-50 w-52 overflow-hidden rounded-lg border border-line bg-surface shadow-xl">
             {links.map((l) => {
               const active = pathname === l.href;
               return (
@@ -76,15 +112,27 @@ export default function MobileNav() {
                   key={l.href}
                   href={l.href}
                   aria-current={active ? "page" : undefined}
-                  className={`block px-4 py-2.5 text-sm hover:bg-surface-3 ${
-                    l.highlight ? "font-semibold text-violet-300" : active ? "bg-surface-2 font-medium text-fg" : "text-fg"
-                  }`}
+                  className={`flex items-center justify-between gap-2 px-4 py-3 text-sm hover:bg-surface-3 ${
+                    active ? "bg-surface-2 font-medium text-fg" : "text-fg"
+                  } ${l.sister ? "border-t border-line font-medium" : ""}`}
                 >
-                  {l.label}
+                  <span dir={l.sister ? "ltr" : undefined}>{l.label}</span>
+                  {l.sister && <span aria-hidden className="text-xs text-fg-subtle">↗</span>}
                 </Link>
               );
             })}
-            <div className="border-t border-line px-4 py-2.5">
+            {variant === "converter" && (
+              <a
+                href={SOURCE_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-2 px-4 py-3 text-sm text-fg hover:bg-surface-3"
+              >
+                <span>{t("source")}</span>
+                <span aria-hidden className="text-xs text-fg-subtle">↗</span>
+              </a>
+            )}
+            <div className="border-t border-line px-4 py-3">
               <LanguageSwitcher />
             </div>
           </nav>

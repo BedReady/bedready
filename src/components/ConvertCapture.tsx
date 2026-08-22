@@ -80,14 +80,14 @@ export default function ConvertCapture() {
 
   if (status === "success") {
     return (
-      <p role="status" aria-live="polite" className="mt-3 rounded-md border border-violet-400/30 bg-violet-400/10 px-5 py-4 text-sm text-violet-100">
+      <p role="status" aria-live="polite" className="mt-3 rounded-lg border border-violet-400/30 bg-violet-400/10 px-5 py-4 text-sm text-violet-100">
         {message}
       </p>
     );
   }
 
   return (
-    <div className="mt-3 rounded-md border border-violet-400/30 bg-violet-400/[0.06] px-5 py-4">
+    <div className="mt-3 rounded-lg border border-violet-400/30 bg-violet-400/[0.06] px-5 py-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-fg">{t("captureTitle")}</p>
@@ -111,7 +111,7 @@ export default function ConvertCapture() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("capturePlaceholder")}
             aria-label={t("capturePlaceholder")}
-            className="w-full flex-1 rounded-md border border-line bg-surface-2 px-4 py-2.5 text-sm text-fg placeholder:text-fg-subtle outline-none transition focus:border-violet-400/60 focus:ring-2 focus:ring-violet-400/30"
+            className="w-full flex-1 rounded-lg border border-line bg-surface-2 px-4 py-2.5 text-sm text-fg placeholder:text-fg-subtle outline-none transition focus:border-violet-400/60 focus:ring-2 focus:ring-violet-400/30"
           />
           <button
             type="submit"

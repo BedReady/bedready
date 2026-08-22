@@ -30,7 +30,7 @@ function Swatch({ hex, recipe }: { hex: string; recipe: string }) {
         try { await navigator.clipboard.writeText(hex); setCopied(true); setTimeout(() => setCopied(false), 900); } catch {}
       }}
       title={`${recipe} · ${hex} (click to copy)`}
-      className="group relative h-12 w-full rounded-md ring-1 ring-inset ring-line"
+      className="group relative h-12 w-full rounded-lg ring-1 ring-inset ring-line"
       style={{ background: hex }}
     >
       <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate rounded-b-md bg-black/50 px-1 text-[9px] leading-4 text-white opacity-0 transition group-hover:opacity-100">
@@ -62,7 +62,7 @@ export default function MixerPage() {
   }, [bases]);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
+    <main className="shell py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">Full Spectrum color mixer</h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
         See what colors your 4 loaded filaments can make on the Snapmaker U1. Set your filaments below
@@ -73,7 +73,7 @@ export default function MixerPage() {
       {/* Base filaments */}
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {bases.map((b, i) => (
-          <div key={i} className="rounded-md border border-line bg-surface-2 p-3">
+          <div key={i} className="rounded-lg border border-line bg-surface-2 p-3">
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -96,7 +96,8 @@ export default function MixerPage() {
       </div>
 
       {/* Blends */}
-      <div className="mt-8 space-y-4">
+      {/* The swatch ramps are the page; they get the wider canvas, the copy above keeps the measure. */}
+      <div className="breakout mt-8 space-y-4">
         {rows.map((r, i) => (
           <div key={i}>
             <p className="mb-1.5 text-xs font-medium text-fg-muted">

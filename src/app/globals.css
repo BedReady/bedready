@@ -265,7 +265,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   background-color: #7c3aed; /* violet-600 */
   color: #fff;
   font-weight: 500;
@@ -279,7 +279,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--border);
   color: var(--fg);
   font-weight: 500;
@@ -305,7 +305,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   background-color: oklch(50.8% 0.118 165.612); /* emerald-700 */
   color: #fff;
   font-weight: 500;
@@ -335,13 +335,110 @@ body {
 
 /* An eyebrow: the small mono label that opens a section. Repeated enough across the redesign to be
    worth naming, and naming it keeps the tracking consistent — it was drifting between 0.1 and
-   0.18em by hand. */
+   0.18em by hand.
+
+   ── WHY IT GREW ────────────────────────────────────────────────────────────────────────────────
+   It was 11px at 0.18em, and it opens nearly every section on the site — which made the least
+   readable text on the page also the most repeated. Uppercase removes the ascender/descender cues a
+   reader uses at small sizes, and 0.18em then removes the word shape as well; the two compound.
+   12px at 0.14em is still unmistakably a label and stops being a squint. */
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: var(--fg-subtle);
+}
+
+/* ── Notices ───────────────────────────────────────────────────────────────────────────────────
+   Three states, and only three: information, caution, and a resolved/positive result.
+
+   The converter had been writing these by hand, and the failure was not the duplication — it was
+   that `sky-500/10` carried BOTH the caution "don't use Split to objects, it drops painted colours"
+   AND the reassurance "no significant overhangs, this likely prints without supports". Identical
+   border, tint, weight and no icon, stacked one above the other. A reader cannot tell a warning from
+   good news, which is the one job a notice colour has.
+
+   `.notice-ok` is deliberately not the same green as `.btn-affirm`: that green means "this button is
+   the yes", and a passive result should not look like something to click. */
+.notice {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+.notice > svg { flex: none; width: 1rem; height: 1rem; margin-top: 0.175rem; }
+.notice-info {
+  border-color: color-mix(in srgb, #0284c7 32%, transparent);
+  background-color: color-mix(in srgb, #0284c7 8%, transparent);
+  color: var(--fg-muted);
+}
+.notice-info > svg { color: #0369a1; }
+.dark .notice-info > svg { color: #7dd3fc; }
+.notice-warn {
+  border-color: color-mix(in srgb, #d97706 38%, transparent);
+  background-color: color-mix(in srgb, #d97706 9%, transparent);
+  color: var(--fg-muted);
+}
+.notice-warn > svg { color: #92400e; }
+.dark .notice-warn > svg { color: #fbbf24; }
+.notice-ok {
+  border-color: color-mix(in srgb, #059669 32%, transparent);
+  background-color: color-mix(in srgb, #059669 8%, transparent);
+  color: var(--fg-muted);
+}
+.notice-ok > svg { color: #065f46; }
+.dark .notice-ok > svg { color: #6ee7b7; }
+
+/* ── Icon buttons ──────────────────────────────────────────────────────────────────────────────
+   A control whose label is a glyph still needs a target a finger can hit. The slot-reorder arrows
+   were 22×16px — eight of them, below the 24×24 floor in WCAG 2.2 and a third of a comfortable
+   touch target — because the glyph was styled and the button was not.
+
+   Padding, not font-size: the arrow stays small, the hit area does not. And `disabled` drops to a
+   real 0.35 with the pointer cursor removed rather than opacity-30, which read as "faint" instead of
+   "off" and was the only signal that slot 1 cannot move left. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: 0.5rem;
+  color: var(--fg-muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.icon-btn:hover:not(:disabled) { background-color: var(--surface-3); color: var(--fg); }
+.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── The page shell, and the one way out of it ─────────────────────────────────────────────────
+   One width for the chrome and for the page, so the logo, the headline and the footer's first
+   column share a left edge.
+
+   They did not. The header and footer were `max-w-5xl` (1024) while pages were 2xl, 3xl, 4xl or 5xl
+   depending on the route — on `/convert` that put the logo's left edge at 152px and the first line
+   of body copy at 328px, with nothing bridging the 176px between them. Nothing was broken and
+   nothing lined up, which reads as assembled rather than composed.
+
+   `.breakout` is the exception that keeps the rule usable: a card grid or a comparison table needs
+   more room than a column of prose, and the honest way to give it room is to widen it symmetrically
+   about the same centre rather than to move the whole page. The measure stays where the eye checks
+   alignment; only the grid grows. */
+.shell {
+  max-width: 48rem; /* 3xl — ~75 characters of body copy at 16px */
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+.breakout {
+  width: min(64rem, 100vw - 3rem);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────

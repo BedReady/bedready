@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { zipSync, strToU8 } from "fflate";
 import { Link } from "@/i18n/navigation";
-import Icon from "@/components/Icon";
+import NoticeIcon from "@/components/NoticeIcon";
 
 // Shared rich-text tags for the install copy. Passed to t.rich so translators mark up emphasis and
 // literal paths (folder names, "File → Import") inline instead of us splitting sentences — which
@@ -315,7 +315,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
 
   const activePath = OS_PATHS.find((o) => o.os === os) ?? OS_PATHS[1];
 
-  if (err) return <p className="mt-8 rounded-md border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">{err}</p>;
+  if (err) return <p className="notice notice-warn mt-8"><NoticeIcon level="warn" />{err}</p>;
   if (!manifest) return <p className="mt-8 text-sm text-fg-muted">{t("loading")}</p>;
 
   return (
@@ -345,8 +345,8 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
       </div>
 
       {/* Quit-first warning — profiles load at startup */}
-      <p className="mt-3 flex items-start gap-2 rounded-md border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-xs text-amber-200">
-        <Icon name="warning" />
+      <p className="notice notice-warn mt-3 text-xs">
+        <NoticeIcon level="warn" />
         <span>{t("quitFirstWarning")}</span>
       </p>
 
@@ -377,7 +377,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
           <button
             onClick={installAll}
             disabled={!!bulk}
-            className="rounded-lg border border-violet-400/40 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-fg transition hover:bg-violet-400/20 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40"
+            className="btn-primary btn-sm"
           >
             {bulk
               ? directInstall
@@ -390,11 +390,18 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
         )}
       </div>
 
+      {/* ── WHY THE CARDS ARE NOT PRIMARY ─────────────────────────────────────────────────────────
+          Every one of 1,271 cards carried `.btn-primary` — a saturated violet fill repeated down the
+          whole page — while the genuinely primary action, "install/download all N", was a quiet
+          tinted button above them. A grid in which everything is emphasised is a grid in which
+          nothing is, and the one action that saves real time was the faintest thing on screen.
+
+          Exactly inverted now: one primary above the grid, secondary in each card. */}
       {/* Grid */}
       {shown.length === 0 ? (
         <p className="mt-8 text-sm text-fg-muted">{t("noMatch")}</p>
       ) : (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="breakout mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((p) => (
             <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
               <h3 className="font-semibold text-fg">{p.name}</h3>
@@ -409,13 +416,13 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
                     <button
                       onClick={() => onAdd(p)}
                       disabled={busy === p.id}
-                      className="btn-primary btn-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50"
+                      className="btn-secondary btn-sm"
                     >
                       {busy === p.id ? t("installing") : t("addToOrca")}
                     </button>
                     <button
                       onClick={() => download(p)}
-                      className="rounded-lg border border-line bg-surface px-3 py-2 text-sm font-medium text-fg transition hover:bg-surface-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40"
+                      className="btn-secondary btn-sm"
                     >
                       {t("downloadJson")}
                     </button>
@@ -424,7 +431,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
                   // No direct write (macOS ~/Library block, or Safari/Firefox): download → import in Orca.
                   <button
                     onClick={() => onAdd(p)}
-                    className="btn-primary btn-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50"
+                    className="btn-secondary btn-sm"
                   >
                     {t("downloadForOrca")}
                   </button>
@@ -484,7 +491,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-4 left-1/2 z-50 max-w-[92vw] -translate-x-1/2 rounded-md border px-4 py-2.5 text-sm shadow-lg ${
+          className={`fixed bottom-4 left-1/2 z-50 max-w-[92vw] -translate-x-1/2 rounded-lg border px-4 py-2.5 text-sm shadow-lg ${
             toast.kind === "ok"
               ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-200"
               : toast.kind === "warn"

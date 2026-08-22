@@ -62,7 +62,7 @@ export default function MyFilaments({
   }
 
   return (
-    <div className="mt-3 rounded-md border border-line bg-surface-2/60 px-3 py-2.5 text-xs">
+    <div className="mt-3 rounded-lg border border-line bg-surface-2/60 px-3 py-2.5 text-xs">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

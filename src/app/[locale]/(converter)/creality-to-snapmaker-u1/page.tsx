@@ -13,19 +13,19 @@ export const metadata = {
 const faq = [
   {
     q: "Can I open a Creality Print .3mf directly on the U1?",
-    a: "Not cleanly. Creality Print writes the file with a Creality generator string and a creality.config vendor marker; Snapmaker Orca ignores that marker and treats the file as foreign, loading it with the wrong profile and often dropping the colours. BedReady rewrites it so Orca loads it as a native U1 project.",
+    a: "Not cleanly. Creality Print writes the file with a Creality generator string and a creality.config vendor marker; Snapmaker Orca ignores that marker and treats the file as foreign, loading it with the wrong profile and often dropping the colors. BedReady rewrites it so Orca loads it as a native U1 project.",
   },
   {
     q: "Are my CFS multicolor colors kept?",
-    a: "Yes. The colour painting Creality Print produced for the CFS multi-material unit is read from the .3mf and mapped onto the U1's 4 filament slots, so painted faces — text, logos, detail — print in colour instead of collapsing to grey geometry.",
+    a: "Yes. The color painting Creality Print produced for the CFS multi-material unit is read from the .3mf and mapped onto the U1's 4 filament slots, so painted faces — text, logos, detail — print in color instead of collapsing to gray geometry.",
   },
   {
     q: "My model has more than 4 CFS colors — will it still print?",
-    a: "The U1 has 4 physical slots, so the first four CFS colours map straight across. Beyond that, Full Spectrum reproduces the extra shades by dithering 2- and 3-filament mixes from the four loaded colours, so a 5- or 6-colour CFS model prints without swapping filament by hand.",
+    a: "The U1 has 4 physical slots, so the first four CFS colors map straight across. Beyond that, Full Spectrum reproduces the extra shades by dithering 2- and 3-filament mixes from the four loaded colors, so a 5- or 6-color CFS model prints without swapping filament by hand.",
   },
   {
     q: "Does it fix the profile and machine settings for the U1?",
-    a: "Yes. BedReady swaps the Creality K-series printer profile for the real Snapmaker U1 profile and normalizes the machine settings, so speeds, prime tower and filament-change behaviour match the U1 rather than a Creality machine.",
+    a: "Yes. BedReady swaps the Creality K-series printer profile for the real Snapmaker U1 profile and normalizes the machine settings, so speeds, prime tower and filament-change behavior match the U1 rather than a Creality machine.",
   },
   {
     q: "Is my file uploaded anywhere?",
@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Convert Creality Print files to the Snapmaker U1
       </h1>
@@ -52,7 +52,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <Link href="/convert" className="btn-primary btn-lg">
           Convert a file — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -61,9 +61,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <h2 className="mt-12 text-xl font-semibold tracking-tight text-fg">The problem</h2>
       <p className="mt-2 text-fg-muted">
         A Creality Print <code>.3mf</code> is sliced for a Creality machine — a K-series printer with the CFS
-        multi-colour unit — and carries a Creality printer profile plus a <code>creality.config</code> vendor
-        marker and its own colour mapping. Snapmaker Orca ignores that marker and treats the file as foreign:
-        it loads the wrong profile, the CFS colours land in the wrong slots — or drop out as plain grey
+        multi-color unit — and carries a Creality printer profile plus a <code>creality.config</code> vendor
+        marker and its own color mapping. Snapmaker Orca ignores that marker and treats the file as foreign:
+        it loads the wrong profile, the CFS colors land in the wrong slots — or drop out as plain gray
         geometry — and the machine settings are tuned for Creality hardware, not the U1. Re-doing it by hand
         is tedious.
       </p>
