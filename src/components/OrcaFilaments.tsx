@@ -339,7 +339,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
           {t("folderLabel", { os: activePath.os })}{" "}
           <code className="rounded bg-surface px-1.5 py-0.5 text-violet-300">{activePath.path}</code>
         </p>
-        <p className="mt-1 text-[11px] text-fg-subtle">
+        <p className="mt-1 text-xs text-fg-subtle">
           {t.rich("folderVaries", { code })}
         </p>
       </div>
@@ -406,8 +406,8 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
             <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
               <h3 className="font-semibold text-fg">{p.name}</h3>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-line bg-surface px-2 py-0.5 text-[11px] text-fg-muted">{p.vendor}</span>
-                <span className="rounded-full border border-violet-400/40 bg-violet-400/10 px-2 py-0.5 text-[11px] text-violet-300">{p.type}</span>
+                <span className="rounded-full border border-line bg-surface px-2 py-0.5 text-xs text-fg-muted">{p.vendor}</span>
+                <span className="rounded-full border border-violet-400/40 bg-violet-400/10 px-2 py-0.5 text-xs text-violet-300">{p.type}</span>
               </div>
               <p className="mt-3 text-xs text-fg-subtle">{t("temps", { nozzle: p.nozzleTemp, bed: p.bedTemp })}</p>
               <div className="mt-4 flex flex-col gap-2">

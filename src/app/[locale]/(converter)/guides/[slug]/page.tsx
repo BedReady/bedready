@@ -55,7 +55,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
       <div className="mt-10 rounded-lg border border-violet-400/20 bg-violet-400/[0.05] p-5">
         <p className="font-semibold text-fg">Ready to try it?</p>
-        <p className="mt-1 text-sm text-fg-muted">Free, in your browser — nothing uploaded.</p>
+        <p className="mt-1 text-base text-fg-muted">Free, in your browser — nothing uploaded.</p>
         <Link href="/convert" className="btn-primary btn-md mt-3 inline-flex">
           Convert a file →
         </Link>

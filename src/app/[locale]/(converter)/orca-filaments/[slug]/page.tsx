@@ -102,7 +102,7 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
       <p className="mt-10 text-sm text-fg-muted">
         <Link href="/orca-filaments" className="text-violet-300 hover:underline">Browse all filament profiles →</Link>
       </p>
-      <p className="mt-8 text-[11px] text-fg-subtle">
+      <p className="mt-8 text-xs text-fg-subtle">
         Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker, the OrcaSlicer
         project{r.kind !== "material" ? ` or ${r.kind === "combo" ? r.brand : r.name}` : ""}. All brand and
         product names are trademarks of their respective owners. Filament profiles are provided as a starting

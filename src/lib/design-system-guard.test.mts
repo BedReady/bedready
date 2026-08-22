@@ -98,6 +98,34 @@ test("there is one corner radius, plus the pill", () => {
   assert.deepEqual(hits, [], "use rounded-lg (or rounded-full for a pill):\n  " + hits.join("\n  "));
 });
 
+test("type sizes come from the scale, and the scale starts at 12px", () => {
+  // The review counted 310 elements at 14px or smaller against ONE at 16px, and 49 sizes written as
+  // arbitrary values — `text-[9px]`, `[10px]`, `[11px]` — that belong to no scale at all. Nothing
+  // failed a contrast check, because the colours had been measured properly. It still read as a page
+  // you lean toward, and it flattened hierarchy: when the gaps between levels are one pixel, there
+  // are no levels.
+  //
+  // `text-[11px]` is the one worth naming. It was 46 uses — the single most repeated size on the
+  // site after 12 and 14 — and one pixel is not a decision. Every arbitrary size here was somebody
+  // reaching past the scale for a value the scale already had, or nearly had.
+  //
+  // RELATIVE sizes are deliberately allowed: `text-[0.85em]` on the `↗` that marks an off-site link
+  // scales with whatever it sits inside, which is the opposite failure mode — it has no fixed size
+  // to drift. The rule is about px values written outside the scale, not about every bracket.
+  const hits: string[] = [];
+  for (const f of walk("src", ".tsx")) {
+    for (const [n, line] of codeLines(f)) {
+      for (const m of line.matchAll(/\btext-\[\d+px\]/g)) hits.push(`${f}:${n} — ${m[0]}`);
+    }
+  }
+  assert.deepEqual(
+    hits,
+    [],
+    "use the scale: text-xs (12) / text-sm (14) / text-base (16) / text-lg / text-xl / text-2xl+:\n  " +
+      hits.join("\n  "),
+  );
+});
+
 test("every button primitive carries a size, because the primitive has no padding of its own", () => {
   // `.btn-primary` sets colour, weight and radius; `.btn-lg/md/sm/xs` set padding. Written alone it
   // renders a fill with the text touching its edges — which is what shipped on the done screen's

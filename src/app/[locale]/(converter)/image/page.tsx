@@ -231,7 +231,7 @@ export default function ImagePage() {
   return (
     <main className="shell py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">
-        {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wide text-violet-300">{t("beta")}</span>
+        {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-xs font-semibold uppercase tracking-wide text-violet-300">{t("beta")}</span>
       </h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
         {t("intro", { colors })}
@@ -284,7 +284,7 @@ export default function ImagePage() {
                   <span className="h-5 w-5 rounded border border-line" style={{ background: hex }} /> {hex}{i === 0 ? " · " + t("base") : ""}
                 </span>
               ))}
-              {hueforge && <p className="mt-1 max-w-[16rem] text-[11px] text-fg-subtle">{t("hfFlatNote")}</p>}
+              {hueforge && <p className="mt-1 max-w-[16rem] text-xs text-fg-subtle">{t("hfFlatNote")}</p>}
             </div>
           </div>
 
@@ -345,7 +345,7 @@ export default function ImagePage() {
             />
             <span>
               <span className="font-medium text-fg">{t("hfLabel")}</span>
-              <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">{t("hfExperimental")}</span>
+              <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">{t("hfExperimental")}</span>
               <span className="mt-1 block text-xs text-fg-subtle">{t("hfDesc")}</span>
             </span>
           </label>

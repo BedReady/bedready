@@ -33,7 +33,7 @@ export default function StickersPage({ params }: { params: Promise<{ locale: str
           <div key={s.file} className="flex flex-col items-center rounded-lg border border-line bg-surface-2 p-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/stickers/${s.file}.svg`} alt={s.label} width={140} height={140} className="h-32 w-32" />
-            <p className="mt-3 text-sm font-medium text-fg">{s.label}</p>
+            <p className="mt-3 text-base font-medium text-fg">{s.label}</p>
             <a
               href={`/stickers/${s.file}.svg`}
               download

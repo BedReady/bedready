@@ -108,7 +108,7 @@ export default async function OrcaFilamentsPage({ params }: { params: Promise<{ 
           cmp: (c) => <Link href="/compare-multicolor-printers" className="text-violet-300 hover:underline">{c}</Link>,
         })}
       </p>
-      <p className="mt-8 text-[11px] text-fg-subtle">{t("disclaimer")}</p>
+      <p className="mt-8 text-xs text-fg-subtle">{t("disclaimer")}</p>
     </main>
   );
 }
