@@ -482,7 +482,7 @@
         "items": [
           {
             "q": "有浏览器扩展吗？",
-            "a": "有 — 它会在 MakerWorld、Bambu、Printables 和 Thingiverse 的下载页面上直接添加一个让其适配 U1的选项。和本站一样，它在你的浏览器中转换，不上传任何内容。"
+            "a": "有 — 它会在 MakerWorld、Bambu、Printables 和 Thingiverse 的下载页面上直接添加一个“→ U1”按钮。和本站一样，它在你的浏览器中转换，不上传任何内容。"
           }
         ]
       },
@@ -626,14 +626,14 @@
       "在 Chrome 中打开 chrome://extensions（或在 Edge 中打开 edge://extensions）。",
       "打开右上角的“开发者模式”。",
       "点击“加载已解压的扩展程序”，选择解压后的文件夹。",
-      "访问 MakerWorld / Printables / Thingiverse 上的模型——.3mf 下载时会出现“为 U1 准备”选项。"
+      "访问 MakerWorld / Printables / Thingiverse 上的模型——.3mf 下载旁会出现“→ U1”按钮。"
     ],
     "firefoxSteps": [
       "下载 Firefox 版 .zip。",
       "打开 about:debugging#/runtime/this-firefox。",
       "点击“临时载入附加组件…”，选择该 .zip。",
       "在该附加组件的权限中，允许访问 MakerWorld / Printables / Thingiverse。",
-      "访问其中任一网站——.3mf 下载时会出现“为 U1 准备”选项。"
+      "访问其中任一网站——.3mf 下载旁会出现“→ U1”按钮。"
     ],
     "safariTitle": "Safari（macOS）",
     "getSafari": "在 Mac App Store 获取",

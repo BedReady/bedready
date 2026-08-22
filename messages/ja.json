@@ -482,7 +482,7 @@
         "items": [
           {
             "q": "ブラウザ拡張機能はありますか？",
-            "a": "はい — MakerWorld、Bambu、Printables、Thingiverse のダウンロードページに「U1 用にする」オプションを直接追加します。サイトと同様、ブラウザ内で変換し、何もアップロードしません。"
+            "a": "はい — MakerWorld、Bambu、Printables、Thingiverse のダウンロードページに「→ U1」ボタンを直接追加します。サイトと同様、ブラウザ内で変換し、何もアップロードしません。"
           }
         ]
       },
@@ -626,14 +626,14 @@
       "Chrome で chrome://extensions を開きます（Edge では edge://extensions）。",
       "右上の「デベロッパーモード」をオンにします。",
       "「パッケージ化されていない拡張機能を読み込む」をクリックし、展開したフォルダを選びます。",
-      "MakerWorld / Printables / Thingiverse のモデルを開くと、.3mf のダウンロードに「U1 対応にする」オプションが表示されます。"
+      "MakerWorld / Printables / Thingiverse のモデルを開くと、.3mf のダウンロードの横に「→ U1」ボタンが表示されます。"
     ],
     "firefoxSteps": [
       "Firefox 版の .zip をダウンロードします。",
       "about:debugging#/runtime/this-firefox を開きます。",
       "「一時的なアドオンを読み込む…」をクリックし、.zip を選びます。",
       "アドオンの権限で MakerWorld / Printables / Thingiverse へのアクセスを許可します。",
-      "いずれかのサイトを開くと、.3mf のダウンロードに「U1 対応にする」オプションが表示されます。"
+      "いずれかのサイトを開くと、.3mf のダウンロードの横に「→ U1」ボタンが表示されます。"
     ],
     "safariTitle": "Safari（macOS）",
     "getSafari": "Mac App Store で入手",

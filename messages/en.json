@@ -482,7 +482,7 @@
         "items": [
           {
             "q": "Is there a browser extension?",
-            "a": "Yes — it adds a Make U1-ready option right on the download page at MakerWorld, Bambu, Printables and Thingiverse. Like the site, it converts in your browser and uploads nothing."
+            "a": "Yes — it adds a “→ U1” button right on the download page at MakerWorld, Bambu, Printables and Thingiverse. Like the site, it converts in your browser and uploads nothing."
           }
         ]
       },
@@ -630,14 +630,14 @@
       "Open chrome://extensions in Chrome (or edge://extensions in Edge).",
       "Turn on “Developer mode” (top-right toggle).",
       "Click “Load unpacked” and pick the unzipped folder.",
-      "Visit a MakerWorld / Printables / Thingiverse model — a “Make U1-ready” option appears on .3mf downloads."
+      "Visit a MakerWorld / Printables / Thingiverse model — a “→ U1” button appears next to .3mf downloads."
     ],
     "firefoxSteps": [
       "Download the Firefox .zip.",
       "Open about:debugging#/runtime/this-firefox.",
       "Click “Load Temporary Add-on…” and pick the .zip.",
       "In the add-on’s permissions, allow access to MakerWorld / Printables / Thingiverse.",
-      "Visit one of those sites — a “Make U1-ready” option appears on .3mf downloads."
+      "Visit one of those sites — a “→ U1” button appears next to .3mf downloads."
     ],
     "installManually": "Or install manually (advanced)",
     "chromeStoreOnly": "On the Chrome Web Store.",
