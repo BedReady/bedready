@@ -1159,7 +1159,7 @@ export default function ConvertPage() {
         <>
           <div className="mt-8 border-t border-line pt-4">
             <p className="eyebrow">{t("privacyBadge")}</p>
-            <p className="mt-1.5 text-sm text-fg-muted">{t("privacyDetail")}</p>
+            <p className="mt-1.5 text-base leading-relaxed text-fg-muted">{t("privacyDetail")}</p>
             {/* The evidence for the sentence above it. `COMPETITIVE-2026-08.md` §3.1 ranks "say
                 'nothing is uploaded' louder" as the highest-ratio item in that document;
                 `SPLIT-DECISION-2026-08.md` calls open source "the loudest available version of that,
@@ -1169,7 +1169,7 @@ export default function ConvertPage() {
                 It also states the claim in the form the README states it, rather than the stronger
                 form this block used alone: there IS a server fallback, it is a button, and saying so
                 here costs nothing and is the difference between a claim and a checkable one. */}
-            <p className="mt-2 text-sm text-fg-subtle">
+            <p className="mt-2 text-base leading-relaxed text-fg-subtle">
               {t.rich("privacySource", {
                 link: (c) => (
                   <a
@@ -1204,12 +1204,12 @@ export default function ConvertPage() {
             {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
               <li key={i}>
                 <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
-                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step}</p>
+                <p className="mt-2 text-base leading-relaxed text-fg-muted">{step}</p>
               </li>
             ))}
           </ol>
 
-          <div className="mt-8 space-y-1.5 border-t border-line pt-4 text-sm leading-relaxed text-fg-subtle">
+          <div className="mt-8 space-y-2 border-t border-line pt-4 text-base leading-relaxed text-fg-subtle">
             <p>{t("livePreview")}</p>
             <p>{t("targetsNote")}</p>
             <p>
@@ -1261,7 +1261,7 @@ export default function ConvertPage() {
           )}
           {batchState === "done" && <p className="mt-3 text-xs font-medium text-green-300">{batchMsg}</p>}
           {batchState === "error" && <p className="mt-3 text-xs font-medium text-red-300">{batchMsg}</p>}
-          <p className="mt-3 text-[11px] text-fg-subtle">{t("batchNote")}</p>
+          <p className="mt-3 text-xs text-fg-subtle">{t("batchNote")}</p>
         </section>
       )}
       {status === "idle" && !file && !stlFile && (
@@ -1363,7 +1363,7 @@ export default function ConvertPage() {
             />
             <span>
               <span className="font-medium text-fg">{t("fsLabel")}</span> {t("fsDesc1")}
-              <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">{t("experimental")}</span>
+              <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">{t("experimental")}</span>
               <span className="mt-1 block text-xs text-fg-subtle">{t("fsDesc2")}</span>
             </span>
           </label>
@@ -1371,7 +1371,7 @@ export default function ConvertPage() {
             const bad = mixMatches.filter((m, i) => m && !physical.includes(i) && m.deltaE > 12).length;
             if (!bad) return null;
             return (
-              <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
+              <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-xs leading-relaxed text-red-200">
                 <strong className="text-red-100">Full Spectrum can&apos;t reproduce {bad} of these colors.</strong> Mixing can&apos;t
                 make a color that isn&apos;t one of the 4 loaded heads, so a saturated set like this (distinct reds/greens/blues) shifts
                 a lot. Full Spectrum suits blended palettes (skin tones, gradients) — not distinct primaries.
@@ -1469,7 +1469,7 @@ export default function ConvertPage() {
                     <label key={i} className="flex flex-col items-center gap-1 text-xs text-fg-muted">
                       Slot {i + 1}
                       {slotPlates[i]?.length > 0 && (
-                        <span className="text-[10px] font-normal leading-tight text-violet-300">
+                        <span className="text-xs font-normal leading-tight text-violet-300">
                           {slotPlates[i].length === 1 ? `Plate ${slotPlates[i][0]}` : `Plates ${slotPlates[i].join(", ")}`}
                         </span>
                       )}
@@ -1529,7 +1529,7 @@ export default function ConvertPage() {
                 />
                 <span className="text-sm font-medium text-emerald-100">
                   Print all {bandPlan.colorCount} colors exactly with {bandPlan.manualSwaps} filament swap{bandPlan.manualSwaps === 1 ? "" : "s"}
-                  <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">experimental</span>
+                  <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">experimental</span>
                 </span>
               </label>
               <p className="mt-1 pl-6 text-xs text-emerald-200">
@@ -1552,7 +1552,7 @@ export default function ConvertPage() {
                   </li>
                 ))}
               </ol>
-              <p className="mt-2 text-[11px] text-fg-subtle">
+              <p className="mt-2 text-xs text-fg-subtle">
                 Bands 1–4 load on the U1&apos;s four heads (automatic, no pause). Bands 5+ reuse a head — the printer pauses so
                 you swap that spool. Tip: where you can, load light colors before dark ones — dark residue bleeds into a lighter
                 color after a swap.
@@ -1573,7 +1573,7 @@ export default function ConvertPage() {
                 />
                 <span>
                   <span className="font-medium text-fg">{t("customFsLabel")}</span>
-                  <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">{t("experimental")}</span>
+                  <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">{t("experimental")}</span>
                   <span className="mt-1 block text-xs text-fg-subtle">{t("customFsDesc")}</span>
                 </span>
               </label>
@@ -1624,11 +1624,11 @@ export default function ConvertPage() {
                           if (!r) return null;
                           const set = (next: MixRecipe) => setMixOverrides((o) => ({ ...o, [i]: next }));
                           const clearOv = () => setMixOverrides((o) => { const n = { ...o }; delete n[i]; return n; });
-                          const sel = "rounded border border-line bg-surface-2 px-1 py-0.5 text-[11px] text-fg";
+                          const sel = "rounded border border-line bg-surface-2 px-1 py-0.5 text-xs text-fg";
                           const three = r.ids.length === 3 && !r.override;
                           const a = r.ids[0], b = r.ids[1] ?? r.ids[0], pctB = r.weights[1] ?? 0;
                           return (
-                            <li key={s} className="flex flex-wrap items-center gap-2 text-[11px] text-fg-muted">
+                            <li key={s} className="flex flex-wrap items-center gap-2 text-xs text-fg-muted">
                               <span className="h-5 w-5 rounded border border-line" style={{ background: mesh.palette[i] }} title={`target ${mesh.palette[i]}`} />
                               <span className="text-fg-subtle">→</span>
                               {three ? (
@@ -1673,11 +1673,11 @@ export default function ConvertPage() {
                       <option value={0.12} className="bg-surface">{t("mlhBalanced")}</option>
                       <option value={0.16} className="bg-surface">{t("mlhCoarser")}</option>
                     </select>
-                    <span className="text-[11px] text-fg-subtle">
+                    <span className="text-xs text-fg-subtle">
                       {mixedLayerHeight === 0 ? t("mlhNoteSame") : t("mlhNoteSet")}
                     </span>
                   </div>
-                  <p className="mt-2 text-[11px] text-fg-subtle">
+                  <p className="mt-2 text-xs text-fg-subtle">
                     Uses the tested U1 profile with these 4 filaments; mixed colors print as dithered blends (2–3 filaments).
                   </p>
                 </>
@@ -1703,7 +1703,7 @@ export default function ConvertPage() {
           {/* Full Spectrum reality check: blends are an optical illusion of thin alternating layers, so
               filament opacity and layer height decide whether they read as a color or as visible stripes. */}
           {(customFS || fullSpectrum) && (
-            <p className="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+            <p className="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-xs leading-relaxed text-amber-200">
               {t.rich("blendTip", {
                 lead: (c) => <strong className="text-amber-100">{c}</strong>,
                 b: (c) => <strong>{c}</strong>,
@@ -1723,7 +1723,7 @@ export default function ConvertPage() {
               />
               <span>
                 <span className="font-medium text-fg">{t("fsLabel")}</span> {t("fsDesc1")}
-                <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">{t("experimental")}</span>
+                <span className="ml-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">{t("experimental")}</span>
                 <span className="mt-1 block text-xs text-fg-subtle">{t("fsDesc2")}</span>
               </span>
             </label>
@@ -1736,7 +1736,7 @@ export default function ConvertPage() {
                 .sort((a, b) => b.dE - a.dE);
               if (!bad.length) return null;
               return (
-                <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
+                <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-xs leading-relaxed text-red-200">
                   {/* The swatch pairs are the <ex> tag's children rather than a separate message, so a
                       translator can move the whole "(e.g. ▢ → ▢)" parenthetical to wherever it belongs
                       in their sentence instead of being pinned to the English word order. */}
@@ -1766,7 +1766,7 @@ export default function ConvertPage() {
                 : t("usedColorsHeader")}
             </p>
             {fullSpectrum && (
-              <p className="mt-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+              <p className="mt-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-xs leading-relaxed text-amber-200">
                 {t("fsTip")}
               </p>
             )}
@@ -1808,18 +1808,18 @@ export default function ConvertPage() {
                                 maxLength={7}
                                 aria-label="Filament hex loaded on this head"
                                 title="The filament you'll actually load here — override if it isn't the model's color"
-                                className="w-[4.5rem] rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-fg"
+                                className="w-[4.5rem] rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-xs text-fg"
                               />
                             </span>
                           ) : mixMatches && mixMatches[i] ? (
                             (() => {
                               const mm = mixMatches[i]!;
                               const setMix = (next: MixRecipe) => setMixOverrides((o) => ({ ...o, [i]: next }));
-                              const sel = "rounded border border-line bg-surface-2 px-1 py-0.5 text-[11px] text-fg";
+                              const sel = "rounded border border-line bg-surface-2 px-1 py-0.5 text-xs text-fg";
                               const three = mm.ids.length === 3 && !mm.override;
                               const a = mm.ids[0], b = mm.ids[1] ?? mm.ids[0], pctB = mm.weights[1] ?? 0;
                               return (
-                                <span className="flex items-center gap-1 text-[11px] text-fg-muted">
+                                <span className="flex items-center gap-1 text-xs text-fg-muted">
                                   ≈
                                   {three ? (
                                     <>
@@ -1917,7 +1917,7 @@ export default function ConvertPage() {
                   <option value={0.12} className="bg-surface">{t("mlhBalanced")}</option>
                   <option value={0.16} className="bg-surface">{t("mlhCoarser")}</option>
                 </select>
-                <span className="text-[11px] text-fg-subtle">
+                <span className="text-xs text-fg-subtle">
                   {mixedLayerHeight === 0 ? t("mlhNoteSame") : t("mlhNoteSet")}
                 </span>
               </div>
@@ -1989,7 +1989,7 @@ export default function ConvertPage() {
                   >
                     {format.number(n)} {t("nozzleUnit")}
                     {n === U1_TESTED_NOZZLE && (
-                      <span className={`ms-1.5 text-[11px] ${nozzle === n ? "text-violet-100" : "text-fg-subtle"}`}>
+                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-violet-100" : "text-fg-subtle"}`}>
                         {t("nozzleTested")}
                       </span>
                     )}
@@ -1997,7 +1997,7 @@ export default function ConvertPage() {
                 ))}
               </div>
               {nozzle !== U1_TESTED_NOZZLE && (
-                <p className="mt-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+                <p className="mt-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-xs leading-relaxed text-amber-200">
                   {t("nozzleDerivedNote", { nozzle: nozzle, tested: U1_TESTED_NOZZLE })}
                 </p>
               )}
@@ -2036,7 +2036,7 @@ export default function ConvertPage() {
                   count: analysis.colors.length,
                   b: (c) => <span className="font-medium text-fg">{c}</span>,
                 })}
-                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">
+                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">
                   {t("experimental")}
                 </span>
                 <span className="mt-1 block text-xs text-fg-subtle">{t("swapPausesNote")}</span>
@@ -2063,7 +2063,7 @@ export default function ConvertPage() {
                   count: analysis?.colors.length ?? 0,
                   b: (c) => <span className="font-medium text-fg">{c}</span>,
                 })}
-                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">
+                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">
                   {t("experimental")}
                 </span>
                 <span className="mt-1 block text-xs text-fg-subtle">{t("keepAllDesc")}</span>
@@ -2083,7 +2083,7 @@ export default function ConvertPage() {
                 {t.rich("vlhDesc", {
                   b: (c) => <span className="font-medium text-fg">{c}</span>,
                 })}
-                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[11px] text-amber-200">{t("advanced")}</span>
+                <span className="ms-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-xs text-amber-200">{t("advanced")}</span>
                 <span className="mt-1 block text-xs text-fg-subtle">{t("vlhNote")}</span>
               </span>
             </label>
@@ -2432,7 +2432,7 @@ export default function ConvertPage() {
                   >
                     {reportSent === "sending" ? t("reportSendingCap") : t("sendUsFileFix")}
                   </button>
-                  <p className="mt-1 text-[11px] text-fg-subtle">
+                  <p className="mt-1 text-xs text-fg-subtle">
                     {t("sendFileDebugNote")}
                   </p>
                 </>

@@ -74,7 +74,7 @@ export default function CalibratePage() {
               className="w-full rounded-lg border border-line bg-surface px-3 py-2 font-mono text-sm text-fg"
             />
           </span>
-          <span className="mt-1 block text-[11px] text-fg-subtle">{t("backingHelp")}</span>
+          <span className="mt-1 block text-xs text-fg-subtle">{t("backingHelp")}</span>
         </label>
 
         <label className="text-xs text-fg-muted">
@@ -88,7 +88,7 @@ export default function CalibratePage() {
               className="w-full rounded-lg border border-line bg-surface px-3 py-2 font-mono text-sm text-fg"
             />
           </span>
-          <span className="mt-1 block text-[11px] text-fg-subtle">{t("testHelp")}</span>
+          <span className="mt-1 block text-xs text-fg-subtle">{t("testHelp")}</span>
         </label>
 
         <label className="text-xs text-fg-muted">
@@ -111,7 +111,7 @@ export default function CalibratePage() {
               <option key={h} value={h} className="bg-surface">{h} mm</option>
             ))}
           </select>
-          <span className="mt-1 block text-[11px] text-fg-subtle">{t("layerHelp")}</span>
+          <span className="mt-1 block text-xs text-fg-subtle">{t("layerHelp")}</span>
         </label>
       </div>
 

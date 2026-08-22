@@ -99,7 +99,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           free tool is the kind of thing that destroys the credibility of everything else on it. */}
       <section className="mt-8 rounded-lg border border-line bg-surface-2 p-5">
         <h2 className="font-semibold text-fg">First: Snapmaker has its own converter, and it&apos;s free</h2>
-        <p className="mt-2 text-sm text-fg-muted">
+        <p className="mt-2 text-base text-fg-muted">
           Snapmaker publishes a{" "}
           <a href="https://wiki.snapmaker.com/en/resource_hub/u1_3mf_converter_user_guide" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">
             U1 3MF Converter guide
@@ -109,7 +109,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           the printer, and nothing on this page beats &ldquo;official and free&rdquo; for a
           straightforward conversion.
         </p>
-        <p className="mt-2 text-sm text-fg-muted">
+        <p className="mt-2 text-base text-fg-muted">
           The tools below exist for what falls outside that: sources other than Bambu and MakerWorld,
           more than 4 colors, batch work, STL, or retargeting a U1 file to another printer.
         </p>
@@ -119,7 +119,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           Spell out what each one actually sends instead of grading them on the adjective. */}
       <section className="mt-6 rounded-lg border border-emerald-400/25 bg-emerald-500/[0.07] p-5">
         <h2 className="font-semibold text-fg">Does your file leave your computer?</h2>
-        <p className="mt-2 text-sm text-fg-muted">
+        <p className="mt-2 text-base text-fg-muted">
           BedReady, U1 Forge and the{" "}
           <a href="https://github.com/ericreid/3mf-to-u1" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">3mf-to-u1</a>{" "}
           extension all convert inside your browser. <strong className="text-fg">bl2u1 uploads your
@@ -127,14 +127,14 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           for a free MakerWorld model. It is not fine for a paid model, a client&apos;s file, or
           anything you don&apos;t have redistribution rights to.
         </p>
-        <p className="mt-3 text-sm text-fg-muted">
+        <p className="mt-3 text-base text-fg-muted">
           <strong className="text-fg">&ldquo;In your browser&rdquo; has stopped being one thing, though.</strong>{" "}
           <a href="https://bambu2orca.kuzuriao.com/" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">bambu2orca</a>{" "}
           is billed as a zero-upload converter, and its geometry really does stay local — its own FAQ
           says so, and invites you to check in DevTools. What it posts to its API is the project&apos;s
           settings, its object names and their bounding boxes. No mesh, but not nothing.
         </p>
-        <p className="mt-3 text-sm text-fg-muted">
+        <p className="mt-3 text-base text-fg-muted">
           So the honest version of my own claim is the specific one, not the adjective:{" "}
           <strong className="text-fg">BedReady sends no part of your file anywhere — not the model, not
           its settings, not even the file name.</strong> The one exception is labelled where it happens:
@@ -229,7 +229,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
 
       <section className="mt-10 rounded-lg border border-line bg-surface-2 px-6 py-8 text-center">
         <p className="font-medium text-fg">Try it on a file that&apos;s given you trouble</p>
-        <p className="mx-auto mt-1 max-w-lg text-sm text-fg-muted">
+        <p className="mx-auto mt-1 max-w-lg text-base text-fg-muted">
           Nothing uploads, there&apos;s no account, and you see the colors before you download. If it
           gets your file wrong, send it to me — that&apos;s the most useful thing anyone can do.
         </p>
@@ -243,7 +243,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         </div>
       </section>
 
-      <p className="mt-8 text-[11px] text-fg-subtle">
+      <p className="mt-8 text-xs text-fg-subtle">
         Sources:{" "}
         <a href="https://bl2u1.nbn.cat/" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">bl2u1.nbn.cat</a>,{" "}
         <a href="https://github.com/josuanbn/bl2u1" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">josuanbn/bl2u1</a>,{" "}

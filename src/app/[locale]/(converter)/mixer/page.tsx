@@ -33,7 +33,7 @@ function Swatch({ hex, recipe }: { hex: string; recipe: string }) {
       className="group relative h-12 w-full rounded-lg ring-1 ring-inset ring-line"
       style={{ background: hex }}
     >
-      <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate rounded-b-md bg-black/50 px-1 text-[9px] leading-4 text-white opacity-0 transition group-hover:opacity-100">
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate rounded-b-md bg-black/50 px-1 text-xs leading-5 text-white opacity-0 transition group-hover:opacity-100">
         {copied ? "copied!" : hex}
       </span>
     </button>
@@ -87,7 +87,7 @@ export default function MixerPage() {
                 className="min-w-0 flex-1 rounded border border-line bg-surface px-2 py-1 text-sm text-fg"
               />
             </div>
-            <p className="mt-1 text-center text-[11px] text-fg-subtle">{b.hex}</p>
+            <p className="mt-1 text-center text-xs text-fg-subtle">{b.hex}</p>
           </div>
         ))}
       </div>

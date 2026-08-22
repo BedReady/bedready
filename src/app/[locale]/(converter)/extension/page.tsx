@@ -64,7 +64,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
               {t("addChrome")}
             </a>
           ) : (
-            <p className="mt-3 text-sm text-fg-muted">{t("chromeStoreOnly")}</p>
+            <p className="mt-3 text-base text-fg-muted">{t("chromeStoreOnly")}</p>
           )}
           <details className="mt-4 text-sm text-fg-muted">
             <summary className={summaryCls}>
@@ -88,7 +88,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
               {t("getFirefox")}
             </a>
           ) : (
-            <p className="mt-3 text-sm text-fg-muted">{t("firefoxPending")}</p>
+            <p className="mt-3 text-base text-fg-muted">{t("firefoxPending")}</p>
           )}
           <details className="mt-4 text-sm text-fg-muted">
             <summary className={summaryCls}>
@@ -113,13 +113,13 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
               <img src="/mac-app-store-badge.svg" alt={t("getSafari")} width={150} height={44} className="h-11 w-auto" />
             </a>
           ) : (
-            <p className="mt-3 text-sm text-fg-muted">{t("safariPending")}</p>
+            <p className="mt-3 text-base text-fg-muted">{t("safariPending")}</p>
           )}
-          <p className="mt-4 text-sm text-fg-muted">{t("safariNote")}</p>
+          <p className="mt-4 text-base text-fg-muted">{t("safariNote")}</p>
         </section>
       </div>
 
-      <p className="mt-6 text-sm text-fg-muted">
+      <p className="mt-6 text-base text-fg-muted">
         {t.rich("prefer", {
           link: (c) => (
             <Link href="/convert" className="text-violet-300 hover:underline">

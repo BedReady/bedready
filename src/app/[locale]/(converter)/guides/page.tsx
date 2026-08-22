@@ -18,7 +18,7 @@ export default function GuidesPage() {
           <li key={g.slug}>
             <Link href={`/guides/${g.slug}`} className="group block border-t border-line py-5 transition hover:bg-surface-2">
               <h2 className="font-semibold text-fg group-hover:text-violet-300">{g.title}</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{g.description}</p>
+              <p className="mt-1.5 text-base leading-relaxed text-fg-muted">{g.description}</p>
             </Link>
           </li>
         ))}
@@ -29,7 +29,7 @@ export default function GuidesPage() {
         <li>
           <Link href="/orca-filaments" className="group block border-t border-line py-5 transition hover:bg-surface-2">
             <h3 className="font-semibold text-fg group-hover:text-violet-300">Add OrcaSlicer filament profiles to Snapmaker Orca</h3>
-            <p className="mt-1 text-sm text-fg-muted">Install any OrcaSlicer filament profile (SUNLU, Polymaker, eSUN…) into Snapmaker Orca for the Snapmaker U1 — one click, or download &amp; import.</p>
+            <p className="mt-1 text-base text-fg-muted">Install any OrcaSlicer filament profile (SUNLU, Polymaker, eSUN…) into Snapmaker Orca for the Snapmaker U1 — one click, or download &amp; import.</p>
           </Link>
         </li>
       </ul>

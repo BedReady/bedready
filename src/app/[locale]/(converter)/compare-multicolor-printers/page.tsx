@@ -105,7 +105,7 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
         {faq.map((f) => (
           <div key={f.q}>
             <h3 className="font-semibold text-fg">{f.q}</h3>
-            <p className="mt-1 text-sm text-fg-muted">{f.a}</p>
+            <p className="mt-1 text-base text-fg-muted">{f.a}</p>
           </div>
         ))}
       </div>
@@ -121,7 +121,7 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
         }}
       />
 
-      <p className="mt-10 text-sm text-fg-muted">
+      <p className="mt-10 text-base text-fg-muted">
         Converting between printers:{" "}
         <Link href="/u1-to-bambu" className="text-violet-300 hover:underline">U1 → Bambu</Link>,{" "}
         <Link href="/u1-to-prusa" className="text-violet-300 hover:underline">U1 → Prusa</Link>,{" "}
@@ -129,7 +129,7 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
         <Link href="/bambu-to-snapmaker-u1" className="text-violet-300 hover:underline">Bambu → U1</Link>.
       </p>
 
-      <p className="mt-8 text-[11px] text-fg-subtle">
+      <p className="mt-8 text-xs text-fg-subtle">
         Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, Prusa
         Research or Creality. All product names are trademarks of their respective owners.
       </p>

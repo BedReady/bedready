@@ -84,7 +84,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-sm text-fg-muted">
+      <p className="mt-4 text-base text-fg-muted">
         Works with files from Creality Print, PrusaSlicer, Bambu Studio, MakerWorld and OrcaSlicer. See the
         full <Link href="/features" className="text-violet-300 hover:underline">feature list &amp; comparison</Link>.
       </p>
@@ -94,7 +94,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         {faq.map((f) => (
           <div key={f.q}>
             <h3 className="font-semibold text-fg">{f.q}</h3>
-            <p className="mt-1 text-sm text-fg-muted">{f.a}</p>
+            <p className="mt-1 text-base text-fg-muted">{f.a}</p>
           </div>
         ))}
       </div>
@@ -122,14 +122,14 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         </Link>
       </div>
 
-      <p className="mt-6 text-sm text-fg-muted">
+      <p className="mt-6 text-base text-fg-muted">
         See also:{" "}
         <Link href="/bambu-to-snapmaker-u1" className="text-violet-300 hover:underline">Bambu → U1</Link>,{" "}
         <Link href="/prusaslicer-to-snapmaker-u1" className="text-violet-300 hover:underline">PrusaSlicer → U1</Link>.{" "}
         Going the other way? <Link href="/u1-to-creality" className="text-violet-300 hover:underline">U1 → Creality</Link>.
       </p>
 
-      <p className="mt-8 text-[11px] text-fg-subtle">
+      <p className="mt-8 text-xs text-fg-subtle">
         Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker or Creality. Creality
         Print, CFS and the K-series names are trademarks of Creality. All product names are trademarks of their
         respective owners.

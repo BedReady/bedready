@@ -42,7 +42,7 @@ function Mark({ value, note }: { value: Support; note?: string }) {
         {value === true ? "✓" : value === "partial" ? "◐" : "✗"}
       </span>
       <span className="sr-only">{label}</span>
-      {note && <span className="text-[11px] leading-none text-fg-subtle">{note}</span>}
+      {note && <span className="text-xs leading-none text-fg-subtle">{note}</span>}
     </span>
   );
 }
@@ -83,7 +83,7 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
 
       {/* Honest, capability-based comparison — why BedReady is the most complete U1 converter. */}
       <h2 className="mt-16 border-t border-line pt-10 text-xl font-semibold tracking-tight text-fg">How it compares</h2>
-      <p className="mt-2 max-w-2xl text-sm text-fg-muted">
+      <p className="mt-2 max-w-2xl text-base text-fg-muted">
         Most .3mf→U1 converters swap the profile and map colors to the 4 slots. BedReady does that too — and
         keeps going.
       </p>
