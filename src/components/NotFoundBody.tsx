@@ -23,7 +23,7 @@ import Logo from "@/components/Logo";
 export default function NotFoundBody({ standalone = false }: { standalone?: boolean }) {
   const t = useTranslations("notFound");
   return (
-    <main className={`shell flex flex-col items-center text-center ${standalone ? "py-16" : "py-24"}`}>
+    <main className={`page-read flex flex-col items-center text-center ${standalone ? "py-16" : "py-24"}`}>
       {standalone && (
         <Link href="/convert" className="mb-12 inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-fg">
           <Logo size={26} />

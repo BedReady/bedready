@@ -82,7 +82,7 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
 
 
   return (
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("title")}</h1>
       <p className="mt-3 max-w-2xl text-fg-muted">{t("intro")}</p>
 
@@ -111,7 +111,7 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
         Most .3mf→U1 converters swap the profile and map colors to the 4 slots. BedReady does that too — and
         keeps going.
       </p>
-      <div className="breakout mt-4 overflow-x-auto rounded-lg border border-line">
+      <div className="page-breakout mt-4 overflow-x-auto rounded-lg border border-line">
         <table className="w-full min-w-[30rem] text-start text-sm">
           <thead>
             <tr className="border-b border-line">

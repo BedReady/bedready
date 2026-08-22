@@ -46,7 +46,7 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Multicolor 3D printer comparison
       </h1>

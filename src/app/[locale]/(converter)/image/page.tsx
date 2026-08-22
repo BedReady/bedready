@@ -229,7 +229,7 @@ export default function ImagePage() {
   }
 
   return (
-    <main className="shell py-10">
+    <main className="page-read py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">
         {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-xs font-semibold uppercase tracking-wide text-violet-300">{t("beta")}</span>
       </h1>

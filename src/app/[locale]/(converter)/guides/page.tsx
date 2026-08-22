@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function GuidesPage() {
   return (
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">Guides</h1>
       <p className="mt-3 text-fg-muted">Practical guides for multicolor printing on the Snapmaker U1.</p>
       <ul className="mt-10">

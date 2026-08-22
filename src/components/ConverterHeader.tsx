@@ -51,7 +51,7 @@ export default function ConverterHeader() {
   const t = useTranslations("nav");
   return (
     <header className="relative border-b border-line">
-      <div className="shell flex items-center justify-between py-4">
+      <div className="page-read flex items-center justify-between py-4">
         <Link
           href="/convert"
           className="inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-fg"

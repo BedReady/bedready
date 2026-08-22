@@ -401,7 +401,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
       {shown.length === 0 ? (
         <p className="mt-8 text-sm text-fg-muted">{t("noMatch")}</p>
       ) : (
-        <div className="breakout mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="page-breakout mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((p) => (
             <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
               <h3 className="font-semibold text-fg">{p.name}</h3>

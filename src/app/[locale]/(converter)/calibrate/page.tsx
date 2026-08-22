@@ -57,7 +57,7 @@ export default function CalibratePage() {
   // browser picks first, which is not a thing to leave to chance on the one control a keyboard user
   // reaches before anything else.
   return (
-    <main className="shell py-10">
+    <main className="page-read py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
       <p className="mt-2 text-sm text-fg-subtle">{t("oneSpool")}</p>

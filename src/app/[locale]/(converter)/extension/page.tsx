@@ -51,7 +51,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
   const firefoxSteps = t.raw("firefoxSteps") as string[];
 
   return (
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
 

@@ -35,7 +35,7 @@ export default async function OrcaFilamentsPage({ params }: { params: Promise<{ 
   ];
 
   return (
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("heading")}</h1>
       <p className="mt-4 max-w-2xl text-lg text-fg-muted">{t("intro")}</p>
 
