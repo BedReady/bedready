@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { alternates } from "@/lib/seo";
 
 export const metadata = {

@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { SOURCE_REPO_URL, REDDIT_URL, SPONSOR_URL, KHAYT_URL } from "@/lib/links";
 
 /**
