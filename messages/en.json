@@ -999,7 +999,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "updated": "Last updated: 11 August 2026",
-    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognises. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Firefox, and Safari). We aim to collect as little as possible and never sell your data.",
+    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognises. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Edge, Firefox, and Safari). We aim to collect as little as possible and never sell your data.",
     "extTitle": "The browser extension",
     "extIntro": "The extension collects no data and sends nothing to any server. Conversion happens entirely in your browser — your files are never uploaded. Permissions are used only to provide the single feature (converting a downloaded .3mf for the Snapmaker U1):",
     "extBullets": [
@@ -1030,7 +1030,7 @@
     "intro": "Drop in a multicolor .3mf and get a Snapmaker U1-ready file — colors, profile, and prime tower all handled. Free, in your browser, nothing uploaded.",
     "ctaConvert": "Convert a file — free",
     "ctaBrowse": "Browse MakerRun",
-    "note": "Runs entirely on your device. Also available as a browser extension (Chrome, Edge, Firefox) and in 7 languages.",
+    "note": "Runs entirely on your device. Also available as a browser extension (Chrome, Edge, Firefox, Safari) and in 7 languages.",
     "groups": {
       "slicers": {
         "title": "Works with any slicer",

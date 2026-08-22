@@ -4,7 +4,7 @@
     "converter": "Conversor",
     "app": "App de escritorio",
     "share": "Compartir archivo",
-    "extension": "Extensión de Chrome",
+    "extension": "Extensión de navegador",
     "help": "Ayuda y preguntas",
     "profile": "Tu perfil",
     "notifications": "Notificaciones",
@@ -24,7 +24,7 @@
     "tagline": "agnóstico por diseño.",
     "converter": "Conversor 3MF gratuito",
     "library": "Biblioteca",
-    "extension": "Extensión de Chrome",
+    "extension": "Extensión de navegador",
     "help": "Ayuda y preguntas",
     "licenses": "Licencias",
     "privacy": "Privacidad",
@@ -120,7 +120,7 @@
     "title": "Prepara cualquier .3mf para la U1",
     "intro": "Suelta un .3mf de MakerWorld, Bambu Studio, PrusaSlicer, Orca o Creality Print — recibes un archivo listo para la U1: el perfil ajeno se cambia por el perfil real de la Snapmaker U1, el multicolor pintado se asigna a las 4 ranuras de la U1 y se conservan los colores. Funciona por completo en tu navegador — no se sube nada.",
     "livePreview": "· Vista previa en color antes de descargar",
-    "tip": "Consejo: la <link>extensión de Chrome</link> hace esto directamente en la página de descarga de MakerWorld/Printables.",
+    "tip": "Consejo: la <link>extensión de navegador</link> hace esto directamente en la página de descarga de MakerWorld/Printables.",
     "settingsTitle": "Ajustes de impresión U1",
     "keepSettings": "Mantener los ajustes del creador",
     "useTested": "Usar perfil U1 probado",
@@ -477,7 +477,7 @@
         ]
       },
       {
-        "title": "Extensión de Chrome",
+        "title": "Extensión de navegador",
         "items": [
           {
             "q": "¿Hay una extensión de navegador?",
@@ -999,8 +999,8 @@
   "privacy": {
     "title": "Política de privacidad",
     "updated": "Última actualización: 11 de agosto de 2026",
-    "intro": "BedReady es un proyecto independiente que ayuda a los makers a convertir y compartir archivos de impresión 3D para cualquier impresora — empezó con la Snapmaker U1 y hoy cubre todas las impresoras que reconoce nuestro verificador de archivos. Esta política cubre tanto el sitio web (bedready.io) como la extensión de navegador de BedReady (Chrome, Firefox y Safari). Procuramos recopilar lo mínimo posible y nunca vendemos tus datos.",
-    "extTitle": "La extensión de Chrome",
+    "intro": "BedReady es un proyecto independiente que ayuda a los makers a convertir y compartir archivos de impresión 3D para cualquier impresora — empezó con la Snapmaker U1 y hoy cubre todas las impresoras que reconoce nuestro verificador de archivos. Esta política cubre tanto el sitio web (bedready.io) como la extensión de navegador de BedReady (Chrome, Edge, Firefox y Safari). Procuramos recopilar lo mínimo posible y nunca vendemos tus datos.",
+    "extTitle": "La extensión de navegador",
     "extIntro": "La extensión no recopila datos ni envía nada a ningún servidor. La conversión ocurre por completo en tu navegador — tus archivos nunca se suben. Los permisos se usan solo para la única función (convertir una .3mf descargada para la Snapmaker U1):",
     "extBullets": [
       "downloads — para leer la .3mf que descargas y guardar el archivo convertido de vuelta en tu dispositivo.",
@@ -1030,7 +1030,7 @@
     "intro": "Suelta un .3mf multicolor y obtén un archivo listo para la Snapmaker U1 — colores, perfil y torre de purga resueltos. Gratis, en tu navegador, sin subir nada.",
     "ctaConvert": "Convertir un archivo — gratis",
     "ctaBrowse": "Explorar MakerRun",
-    "note": "Funciona por completo en tu dispositivo. También como extensión de Chrome y en 7 idiomas.",
+    "note": "Funciona por completo en tu dispositivo. También como extensión de navegador (Chrome, Edge, Firefox, Safari) y en 7 idiomas.",
     "groups": {
       "slicers": {
         "title": "Funciona con cualquier laminador",

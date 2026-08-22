@@ -4,7 +4,7 @@
     "converter": "コンバーター",
     "app": "デスクトップアプリ",
     "share": "ファイルを共有",
-    "extension": "Chrome 拡張機能",
+    "extension": "ブラウザ拡張機能",
     "help": "ヘルプ & FAQ",
     "profile": "プロフィール",
     "notifications": "通知",
@@ -24,7 +24,7 @@
     "tagline": "設計から機種に縛られない。",
     "converter": "無料 3MF コンバーター",
     "library": "ライブラリ",
-    "extension": "Chrome 拡張機能",
+    "extension": "ブラウザ拡張機能",
     "help": "ヘルプ & FAQ",
     "licenses": "ライセンス",
     "privacy": "プライバシー",
@@ -120,7 +120,7 @@
     "title": "どんな .3mf も U1 対応に",
     "intro": "MakerWorld、Bambu Studio、PrusaSlicer、Orca、Creality Print の .3mf をドロップすると、U1 対応ファイルが得られます。外部のプロファイルを本物の Snapmaker U1 プロファイルに置き換え、ペイントされたマルチカラーを U1 の 4 スロットに割り当て、色はそのまま保持します。すべてブラウザ内で実行され、何もアップロードされません。",
     "livePreview": "· ダウンロード前にカラーのライブプレビュー",
-    "tip": "ヒント：<link>Chrome 拡張機能</link>を使えば、MakerWorld/Printables のダウンロードページで直接できます。",
+    "tip": "ヒント：<link>ブラウザ拡張機能</link>を使えば、MakerWorld/Printables のダウンロードページで直接できます。",
     "settingsTitle": "U1 印刷設定",
     "keepSettings": "作者の設定を維持",
     "useTested": "テスト済み U1 プロファイルを使用",
@@ -477,7 +477,7 @@
         ]
       },
       {
-        "title": "Chrome 拡張機能",
+        "title": "ブラウザ拡張機能",
         "items": [
           {
             "q": "ブラウザ拡張機能はありますか？",
@@ -999,8 +999,8 @@
   "privacy": {
     "title": "プライバシーポリシー",
     "updated": "最終更新：2026 年 8 月 11 日",
-    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Firefox、Safari）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
-    "extTitle": "Chrome 拡張機能",
+    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Edge、Firefox、Safari）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
+    "extTitle": "ブラウザ拡張機能",
     "extIntro": "拡張機能はデータを一切収集せず、いかなるサーバーにも何も送信しません。変換は完全にブラウザ内で行われ、ファイルがアップロードされることはありません。権限は唯一の機能（ダウンロードした .3mf を Snapmaker U1 向けに変換）のためだけに使われます：",
     "extBullets": [
       "downloads — ダウンロード中の .3mf を読み取り、変換後のファイルをあなたのデバイスに保存するため。",
@@ -1030,7 +1030,7 @@
     "intro": "マルチカラーの .3mf をドロップするだけで、Snapmaker U1 対応ファイルに — 色・プロファイル・プライムタワーをすべて処理。無料、ブラウザ内、何もアップロードしません。",
     "ctaConvert": "ファイルを変換 — 無料",
     "ctaBrowse": "MakerRun を見る",
-    "note": "完全にお使いのデバイス上で動作。Chrome 拡張機能としても、7 言語でも利用できます。",
+    "note": "完全にお使いのデバイス上で動作。ブラウザ拡張機能（Chrome・Edge・Firefox・Safari）としても、7 言語でも利用できます。",
     "groups": {
       "slicers": {
         "title": "どのスライサーにも対応",
