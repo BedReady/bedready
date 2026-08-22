@@ -169,7 +169,32 @@ test("a notice uses the primitive, so its three states look like three states", 
   assert.deepEqual(hits, [], "use .notice with .notice-info / .notice-warn / .notice-ok:\n  " + hits.join("\n  "));
 });
 
-test("every converter page uses the shell, so the logo and the headline share a left edge", () => {
+/** The tokens of a className string, so a rule matches `page-read` without also matching
+ *  `console-page-read` — \b would, because a hyphen is not a word character. */
+function classes(attr: string): string[] {
+  return attr.trim().split(/\s+/);
+}
+
+function usesPageRead(src: string): boolean {
+  return [...src.matchAll(/className="([^"]*)"/g)].some((m) => classes(m[1]).includes("page-read"));
+}
+
+test("there are only two page measures, and both are named for what they hold", () => {
+  // The names are the point. `.shell` and `.breakout` said where the rule sat in the stylesheet,
+  // not what it was for, and the converter site and the library site had drifted into calling the
+  // same 48rem measure by different names — so copy moved between the two repositories arrived
+  // wearing a class that did not exist. `page-*` is the shared vocabulary: page-read holds body
+  // copy, page-breakout escapes it for a figure. A third measure is a design decision, so it
+  // should cost a line in this list rather than appearing quietly in a diff.
+  const css = readFileSync("src/app/globals.css", "utf8");
+  const declared = [...css.matchAll(/^\.(page-[a-z-]+)\s*\{([^}]*)\}/gm)]
+    .filter((m) => /(^|[\s;])(max-)?width\s*:/.test(m[2]))
+    .map((m) => m[1])
+    .sort();
+  assert.deepEqual(declared, ["page-breakout", "page-read"]);
+});
+
+test("every converter page uses .page-read, so the logo and the headline share a left edge", () => {
   // They did not. The header and footer were `max-w-5xl` (1024) while pages were 2xl, 3xl, 4xl or
   // 5xl depending on the route — on /convert that put the logo's left edge at 152px and the first
   // line of body copy at 328px, with nothing bridging the 176px between them.
@@ -178,21 +203,28 @@ test("every converter page uses the shell, so the logo and the headline share a 
   for (const f of walk(group, ".tsx")) {
     if (!f.endsWith("/page.tsx")) continue;
     const src = readFileSync(f, "utf8");
-    const main = src.match(/<main[^>]*className="([^"]*)"/);
-    if (!main) continue;
-    if (!/\bshell\b/.test(main[1])) hits.push(`${f} — <main className="${main[1]}">`);
+    // Both spellings: `className="…"` and `className={`…`}`. NotFoundBody is written the second
+    // way, so a rule that only reads the first would have called a page compliant by not reading
+    // it at all — and a page with no <main> at all is a miss, not a pass, hence no `continue`.
+    const main = src.match(/<main[^>]*className=(?:"([^"]*)"|\{`([^`$]*))/);
+    if (!main) {
+      hits.push(`${f} — no <main className> this rule can read`);
+      continue;
+    }
+    const cls = main[1] ?? main[2];
+    if (!classes(cls).includes("page-read")) hits.push(`${f} — <main className="${cls}">`);
   }
-  assert.deepEqual(hits, [], "these set their own width instead of using .shell:\n  " + hits.join("\n  "));
+  assert.deepEqual(hits, [], "these set their own width instead of using .page-read:\n  " + hits.join("\n  "));
 });
 
-test("the shell is also what the chrome uses, or the pages align with nothing", () => {
+test(".page-read is also what the chrome uses, or the pages align with nothing", () => {
   // Half a fix is the failure mode here: every page could agree with every other page and still
   // disagree with the header above them all.
   // No SiteHeader here: that component is the library's and the carve left it behind. This
   // repository serves one product, so the converter's header and the shared footer are the chrome.
   for (const f of ["src/components/ConverterHeader.tsx", "src/components/SiteFooter.tsx"]) {
     const src = readFileSync(f, "utf8");
-    assert.ok(/className="shell/.test(src), `${f} does not use .shell`);
+    assert.ok(usesPageRead(src), `${f} does not use .page-read`);
     assert.ok(
       !/\bmax-w-\dxl\b/.test(src.replace(/^\s*(\/\/|\*|\/\*).*$/gm, "")),
       `${f} still sets its own container width`,

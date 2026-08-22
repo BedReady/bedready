@@ -1065,7 +1065,7 @@ export default function ConvertPage() {
   };
 
   return (
-    <main className="shell py-10">
+    <main className="page-read py-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

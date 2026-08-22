@@ -83,7 +83,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
     // max-w-5xl, not 4xl: a fifth competitor column pushes the table past a 4xl container, and a
     // comparison table that needs sideways scrolling on a desktop is a comparison nobody compares.
     // The prose below stays at max-w-2xl, so only the table uses the extra width.
-    <main className="shell py-12">
+    <main className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Snapmaker U1 .3mf converters, <span className="brand-text">compared</span>
       </h1>
@@ -144,7 +144,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
       </section>
 
       {/* Wider than the measure, so it widens about the same centre rather than moving the page. */}
-      <div className="breakout mt-8 overflow-x-auto">
+      <div className="page-breakout mt-8 overflow-x-auto">
         <table className="w-full min-w-[58rem] border-collapse">
           <thead>
             <tr className="border-b border-line text-left">

@@ -62,7 +62,7 @@ export default function MixerPage() {
   }, [bases]);
 
   return (
-    <main className="shell py-10">
+    <main className="page-read py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">Full Spectrum color mixer</h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
         See what colors your 4 loaded filaments can make on the Snapmaker U1. Set your filaments below
@@ -97,7 +97,7 @@ export default function MixerPage() {
 
       {/* Blends */}
       {/* The swatch ramps are the page; they get the wider canvas, the copy above keeps the measure. */}
-      <div className="breakout mt-8 space-y-4">
+      <div className="page-breakout mt-8 space-y-4">
         {rows.map((r, i) => (
           <div key={i}>
             <p className="mb-1.5 text-xs font-medium text-fg-muted">
