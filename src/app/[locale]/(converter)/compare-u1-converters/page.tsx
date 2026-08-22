@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
+import { SOURCE_REPO_URL } from "@/lib/links";
 
 // Honest comparison against the other Snapmaker U1 .3mf converters. Targets the searches a U1 owner
 // actually makes ("bl2u1 alternative", "U1 Forge vs", "best U1 3mf converter").
@@ -47,7 +48,7 @@ const ROWS: Row[] = [
   },
   { label: "Keeps painted multicolor", bedready: "Yes", bl2u1: "Yes", forge: "Yes", b2o: "Yes" },
   {
-    label: "More than 4 colours",
+    label: "More than 4 colors",
     bedready: "Full Spectrum mixing, M600 swap pauses, or band-swap",
     bl2u1: "Pick 4, the rest are dropped",
     forge: "Not documented",
@@ -65,7 +66,7 @@ const ROWS: Row[] = [
   { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality", bl2u1: "No", forge: "No", b2o: "No" },
   { label: "STL ⇄ 3MF", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "No" },
   { label: "Batch convert a folder", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "Ko-fi supporter tier only" },
-  { label: "Live coloured 3D preview", bedready: "Yes, before you download", bl2u1: "No", forge: "Not documented", b2o: "Not documented" },
+  { label: "Live colored 3D preview", bedready: "Yes, before you download", bl2u1: "No", forge: "Not documented", b2o: "Not documented" },
   { label: "Installs Orca filament profiles", bedready: "Yes", bl2u1: "No", forge: "No", b2o: "No — but it relabels presets to Generic or Snapmaker" },
   { label: "Browser extension", bedready: "Chrome + Firefox", bl2u1: "Separate extension exists", forge: "No", b2o: "No" },
   { label: "Desktop app", bedready: "macOS, Windows, Linux", bl2u1: "No", forge: "No", b2o: "No" },
@@ -82,7 +83,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
     // max-w-5xl, not 4xl: a fifth competitor column pushes the table past a 4xl container, and a
     // comparison table that needs sideways scrolling on a desktop is a comparison nobody compares.
     // The prose below stays at max-w-2xl, so only the table uses the extra width.
-    <main className="mx-auto max-w-5xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Snapmaker U1 .3mf converters, <span className="brand-text">compared</span>
       </h1>
@@ -110,7 +111,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         </p>
         <p className="mt-2 text-sm text-fg-muted">
           The tools below exist for what falls outside that: sources other than Bambu and MakerWorld,
-          more than 4 colours, batch work, STL, or retargeting a U1 file to another printer.
+          more than 4 colors, batch work, STL, or retargeting a U1 file to another printer.
         </p>
       </section>
 
@@ -142,12 +143,15 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         </p>
       </section>
 
-      <div className="mt-8 overflow-x-auto">
+      {/* Wider than the measure, so it widens about the same centre rather than moving the page. */}
+      <div className="breakout mt-8 overflow-x-auto">
         <table className="w-full min-w-[58rem] border-collapse">
           <thead>
             <tr className="border-b border-line text-left">
               <th className={`${cell} font-medium text-fg-muted`}></th>
-              <th className={`${cell} font-semibold text-fg`}>BedReady</th>
+              {/* Anchored, because it is the column the page is about. It had no emphasis of any
+                  kind — same weight, same ground — in a table this site commissioned. */}
+              <th className={`${cell} bg-violet-400/10 font-semibold text-fg`}>BedReady</th>
               <th className={`${cell} font-semibold text-fg-muted`}>bl2u1</th>
               <th className={`${cell} font-semibold text-fg-muted`}>U1 Forge</th>
               <th className={`${cell} font-semibold text-fg-muted`}>bambu2orca</th>
@@ -160,7 +164,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
                   {r.label}
                   {r.note && <span className="mt-1 block text-xs font-normal text-fg-subtle">{r.note}</span>}
                 </th>
-                <td className={`${cell} text-fg`}>{r.bedready}</td>
+                <td className={`${cell} bg-violet-400/[0.06] text-fg`}>{r.bedready}</td>
                 <td className={`${cell} text-fg-muted`}>{r.bl2u1}</td>
                 <td className={`${cell} text-fg-muted`}>{r.forge}</td>
                 <td className={`${cell} text-fg-muted`}>{r.b2o}</td>
@@ -175,12 +179,17 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         <h2 className="font-semibold text-fg">When to use one of the others instead</h2>
         <ul className="mt-3 space-y-2 text-sm text-fg-muted">
           <li>
-            <strong className="text-fg">U1 Forge</strong> has modes BedReady doesn&apos;t: painting colour
+            <strong className="text-fg">U1 Forge</strong> has modes BedReady doesn&apos;t: painting color
             regions in the browser, applying surface textures, and cutting models. If you want to
-            <em> author</em> colour rather than convert someone else&apos;s file, it does things I don&apos;t.
+            <em> author</em> color rather than convert someone else&apos;s file, it does things I don&apos;t.
           </li>
           <li>
-            <strong className="text-fg">bl2u1</strong> is open source (GPL-3.0) and self-hostable. If you
+            <strong className="text-fg">bl2u1</strong> is open source (GPL-3.0) and self-hostable — as
+            is BedReady, at{" "}
+            <a href={SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer" className="text-violet-300 hover:underline">
+              github.com/BedReady/bedready
+            </a>
+            . If you
             want to run the conversion on your own infrastructure, or read exactly what it does to your
             file, that&apos;s a real advantage.
           </li>
@@ -203,12 +212,12 @@ export default async function CompareConvertersPage({ params }: { params: Promis
             that job and it&apos;s open source (GPL-3.0).
           </li>
           <li>
-            <strong className="text-fg">Full Spectrum colour mixing</strong> is no longer something only I
-            do. Snapmaker Orca has 2–3 colour mixing natively, and there are community tools —{" "}
+            <strong className="text-fg">Full Spectrum color mixing</strong> is no longer something only I
+            do. Snapmaker Orca has 2–3 color mixing natively, and there are community tools —{" "}
             <a href="https://github.com/halloworld007/snapmaker-u1-fullspectrum-helper" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">fullspectrum-helper</a>,{" "}
             <a href="https://github.com/dlgambill/u1hub" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">u1hub</a>{" "}
-            — that plan mixes too. Mine does more (arbitrary painted colours mapped onto 4 heads, a custom
-            CMYK basis, per-colour overrides), but &ldquo;we do Full Spectrum&rdquo; on its own is no longer
+            — that plan mixes too. Mine does more (arbitrary painted colors mapped onto 4 heads, a custom
+            CMYK basis, per-color overrides), but &ldquo;we do Full Spectrum&rdquo; on its own is no longer
             a reason to pick this over those.
           </li>
           <li>
@@ -221,14 +230,14 @@ export default async function CompareConvertersPage({ params }: { params: Promis
       <section className="mt-10 rounded-lg border border-line bg-surface-2 px-6 py-8 text-center">
         <p className="font-medium text-fg">Try it on a file that&apos;s given you trouble</p>
         <p className="mx-auto mt-1 max-w-lg text-sm text-fg-muted">
-          Nothing uploads, there&apos;s no account, and you see the colours before you download. If it
+          Nothing uploads, there&apos;s no account, and you see the colors before you download. If it
           gets your file wrong, send it to me — that&apos;s the most useful thing anyone can do.
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-3">
           <Link href="/convert" className="btn-primary btn-md">
             Open the converter
           </Link>
-          <Link href="/verified" className="rounded-md border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition hover:bg-surface-3">
+          <Link href="/verified" className="rounded-lg border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition hover:bg-surface-3">
             See files verified on a real U1
           </Link>
         </div>

@@ -53,7 +53,7 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
     : [];
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
+    <main className="shell py-12">
       <p className="text-sm">
         <Link href="/orca-filaments" className="text-violet-300 hover:underline">← All filament profiles</Link>
         {r.kind === "combo" && (

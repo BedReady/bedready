@@ -35,12 +35,24 @@ export default async function OrcaFilamentsPage({ params }: { params: Promise<{ 
   ];
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("heading")}</h1>
       <p className="mt-4 max-w-2xl text-lg text-fg-muted">{t("intro")}</p>
 
+      <OrcaFilaments />
+
+      <OrcaFilaments />
+
+      {/* ── THE TAG CLOUD MOVED BELOW THE TOOL ────────────────────────────────────────────────────
+          Roughly sixty brand chips and twenty material chips opened this page, pushing the search
+          field and its two filter dropdowns about 560px down — and duplicating what those dropdowns
+          already do, since every chip is also an option in "All brands" or "All materials".
+
+          They are not decoration and they are not deleted: each one is an internal link to a real
+          landing page, and that is worth keeping. It is worth keeping *after* the thing somebody
+          came here to use. */}
       {brands.length > 0 && (
-        <div className="mt-6 flex flex-wrap items-center gap-2">
+        <div className="mt-12 flex flex-wrap items-center gap-2">
           <span className="eyebrow">{t("popularBrands")}</span>
           {brands.map((b) => (
             <Link
@@ -67,8 +79,6 @@ export default async function OrcaFilamentsPage({ params }: { params: Promise<{ 
           ))}
         </div>
       )}
-
-      <OrcaFilaments />
 
       <h2 className="mt-14 text-xl font-semibold tracking-tight text-fg">{t("faqHeading")}</h2>
       <div className="mt-4 space-y-5">

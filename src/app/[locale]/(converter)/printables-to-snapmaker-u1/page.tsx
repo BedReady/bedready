@@ -13,15 +13,15 @@ export const metadata = {
 const faq = [
   {
     q: "STL or .3mf — which should I download from Printables?",
-    a: "Download the .3mf project if the model is multicolor. A plain STL is only geometry — it carries no colour painting, so there's nothing to preserve. The .3mf project file holds the paint data and slicer settings; that's the file to run through BedReady to keep the colours.",
+    a: "Download the .3mf project if the model is multicolor. A plain STL is only geometry — it carries no color painting, so there's nothing to preserve. The .3mf project file holds the paint data and slicer settings; that's the file to run through BedReady to keep the colors.",
   },
   {
     q: "Does it keep the multi-material colors from the project file?",
-    a: "Yes. Printables multicolor projects are usually sliced in PrusaSlicer or Bambu Studio with painted MMU/AMS colour data. BedReady reads that painting and maps every painted face onto the U1's 4 slots, so text, logos and detail print in colour instead of dropping to grey geometry.",
+    a: "Yes. Printables multicolor projects are usually sliced in PrusaSlicer or Bambu Studio with painted MMU/AMS color data. BedReady reads that painting and maps every painted face onto the U1's 4 slots, so text, logos and detail print in color instead of dropping to gray geometry.",
   },
   {
     q: "Why doesn't the Printables .3mf just open on the U1?",
-    a: "Those project files are sliced for another printer — a Prusa or Bambu machine — and carry that printer's profile and paint format. Snapmaker Orca only trusts its own native projects, so it loads the foreign file with the wrong profile and often ignores the colours. BedReady rewrites the file so Orca loads it as a native U1 project.",
+    a: "Those project files are sliced for another printer — a Prusa or Bambu machine — and carry that printer's profile and paint format. Snapmaker Orca only trusts its own native projects, so it loads the foreign file with the wrong profile and often ignores the colors. BedReady rewrites the file so Orca loads it as a native U1 project.",
   },
   {
     q: "Is the model uploaded anywhere?",
@@ -29,7 +29,7 @@ const faq = [
   },
   {
     q: "Can I redistribute the converted file?",
-    a: "That's up to the model's licence on Printables — always check the creator's terms before sharing a remix or a converted copy. BedReady only re-targets the file for your U1; it doesn't change or grant any rights to the model itself. See our own terms on the licenses page.",
+    a: "That's up to the model's license on Printables — always check the creator's terms before sharing a remix or a converted copy. BedReady only re-targets the file for your U1; it doesn't change or grant any rights to the model itself. See our own terms on the licenses page.",
   },
 ];
 
@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Print Printables models on the Snapmaker U1
       </h1>
@@ -52,7 +52,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <Link href="/convert" className="btn-primary btn-lg">
           Convert a file — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -61,11 +61,11 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <h2 className="mt-12 text-xl font-semibold tracking-tight text-fg">The problem</h2>
       <p className="mt-2 text-fg-muted">
         Printables hosts two very different downloads: plain STL geometry and full <code>.3mf</code> project
-        files. For a multicolor model you want the <strong>.3mf project</strong> — the STL throws the colours
+        files. For a multicolor model you want the <strong>.3mf project</strong> — the STL throws the colors
         away. But those projects are almost always sliced in PrusaSlicer or Bambu Studio for a different
         printer, so they arrive with a foreign printer profile and paint data Snapmaker Orca won&apos;t trust.
-        Open one on the U1 and you get the wrong profile and the colours mapped to the wrong slots — or dropped
-        to plain grey geometry.
+        Open one on the U1 and you get the wrong profile and the colors mapped to the wrong slots — or dropped
+        to plain gray geometry.
       </p>
 
       <h2 className="mt-8 text-xl font-semibold tracking-tight text-fg">What BedReady does in one click</h2>

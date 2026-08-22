@@ -7,6 +7,7 @@ import { quantize, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh
 import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { download } from "@/lib/convert";
 import type { MeshData } from "@/lib/paint";
+import NoticeIcon from "@/components/NoticeIcon";
 
 // three.js only loads once a preview mesh exists (matches the converter's on-demand PaintPreview).
 const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
@@ -228,7 +229,7 @@ export default function ImagePage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="shell py-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg">
         {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wide text-violet-300">{t("beta")}</span>
       </h1>
@@ -241,16 +242,24 @@ export default function ImagePage() {
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={(e) => { e.preventDefault(); setDragOver(false); onFile(e.dataTransfer.files?.[0]); }}
-        className={`mt-6 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 text-center transition ${dragOver ? "border-violet-400/70 bg-violet-400/10" : "border-line bg-surface-2 hover:bg-surface-3"}`}
+        className={`mt-6 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition ${dragOver ? "border-violet-400 bg-violet-400/10" : "border-line hover:border-violet-400/50 hover:bg-surface-2"}`}
       >
         <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
-        <span className="text-sm font-medium text-fg">{fileName || t("dropzone")}</span>
-        <span className="mt-1 text-xs text-fg-subtle">{t("dropzoneHint")}</span>
+        <span className={`flex h-14 w-14 items-center justify-center rounded-full transition ${dragOver || fileName ? "brand-gradient text-white" : "bg-surface-3 text-fg-muted"}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
+            <path d="M12 16V4" />
+            <path d="M8 8l4-4 4 4" />
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+          </svg>
+        </span>
+        <span className="font-medium text-fg">{fileName || t("dropzone")}</span>
+        <span className="text-sm text-fg-subtle">{t("dropzoneHint")}</span>
       </label>
 
       {message && (
-        <p className={`mt-4 rounded-md border px-4 py-3 text-sm ${status === "error" ? "border-red-500/30 bg-red-500/10 text-red-200" : status === "done" ? "border-green-500/30 bg-green-500/10 text-green-100" : "border-line bg-surface-2 text-fg-muted"}`}>
-          {message}
+        <p className={`notice mt-4 ${status === "error" ? "notice-warn" : status === "done" ? "notice-ok" : "notice-info"}`}>
+          <NoticeIcon level={status === "error" ? "warn" : status === "done" ? "ok" : "info"} />
+          <span>{message}</span>
         </p>
       )}
 
@@ -327,7 +336,7 @@ export default function ImagePage() {
           {/* Actions */}
           {/* Relief is its own output, so it gets its own control rather than changing what the
               existing buttons do. */}
-          <label className="mt-5 flex items-start gap-2 rounded-md border border-violet-400/25 bg-violet-400/[0.06] p-4 text-sm text-fg-muted">
+          <label className="mt-5 flex items-start gap-2 rounded-lg border border-violet-400/25 bg-violet-400/[0.06] p-4 text-sm text-fg-muted">
             <input
               type="checkbox"
               checked={hueforge}
@@ -342,7 +351,7 @@ export default function ImagePage() {
           </label>
 
           {hfQuality && (
-            <div className="mt-3 rounded-md border border-line bg-surface-2 px-4 py-3 text-xs text-fg-muted">
+            <div className="mt-3 rounded-lg border border-line bg-surface-2 px-4 py-3 text-xs text-fg-muted">
               <p>
                 {t("hfQuality", { deltaE: hfQuality.deltaE.toFixed(1), colors: hfQuality.colors })}{" "}
                 {hfQuality.automatic ? t("hfAutomatic") : t("hfReload")}
@@ -384,7 +393,7 @@ export default function ImagePage() {
             <button
               onClick={() => makeAndDownload(false)}
               disabled={status === "working"}
-              className="rounded-md border border-line bg-surface-2 px-5 py-3 text-sm font-medium text-fg transition hover:bg-surface-3 disabled:opacity-60"
+              className="rounded-lg border border-line bg-surface-2 px-5 py-3 text-sm font-medium text-fg transition hover:bg-surface-3 disabled:opacity-60"
             >
               {t("downloadPainted")}
             </button>

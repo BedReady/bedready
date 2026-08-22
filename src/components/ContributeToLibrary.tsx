@@ -98,7 +98,7 @@ export default function ContributeToLibrary() {
         <Link
           href="/upload"
           onClick={() => track("convert_to_library", { ...acquisitionProps(), via: "share" })}
-          className="btn-primary"
+          className="btn-primary btn-md"
         >
           {t("contributeShare")}
         </Link>

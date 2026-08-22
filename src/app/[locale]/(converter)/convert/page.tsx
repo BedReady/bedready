@@ -32,6 +32,9 @@ import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { MACHINES, RETARGET_MACHINES, configFamily, u1NozzleVariant, U1_NOZZLES, U1_TESTED_NOZZLE } from "@/lib/targets";
 import { stlTo3MF } from "@/lib/stl";
 import ConvertPresets, { type ConvertSettings } from "@/components/ConvertPresets";
+import { SOURCE_REPO_URL } from "@/lib/links";
+import NoticeIcon from "@/components/NoticeIcon";
+import BeforeAfter from "@/components/BeforeAfter";
 
 // Fire-and-forget global "converter used" counter. Goes through our own rate-limited route rather
 // than calling the RPC directly, so `bump_counter` can be locked down to the service role — the
@@ -66,7 +69,7 @@ import ConvertCount from "@/components/ConvertCount";
 // the /convert initial bundle. ssr:false is fine: this page is client-only anyway.
 const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
   ssr: false,
-  loading: () => <div className="mt-4 aspect-square w-full animate-pulse rounded-md border border-line bg-surface-2" />,
+  loading: () => <div className="mt-4 aspect-square w-full animate-pulse rounded-lg border border-line bg-surface-2" />,
 });
 import ShareBedReady from "@/components/ShareBedReady";
 import ContributeToLibrary from "@/components/ContributeToLibrary";
@@ -175,6 +178,14 @@ export default function ConvertPage() {
   const [removedCount, setRemovedCount] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [copied, setCopied] = useState(false);
+  // ── THE DELIVERED FILE ────────────────────────────────────────────────────────────────────────
+  //
+  // `download()` fires before the done screen renders — `ContributeToLibrary`'s header says so, and
+  // uses it to argue that every ask on that screen is made of someone already leaving. The other
+  // consequence was never handled: the screen said "Done" and then never mentioned the file again.
+  // No name, no size, no way to get it a second time. A blocked download, a mis-clicked Save dialog
+  // or a second monitor was an unrecoverable state on a page whose whole job is to hand you a file.
+  const [result, setResult] = useState<{ blob: Blob; name: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   // Batch mode: convert many .3mf → U1 at once, download a ZIP. Fully isolated from the single-file flow
   // (its own state) so it never touches the review/done screen or the palette editor.
@@ -277,7 +288,22 @@ export default function ConvertPage() {
     setMixedLayerHeight(0);
     setRemovedCount(0);
     setCopied(false);
+    setResult(null);
     if (inputRef.current) inputRef.current.value = "";
+  }
+
+  /**
+   * Hand a finished file to the visitor, and remember that we did.
+   *
+   * Every path that produces a download goes through here rather than calling `download()` directly,
+   * for the same reason `convert-handoff.ts` states its own rule in its header: there are six such
+   * paths, and the one that mattered was the one that forgot. Recording the result is what lets the
+   * done screen name the file, show its size, and offer it a second time — none of which it could do
+   * while the bytes existed only inside the function that made them.
+   */
+  function deliver(blob: Blob, name: string) {
+    setResult({ blob, name });
+    download(blob, name);
   }
 
   // Plain-text version of the "what changed" report — for the copy-summary button (share / keep a record).
@@ -521,7 +547,7 @@ export default function ConvertPage() {
       const bytes = new Uint8Array(await stlFile.arrayBuffer());
       const out = stlTo3MF(bytes, base);
       const wrapped = new Blob([out as BlobPart], { type: "application/octet-stream" });
-      download(wrapped, `${base}.3mf`);
+      deliver(wrapped, `${base}.3mf`);
       // A clean core-spec 3MF — the library's preferred format, and the third path found (by
       // convert-handoff-guard.test.mts) to produce one file without staging it.
       stageConvertedFile(new File([wrapped], `${base}.3mf`, { type: "model/3mf" }));
@@ -684,7 +710,7 @@ export default function ConvertPage() {
       setRemovedCount(res.removed.length);
       const suffix = target === "u1" ? ".u1.3mf" : target === "generic" ? ".generic.3mf" : isRetarget ? `.${target}.3mf` : ".import.3mf";
       const outName = file.name.replace(/\.3mf$/i, "") + suffix;
-      download(res.blob, outName);
+      deliver(res.blob, outName);
       // Hand the same bytes to /upload, so "Share it" on the done screen arrives with the file
       // already attached instead of an empty form and a trip to the downloads folder. In memory
       // only, cleared when read — see convert-handoff.ts.
@@ -803,7 +829,7 @@ export default function ConvertPage() {
         const r = await cleanThreeMFAsync(new File([subBytes as BlobPart], `${groups[i].name}.3mf`), "u1", { mode: profileMode, swapPauses, fullSpectrum });
         out.push({ name: `${base}_${groups[i].name}.u1.3mf`, bytes: new Uint8Array(await r.blob.arrayBuffer()) });
       }
-      download(new Blob([zipFiles(out) as BlobPart]), `${base}.u1.parts.zip`);
+      deliver(new Blob([zipFiles(out) as BlobPart]), `${base}.u1.parts.zip`);
       setMessage(t("splitDone", { count: out.length }));
       track("convert_success", { ...acquisitionProps(), mode: "u1", profile: `split-${splitScope}`, colors: mesh.palette.length, reduced: true });
       bumpConvertCount();
@@ -849,7 +875,7 @@ export default function ConvertPage() {
       return;
     }
     setBatchProgress(1);
-    download(new Blob([zipFiles(out) as BlobPart]), "bedready-batch.u1.zip");
+    deliver(new Blob([zipFiles(out) as BlobPart]), "bedready-batch.u1.zip");
     track("convert_success", { ...acquisitionProps(), mode: "u1", profile: "batch", colors: 0, reduced: false });
     setBatchState("done");
     setBatchMsg(
@@ -883,7 +909,7 @@ export default function ConvertPage() {
       }
       const blob = await res.blob();
       const serverName = file.name.replace(/\.3mf$/i, "") + ".u1.3mf";
-      download(blob, serverName);
+      deliver(blob, serverName);
       // Stage it, exactly as the in-browser path does. convert-handoff's own contract is "called the
       // moment a conversion produces A SINGLE DOWNLOADABLE FILE", and this produces the same artifact
       // the main path does — it just made it on the server because the file was too big for the tab.
@@ -913,7 +939,7 @@ export default function ConvertPage() {
       const { threeMFToSTL } = await import("@/lib/convert-mesh");
       const stlBlob = await threeMFToSTL(file);
       const stlName = file.name.replace(/\.3mf$/i, "") + ".stl";
-      download(stlBlob, stlName);
+      deliver(stlBlob, stlName);
       // `design_files.file_type` accepts stl and /upload takes it, so this is a stageable single file
       // like the two above. The ZIP-producing paths (split, batch) are deliberately NOT staged: they
       // are archives of many parts, not one model, and /upload has nothing to do with them.
@@ -946,6 +972,9 @@ export default function ConvertPage() {
   // Overhang advisory: recommend supports only when the geometry actually has steep unsupported faces.
   // The converter keeps the source file's own support setting (preserve mode) — this just tells the user
   // whether this particular model is likely to need them. Skipped when the preview mesh is unavailable.
+  // A file is in play: the page stops being an argument for the converter and becomes the converter.
+  const busy = !!(file || stlFile);
+
   const overhang = useMemo(
     () => (mesh && !mesh.skipped && mesh.positions.length >= 9 ? overhangReport(mesh.positions) : null),
     [mesh],
@@ -1041,7 +1070,7 @@ export default function ConvertPage() {
   };
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10">
+    <main className="shell py-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -1058,53 +1087,29 @@ export default function ConvertPage() {
           }),
         }}
       />
-      <ConvertCount className="mb-3 font-mono text-xs text-fg-muted" />
-      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("title")}</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">{t("intro")}</p>
+      {/* ── THE PITCH, AND WHEN IT STOPS BEING THE PITCH ──────────────────────────────────────────
+          Measured on the live site: the drop zone's top edge sat at 748px on a 1280×720 desktop and
+          1076px on a 390×844 phone — a screen and a half of scrolling, past an eyebrow, a headline,
+          a seven-line lede, a privacy block, a chip row, three tips and three numbered steps, before
+          the tool appeared at all. Every one of those blocks argues that the converter is
+          trustworthy and capable. None of them is as persuasive as the converter being visible.
 
-      <div className="mt-6 border-t border-line pt-4">
-        <p className="eyebrow">{t("privacyBadge")}</p>
-        <p className="mt-1.5 text-sm text-fg-muted">{t("privacyDetail")}</p>
-      </div>
-
-      {/* Supported sources — trust strip. Brand names, not translated. */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className="eyebrow">{t("worksWithLabel")}</span>
-        {["MakerWorld", "Bambu Studio", "PrusaSlicer", "OrcaSlicer", "Creality Print"].map((s) => (
-          <span key={s} className="rounded-full border border-line px-2.5 py-0.5 text-xs text-fg-muted">
-            {s}
-          </span>
-        ))}
-      </div>
-
-      <div className="mt-5 space-y-1.5 border-t border-line pt-4 text-xs leading-relaxed text-fg-subtle">
-        <p>{t("livePreview")}</p>
-        <p>{t("targetsNote")}</p>
-        <p>
-          {t.rich("tip", {
-            link: (c) => (
-              <Link href="/extension" className="text-violet-300 hover:underline">{c}</Link>
-            ),
-          })}
-        </p>
-      </div>
-
-      {/* First-run "How it works" — only before a file is picked. */}
-      {/* Columns under a rule, matching the homepage's three-up — not three bordered boxes.
-          The numbering stays because this genuinely IS a sequence (drop → convert → open), which is
-          the only case where numbered markers carry information rather than decorate. It is a mono
-          ordinal now rather than a filled violet disc: violet is the action colour on this page and
-          the step numbers are not actions. */}
-      {status === "idle" && (
-        <ol className="mt-8 grid gap-8 border-t border-line pt-6 sm:grid-cols-3">
-          {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
-            <li key={i}>
-              <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step}</p>
-            </li>
-          ))}
-        </ol>
-      )}
+          So the argument now sits BELOW the thing it is arguing for, and disappears entirely once a
+          file is picked: after that the page is a tool, and the marketing above it is 750px the
+          visitor has already read and already acted on, in front of every subsequent adjustment. */}
+      {!busy && <ConvertCount className="mb-3 font-mono text-xs text-fg-muted" />}
+      <h1
+        className={
+          busy
+            ? "text-lg font-semibold tracking-tight text-fg"
+            : "text-3xl font-semibold tracking-tight text-fg sm:text-4xl"
+        }
+      >
+        {t("title")}
+      </h1>
+      {!busy && <p className="mt-3 text-base leading-relaxed text-fg-muted">{t("intro")}</p>}
+      {/* The claim, shown. See BeforeAfter for why it is drawn rather than photographed. */}
+      {!busy && <BeforeAfter />}
 
       <div
         role="button"
@@ -1127,7 +1132,7 @@ export default function ConvertPage() {
             inputRef.current?.click();
           }
         }}
-        className={`mt-8 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition focus:outline-none focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-400/40 ${
+        className={`mt-6 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition focus:outline-none focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-400/40 ${
           dragOver ? "border-violet-400 bg-violet-400/10" : "border-line hover:border-violet-400/50 hover:bg-surface-2"
         }`}
       >
@@ -1148,6 +1153,76 @@ export default function ConvertPage() {
         <input ref={inputRef} type="file" accept=".3mf,.stl" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
       </div>
 
+      {/* ── THE REASSURANCE, NOW BELOW THE ACTION ────────────────────────────────────────────────
+          Same blocks, same words, after the drop zone instead of in front of it. */}
+      {!busy && (
+        <>
+          <div className="mt-8 border-t border-line pt-4">
+            <p className="eyebrow">{t("privacyBadge")}</p>
+            <p className="mt-1.5 text-sm text-fg-muted">{t("privacyDetail")}</p>
+            {/* The evidence for the sentence above it. `COMPETITIVE-2026-08.md` §3.1 ranks "say
+                'nothing is uploaded' louder" as the highest-ratio item in that document;
+                `SPLIT-DECISION-2026-08.md` calls open source "the loudest available version of that,
+                because it is the only one a sceptic can verify". The repository went public and this
+                page never said so — while /compare-u1-converters linked four competitors' repos.
+
+                It also states the claim in the form the README states it, rather than the stronger
+                form this block used alone: there IS a server fallback, it is a button, and saying so
+                here costs nothing and is the difference between a claim and a checkable one. */}
+            <p className="mt-2 text-sm text-fg-subtle">
+              {t.rich("privacySource", {
+                link: (c) => (
+                  <a
+                    href={SOURCE_REPO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-violet-300 hover:underline"
+                  >
+                    {c}
+                  </a>
+                ),
+              })}
+            </p>
+          </div>
+
+          {/* Supported sources — trust strip. Brand names, not translated. */}
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <span className="eyebrow">{t("worksWithLabel")}</span>
+            {["MakerWorld", "Bambu Studio", "PrusaSlicer", "OrcaSlicer", "Creality Print"].map((n) => (
+              <span key={n} className="rounded-full border border-line px-2.5 py-0.5 text-xs text-fg-muted">
+                {n}
+              </span>
+            ))}
+          </div>
+
+          {/* Columns under a rule, matching the homepage's three-up — not three bordered boxes.
+              The numbering stays because this genuinely IS a sequence (drop → convert → open), which
+              is the only case where numbered markers carry information rather than decorate. It is a
+              mono ordinal now rather than a filled violet disc: violet is the action colour on this
+              page and the step numbers are not actions. */}
+          <ol className="mt-8 grid gap-8 border-t border-line pt-6 sm:grid-cols-3">
+            {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
+              <li key={i}>
+                <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step}</p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-8 space-y-1.5 border-t border-line pt-4 text-sm leading-relaxed text-fg-subtle">
+            <p>{t("livePreview")}</p>
+            <p>{t("targetsNote")}</p>
+            <p>
+              {t.rich("tip", {
+                link: (c) => (
+                  <Link href="/extension" className="text-violet-300 hover:underline">{c}</Link>
+                ),
+              })}
+            </p>
+          </div>
+        </>
+      )}
+
       {/* Batch convert — many .3mf → U1 at once, back as a ZIP. Idle only; single-file flow is untouched. */}
       {status === "idle" && !file && !stlFile && (
         <section className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
@@ -1159,7 +1234,7 @@ export default function ConvertPage() {
             <button
               onClick={() => batchRef.current?.click()}
               disabled={batchState === "working"}
-              className="shrink-0 rounded-md border border-violet-400/30 bg-violet-400/10 px-4 py-2.5 text-sm font-semibold text-fg transition hover:bg-violet-400/20 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40"
+              className="btn-secondary btn-md shrink-0"
             >
               {batchState === "working" ? t("batchConverting") : t("batchChoose")}
             </button>
@@ -1208,7 +1283,7 @@ export default function ConvertPage() {
           <p className="mt-1 text-sm text-fg-muted">{t("stlNote")}</p>
           <button
             onClick={wrapStl}
-            className="mt-4 rounded-md border border-violet-400/30 bg-violet-400/10 px-4 py-2.5 text-sm font-semibold text-fg transition hover:bg-violet-400/20"
+            className="btn-primary btn-md mt-4"
           >
             {t("stlConvert")}
           </button>
@@ -1226,8 +1301,9 @@ export default function ConvertPage() {
           down. `!analysis` distinguishes it from a later conversion error, which still reports below
           next to the output buttons it belongs to, so the message is never shown twice. */}
       {status === "error" && !analysis && (
-        <p role="alert" className="mt-4 rounded-md border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm text-red-100">
-          {message}
+        <p role="alert" className="notice notice-warn mt-4">
+          <NoticeIcon level="warn" />
+          <span>{message}</span>
         </p>
       )}
       {plateOptions && plateOptions.length > 1 && (
@@ -1243,7 +1319,7 @@ export default function ConvertPage() {
                 key={pl.index}
                 onClick={() => convertPlate(pl)}
                 disabled={plateBusy !== null}
-                className="rounded-md border border-line bg-surface px-4 py-2 text-sm text-fg transition hover:bg-surface-3 disabled:opacity-50"
+                className="rounded-lg border border-line bg-surface px-4 py-2 text-sm text-fg transition hover:bg-surface-3 disabled:opacity-50"
                 // The two spans are only separated visually (ml-2), so the accessible name runs them
                 // together: plate 1 at 2 MB announced as "Plate 12 MB", which reads as plate 12. An
                 // explicit label keeps the number and the size distinct for anyone not seeing the gap.
@@ -1259,13 +1335,13 @@ export default function ConvertPage() {
         </section>
       )}
       {previewNote && (
-        <p className="mt-4 rounded-md border border-sky-500/30 bg-sky-500/10 px-5 py-3 text-sm text-sky-100">
+        <p className="notice notice-info mt-4">
           {previewNote}
         </p>
       )}
 
       {/* Fallback when the live preview couldn't load (a very large painted file OOMs the preview worker):
-          still surface the colour count + Full Spectrum, driven by the lightweight analysis. Conversion
+          still surface the color count + Full Spectrum, driven by the lightweight analysis. Conversion
           reads the full file, and `physical` is seeded from the analysis, so Full Spectrum still works. */}
       {!mesh && analysis?.painted && usedCount > 4 && (
         <section className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
@@ -1295,9 +1371,9 @@ export default function ConvertPage() {
             const bad = mixMatches.filter((m, i) => m && !physical.includes(i) && m.deltaE > 12).length;
             if (!bad) return null;
             return (
-              <p className="mt-3 rounded-md border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
-                <strong className="text-red-100">Full Spectrum can&apos;t reproduce {bad} of these colours.</strong> Mixing can&apos;t
-                make a colour that isn&apos;t one of the 4 loaded heads, so a saturated set like this (distinct reds/greens/blues) shifts
+              <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
+                <strong className="text-red-100">Full Spectrum can&apos;t reproduce {bad} of these colors.</strong> Mixing can&apos;t
+                make a color that isn&apos;t one of the 4 loaded heads, so a saturated set like this (distinct reds/greens/blues) shifts
                 a lot. Full Spectrum suits blended palettes (skin tones, gradients) — not distinct primaries.
               </p>
             );
@@ -1373,8 +1449,8 @@ export default function ConvertPage() {
           </div>
 
           {/* 4 slot editors. In Full Spectrum the slots ARE the physical heads (from `physical`); their
-              colours come from the model and only their order is editable. Otherwise they're the 4
-              reduced slot colours, editable and reorderable. */}
+              colors come from the model and only their order is editable. Otherwise they're the 4
+              reduced slot colors, editable and reorderable. */}
           {(() => {
             // Mode-aware view of the 4 slots: {color, editable} per slot, plus a length for bounds.
             const fsColors = physical.map((pi) => mesh.palette[pi] ?? "#888888");
@@ -1405,13 +1481,16 @@ export default function ConvertPage() {
                         title={fullSpectrum ? t("mainColorTitle") : undefined}
                         className="h-9 w-full cursor-pointer rounded-lg border border-line bg-transparent disabled:cursor-default"
                       />
-                      <span className="flex gap-1">
+                      {/* The glyphs mirror in RTL. `move(i, -1)` moves a swatch toward index 0,
+                          which renders on the RIGHT in Arabic — so an un-mirrored ◀ points away from
+                          where the swatch is about to go. */}
+                      <span className="flex justify-center gap-1 [&_button]:rtl:-scale-x-100">
                         <button
                           onClick={() => move(i, -1)}
                           disabled={i === 0}
                           title={t("movePrev")}
                           aria-label={t("movePrev")}
-                          className="rounded px-1.5 text-fg-muted hover:bg-surface-3 hover:text-fg disabled:opacity-30"
+                          className="icon-btn"
                         >
                           ◀
                         </button>
@@ -1420,7 +1499,7 @@ export default function ConvertPage() {
                           disabled={i === last}
                           title={t("moveNext")}
                           aria-label={t("moveNext")}
-                          className="rounded px-1.5 text-fg-muted hover:bg-surface-3 hover:text-fg disabled:opacity-30"
+                          className="icon-btn"
                         >
                           ▶
                         </button>
@@ -1438,9 +1517,9 @@ export default function ConvertPage() {
           })()}
 
           {/* Vertical colour-banding advisory: exact colours via a few filament swaps beat Full Spectrum
-              mixing when the model's colours change only by height. Detected from the painted mesh. */}
+              mixing when the model's colors change only by height. Detected from the painted mesh. */}
           {showBands && mesh && bandPlan && (
-            <div className="mt-5 rounded-md border border-emerald-400/25 bg-emerald-400/[0.06] p-4">
+            <div className="mt-5 rounded-lg border border-emerald-400/25 bg-emerald-400/[0.06] p-4">
               <label className="flex cursor-pointer items-start gap-2">
                 <input
                   type="checkbox"
@@ -1484,7 +1563,7 @@ export default function ConvertPage() {
           {/* Custom-palette Full Spectrum (e.g. CMYK) — reproduce the model's colors as mixes of your OWN
               loaded filaments, at ANY color count. Mutually exclusive with the >4 palette-mixing below. */}
           {analysis?.painted && (
-            <div className="mt-5 rounded-md border border-line bg-surface-2 p-4">
+            <div className="mt-5 rounded-lg border border-line bg-surface-2 p-4">
               <label className="flex cursor-pointer items-start gap-2 text-sm text-fg-muted">
                 <input
                   type="checkbox"
@@ -1508,7 +1587,7 @@ export default function ConvertPage() {
                           type="color"
                           value={/^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#000000"}
                           onChange={(e) => setCustomBases((b) => b.map((x, j) => (j === i ? e.target.value.toUpperCase() : x)))}
-                          aria-label={`Slot ${i + 1} colour picker`}
+                          aria-label={`Slot ${i + 1} color picker`}
                           className="h-8 w-8 shrink-0 cursor-pointer rounded border border-line bg-transparent"
                         />
                         <span className="text-xs text-fg-subtle">Slot {i + 1}</span>
@@ -1608,7 +1687,7 @@ export default function ConvertPage() {
 
           {/* Subdivide Mix Layer — applies to any Full Spectrum output. On by default. */}
           {(customFS || fullSpectrum) && (
-            <label className="mt-4 flex cursor-pointer items-start gap-2 rounded-md border border-line bg-surface-2 p-3 text-sm text-fg-muted">
+            <label className="mt-4 flex cursor-pointer items-start gap-2 rounded-lg border border-line bg-surface-2 p-3 text-sm text-fg-muted">
               <input type="checkbox" checked={subdivide} onChange={(e) => setSubdivide(e.target.checked)} className="mt-0.5 h-4 w-4 accent-violet-500" />
               <span>
                 <span className="font-medium text-fg">{t("subdivideLabel")}</span> <span className="text-fg-subtle">{t("subdivideRecommended")}</span>
@@ -1622,9 +1701,9 @@ export default function ConvertPage() {
           )}
 
           {/* Full Spectrum reality check: blends are an optical illusion of thin alternating layers, so
-              filament opacity and layer height decide whether they read as a colour or as visible stripes. */}
+              filament opacity and layer height decide whether they read as a color or as visible stripes. */}
           {(customFS || fullSpectrum) && (
-            <p className="mt-3 rounded-md border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+            <p className="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
               {t.rich("blendTip", {
                 lead: (c) => <strong className="text-amber-100">{c}</strong>,
                 b: (c) => <strong>{c}</strong>,
@@ -1657,7 +1736,7 @@ export default function ConvertPage() {
                 .sort((a, b) => b.dE - a.dE);
               if (!bad.length) return null;
               return (
-                <p className="mt-3 rounded-md border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
+                <p className="mt-3 rounded-lg border border-red-400/25 bg-red-400/[0.07] px-3 py-2 text-[11px] leading-relaxed text-red-200">
                   {/* The swatch pairs are the <ex> tag's children rather than a separate message, so a
                       translator can move the whole "(e.g. ▢ → ▢)" parenthetical to wherever it belongs
                       in their sentence instead of being pinned to the English word order. */}
@@ -1669,10 +1748,10 @@ export default function ConvertPage() {
                         {c}{" "}
                         {bad.slice(0, 2).map((x) => (
                           <span key={x.hex} className="whitespace-nowrap">
-                            <span className="inline-block h-2.5 w-2.5 rounded-sm align-middle" style={{ background: x.hex }} />{" "}
+                            <span className="inline-block h-2.5 w-2.5 rounded-lg align-middle" style={{ background: x.hex }} />{" "}
                             {/* The arrow means "becomes", so it has to follow the reading direction. */}
                             <span className="inline-block rtl:-scale-x-100">→</span>{" "}
-                            <span className="inline-block h-2.5 w-2.5 rounded-sm align-middle" style={{ background: x.got }} />{" "}
+                            <span className="inline-block h-2.5 w-2.5 rounded-lg align-middle" style={{ background: x.got }} />{" "}
                           </span>
                         ))}
                       </>
@@ -1728,7 +1807,7 @@ export default function ConvertPage() {
                                 spellCheck={false}
                                 maxLength={7}
                                 aria-label="Filament hex loaded on this head"
-                                title="The filament you'll actually load here — override if it isn't the model's colour"
+                                title="The filament you'll actually load here — override if it isn't the model's color"
                                 className="w-[4.5rem] rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-fg"
                               />
                             </span>
@@ -1817,7 +1896,7 @@ export default function ConvertPage() {
                 })}
             </ul>
             {fullSpectrum && mixMatches?.some((m) => m && m.ids.length === 2 && ((m.weights[1] ?? 0) <= 25 || (m.weights[1] ?? 0) >= 75)) && (
-              <p className="mt-3 rounded-lg border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-xs text-sky-100">
+              <p className="notice notice-info mt-3 text-xs">
                 {t("lopsidedTip")}
               </p>
             )}
@@ -1848,27 +1927,33 @@ export default function ConvertPage() {
         </section>
       )}
 
+      {/* ── WHY THESE STOPPED BEING ONE COLOUR ────────────────────────────────────────────────────
+          `sky-500/10` carried both halves of this list. Stacked back to back on a real conversion it
+          read: "don't use Split to objects — those drop painted colors" and "no significant
+          overhangs, this likely prints without supports" — a caution and a piece of good news, in
+          identical boxes with no icon between them. Whether a notice is telling you to act is the
+          one thing a notice's appearance has to answer.
+
+          `warnOverhangNo` is the only positive result the converter produces, so it takes the third
+          style rather than being filed under "information". */}
       {warnings.length > 0 && (
         <div className="mt-6 space-y-2">
-          {warnings.map((w, i) => (
-            <p
-              key={i}
-              className={`rounded-md border px-5 py-3 text-sm ${
-                w.level === "warn"
-                  ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-100"
-                  : "border-sky-500/30 bg-sky-500/10 text-sky-100"
-              }`}
-            >
-              {t(w.key, w.params)}
-            </p>
-          ))}
+          {warnings.map((w, i) => {
+            const level = w.level === "warn" ? "warn" : w.key === "warnOverhangNo" ? "ok" : "info";
+            return (
+              <p key={i} className={`notice notice-${level}`}>
+                <NoticeIcon level={level} />
+                <span>{t(w.key, w.params)}</span>
+              </p>
+            );
+          })}
         </div>
       )}
 
       {file && (
         <div className="mt-6 rounded-lg border border-line bg-surface-2 p-4">
           <p className="text-sm font-medium text-fg-muted">{t("settingsTitle")}</p>
-          <div className="mt-2 inline-flex flex-wrap rounded-md border border-line bg-surface-2 p-1 text-sm">
+          <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-1 text-sm">
             <button
               type="button"
               onClick={() => setProfileMode("preserve")}
@@ -1894,7 +1979,7 @@ export default function ConvertPage() {
           {targetId === "u1" && (
             <div className="mt-4 border-t border-line pt-4">
               <p className="text-sm font-medium text-fg-muted">{t("nozzleTitle")}</p>
-              <div className="mt-2 inline-flex flex-wrap rounded-md border border-line bg-surface-2 p-1 text-sm">
+              <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-1 text-sm">
                 {U1_NOZZLES.map((n) => (
                   <button
                     key={n}
@@ -1912,7 +1997,7 @@ export default function ConvertPage() {
                 ))}
               </div>
               {nozzle !== U1_TESTED_NOZZLE && (
-                <p className="mt-2 rounded-md border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+                <p className="mt-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
                   {t("nozzleDerivedNote", { nozzle: nozzle, tested: U1_TESTED_NOZZLE })}
                 </p>
               )}
@@ -1920,7 +2005,7 @@ export default function ConvertPage() {
               {/* Filament preset NAMES. Nothing here changes how the file prints — it changes which
                   library preset Orca resolves each slot to, which is what a model repository checks. */}
               <p className="mt-4 text-sm font-medium text-fg-muted">{t("brandTitle")}</p>
-              <div className="mt-2 inline-flex flex-wrap rounded-md border border-line bg-surface-2 p-1 text-sm">
+              <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-1 text-sm">
                 {(["source", "generic", "snapmaker"] as const).map((b) => (
                   <button
                     key={b}
@@ -2052,7 +2137,7 @@ export default function ConvertPage() {
               <button
                 onClick={() => clean(targetId)}
                 disabled={status === "working" || meshLoading}
-                className="mt-4 rounded-md border border-violet-400/30 bg-violet-400/10 px-4 py-2.5 text-sm font-semibold text-fg transition hover:bg-violet-400/20 disabled:opacity-60"
+                className="btn-secondary btn-md mt-4"
               >
                 {t("convertForPrinter", { name: chosen.name })}
               </button>
@@ -2061,26 +2146,52 @@ export default function ConvertPage() {
         );
       })()}
 
+      {/* ── THE MOMENT THE WHOLE PAGE CONVERGES ON ────────────────────────────────────────────────
+          These were four identical 144×218px tiles at the bottom of a 2,991px page. The primary one
+          carried a faint lavender tint and nothing else: no fill, no download glyph, no size
+          difference from the three escape hatches beside it. `globals.css` already owned a good
+          primary button — /calibrate has it, all six SEO landing pages have it, `bg-violet-600`
+          appears 15 times in this repository — and the one place the product actually converges on
+          was the one place that did not use it.
+
+          `button-primitive-guard.test.mts` could not see this, correctly: it fires on a solid fill
+          paired with a brand hover, and these were `bg-violet-400/10` — the *quiet secondary*
+          treatment, which is exactly the mistake. The primary action was drawn as a secondary one.
+
+          One primary, three demoted to a labelled row. They are alternatives, not peers. */}
       {file && (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <button onClick={() => clean("u1")} disabled={status === "working" || meshLoading} className="rounded-lg border border-violet-400/30 bg-violet-400/10 p-5 text-left transition hover:bg-violet-400/20 disabled:opacity-60">
-            <p className="font-semibold text-fg">{t("cleanU1")}</p>
-            <p className="mt-1 text-sm text-fg-muted">
-              {profileMode === "preserve" ? t("cleanU1PreserveDesc") : t("cleanU1StampDesc")}
-            </p>
+        <div className="mt-6">
+          <button
+            onClick={() => clean("u1")}
+            disabled={status === "working" || meshLoading}
+            className="btn-primary btn-lg w-full"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+              <path d="M12 4v12" />
+              <path d="m8 12 4 4 4-4" />
+              <path d="M4 20h16" />
+            </svg>
+            {t("cleanU1")}
           </button>
-          <button onClick={() => clean("generic")} disabled={status === "working"} className="rounded-lg border border-line bg-surface-2 p-5 text-left transition hover:bg-surface-3 disabled:opacity-60">
-            <p className="font-semibold text-fg">{t("genericStrip")}</p>
-            <p className="mt-1 text-sm text-fg-muted">{t("genericStripDesc")}</p>
-          </button>
-          <button onClick={() => clean("current")} disabled={status === "working"} className="rounded-lg border border-line bg-surface-2 p-5 text-left transition hover:bg-surface-3 disabled:opacity-60">
-            <p className="font-semibold text-fg">{t("importCurrent")}</p>
-            <p className="mt-1 text-sm text-fg-muted">{t("importCurrentDesc")}</p>
-          </button>
-          <button onClick={toStl} disabled={status === "working"} className="rounded-lg border border-line bg-surface-2 p-5 text-left transition hover:bg-surface-3 disabled:opacity-60">
-            <p className="font-semibold text-fg">{t("geometryStl")}</p>
-            <p className="mt-1 text-sm text-fg-muted">{t("geometryStlDesc")}</p>
-          </button>
+          <p className="mt-2 text-center text-sm text-fg-subtle">
+            {profileMode === "preserve" ? t("cleanU1PreserveDesc") : t("cleanU1StampDesc")}
+          </p>
+
+          <p className="eyebrow mt-7">{t("otherOutputs")}</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-3">
+            <button onClick={() => clean("generic")} disabled={status === "working"} className="btn-secondary btn-sm flex-col items-start gap-0.5 px-4 py-3 text-start">
+              <span className="font-medium text-fg">{t("genericStrip")}</span>
+              <span className="text-xs font-normal leading-snug text-fg-subtle">{t("genericStripDesc")}</span>
+            </button>
+            <button onClick={() => clean("current")} disabled={status === "working"} className="btn-secondary btn-sm flex-col items-start gap-0.5 px-4 py-3 text-start">
+              <span className="font-medium text-fg">{t("importCurrent")}</span>
+              <span className="text-xs font-normal leading-snug text-fg-subtle">{t("importCurrentDesc")}</span>
+            </button>
+            <button onClick={toStl} disabled={status === "working"} className="btn-secondary btn-sm flex-col items-start gap-0.5 px-4 py-3 text-start">
+              <span className="font-medium text-fg">{t("geometryStl")}</span>
+              <span className="text-xs font-normal leading-snug text-fg-subtle">{t("geometryStlDesc")}</span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -2121,7 +2232,7 @@ export default function ConvertPage() {
           <button
             onClick={splitExport}
             disabled={status === "working" || meshLoading}
-            className="mt-4 rounded-md border border-violet-400/30 bg-violet-400/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-400/20 disabled:opacity-60"
+            className="btn-secondary btn-md mt-4"
           >
             {t("convertSplit")}
           </button>
@@ -2129,13 +2240,13 @@ export default function ConvertPage() {
       )}
 
       {file && bigFile && status !== "working" && (
-        <div className="mt-3 rounded-md border border-line bg-surface-2 px-5 py-3 text-sm">
+        <div className="mt-3 rounded-lg border border-line bg-surface-2 px-5 py-3 text-sm">
           <p className="text-fg-muted">
             {t("bigFileNote")}
           </p>
           <button
             onClick={serverConvert}
-            className="mt-2 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-fg transition hover:bg-surface-3"
+            className="btn-secondary btn-sm mt-2"
           >
             {t("convertOnServer")}
           </button>
@@ -2161,12 +2272,48 @@ export default function ConvertPage() {
           </div>
         </div>
       )}
+      {/* ── THE ORDER OF THE DONE SCREEN, WHICH IS THE POINT OF IT ───────────────────────────────
+          It used to run: green bar → library card → email capture → "result look wrong?" → convert
+          another → and, last, collapsed and smallest, "what changed for your U1". Three asks in
+          front of the one thing that proves the conversion did what it claimed.
+
+          `ContributeToLibrary`'s own header already argued half of this — "three asks at one moment
+          is zero asks", and "the moment was already spent: download() fires before this screen
+          renders". The half it did not draw is that the screen never mentioned the FILE. No name, no
+          size, no second chance at it. A blocked download had no recovery on a page whose entire job
+          is to hand somebody a file.
+
+          So: the file, then the proof, then the asks. */}
+      {/* ── THE ORDER, RESTATED WHERE IT IS ACTUALLY BUILT ──────────────────────────────────────
+          The file, then the proof it is right, then the asks, then the way out. The report used to
+          be dead last — below the email capture and below "Convert another file" — which is where a
+          screen puts the thing it does not expect anybody to read. It is the artefact that makes the
+          conversion checkable, so it sits with the file it describes. */}
       {status === "done" && (
-        <p role="status" aria-live="polite" className="mt-4 rounded-md border border-green-500/30 bg-green-500/10 px-5 py-4 text-green-100">{message}</p>
+        <div role="status" aria-live="polite" className="notice notice-ok mt-6">
+          <NoticeIcon level="ok" />
+          <span>{message}</span>
+        </div>
       )}
-      {status === "done" && <ContributeToLibrary />}
-      {status === "done" && <ShareBedReady />}
-      {status === "done" && <ConvertCapture />}
+      {status === "done" && result && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-5 py-4">
+          <div className="min-w-0">
+            <p className="eyebrow">{t("yourFile")}</p>
+            <p className="mt-1 truncate font-medium text-fg" dir="ltr">{result.name}</p>
+            <p className="mt-0.5 text-xs tabular-nums text-fg-subtle">
+              {format.number(Math.max(1, Math.round(result.blob.size / 1024)))} KB
+            </p>
+          </div>
+          <button onClick={() => download(result.blob, result.name)} className="btn-secondary btn-md shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+              <path d="M12 4v12" />
+              <path d="m8 12 4 4 4-4" />
+              <path d="M4 20h16" />
+            </svg>
+            {t("downloadAgain")}
+          </button>
+        </div>
+      )}
       {status === "done" && file && (
         reportSent === "done" ? (
           <p className="mt-3 text-xs text-green-300">{t("reportSentImprove")}</p>
@@ -2184,28 +2331,9 @@ export default function ConvertPage() {
           </p>
         )
       )}
-      {status === "done" && (
-        <button
-          onClick={resetAll}
-          className="mt-3 rounded-md border border-line bg-surface-2 px-5 py-2.5 text-sm font-medium text-fg transition hover:bg-surface-3"
-        >
-          {t("convertAnother")}
-        </button>
-      )}
-      {status === "done" && swapPlan.length > 0 && (
-        <div className="mt-3 rounded-md border border-amber-400/30 bg-amber-400/[0.06] px-5 py-4 text-sm text-amber-100">
-          <p className="font-semibold">{t("swapPlanTitle", { count: swapPlan.length })}</p>
-          <p className="mt-1 text-xs text-amber-200">{t("swapPlanNote")}</p>
-          <ol className="mt-2 list-decimal space-y-1 pl-5">
-            {swapPlan.map((s, i) => (
-              <li key={i} className="text-amber-50">{s.label}</li>
-            ))}
-          </ol>
-        </div>
-      )}
       {status === "done" && diff && (
-        <details className="mt-3 rounded-md border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted" open>
-          <summary className="cursor-pointer font-semibold text-fg">{t("whatChanged")}</summary>
+        <section className="mt-3 rounded-lg border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted">
+          <h2 className="font-semibold text-fg">{t("whatChanged")}</h2>
           <ul className="mt-3 space-y-1.5 text-fg-muted">
             <li>
               {t("diffPrinterLabel")}{" "}
@@ -2245,15 +2373,37 @@ export default function ConvertPage() {
             <p className="text-xs text-fg-subtle">{t("diffFooter")}</p>
             <button
               onClick={copySummary}
-              className="shrink-0 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-xs font-medium text-fg transition hover:bg-surface-3"
+              className="btn-secondary btn-xs shrink-0"
             >
               {copied ? t("copied") : t("copySummary")}
             </button>
           </div>
-        </details>
+        </section>
+      )}
+      {status === "done" && swapPlan.length > 0 && (
+        <div className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/[0.06] px-5 py-4 text-sm text-amber-100">
+          <p className="font-semibold">{t("swapPlanTitle", { count: swapPlan.length })}</p>
+          <p className="mt-1 text-xs text-amber-200">{t("swapPlanNote")}</p>
+          <ol className="mt-2 list-decimal space-y-1 pl-5">
+            {swapPlan.map((s, i) => (
+              <li key={i} className="text-amber-50">{s.label}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {status === "done" && <ContributeToLibrary />}
+      {status === "done" && <ShareBedReady />}
+      {status === "done" && <ConvertCapture />}
+      {status === "done" && (
+        <button
+          onClick={resetAll}
+          className="btn-secondary btn-md mt-3"
+        >
+          {t("convertAnother")}
+        </button>
       )}
       {warn && (
-        <p className="mt-3 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-5 py-4 text-yellow-100">{warn}</p>
+        <p className="notice notice-warn mt-3"><NoticeIcon level="warn" />{warn}</p>
       )}
       {status === "error" && analysis && (
         <div className="mt-4">
@@ -2261,7 +2411,7 @@ export default function ConvertPage() {
           {file && (
             <button
               onClick={serverConvert}
-              className="mt-3 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-fg-muted transition hover:bg-surface-3"
+              className="btn-secondary btn-sm mt-3"
             >
               {t("tryServerInstead")}
             </button>
@@ -2278,7 +2428,7 @@ export default function ConvertPage() {
                   <button
                     onClick={() => sendFailingFile("convert-error")}
                     disabled={reportSent === "sending"}
-                    className="rounded-lg border border-violet-400/40 bg-violet-400/10 px-3 py-1.5 text-sm text-violet-200 hover:bg-violet-400/20 disabled:opacity-50"
+                    className="btn-secondary btn-sm"
                   >
                     {reportSent === "sending" ? t("reportSendingCap") : t("sendUsFileFix")}
                   </button>

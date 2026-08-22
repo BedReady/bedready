@@ -65,7 +65,7 @@ export default function ShareBedReady() {
   }
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-line bg-surface-2 px-5 py-4 text-sm">
+    <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-line bg-surface-2 px-5 py-4 text-sm">
       <span className="text-fg-muted">{t("sharePrompt")}</span>
       <a
         href={reddit}

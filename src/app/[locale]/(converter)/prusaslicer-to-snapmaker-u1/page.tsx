@@ -13,7 +13,7 @@ export const metadata = {
 const faq = [
   {
     q: "Does it read my MMU color painting?",
-    a: "Yes. PrusaSlicer stores MMU colour painting as slic3rpe:mmu_segmentation paint data. BedReady translates that into the paint_color format Snapmaker Orca reads, so every painted face maps onto the U1's 4 slots instead of loading as plain grey geometry.",
+    a: "Yes. PrusaSlicer stores MMU color painting as slic3rpe:mmu_segmentation paint data. BedReady translates that into the paint_color format Snapmaker Orca reads, so every painted face maps onto the U1's 4 slots instead of loading as plain gray geometry.",
   },
   {
     q: "What about painted supports and seams?",
@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Convert PrusaSlicer files to the Snapmaker U1
       </h1>
@@ -52,7 +52,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <Link href="/convert" className="btn-primary btn-lg">
           Convert a file — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -60,11 +60,11 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
       <h2 className="mt-12 text-xl font-semibold tracking-tight text-fg">The problem</h2>
       <p className="mt-2 text-fg-muted">
-        PrusaSlicer stores everything you painted — MMU colours, custom supports, seam placement — under its
+        PrusaSlicer stores everything you painted — MMU colors, custom supports, seam placement — under its
         own <code>slic3rpe:</code> attributes, alongside a Prusa/MMU printer profile and its own filament
         palette. Snapmaker Orca can&apos;t read that directly: it tags the file as a foreign Prusa project,
-        drops the paint data, and loads the model as plain grey geometry with the wrong profile. Redoing the
-        colour painting, supports and seams by hand defeats the point of a project file.
+        drops the paint data, and loads the model as plain gray geometry with the wrong profile. Redoing the
+        color painting, supports and seams by hand defeats the point of a project file.
       </p>
 
       <h2 className="mt-8 text-xl font-semibold tracking-tight text-fg">What BedReady does in one click</h2>

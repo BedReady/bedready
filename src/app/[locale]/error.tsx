@@ -34,7 +34,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         </button>
         <a
           href="/"
-          className="rounded-md border border-line bg-surface-2 px-5 py-2.5 font-semibold text-fg transition hover:bg-surface-3"
+          className="rounded-lg border border-line bg-surface-2 px-5 py-2.5 font-semibold text-fg transition hover:bg-surface-3"
         >
           {t("home")}
         </a>

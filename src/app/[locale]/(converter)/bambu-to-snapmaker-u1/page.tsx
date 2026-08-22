@@ -13,15 +13,15 @@ export const metadata = {
 const faq = [
   {
     q: "Will my AMS colors transfer to the U1?",
-    a: "Yes. Bambu Studio stores your AMS colour painting as face-level paint data inside the .3mf. BedReady reads that painting and maps each AMS filament onto one of the U1's 4 slots, so every painted face — text, logos, fine detail — lands on the right colour instead of collapsing to grey geometry.",
+    a: "Yes. Bambu Studio stores your AMS color painting as face-level paint data inside the .3mf. BedReady reads that painting and maps each AMS filament onto one of the U1's 4 slots, so every painted face — text, logos, fine detail — lands on the right color instead of collapsing to gray geometry.",
   },
   {
     q: "My model uses more than 4 AMS colors — what happens?",
-    a: "The U1 has 4 physical filament slots, so the first four AMS colours map straight across. For anything beyond that, Full Spectrum reproduces the extra shades by dithering 2- and 3-filament mixes from the four loaded colours, so a 6- or 8-colour AMS model still prints without a hardware swap.",
+    a: "The U1 has 4 physical filament slots, so the first four AMS colors map straight across. For anything beyond that, Full Spectrum reproduces the extra shades by dithering 2- and 3-filament mixes from the four loaded colors, so a 6- or 8-color AMS model still prints without a hardware swap.",
   },
   {
     q: "Why does a Bambu .3mf open wrong in Snapmaker Orca?",
-    a: "A Bambu Studio file is a native Bambu project: it carries an X1/P1/A1 printer profile and Bambu-specific filament and machine settings. Snapmaker Orca only trusts its own project files, so it loads the Bambu one with a foreign profile and often drops the paint data — you get the wrong machine settings and mis-mapped or missing colours.",
+    a: "A Bambu Studio file is a native Bambu project: it carries an X1/P1/A1 printer profile and Bambu-specific filament and machine settings. Snapmaker Orca only trusts its own project files, so it loads the Bambu one with a foreign profile and often drops the paint data — you get the wrong machine settings and mis-mapped or missing colors.",
   },
   {
     q: "Is my Bambu file uploaded anywhere?",
@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="shell py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Convert Bambu Studio files to the Snapmaker U1
       </h1>
@@ -52,7 +52,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <Link href="/convert" className="btn-primary btn-lg">
           Convert a file — free
         </Link>
-        <Link href="/extension" className="rounded-md border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
+        <Link href="/extension" className="rounded-lg border border-line bg-surface-2 px-6 py-3 font-semibold text-fg transition hover:bg-surface-3">
           Get the browser extension
         </Link>
       </div>
@@ -62,9 +62,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <p className="mt-2 text-fg-muted">
         A Bambu Studio <code>.3mf</code> is a native Bambu project. It&apos;s painted for the AMS multi-material
         workflow and bundled with an X1/P1/A1 printer profile plus Bambu-specific machine and filament
-        settings. Open it in Snapmaker Orca and the U1 inherits the wrong printer profile, your AMS colours
-        land in the wrong slots — or drop out entirely as plain grey geometry — and the filament-change and
-        prime-tower behaviour is set up for a Bambu machine, not the U1&apos;s toolchanger. Re-painting every
+        settings. Open it in Snapmaker Orca and the U1 inherits the wrong printer profile, your AMS colors
+        land in the wrong slots — or drop out entirely as plain gray geometry — and the filament-change and
+        prime-tower behavior is set up for a Bambu machine, not the U1&apos;s toolchanger. Re-painting every
         face by hand can take hours.
       </p>
 
