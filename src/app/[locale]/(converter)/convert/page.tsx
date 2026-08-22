@@ -62,7 +62,7 @@ const recipeHex = (physColours: string[], a: number, b: number, pct: number): st
 type MixRecipe = { a: number; b: number; mixBPercent: number };
 import { type MeshData, overhangReport } from "@/lib/paint";
 import { extractMeshAsync } from "@/lib/mesh-client";
-import { detectColorBands } from "@/lib/color-bands";
+import { detectColorBandsForMesh } from "@/lib/color-bands";
 import dynamic from "next/dynamic";
 import ConvertCount from "@/components/ConvertCount";
 
@@ -987,7 +987,7 @@ export default function ConvertPage() {
   const bandPlan = useMemo(
     () =>
       mesh && !mesh.skipped && analysis?.painted && mesh.positions.length >= 9
-        ? detectColorBands(mesh.positions, mesh.faceState, mesh.baseState)
+        ? detectColorBandsForMesh(mesh, mesh.baseState)
         : null,
     [mesh, analysis],
   );
