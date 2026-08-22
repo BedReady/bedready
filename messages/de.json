@@ -1031,70 +1031,70 @@
     "ctaConvert": "Datei umwandeln — kostenlos",
     "ctaBrowse": "MakerRun ansehen",
     "note": "Läuft komplett auf deinem Gerät. Auch als Chrome-Erweiterung und in 7 Sprachen.",
-    "groups": [
-      {
+    "groups": {
+      "slicers": {
         "title": "Funktioniert mit jedem Slicer",
-        "items": [
-          "Wandelt .3mf von MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer um",
-          "Volle Creality-Print-Unterstützung",
-          "Kennzeichnet Prusa/Creality-Dateien als natives Orca-Projekt — kein „nur Geometrie“ mehr",
-          "Liest PrusaSlicer-/Orca-ColorMix-Dateien — behält deren 4 Basisfilamente und Mischungen, Full Spectrum aktiv"
-        ]
+        "items": {
+          "sources": "Wandelt .3mf von MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer um",
+          "creality": "Volle Creality-Print-Unterstützung",
+          "retag": "Kennzeichnet Prusa/Creality-Dateien als natives Orca-Projekt — kein „nur Geometrie“ mehr",
+          "colormix": "Liest PrusaSlicer-/Orca-ColorMix-Dateien — behält deren 4 Basisfilamente und Mischungen, Full Spectrum aktiv"
+        }
       },
-      {
+      "colors": {
         "title": "Farben, richtig gemacht",
-        "items": [
-          "Bemalte Mehrfarbigkeit auf die 4 Slots des U1 abgebildet",
-          "Originalfarben exakt erhalten",
-          "Farbabgleich auf das abgestimmt, was der U1 tatsächlich druckt (CIEDE2000 + das Pigmentmodell des Slicers)",
-          "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)"
-        ]
+        "items": {
+          "slots": "Bemalte Mehrfarbigkeit auf die 4 Slots des U1 abgebildet",
+          "preserved": "Originalfarben exakt erhalten",
+          "match": "Farbabgleich auf das abgestimmt, was der U1 tatsächlich druckt (CIEDE2000 + das Pigmentmodell des Slicers)",
+          "prusaPaint": "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)"
+        }
       },
-      {
+      "beyond4": {
         "title": "Mehr als 4 Farben",
-        "items": [
-          "Full Spectrum: mische deine 4 Filamente, um zusätzliche Farben anzunähern",
-          "Mische aus deinen eigenen Filamenten (CMYK oder beliebige 4) — mit bearbeitbarem Rezept je Farbe",
-          "Erkennt höhenweise gebänderte Modelle und nennt dir die genauen Filamentwechsel-Höhen",
-          "Mischfarben-Schichthöhe für sanftere Übergänge",
-          "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe"
-        ]
+        "items": {
+          "fullSpectrum": "Full Spectrum: mische deine 4 Filamente, um zusätzliche Farben anzunähern",
+          "ownFilaments": "Mische aus deinen eigenen Filamenten (CMYK oder beliebige 4) — mit bearbeitbarem Rezept je Farbe",
+          "heightBands": "Erkennt höhenweise gebänderte Modelle und nennt dir die genauen Filamentwechsel-Höhen",
+          "mixLayerHeight": "Mischfarben-Schichthöhe für sanftere Übergänge",
+          "swapPauses": "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe"
+        }
       },
-      {
+      "u1": {
         "title": "Auf den U1 abgestimmt",
-        "items": [
-          "Einstellungen des Erstellers behalten oder getestetes U1-Profil setzen",
-          "Reinigungsturm auf U1-sichere Werte (verhindert den häufigsten Mehrfarb-Fehler)",
-          "Geschwindigkeits-/Beschleunigungsgrenzen, VLH-Schutz, automatische Bett-Anpassung",
-          "Ein verständlicher „was sich geändert hat“-Bericht"
-        ]
+        "items": {
+          "profileMode": "Einstellungen des Erstellers behalten oder getestetes U1-Profil setzen",
+          "primeTower": "Reinigungsturm auf U1-sichere Werte (verhindert den häufigsten Mehrfarb-Fehler)",
+          "limits": "Geschwindigkeits-/Beschleunigungsgrenzen, VLH-Schutz, automatische Bett-Anpassung",
+          "report": "Ein verständlicher „was sich geändert hat“-Bericht"
+        }
       },
-      {
+      "control": {
         "title": "Kontrolle & Vorschau",
-        "items": [
-          "Farbige 3D-Live-Vorschau vor dem Download",
-          "Slots passend zur Filament-Ladung umordnen",
-          "Wähle, welche 4 Farben physisch geladen werden (Full Spectrum)"
-        ]
+        "items": {
+          "preview": "Farbige 3D-Live-Vorschau vor dem Download",
+          "reorder": "Slots passend zur Filament-Ladung umordnen",
+          "physical": "Wähle, welche 4 Farben physisch geladen werden (Full Spectrum)"
+        }
       },
-      {
+      "exports": {
         "title": "Mehrteilig & Exporte",
-        "items": [
-          "Mehrteilige Dateien in einzelne Teil-Dateien aufteilen",
-          "Reiner Geometrie-.STL-Export",
-          "Profil entfernen, um auf jedem Drucker zu importieren"
-        ]
+        "items": {
+          "split": "Mehrteilige Dateien in einzelne Teil-Dateien aufteilen",
+          "stl": "Reiner Geometrie-.STL-Export",
+          "strip": "Profil entfernen, um auf jedem Drucker zu importieren"
+        }
       },
-      {
+      "free": {
         "title": "Privat & kostenlos",
-        "items": [
-          "Läuft komplett im Browser — nichts wird hochgeladen",
-          "100% kostenlos, in 7 Sprachen",
-          "Chrome-Erweiterung wandelt auf der Download-Seite um",
-          "Bibliothek mit Profilen, die auf einem U1 verifiziert drucken"
-        ]
+        "items": {
+          "inBrowser": "Läuft komplett im Browser — nichts wird hochgeladen",
+          "freeLangs": "100% kostenlos, in 7 Sprachen",
+          "extension": "Browser-Erweiterung wandelt auf der Download-Seite um",
+          "library": "Bibliothek mit Profilen, die auf einem U1 verifiziert drucken"
+        }
       }
-    ]
+    }
   },
   "stickers": {
     "title": "Kostenlose 3D-Druck-Sticker",

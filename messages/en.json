@@ -1031,70 +1031,70 @@
     "ctaConvert": "Convert a file — free",
     "ctaBrowse": "Browse MakerRun",
     "note": "Runs entirely on your device. Also available as a browser extension (Chrome, Edge, Firefox) and in 7 languages.",
-    "groups": [
-      {
+    "groups": {
+      "slicers": {
         "title": "Works with any slicer",
-        "items": [
-          "Converts .3mf from MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer",
-          "Full Creality Print support",
-          "Re-tags Prusa/Creality files as a native Orca project — no more “geometry only”",
-          "Reads PrusaSlicer / Orca ColorMix files — keeps their 4 base filaments and mixes, Full Spectrum on"
-        ]
+        "items": {
+          "sources": "Converts .3mf from MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer",
+          "creality": "Full Creality Print support",
+          "retag": "Re-tags Prusa/Creality files as a native Orca project — no more “geometry only”",
+          "colormix": "Reads PrusaSlicer / Orca ColorMix files — keeps their 4 base filaments and mixes, Full Spectrum on"
+        }
       },
-      {
+      "colors": {
         "title": "Colors, done right",
-        "items": [
-          "Painted multicolor mapped onto the U1's 4 slots",
-          "Original colors preserved exactly — including text, logos & fine detail",
-          "Color matching tuned to what the U1 actually prints (CIEDE2000 + the slicer's own pigment model)",
-          "Translates PrusaSlicer paint data (colors / supports / seams)"
-        ]
+        "items": {
+          "slots": "Painted multicolor mapped onto the U1's 4 slots",
+          "preserved": "Original colors preserved exactly — including text, logos & fine detail",
+          "match": "Color matching tuned to what the U1 actually prints (CIEDE2000 + the slicer's own pigment model)",
+          "prusaPaint": "Translates PrusaSlicer paint data (colors / supports / seams)"
+        }
       },
-      {
+      "beyond4": {
         "title": "More than 4 colors",
-        "items": [
-          "Full Spectrum: reproduce more colors than 4 slots by dithering 2- and 3-filament mixes",
-          "Mix from your own filaments (CMYK or any 4) with an editable recipe per color",
-          "Spots height-banded models and gives you the exact filament-swap heights",
-          "Mixed-color layer-height control for smoother blends",
-          "M600 spool-swap pauses keep every color on by-layer files"
-        ]
+        "items": {
+          "fullSpectrum": "Full Spectrum: reproduce more colors than 4 slots by dithering 2- and 3-filament mixes",
+          "ownFilaments": "Mix from your own filaments (CMYK or any 4) with an editable recipe per color",
+          "heightBands": "Spots height-banded models and gives you the exact filament-swap heights",
+          "mixLayerHeight": "Mixed-color layer-height control for smoother blends",
+          "swapPauses": "M600 spool-swap pauses keep every color on by-layer files"
+        }
       },
-      {
+      "u1": {
         "title": "Tuned for the U1",
-        "items": [
-          "Keep the creator's settings, or stamp a tested U1 profile",
-          "Prime tower set to U1-safe defaults (prevents the #1 multicolor failure)",
-          "Speed/accel limits, variable-layer-height guard, auto bed fit",
-          "A plain-English “what changed” report"
-        ]
+        "items": {
+          "profileMode": "Keep the creator's settings, or stamp a tested U1 profile",
+          "primeTower": "Prime tower set to U1-safe defaults (prevents the #1 multicolor failure)",
+          "limits": "Speed/accel limits, variable-layer-height guard, auto bed fit",
+          "report": "A plain-English “what changed” report"
+        }
       },
-      {
+      "control": {
         "title": "Control & preview",
-        "items": [
-          "Live colored 3D preview before you download",
-          "Reorder slots to match how your filaments are loaded",
-          "Pick which 4 colors load physically (Full Spectrum)"
-        ]
+        "items": {
+          "preview": "Live colored 3D preview before you download",
+          "reorder": "Reorder slots to match how your filaments are loaded",
+          "physical": "Pick which 4 colors load physically (Full Spectrum)"
+        }
       },
-      {
+      "exports": {
         "title": "Multi-part & exports",
-        "items": [
-          "Split multi-part files into separate per-part files",
-          "Geometry-only .STL export",
-          "Strip the profile to import on any printer"
-        ]
+        "items": {
+          "split": "Split multi-part files into separate per-part files",
+          "stl": "Geometry-only .STL export",
+          "strip": "Strip the profile to import on any printer"
+        }
       },
-      {
+      "free": {
         "title": "Private & free",
-        "items": [
-          "Runs entirely in your browser — nothing is uploaded",
-          "100% free, in 7 languages",
-          "Browser extension converts on the download page",
-          "Library of files with profiles verified to print on a U1"
-        ]
+        "items": {
+          "inBrowser": "Runs entirely in your browser — nothing is uploaded",
+          "freeLangs": "100% free, in 7 languages",
+          "extension": "Browser extension converts on the download page",
+          "library": "Library of files with profiles verified to print on a U1"
+        }
       }
-    ]
+    }
   },
   "stickers": {
     "title": "Free 3D-printing stickers",

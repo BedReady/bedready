@@ -40,8 +40,17 @@
 // The lesson is not about arrays: it is that a length is not a diff, and "the counts differ, so the
 // tail is missing" is an assumption that positional data invites and never justifies.
 //
-// **Before adding a key to fix a parity failure, read the items.** The durable fix is to key these
-// lists by name instead of by position, at which point these two rules cover them completely.
+// **Before adding a key to fix a parity failure, read the items.**
+//
+// ── AND THE DURABLE FIX, NOW MADE ───────────────────────────────────────────────────────────────
+//
+// `features.groups` was that array and is now an object keyed by name — `groups.colors.items.
+// prusaPaint` instead of `groups.1.items.3`. Parity over names IS the semantic check, because a
+// German page missing `prusaPaint` now fails rule 1 by name rather than passing it by count.
+//
+// Rule 3 below covers the half rule 2 cannot: the page addresses those keys through template
+// literals built from a const in the component, and the call-site scanner only reads string
+// literals. Without it the most structured content on the site would be the least checked.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -174,4 +183,46 @@ test("both rules would fire, and neither fires on a correct tree", () => {
   assert.deepEqual(leafKeys(tree).sort(), ["help.steps.0", "help.steps.1", "nav.makerrun"]);
   // Prose that quotes a key is not a call site.
   assert.equal(stripComments('// t("nav.ghost")\nconst x = 1;').includes("nav.ghost"), false);
+});
+
+test("/features asks for keys that exist, in every locale", () => {
+  // The page builds its keys from a `GROUPS` const rather than writing them out — `t(`groups.${g.key}
+  // .items.${k}`)` — which the scanner in rule 2 cannot follow, because it reads string literals only.
+  // So the const is read here and resolved directly. This is the check that would have caught the
+  // 2026-08-22 duplicate-bullet mistake at the point it was made, rather than three passes later.
+  const page = readFileSync("src/app/[locale]/(converter)/features/page.tsx", "utf8");
+  const block = page.slice(page.indexOf("const GROUPS = ["), page.indexOf("] as const;") + 10);
+  const groups = [...block.matchAll(/\{\s*key:\s*"([^"]+)",\s*items:\s*\[([^\]]*)\]/g)].map((m) => ({
+    key: m[1]!,
+    items: [...m[2]!.matchAll(/"([^"]+)"/g)].map((x) => x[1]!),
+  }));
+  assert.ok(groups.length >= 5, `GROUPS not parsed from the page — found ${groups.length}`);
+
+  const missing: string[] = [];
+  for (const loc of LOCALES) {
+    const m = JSON.parse(readFileSync(`messages/${loc}.json`, "utf8"));
+    for (const g of groups) {
+      if (!resolves(m, `features.groups.${g.key}.title`)) missing.push(`${loc}: groups.${g.key}.title`);
+      for (const k of g.items) {
+        if (!resolves(m, `features.groups.${g.key}.items.${k}`)) missing.push(`${loc}: groups.${g.key}.items.${k}`);
+      }
+    }
+  }
+  assert.deepEqual(missing, [], "the /features structure names keys that do not exist");
+});
+
+test("…and no locale carries a feature bullet the page never renders", () => {
+  // The other direction. A key nobody asks for is a translation somebody paid for and no reader will
+  // ever see — and, after the duplicate-bullet episode, the likeliest shape of a leftover.
+  const page = readFileSync("src/app/[locale]/(converter)/features/page.tsx", "utf8");
+  const known = new Set([...page.matchAll(/"([a-zA-Z0-9]+)"/g)].map((m) => m[1]!));
+  const orphans: string[] = [];
+  for (const loc of LOCALES) {
+    const g = JSON.parse(readFileSync(`messages/${loc}.json`, "utf8")).features.groups;
+    for (const [gk, grp] of Object.entries(g as Record<string, { items: Record<string, string> }>)) {
+      if (!known.has(gk)) orphans.push(`${loc}: groups.${gk}`);
+      for (const ik of Object.keys(grp.items)) if (!known.has(ik)) orphans.push(`${loc}: groups.${gk}.items.${ik}`);
+    }
+  }
+  assert.deepEqual(orphans, [], "these feature strings are translated and never rendered");
 });

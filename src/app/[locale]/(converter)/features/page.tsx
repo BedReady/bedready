@@ -11,7 +11,35 @@ export const metadata = {
   alternates: alternates("/features"),
 };
 
-type Group = { title: string; items: string[] };
+/**
+ * The feature list's structure, in code — the messages carry only the words.
+ *
+ * ── WHY THIS IS NOT AN ARRAY IN THE MESSAGE FILES ANY MORE ──────────────────────────────────────
+ *
+ * It was `groups: [{ title, items: string[] }]`, and the items were addressed by position. On
+ * 2026-08-22 the new i18n parity guard reported eighteen keys missing from `features.groups` in the
+ * six non-English locales. The count was right; the conclusion drawn from it was not. The locales
+ * carried the SAME bullets in a DIFFERENT ORDER, each missing a different one — so translating
+ * English's last three and appending them made every count match, satisfied the guard, and shipped
+ * six languages a page that stated three claims twice while still omitting the three it never had.
+ *
+ * Positional keys are why that was possible: `groups.1.items.3` is a *slot*, and nothing can check
+ * that the slot holds the same claim in German as in English. `groups.colors.items.prusaPaint` is a
+ * *name*, and parity over names is the semantic check the guard could not previously make.
+ *
+ * Order lives here rather than in seven JSON files, so a translator cannot reorder one locale's page
+ * by accident, and adding a bullet is one edit here plus seven translations that the guard then
+ * demands.
+ */
+const GROUPS = [
+  { key: "slicers", items: ["sources", "creality", "retag", "colormix"] },
+  { key: "colors", items: ["slots", "preserved", "match", "prusaPaint"] },
+  { key: "beyond4", items: ["fullSpectrum", "ownFilaments", "heightBands", "mixLayerHeight", "swapPauses"] },
+  { key: "u1", items: ["profileMode", "primeTower", "limits", "report"] },
+  { key: "control", items: ["preview", "reorder", "physical"] },
+  { key: "exports", items: ["split", "stl", "strip"] },
+  { key: "free", items: ["inBrowser", "freeLangs", "extension", "library"] },
+] as const;
 
 /**
  * One encoding per column.
@@ -51,7 +79,7 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
   const { locale } = use(params);
   setRequestLocale(locale);
   const t = useTranslations("features");
-  const groups = t.raw("groups") as Group[];
+
 
   return (
     <main className="shell py-12">
@@ -62,23 +90,19 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
           groups in a two-column grid. It spans instead, which reads as a closing row rather than an
           orphan. */}
       <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
-        {groups.map((g, gi) => (
-          <div
-            key={g.title}
-            className={`border-t border-line pt-5 ${gi === groups.length - 1 && groups.length % 2 === 1 ? "sm:col-span-2" : ""}`}
-          >
-            <h2 className="text-sm font-semibold text-fg">{g.title}</h2>
-            <ul
-              className={`mt-3 space-y-2 text-sm leading-relaxed text-fg-muted ${
-                gi === groups.length - 1 && groups.length % 2 === 1 ? "sm:columns-2 sm:gap-x-10" : ""
-              }`}
-            >
-              {g.items.map((it, i) => (
-                <li key={i}>{it}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {GROUPS.map((g, gi) => {
+          const last = gi === GROUPS.length - 1 && GROUPS.length % 2 === 1;
+          return (
+            <div key={g.key} className={`border-t border-line pt-5 ${last ? "sm:col-span-2" : ""}`}>
+              <h2 className="text-sm font-semibold text-fg">{t(`groups.${g.key}.title`)}</h2>
+              <ul className={`mt-3 space-y-2 text-sm leading-relaxed text-fg-muted ${last ? "sm:columns-2 sm:gap-x-10" : ""}`}>
+                {g.items.map((k) => (
+                  <li key={k}>{t(`groups.${g.key}.items.${k}`)}</li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
       </div>
 
       {/* Honest, capability-based comparison — why BedReady is the most complete U1 converter. */}
