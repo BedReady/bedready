@@ -32,6 +32,7 @@ function panelToMeshData(panel: PanelMesh, baseState = 1): MeshData {
   const triangleCount = panel.positions.length / 9;
   return {
     positions: panel.positions,
+    mmPerUnit: 1, // built here, in millimetres — there is no source document to disagree with
     faceState: panel.faceState,
     palette: panel.palette,
     usage,

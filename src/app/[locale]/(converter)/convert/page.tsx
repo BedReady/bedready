@@ -826,7 +826,11 @@ export default function ConvertPage() {
         setProgress(i / groups.length);
         setMessage(t("splitProgress", { i: i + 1, n: groups.length }));
         const [cx, cy] = centerXY(groups[i].ids);
-        const subBytes = subsetThreeMF(orig, new Set(groups[i].ids), [bed - cx, bed - cy]);
+        // centerXY reads mesh.parts, which are MILLIMETRES; the offset is written into the original
+        // document, whose coordinates are in its own unit. Equal for the usual millimetre file, and
+        // off by 25.4 for an inch one — so convert back rather than assume they are the same space.
+        const subBytes = subsetThreeMF(orig, new Set(groups[i].ids),
+          [(bed - cx) / mesh.mmPerUnit, (bed - cy) / mesh.mmPerUnit]);
         const r = await cleanThreeMFAsync(new File([subBytes as BlobPart], `${groups[i].name}.3mf`), "u1", { mode: profileMode, swapPauses, fullSpectrum });
         out.push({ name: `${base}_${groups[i].name}.u1.3mf`, bytes: new Uint8Array(await r.blob.arrayBuffer()) });
       }

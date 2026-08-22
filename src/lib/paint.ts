@@ -155,7 +155,11 @@ export function dominantState(hex: string): number {
 // ---------- mesh extraction (for the colored preview) ----------
 
 export type MeshData = {
-  positions: Float32Array; // non-indexed: 9 floats (3 verts) per face (empty if skipped)
+  positions: Float32Array; // non-indexed: 9 floats (3 verts) per face (empty if skipped) — MILLIMETRES
+  /** Millimetres per unit of the SOURCE file (`<model unit>`; 1 for the usual millimetre document).
+   *  `positions` are already scaled by this. Anything computing a value in mm and writing it BACK
+   *  into the original file — a bed-centering offset, say — has to divide by it first. */
+  mmPerUnit: number;
   faceState: Uint8Array; // filament state per face (0 = base) (empty if skipped)
   palette: string[]; // filament colors, normalized
   usage: number[]; // faces per palette index (state-1)
@@ -201,6 +205,24 @@ function matMul(A: number[], B: number[]): number[] {
   return R;
 }
 const attr = (s: string, name: string) => s.match(new RegExp(`${name}\\s*=\\s*"([^"]*)"`))?.[1];
+
+// 3MF's <model> carries a `unit`, and it is not always millimetres — the core spec allows micron,
+// centimeter, inch, foot and meter, and CAD exporters use them. Nothing here read it, so every
+// vertex was treated as millimetres and every number derived from geometry inherited the error:
+// a 12×12×6 INCH box (305×305×152 mm, far past the U1's bed) measured "12×12×6" and was told it
+// fit, while a 200 mm part written in microns measured 200000 and was told it was too big.
+// Band z-values are worse still — buildBandSwapPlan compares them against the slicer's
+// layer_height, which is millimetres, so a mismatched unit makes the pause layers meaningless.
+//
+// Normalising here fixes all of it at once: every consumer of MeshData is downstream of this.
+// The spec's default when the attribute is absent is millimetre.
+const UNIT_MM: Record<string, number> = {
+  micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000,
+};
+/** Millimetres per unit of the document's declared `unit`. Unknown or absent → 1 (millimetre). */
+export function unitScale(unit: string | undefined): number {
+  return UNIT_MM[(unit ?? "").trim().toLowerCase()] ?? 1;
+}
 const stripSlash = (p: string) => p.replace(/^\//, "");
 
 type GeomObject = { mesh?: string; triCount?: number; comps?: { path: string; objectid: number; transform: number[] }[] };
@@ -269,6 +291,7 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
   // Each .model file gets its own object-id namespace (the production-extension p:path scheme).
   const files = new Map<string, Map<number, GeomObject>>();
   let buildPath = ""; // the .model that holds <build> (usually 3D/3dmodel.model)
+  let mmPerUnit = 1; // set from that file's <model unit="…">; everything below emits millimetres
   const buildItems: { objectid: number; transform: number[] }[] = [];
 
   for (const [path, data] of Object.entries(entries)) {
@@ -349,6 +372,9 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
       files.set(stripSlash(path), objs);
       if (/<build[\s>]/.test(xml)) {
         buildPath = stripSlash(path);
+        // The document's unit lives on the <model> element of the file that carries <build>. Component
+        // files are part of the same document and share it, so this is read once, not per file.
+        mmPerUnit = unitScale(attr(xml.match(/<model\b[^>]*>/)?.[0] ?? "", "unit"));
         for (const im of xml.matchAll(/<item\b([^>]*?)\/?>/g)) {
           const oid = parseInt(attr(im[1], "objectid") ?? "-1", 10);
           if (oid < 0) continue;
@@ -400,6 +426,7 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
 
   const empty = (skipped: boolean): MeshData => ({
     positions: new Float32Array(0),
+    mmPerUnit,
     faceState: new Uint8Array(0),
     palette,
     usage: palette.map(() => 0),
@@ -434,9 +461,11 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
       const x = +(tag.match(/x="([^"]+)"/)?.[1] ?? 0);
       const y = +(tag.match(/y="([^"]+)"/)?.[1] ?? 0);
       const z = +(tag.match(/z="([^"]+)"/)?.[1] ?? 0);
-      vx[i++] = x * M[0] + y * M[4] + z * M[8] + M[12];
-      vx[i++] = x * M[1] + y * M[5] + z * M[9] + M[13];
-      vx[i++] = x * M[2] + y * M[6] + z * M[10] + M[14];
+      // × mmPerUnit last: the scale is uniform, so scaling world space is the same as folding it
+      // into M, and it correctly scales the translation terms (an offset is in the same unit).
+      vx[i++] = (x * M[0] + y * M[4] + z * M[8] + M[12]) * mmPerUnit;
+      vx[i++] = (x * M[1] + y * M[5] + z * M[9] + M[13]) * mmPerUnit;
+      vx[i++] = (x * M[2] + y * M[6] + z * M[10] + M[14]) * mmPerUnit;
     }
     // Iterate lazily (don't materialize all matches — would OOM on huge meshes) and stride-sample.
     for (const m of seg.matchAll(/<triangle ([^>]*?)\/>/g)) {
@@ -490,6 +519,7 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
 
   return {
     positions: vc === positions.length ? positions : positions.subarray(0, vc),
+    mmPerUnit,
     faceState: fc === faceState.length ? faceState : faceState.subarray(0, fc),
     palette,
     usage,
