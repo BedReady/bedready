@@ -26,6 +26,22 @@
 //   2. every key a call site names resolves in `en`
 //
 // They are different claims. Parity is satisfied by seven locales that are all missing the same key.
+//
+// ── AND THE LIMIT, WHICH COST SOMETHING TO LEARN ────────────────────────────────────────────────
+//
+// For an ARRAY of content — `features.groups[].items[]` — these rules check that the positions
+// exist, and nothing checks that position 2 means the same thing in every locale. When this guard
+// first ran it reported eighteen keys missing from `features.groups`, which was true; the inference
+// drawn from it was not. The counts differed because the locales carried the SAME bullets in a
+// DIFFERENT ORDER, each missing a different one — not because three bullets were untranslated.
+//
+// Appending three translations to the end made every count match, satisfied this test, and shipped
+// six languages a page that stated three claims twice while still omitting the three it never had.
+// The lesson is not about arrays: it is that a length is not a diff, and "the counts differ, so the
+// tail is missing" is an assumption that positional data invites and never justifies.
+//
+// **Before adding a key to fix a parity failure, read the items.** The durable fix is to key these
+// lists by name instead of by position, at which point these two rules cover them completely.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";

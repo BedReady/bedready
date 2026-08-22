@@ -1045,18 +1045,18 @@
         "items": [
           "Bemalte Mehrfarbigkeit auf die 4 Slots des U1 abgebildet",
           "Originalfarben exakt erhalten",
-          "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)",
-          "Übersetzt PrusaSlicer-Bemalungsdaten (Farben / Stützen / Nähte)"
+          "Farbabgleich auf das abgestimmt, was der U1 tatsächlich druckt (CIEDE2000 + das Pigmentmodell des Slicers)",
+          "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)"
         ]
       },
       {
         "title": "Mehr als 4 Farben",
         "items": [
           "Full Spectrum: mische deine 4 Filamente, um zusätzliche Farben anzunähern",
+          "Mische aus deinen eigenen Filamenten (CMYK oder beliebige 4) — mit bearbeitbarem Rezept je Farbe",
+          "Erkennt höhenweise gebänderte Modelle und nennt dir die genauen Filamentwechsel-Höhen",
           "Mischfarben-Schichthöhe für sanftere Übergänge",
-          "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe",
-          "Schichthöhensteuerung für Mischfarben — für weichere Übergänge",
-          "M600-Spulenwechselpausen erhalten jede Farbe in Dateien mit Farbwechsel pro Schicht"
+          "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe"
         ]
       },
       {

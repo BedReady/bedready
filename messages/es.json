@@ -1045,7 +1045,7 @@
         "items": [
           "Multicolor pintado asignado a las 4 ranuras de la U1",
           "Colores originales conservados con exactitud",
-          "Traduce los datos de pintura de PrusaSlicer (colores / soportes / costuras)",
+          "Coincidencia de color ajustada a lo que la U1 imprime realmente (CIEDE2000 + el modelo de pigmento del propio slicer)",
           "Traduce los datos de pintura de PrusaSlicer (colores / soportes / costuras)"
         ]
       },
@@ -1053,10 +1053,10 @@
         "title": "Más de 4 colores",
         "items": [
           "Full Spectrum: mezcla tus 4 filamentos para aproximar colores extra",
+          "Mezcla desde tus propios filamentos (CMYK o cualquier 4) con una receta editable por color",
+          "Detecta modelos con bandas por altura y te da las alturas exactas de cambio de filamento",
           "Control de altura de capa del color mezclado para mezclas más suaves",
-          "Pausas de cambio de bobina (M600) conservan cada color en archivos por capa",
-          "Control de altura de capa en colores mezclados para degradados más suaves",
-          "Las pausas de cambio de bobina M600 conservan todos los colores en archivos por capas"
+          "Pausas de cambio de bobina (M600) conservan cada color en archivos por capa"
         ]
       },
       {
