@@ -226,3 +226,75 @@ test("…and no locale carries a feature bullet the page never renders", () => {
   }
   assert.deepEqual(orphans, [], "these feature strings are translated and never rendered");
 });
+
+/**
+ * Browsers, each as the Latin name English would use and every form a locale might.
+ *
+ * ── THE ASYMMETRY THAT HAS TO BE HANDLED, NOT IGNORED ───────────────────────────────────────────
+ *
+ * English is always Latin; a locale may transliterate. The first version of this rule tested BOTH
+ * sides with the same alternation, so `كروم` in Arabic was compared against `كروم` in English —
+ * which can never match — and every Arabic mention read as a locale inventing a browser. It also
+ * failed the other way round: the Latin-only sweep that FOUND this drift reported Arabic as clean
+ * while Arabic said `إضافة كروم` on all six of the same keys.
+ *
+ * So each browser is a pair: `en` is what English writes, `any` is what any locale might, and the
+ * comparison runs one against the other.
+ */
+const BROWSERS = [
+  { en: /chrome/i, any: /chrome|كروم|クローム|谷歌浏览器/i },
+  { en: /firefox/i, any: /firefox|فَيَرفُكس|فايرفوكس|ファイアフォックス|火狐/i },
+  { en: /safari/i, any: /safari|سفاري|サファリ/i },
+  { en: /\bedge\b/i, any: /\bedge\b|إيدج|エッジ/i },
+];
+
+/**
+ * Keys that are ABOUT one browser, where naming it is the point.
+ *
+ * `extension.safariPending` sits under the page's "Safari (Mac)" card and says the Safari build is
+ * in review; English phrases it as "the Mac App Store" and several locales name Safari outright.
+ * Both are correct. Listed by fact rather than silenced by a looser rule, so the next reader sees a
+ * decision.
+ */
+const ABOUT_ONE_BROWSER = /^extension\.(safari|chrome|firefox)/;
+
+test("no locale names a browser that English does not", () => {
+  // The extension was Chrome-only when six locales were translated. It ships for Chrome, Edge,
+  // Firefox and Safari now; English was updated and the locales were not, so `nav.extension`,
+  // `footer.extension`, `privacy.extTitle`, `help.sections.5.title`, `convert.tip` and `features.note`
+  // all said "Chrome extension" in six languages — the footer one on every page of the site.
+  //
+  // Nothing could see it. The strings existed, were translated, and parity was perfect: a locale
+  // NARROWING a claim English leaves general is invisible to every check that compares key sets.
+  const en = new Map(leafKeys(JSON.parse(readFileSync("messages/en.json", "utf8")))
+    .map((k) => [k, resolveString(JSON.parse(readFileSync("messages/en.json", "utf8")), k)]));
+  const narrowed: string[] = [];
+  for (const loc of LOCALES.filter((l) => l !== "en")) {
+    const m = JSON.parse(readFileSync(`messages/${loc}.json`, "utf8"));
+    for (const k of leafKeys(m)) {
+      const v = resolveString(m, k), e = en.get(k);
+      if (typeof v !== "string" || typeof e !== "string") continue;
+      if (ABOUT_ONE_BROWSER.test(k)) continue;
+      for (const b of BROWSERS) {
+        if (b.any.test(v) && !b.en.test(e)) { narrowed.push(`${loc}: ${k} — names ${b.en.source}, English does not`); break; }
+      }
+    }
+  }
+  assert.deepEqual(
+    narrowed,
+    [],
+    "a locale names a specific browser where English is general — it under-sells a shipped capability " +
+      "in a language nobody on the team reads, and key-set parity cannot see it",
+  );
+});
+
+/** The string at a dotted path, or undefined. Arrays are addressed by index, as `leafKeys` emits them. */
+function resolveString(node: unknown, path: string): string | undefined {
+  let cur: unknown = node;
+  for (const part of path.split(".")) {
+    if (Array.isArray(cur)) cur = cur[Number(part)];
+    else if (cur && typeof cur === "object") cur = (cur as Record<string, unknown>)[part];
+    else return undefined;
+  }
+  return typeof cur === "string" ? cur : undefined;
+}

@@ -4,7 +4,7 @@
     "converter": "转换器",
     "app": "桌面应用",
     "share": "分享文件",
-    "extension": "Chrome 扩展",
+    "extension": "浏览器扩展",
     "help": "帮助和常见问题",
     "profile": "你的资料",
     "notifications": "通知",
@@ -24,7 +24,7 @@
     "tagline": "天生不绑定品牌。",
     "converter": "免费 3MF 转换器",
     "library": "素材库",
-    "extension": "Chrome 扩展",
+    "extension": "浏览器扩展",
     "help": "帮助和常见问题",
     "licenses": "许可",
     "privacy": "隐私",
@@ -120,7 +120,7 @@
     "title": "让任意 .3mf 适配 U1",
     "intro": "拖入来自 MakerWorld、Bambu Studio、PrusaSlicer、Orca 或 Creality Print 的 .3mf — 即可获得适配 U1 的文件：外来配置被替换为真正的 Snapmaker U1 配置，绘制的多色被映射到 U1 的 4 个槽位，并保留原有颜色。全部在你的浏览器中完成 — 不上传任何内容。",
     "livePreview": "· 下载前提供彩色实时预览",
-    "tip": "提示：<link>Chrome 扩展</link>可直接在 MakerWorld/Printables 的下载页面完成此操作。",
+    "tip": "提示：<link>浏览器扩展</link>可直接在 MakerWorld/Printables 的下载页面完成此操作。",
     "settingsTitle": "U1 打印设置",
     "keepSettings": "保留创作者的设置",
     "useTested": "使用经测试的 U1 配置",
@@ -477,7 +477,7 @@
         ]
       },
       {
-        "title": "Chrome 扩展",
+        "title": "浏览器扩展",
         "items": [
           {
             "q": "有浏览器扩展吗？",
@@ -999,8 +999,8 @@
   "privacy": {
     "title": "隐私政策",
     "updated": "最后更新：2026 年 8 月 11 日",
-    "intro": "BedReady 是一个独立项目，帮助创客为任何打印机转换并分享 3D 打印文件——最初面向 Snapmaker U1，现已覆盖我们的文件检查器能识别的所有打印机。本政策涵盖网站（bedready.io）和 BedReady 浏览器扩展（Chrome、Firefox 和 Safari）。我们力求尽量少收集，并且绝不出售你的数据。",
-    "extTitle": "Chrome 扩展",
+    "intro": "BedReady 是一个独立项目，帮助创客为任何打印机转换并分享 3D 打印文件——最初面向 Snapmaker U1，现已覆盖我们的文件检查器能识别的所有打印机。本政策涵盖网站（bedready.io）和 BedReady 浏览器扩展（Chrome、Edge、Firefox 和 Safari）。我们力求尽量少收集，并且绝不出售你的数据。",
+    "extTitle": "浏览器扩展",
     "extIntro": "该扩展不收集任何数据，也不向任何服务器发送内容。转换完全在你的浏览器中进行 — 你的文件绝不会被上传。权限仅用于实现这一项功能（为 Snapmaker U1 转换已下载的 .3mf）：",
     "extBullets": [
       "downloads — 读取你正在下载的 .3mf，并将转换后的文件保存回你的设备。",
@@ -1030,7 +1030,7 @@
     "intro": "拖入一个多色 .3mf，即可获得适配 Snapmaker U1 的文件 — 颜色、配置和擦料塔都已处理。免费、在浏览器中、不上传任何内容。",
     "ctaConvert": "转换文件 — 免费",
     "ctaBrowse": "浏览 MakerRun",
-    "note": "完全在你的设备上运行。也提供 Chrome 扩展，并支持 7 种语言。",
+    "note": "完全在你的设备上运行。也提供浏览器扩展（Chrome、Edge、Firefox、Safari），并支持 7 种语言。",
     "groups": {
       "slicers": {
         "title": "兼容各种切片软件",
