@@ -82,8 +82,24 @@ export const CONVERTER_ROUTES = [
   "u1-to-prusa",
 ] as const;
 
-/** Non-default locales, which may prefix any path. `en` is unprefixed. */
-const LOCALES = ["de", "es", "fr", "zh", "ja", "ar"];
+/**
+ * Every locale segment that can appear in a URL — including `en`.
+ *
+ * English is unprefixed in the links this site WRITES, which is why `en` was left out. But it is
+ * not absent from URLs this site EMITS: Next resolves an `opengraph-image` route with the active
+ * locale segment, so every social-preview image on the converter is
+ * `/en/guides/<slug>/opengraph-image-…`. Crawlers, bookmarks and hand-typed URLs produce `/en/…`
+ * too.
+ *
+ * With `en` missing, `withoutLocale("/en/convert")` returned it unchanged, no converter route
+ * matched, and the path was attributed to the library — so `bedready.io/en/convert` 301'd to
+ * `makerrun.com/en/convert`, and every og:image on this site redirected to the sister domain. It
+ * still rendered an image, which is why nobody noticed: the other site serves the same route.
+ *
+ * The comment this replaces already described the failure — "every non-English converter URL would
+ * be attributed to the library" — and then omitted the one locale that makes it true for English.
+ */
+const LOCALES = ["en", "de", "es", "fr", "zh", "ja", "ar"];
 
 /**
  * Strip a leading locale segment so `/de/convert` and `/convert` resolve to the same owner.
