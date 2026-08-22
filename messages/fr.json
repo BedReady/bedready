@@ -1045,6 +1045,7 @@
         "items": [
           "Multicolore peint mappé sur les 4 emplacements de la U1",
           "Couleurs d'origine conservées exactement",
+          "Traduit les données de peinture PrusaSlicer (couleurs / supports / coutures)",
           "Traduit les données de peinture PrusaSlicer (couleurs / supports / coutures)"
         ]
       },
@@ -1053,7 +1054,9 @@
         "items": [
           "Full Spectrum : mélangez vos 4 filaments pour approcher des couleurs en plus",
           "Réglage de hauteur de couche du mélange pour des dégradés plus doux",
-          "Pauses de changement de bobine (M600) gardent chaque couleur sur les fichiers par couche"
+          "Pauses de changement de bobine (M600) gardent chaque couleur sur les fichiers par couche",
+          "Contrôle de la hauteur de couche des couleurs mélangées, pour des dégradés plus doux",
+          "Les pauses de changement de bobine M600 conservent chaque couleur dans les fichiers par couche"
         ]
       },
       {

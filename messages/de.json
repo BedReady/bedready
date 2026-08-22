@@ -1045,7 +1045,8 @@
         "items": [
           "Bemalte Mehrfarbigkeit auf die 4 Slots des U1 abgebildet",
           "Originalfarben exakt erhalten",
-          "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)"
+          "Übersetzt PrusaSlicer-Bemaldaten (Farben / Stützen / Nähte)",
+          "Übersetzt PrusaSlicer-Bemalungsdaten (Farben / Stützen / Nähte)"
         ]
       },
       {
@@ -1053,7 +1054,9 @@
         "items": [
           "Full Spectrum: mische deine 4 Filamente, um zusätzliche Farben anzunähern",
           "Mischfarben-Schichthöhe für sanftere Übergänge",
-          "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe"
+          "M600-Spulenwechsel-Pausen behalten bei By-Layer-Dateien jede Farbe",
+          "Schichthöhensteuerung für Mischfarben — für weichere Übergänge",
+          "M600-Spulenwechselpausen erhalten jede Farbe in Dateien mit Farbwechsel pro Schicht"
         ]
       },
       {
