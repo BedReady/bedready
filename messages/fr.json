@@ -1031,70 +1031,70 @@
     "ctaConvert": "Convertir un fichier — gratuit",
     "ctaBrowse": "Parcourir MakerRun",
     "note": "Tout se passe sur votre appareil. Aussi en extension Chrome et en 7 langues.",
-    "groups": [
-      {
+    "groups": {
+      "slicers": {
         "title": "Compatible avec tout trancheur",
-        "items": [
-          "Convertit les .3mf de MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer",
-          "Prise en charge complète de Creality Print",
-          "Réétiquette les fichiers Prusa/Creality en projet Orca natif — fini le “géométrie seule”",
-          "Lit les fichiers ColorMix de PrusaSlicer / Orca — conserve leurs 4 filaments de base et leurs mélanges, Full Spectrum activé"
-        ]
+        "items": {
+          "sources": "Convertit les .3mf de MakerWorld, Bambu Studio, PrusaSlicer & OrcaSlicer",
+          "creality": "Prise en charge complète de Creality Print",
+          "retag": "Réétiquette les fichiers Prusa/Creality en projet Orca natif — fini le “géométrie seule”",
+          "colormix": "Lit les fichiers ColorMix de PrusaSlicer / Orca — conserve leurs 4 filaments de base et leurs mélanges, Full Spectrum activé"
+        }
       },
-      {
+      "colors": {
         "title": "Les couleurs, bien faites",
-        "items": [
-          "Multicolore peint mappé sur les 4 emplacements de la U1",
-          "Couleurs d'origine conservées exactement",
-          "Correspondance des couleurs calée sur ce que la U1 imprime réellement (CIEDE2000 + le modèle de pigment du slicer)",
-          "Traduit les données de peinture PrusaSlicer (couleurs / supports / coutures)"
-        ]
+        "items": {
+          "slots": "Multicolore peint mappé sur les 4 emplacements de la U1",
+          "preserved": "Couleurs d'origine conservées exactement",
+          "match": "Correspondance des couleurs calée sur ce que la U1 imprime réellement (CIEDE2000 + le modèle de pigment du slicer)",
+          "prusaPaint": "Traduit les données de peinture PrusaSlicer (couleurs / supports / coutures)"
+        }
       },
-      {
+      "beyond4": {
         "title": "Plus de 4 couleurs",
-        "items": [
-          "Full Spectrum : mélangez vos 4 filaments pour approcher des couleurs en plus",
-          "Mélangez depuis vos propres filaments (CMJN ou 4 au choix), avec une recette modifiable par couleur",
-          "Repère les modèles à bandes de couleur par hauteur et vous donne les hauteurs exactes de changement de filament",
-          "Réglage de hauteur de couche du mélange pour des dégradés plus doux",
-          "Pauses de changement de bobine (M600) gardent chaque couleur sur les fichiers par couche"
-        ]
+        "items": {
+          "fullSpectrum": "Full Spectrum : mélangez vos 4 filaments pour approcher des couleurs en plus",
+          "ownFilaments": "Mélangez depuis vos propres filaments (CMJN ou 4 au choix), avec une recette modifiable par couleur",
+          "heightBands": "Repère les modèles à bandes de couleur par hauteur et vous donne les hauteurs exactes de changement de filament",
+          "mixLayerHeight": "Réglage de hauteur de couche du mélange pour des dégradés plus doux",
+          "swapPauses": "Pauses de changement de bobine (M600) gardent chaque couleur sur les fichiers par couche"
+        }
       },
-      {
+      "u1": {
         "title": "Réglé pour la U1",
-        "items": [
-          "Gardez les réglages du créateur ou appliquez un profil U1 testé",
-          "Tour de purge en valeurs sûres pour la U1 (évite l'échec multicolore le plus courant)",
-          "Limites de vitesse/accélération, garde hauteur variable, ajustement plateau",
-          "Un rapport clair de “ce qui a changé”"
-        ]
+        "items": {
+          "profileMode": "Gardez les réglages du créateur ou appliquez un profil U1 testé",
+          "primeTower": "Tour de purge en valeurs sûres pour la U1 (évite l'échec multicolore le plus courant)",
+          "limits": "Limites de vitesse/accélération, garde hauteur variable, ajustement plateau",
+          "report": "Un rapport clair de “ce qui a changé”"
+        }
       },
-      {
+      "control": {
         "title": "Contrôle & aperçu",
-        "items": [
-          "Aperçu 3D en couleur avant le téléchargement",
-          "Réordonnez les emplacements selon vos filaments chargés",
-          "Choisissez les 4 couleurs chargées physiquement (Full Spectrum)"
-        ]
+        "items": {
+          "preview": "Aperçu 3D en couleur avant le téléchargement",
+          "reorder": "Réordonnez les emplacements selon vos filaments chargés",
+          "physical": "Choisissez les 4 couleurs chargées physiquement (Full Spectrum)"
+        }
       },
-      {
+      "exports": {
         "title": "Multi-pièces & exports",
-        "items": [
-          "Divisez les fichiers multi-pièces en fichiers par pièce",
-          "Export géométrie seule .STL",
-          "Retirez le profil pour importer sur n'importe quelle imprimante"
-        ]
+        "items": {
+          "split": "Divisez les fichiers multi-pièces en fichiers par pièce",
+          "stl": "Export géométrie seule .STL",
+          "strip": "Retirez le profil pour importer sur n'importe quelle imprimante"
+        }
       },
-      {
+      "free": {
         "title": "Privé & gratuit",
-        "items": [
-          "Tout se passe dans votre navigateur — rien n'est envoyé",
-          "100% gratuit, en 7 langues",
-          "L'extension Chrome convertit sur la page de téléchargement",
-          "Bibliothèque de profils vérifiés pour imprimer sur une U1"
-        ]
+        "items": {
+          "inBrowser": "Tout se passe dans votre navigateur — rien n'est envoyé",
+          "freeLangs": "100% gratuit, en 7 langues",
+          "extension": "L'extension de navigateur convertit sur la page de téléchargement",
+          "library": "Bibliothèque de profils vérifiés pour imprimer sur une U1"
+        }
       }
-    ]
+    }
   },
   "stickers": {
     "title": "Stickers d'impression 3D gratuits",

@@ -1031,70 +1031,70 @@
     "ctaConvert": "转换文件 — 免费",
     "ctaBrowse": "浏览 MakerRun",
     "note": "完全在你的设备上运行。也提供 Chrome 扩展，并支持 7 种语言。",
-    "groups": [
-      {
+    "groups": {
+      "slicers": {
         "title": "兼容各种切片软件",
-        "items": [
-          "转换来自 MakerWorld、Bambu Studio、PrusaSlicer 和 OrcaSlicer 的 .3mf",
-          "完整支持 Creality Print",
-          "将 Prusa/Creality 文件重新标记为原生 Orca 项目 — 不再“仅几何”",
-          "读取 PrusaSlicer / Orca 的 ColorMix 文件 — 保留其 4 种基础耗材及混色，并启用 Full Spectrum"
-        ]
+        "items": {
+          "sources": "转换来自 MakerWorld、Bambu Studio、PrusaSlicer 和 OrcaSlicer 的 .3mf",
+          "creality": "完整支持 Creality Print",
+          "retag": "将 Prusa/Creality 文件重新标记为原生 Orca 项目 — 不再“仅几何”",
+          "colormix": "读取 PrusaSlicer / Orca 的 ColorMix 文件 — 保留其 4 种基础耗材及混色，并启用 Full Spectrum"
+        }
       },
-      {
+      "colors": {
         "title": "正确处理颜色",
-        "items": [
-          "将绘制的多色映射到 U1 的 4 个槽位",
-          "精确保留原始颜色",
-          "色彩匹配以 U1 实际打印效果为准（CIEDE2000 + 切片软件自带的颜料模型）",
-          "转换 PrusaSlicer 的绘制数据（颜色／支撑／接缝）"
-        ]
+        "items": {
+          "slots": "将绘制的多色映射到 U1 的 4 个槽位",
+          "preserved": "精确保留原始颜色",
+          "match": "色彩匹配以 U1 实际打印效果为准（CIEDE2000 + 切片软件自带的颜料模型）",
+          "prusaPaint": "转换 PrusaSlicer 的绘制数据（颜色／支撑／接缝）"
+        }
       },
-      {
+      "beyond4": {
         "title": "超过 4 种颜色",
-        "items": [
-          "Full Spectrum：混合你的 4 种耗材来近似更多颜色",
-          "用你自己的耗材调色（CMYK 或任意 4 种），每种颜色的配方都可编辑",
-          "识别按高度分色的模型，并给出精确的换料高度",
-          "混色层高控制，使过渡更平滑",
-          "换料暂停（M600）在按层换色文件中保留每种颜色"
-        ]
+        "items": {
+          "fullSpectrum": "Full Spectrum：混合你的 4 种耗材来近似更多颜色",
+          "ownFilaments": "用你自己的耗材调色（CMYK 或任意 4 种），每种颜色的配方都可编辑",
+          "heightBands": "识别按高度分色的模型，并给出精确的换料高度",
+          "mixLayerHeight": "混色层高控制，使过渡更平滑",
+          "swapPauses": "换料暂停（M600）在按层换色文件中保留每种颜色"
+        }
       },
-      {
+      "u1": {
         "title": "为 U1 调校",
-        "items": [
-          "保留创作者的设置，或套用经测试的 U1 配置",
-          "擦料塔设为 U1 安全值（避免最常见的多色失败）",
-          "速度/加速度上限、可变层高保护、自动适配打印床",
-          "通俗易懂的“更改了什么”报告"
-        ]
+        "items": {
+          "profileMode": "保留创作者的设置，或套用经测试的 U1 配置",
+          "primeTower": "擦料塔设为 U1 安全值（避免最常见的多色失败）",
+          "limits": "速度/加速度上限、可变层高保护、自动适配打印床",
+          "report": "通俗易懂的“更改了什么”报告"
+        }
       },
-      {
+      "control": {
         "title": "控制与预览",
-        "items": [
-          "下载前提供彩色 3D 实时预览",
-          "按你的装料方式重新排序槽位",
-          "选择实际装载的 4 种颜色（Full Spectrum）"
-        ]
+        "items": {
+          "preview": "下载前提供彩色 3D 实时预览",
+          "reorder": "按你的装料方式重新排序槽位",
+          "physical": "选择实际装载的 4 种颜色（Full Spectrum）"
+        }
       },
-      {
+      "exports": {
         "title": "多部件与导出",
-        "items": [
-          "将多部件文件拆分为按部件的单独文件",
-          "仅几何 .STL 导出",
-          "去除配置以便在任意打印机上导入"
-        ]
+        "items": {
+          "split": "将多部件文件拆分为按部件的单独文件",
+          "stl": "仅几何 .STL 导出",
+          "strip": "去除配置以便在任意打印机上导入"
+        }
       },
-      {
+      "free": {
         "title": "私密且免费",
-        "items": [
-          "完全在你的浏览器中运行 — 不上传任何内容",
-          "100% 免费，支持 7 种语言",
-          "Chrome 扩展可在下载页面直接转换",
-          "配有经 U1 实测可打印配置的素材库"
-        ]
+        "items": {
+          "inBrowser": "完全在你的浏览器中运行 — 不上传任何内容",
+          "freeLangs": "100% 免费，支持 7 种语言",
+          "extension": "浏览器扩展可在下载页面直接转换",
+          "library": "配有经 U1 实测可打印配置的素材库"
+        }
       }
-    ]
+    }
   },
   "stickers": {
     "title": "免费 3D 打印贴纸",
