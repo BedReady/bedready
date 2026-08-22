@@ -482,7 +482,7 @@
         "items": [
           {
             "q": "هل توجد إضافة للمتصفح؟",
-            "a": "نعم — تضيف خيار «التجهيز لِU1» مباشرةً في صفحة التنزيل على MakerWorld وBambu وPrintables وThingiverse. ومثل الموقع، تُحوِّل في متصفحك ولا ترفع شيئًا."
+            "a": "نعم — تضيف زر «‎→ U1‎» مباشرةً في صفحة التنزيل على MakerWorld وBambu وPrintables وThingiverse. ومثل الموقع، تُحوِّل في متصفحك ولا ترفع شيئًا."
           }
         ]
       },
@@ -626,14 +626,14 @@
       "افتح chrome://extensions في Chrome (أو edge://extensions في Edge).",
       "فعّل «وضع المطوّر» (المفتاح أعلى اليمين).",
       "انقر «تحميل غير مُحزَّم» واختر المجلد الذي فككت ضغطه.",
-      "افتح نموذجًا على MakerWorld / Printables / Thingiverse — سيظهر خيار «تجهيز لـ U1» عند تنزيل ‎.3mf."
+      "افتح نموذجًا على MakerWorld / Printables / Thingiverse — سيظهر زر «‎→ U1‎» بجانب تنزيلات ‎.3mf."
     ],
     "firefoxSteps": [
       "نزّل ملف ‎.zip الخاص بـ Firefox.",
       "افتح about:debugging#/runtime/this-firefox.",
       "انقر «تحميل إضافة مؤقتة…» واختر ملف ‎.zip.",
       "في أذونات الإضافة، اسمح بالوصول إلى MakerWorld / Printables / Thingiverse.",
-      "افتح أيًّا من تلك المواقع — سيظهر خيار «تجهيز لـ U1» عند تنزيل ‎.3mf."
+      "افتح أيًّا من تلك المواقع — سيظهر زر «‎→ U1‎» بجانب تنزيلات ‎.3mf."
     ],
     "safariTitle": "Safari (macOS)",
     "getSafari": "احصل عليه من Mac App Store",

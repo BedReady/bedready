@@ -482,7 +482,7 @@
         "items": [
           {
             "q": "Y a-t-il une extension de navigateur ?",
-            "a": "Oui — elle ajoute une option Préparer pour la U1 directement sur la page de téléchargement de MakerWorld, Bambu, Printables et Thingiverse. Comme le site, elle convertit dans votre navigateur et n'envoie rien."
+            "a": "Oui — elle ajoute un bouton « → U1 » directement sur la page de téléchargement de MakerWorld, Bambu, Printables et Thingiverse. Comme le site, elle convertit dans ton navigateur et n'envoie rien."
           }
         ]
       },
@@ -626,14 +626,14 @@
       "Ouvrez chrome://extensions dans Chrome (ou edge://extensions dans Edge).",
       "Activez le « mode développeur » (interrupteur en haut à droite).",
       "Cliquez sur « Charger l'extension non empaquetée » et choisissez le dossier décompressé.",
-      "Visitez un modèle sur MakerWorld / Printables / Thingiverse — une option « Préparer pour la U1 » apparaît sur les téléchargements .3mf."
+      "Visitez un modèle sur MakerWorld / Printables / Thingiverse — un bouton « → U1 » apparaît à côté des téléchargements .3mf."
     ],
     "firefoxSteps": [
       "Téléchargez le .zip Firefox.",
       "Ouvrez about:debugging#/runtime/this-firefox.",
       "Cliquez sur « Charger un module complémentaire temporaire… » et choisissez le .zip.",
       "Dans les autorisations du module, autorisez l'accès à MakerWorld / Printables / Thingiverse.",
-      "Visitez l'un de ces sites — une option « Préparer pour la U1 » apparaît sur les téléchargements .3mf."
+      "Visitez l'un de ces sites — un bouton « → U1 » apparaît à côté des téléchargements .3mf."
     ],
     "safariTitle": "Safari (macOS)",
     "getSafari": "Télécharger dans le Mac App Store",
