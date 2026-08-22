@@ -639,7 +639,8 @@
     "safariPending": "Die Safari-Erweiterung wird derzeit von Apple geprüft.",
     "safariNote": "Safari-Erweiterungen werden als App ausgeliefert — installiere sie und aktiviere sie dann in Safari unter Einstellungen → Erweiterungen.",
     "installManually": "Oder manuell installieren (fortgeschritten)",
-    "chromeStoreOnly": "Im Chrome Web Store."
+    "chromeStoreOnly": "Im Chrome Web Store.",
+    "popupCaption": "Das Popup der Erweiterung — eine .3mf hineinziehen und eine U1-fertige Datei zurückbekommen, ohne die Seite zu verlassen."
   },
   "upload": {
     "loading": "Lädt…",

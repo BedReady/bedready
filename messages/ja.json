@@ -639,7 +639,8 @@
     "safariPending": "Safari 拡張機能は現在 Apple の審査中です。",
     "safariNote": "Safari 拡張機能はアプリとして配布されます。インストール後、Safari の「設定 → 機能拡張」で有効にしてください。",
     "installManually": "手動でインストール（上級者向け）",
-    "chromeStoreOnly": "Chrome ウェブストアで公開中。"
+    "chromeStoreOnly": "Chrome ウェブストアで公開中。",
+    "popupCaption": "拡張機能のポップアップ — .3mf をドロップすると、そのページを離れずに U1 対応ファイルが返ってきます。"
   },
   "upload": {
     "loading": "読み込み中…",

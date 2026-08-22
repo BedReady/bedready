@@ -639,7 +639,8 @@
     "safariPending": "La extensión de Safari está en revisión por Apple.",
     "safariNote": "Las extensiones de Safari se distribuyen como una app: instálala y luego actívala en Safari, en Ajustes → Extensiones.",
     "installManually": "O instalar manualmente (avanzado)",
-    "chromeStoreOnly": "En Chrome Web Store."
+    "chromeStoreOnly": "En Chrome Web Store.",
+    "popupCaption": "La ventana de la extensión: suelta un .3mf y recibe un archivo listo para la U1 sin salir de la página."
   },
   "upload": {
     "loading": "Cargando…",

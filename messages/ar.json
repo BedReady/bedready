@@ -639,7 +639,8 @@
     "safariPending": "إضافة Safari قيد المراجعة لدى Apple.",
     "safariNote": "تُوزَّع إضافات Safari على هيئة تطبيق — ثبّته ثم فعّله في Safari من الإعدادات ← الإضافات.",
     "installManually": "أو التثبيت يدويًا (متقدّم)",
-    "chromeStoreOnly": "على متجر ‎Chrome الإلكتروني."
+    "chromeStoreOnly": "على متجر ‎Chrome الإلكتروني.",
+    "popupCaption": "نافذة الإضافة — أفلِت ملف ‎.3mf لتحصل على ملف جاهز لـ ‎U1 دون مغادرة الصفحة التي أنت فيها."
   },
   "upload": {
     "loading": "جارٍ التحميل…",
