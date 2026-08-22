@@ -1,12 +1,10 @@
 // Does it fit on the bed?
 //
 // ── WHY THIS ISN'T ONE BOUNDING BOX ─────────────────────────────────────────────────────────────
-// The preview mesh's `positions` are in PLATE-LAYOUT space: paint.ts walks build items → objects →
-// components and applies every transform "so multi-part assemblies and repeated instances land in
-// their true positions". So one bounding box over the whole file measures the ARRANGEMENT, not the
-// model. A four-plate project — which slicers lay out offset by roughly a bed-width each — measures
-// about two beds across in x and y, and the old check reported that as a model too big for the U1.
-// A real report: "This model is 454×516×49 mm" for a model that fits comfortably. The 49 mm was the
+// The preview mesh's `positions` are in PLATE-LAYOUT space (see lib/print-groups.ts), so one bounding
+// box over the whole file measures the ARRANGEMENT, not the model. A four-plate project measures
+// about two beds across, and the old check reported that as a model too big for the U1 — a real
+// report read "This model is 454×516×49 mm" for a model that fits comfortably, the 49 mm being the
 // only honest number in it.
 //
 // So the question "does it fit" has to be asked per plate, because a plate is what actually gets
@@ -17,12 +15,10 @@
 //
 // Collapsing those into one "too big" message told people to rescale a model that didn't need it.
 
+import { printGroups, type GroupableMesh } from "./print-groups";
+
 /** The shape this needs from MeshData — narrowed so tests can build one by hand. */
-export type FitMesh = {
-  positions: ArrayLike<number>;
-  parts: { positions: ArrayLike<number> }[];
-  plates: { partIndices: number[] }[];
-};
+export type FitMesh = GroupableMesh;
 
 export type FitVerdict =
   /** One part is genuinely larger than the build volume. Dimensions are that part's. */
@@ -46,20 +42,11 @@ function boxOf(positions: ArrayLike<number>): Box | null {
   return { x: maxX - minX, y: maxY - minY, z: maxZ - minZ };
 }
 
-/** Groups that print together: one entry per plate, or the whole file when it isn't plate-structured
- *  (no plate metadata means every build item goes down on the same bed). */
-function printGroups(mesh: FitMesh): { positions: ArrayLike<number> }[][] {
-  if (mesh.plates.length > 1) {
-    return mesh.plates.map((pl) => pl.partIndices.map((i) => mesh.parts[i]).filter(Boolean));
-  }
-  return mesh.parts.length ? [mesh.parts] : [[{ positions: mesh.positions }]];
-}
-
 /** First group that won't print, or null when everything fits. `tol` mm of slack matches the desktop
  *  app, which ignores the sub-millimetre overshoot that rounding and wall thickness produce. */
 export function fitVerdict(mesh: FitMesh, maxXY: number, maxZ: number, tol = 1): FitVerdict | null {
   for (const group of printGroups(mesh)) {
-    const boxes = group.map((p) => boxOf(p.positions)).filter((b): b is Box => b !== null);
+    const boxes = group.parts.map((p) => boxOf(p.positions)).filter((b): b is Box => b !== null);
     // A part over the limit is the model's problem, and it's the one worth naming first — a plate can
     // be both over-full AND hold an oversize part, and rescaling is the fix that has to happen.
     const tooBig = boxes.find((b) => b.x > maxXY + tol || b.y > maxXY + tol || b.z > maxZ + tol);
@@ -67,7 +54,7 @@ export function fitVerdict(mesh: FitMesh, maxXY: number, maxZ: number, tol = 1):
 
     // Footprint of everything on this plate. Height can't overflow from arrangement — parts sit side
     // by side on the bed, not stacked — so a z within limits above is the final word on z.
-    const spread = boxOf(concatXY(group));
+    const spread = boxOf(concatXY(group.parts));
     if (spread && (spread.x > maxXY + tol || spread.y > maxXY + tol)) {
       return { kind: "layout", x: spread.x, y: spread.y };
     }

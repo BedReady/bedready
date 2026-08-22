@@ -10,6 +10,11 @@
 //
 // Input is the extracted mesh (see paint.ts MeshData): `positions` = 9 floats per face (3 verts × xyz,
 // already transformed to true coordinates), `faceState` = filament state per face (0 = base → baseState).
+//
+// NOTE: this takes a flat pair of arrays and so cannot know about plates. Callers holding a parsed
+// mesh should use detectColorBandsForMesh (bottom of this file), which asks the question per plate.
+
+import { printGroups, flattenGroup, type GroupableMesh } from "./print-groups";
 
 export type ColorBand = {
   state: number; // 1-based palette index (base faces resolved to baseState)
@@ -152,4 +157,78 @@ export function detectColorBands(
         ? "single colour — no swaps needed"
         : `${bands.length} colour bands; ${manualSwaps} manual filament swap${manualSwaps === 1 ? "" : "s"} on the U1`,
   };
+}
+
+// ── PER PLATE ───────────────────────────────────────────────────────────────────────────────────
+// detectColorBands answers "is every thin Z slice one colour?", and a multi-plate file breaks that
+// question rather than the answer: plates all sit at z=0, so slicing the whole file slices every
+// plate at once and two plates painted differently look like one model with two-coloured layers.
+//
+// Both failure modes are real and were reproduced:
+//   • two plates each cleanly banded → banded=false, "colours share layers (in-layer detail)",
+//     which is false — they don't share layers, they share a Z range. The exact-swap path is lost.
+//   • one plate large enough to carry the purity vote → banded=TRUE with the big plate's swap
+//     heights, silently wrong for every other plate. That plan reaches convert.ts, which rewrites
+//     the output around those heights, so a wrong answer here becomes a wrongly converted file.
+//
+// The second is the one that matters, so this is deliberately conservative: a file qualifies only if
+// EVERY plate is banded and they agree on the swaps. Plates that disagree have no single valid plan
+// — the honest result is "not a band-swap candidate", which just falls through to the normal path.
+
+/** Two plans agree when their swap heights match to within half a bin — the same physical pauses. */
+function sameSwaps(a: number[], b: number[], tol: number): boolean {
+  return a.length === b.length && a.every((h, i) => Math.abs(h - b[i]) <= tol);
+}
+
+/** Band analysis over a parsed mesh, asked per plate. Use this instead of calling detectColorBands
+ *  with a whole file's positions — see the note above. */
+export function detectColorBandsForMesh(
+  mesh: GroupableMesh & { baseState?: number },
+  baseState: number,
+  opts: Opts = {},
+): BandPlan {
+  const groups = printGroups(mesh);
+  const plans = groups.map((g) => {
+    const { positions, faceState } = flattenGroup(g);
+    return {
+      name: g.name,
+      plan: detectColorBands(
+        positions instanceof Float32Array ? positions : Float32Array.from(Array.from(positions)),
+        faceState instanceof Uint8Array ? faceState : Uint8Array.from(Array.from(faceState)),
+        baseState,
+        opts,
+      ),
+    };
+  });
+  if (plans.length === 0) return detectColorBands(new Float32Array(0), new Uint8Array(0), baseState, opts);
+  if (plans.length === 1) return plans[0].plan;
+
+  const named = (n: string, i: number) => n || `plate ${i + 1}`;
+  const unbanded = plans.findIndex((p) => !p.plan.banded);
+  if (unbanded >= 0) {
+    return {
+      ...plans[unbanded].plan,
+      reason: `${named(plans[unbanded].name, unbanded)}: ${plans[unbanded].plan.reason}`,
+    };
+  }
+
+  const tol = (opts.binHeight && opts.binHeight > 0 ? opts.binHeight : 0.2) / 2;
+  const first = plans[0].plan;
+  const differing = plans.findIndex((p) => !sameSwaps(p.plan.changeHeights, first.changeHeights, tol));
+  if (differing > 0) {
+    return {
+      banded: false,
+      bands: [],
+      changeHeights: [],
+      colorCount: 0,
+      manualSwaps: 0,
+      purity: Math.min(...plans.map((p) => p.plan.purity)),
+      reason:
+        `each plate is banded, but they need different swap heights ` +
+        `(${named(plans[0].name, 0)} at ${first.changeHeights.map((h) => h.toFixed(1)).join("/")} mm, ` +
+        `${named(plans[differing].name, differing)} at ${plans[differing].plan.changeHeights.map((h) => h.toFixed(1)).join("/")} mm) — ` +
+        `convert one plate at a time to use swaps`,
+    };
+  }
+  return first;
 }

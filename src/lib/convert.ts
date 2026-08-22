@@ -82,7 +82,7 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
 // near this many spools; a larger count means a malformed/hostile file.
 const MAX_COLORS = 64;
 import { remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
-import { detectColorBands, type BandPlan, type ColorBand } from "./color-bands";
+import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
 import { insertSwapPauses, buildBandSwapPlan, type SwapInstruction } from "./swap-pauses";
 import { mixRgb } from "./filament-mixer";
 import { serializeMixedDefs, MIXED_DITHERING_DEFAULTS, type MixedDef } from "./mixed-filament";
@@ -1049,7 +1049,7 @@ export async function analyzeThreeMF(file: File): Promise<Analysis> {
   if (painted && colors.length > 1 && buf.length < 8_000_000) {
     try {
       const mesh = extractMeshFromBuffer(buf);
-      if (mesh.positions.length > 0) bandPlan = detectColorBands(mesh.positions, mesh.faceState, mesh.baseState);
+      if (mesh.positions.length > 0) bandPlan = detectColorBandsForMesh(mesh, mesh.baseState);
     } catch {
       /* band detection is best-effort — never block analysis on it */
     }
@@ -1676,7 +1676,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
     try {
       const mesh = extractMeshFromBuffer(buf);
       if (mesh.positions.length > 0) {
-        const bp = detectColorBands(mesh.positions, mesh.faceState, mesh.baseState);
+        const bp = detectColorBandsForMesh(mesh, mesh.baseState);
         if (bp.banded && bp.bands.length > 1) bandDetect = { bands: bp.bands, baseState: mesh.baseState };
       }
     } catch {
