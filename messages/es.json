@@ -1045,6 +1045,7 @@
         "items": [
           "Multicolor pintado asignado a las 4 ranuras de la U1",
           "Colores originales conservados con exactitud",
+          "Traduce los datos de pintura de PrusaSlicer (colores / soportes / costuras)",
           "Traduce los datos de pintura de PrusaSlicer (colores / soportes / costuras)"
         ]
       },
@@ -1053,7 +1054,9 @@
         "items": [
           "Full Spectrum: mezcla tus 4 filamentos para aproximar colores extra",
           "Control de altura de capa del color mezclado para mezclas más suaves",
-          "Pausas de cambio de bobina (M600) conservan cada color en archivos por capa"
+          "Pausas de cambio de bobina (M600) conservan cada color en archivos por capa",
+          "Control de altura de capa en colores mezclados para degradados más suaves",
+          "Las pausas de cambio de bobina M600 conservan todos los colores en archivos por capas"
         ]
       },
       {
