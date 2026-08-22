@@ -341,6 +341,7 @@
     "warnOverhangYes": "Se detectaron voladizos pronunciados (~{percent}% de la superficie). Se recomiendan soportes — el conversor mantiene la configuración de soportes de tu archivo original, así que si no los tenía, actívalos en Snapmaker Orca antes de laminar.",
     "warnOverhangNo": "No se detectaron voladizos significativos — este modelo probablemente se imprime sin soportes. El conversor mantiene la configuración de soportes que tuviera tu archivo original.",
     "warnTooBig": "Este modelo mide {x}×{y}×{z} mm — más que el volumen de impresión del Snapmaker U1 de {maxXY}×{maxXY}×{maxZ} mm. Puede que no quepa; rótalo o reescálalo en tu laminador.",
+    "warnLayoutTooBig": "Estas piezas ocupan {x}×{y} mm — más que la base de {maxXY}×{maxXY} mm del Snapmaker U1. Cada una cabe por separado; reorganízalas en tu laminador.",
     "photoCtaTitle": "¿Sin archivo? Convierte una foto en una impresión para el U1",
     "photoCtaBody": "Sube una foto, un logo o una obra de arte y obtén una placa multicolor plana — posavasos, carteles, llaveros — lista para el U1.",
     "photoCtaOpen": "Abrir →",

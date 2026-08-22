@@ -5,6 +5,7 @@ import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { nextPaint } from "@/lib/next-paint";
 import { peekPlates, extractPlate, type PlateInfo } from "@/lib/plates";
+import { fitVerdict } from "@/lib/fit";
 import { track } from "@vercel/analytics";
 import { acquisitionProps } from "@/lib/acquisition";
 import { stageConvertedFile } from "@/lib/convert-handoff";
@@ -999,31 +1000,25 @@ export default function ConvertPage() {
     );
   }
 
-  // Bed-fit / oversize advisory: warn when the model's footprint (x or y) or height (z) exceeds the
-  // U1's 270×270×270 mm build volume (~1mm tolerance, matching the desktop app). Measured from the
-  // preview mesh's bounding box. Ported from the app's fitWarnings (lib/mf-convert.js).
-  const meshSize = useMemo<[number, number, number] | null>(() => {
-    if (!mesh || mesh.skipped || mesh.positions.length < 9) return null;
-    const p = mesh.positions;
-    let minX = Infinity, minY = Infinity, minZ = Infinity, maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
-    for (let i = 0; i < p.length; i += 3) {
-      const x = p[i], y = p[i + 1], z = p[i + 2];
-      if (x < minX) minX = x; if (x > maxX) maxX = x;
-      if (y < minY) minY = y; if (y > maxY) maxY = y;
-      if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
-    }
-    return [maxX - minX, maxY - minY, maxZ - minZ];
-  }, [mesh]);
-  if (meshSize) {
-    const [sx, sy, sz] = meshSize;
-    if (sx > U1_BUILD_MM + 1 || sy > U1_BUILD_MM + 1 || sz > U1_BUILD_Z_MM + 1) {
-      const r = (v: number) => Math.round(v);
-      warnings.push({
-        level: "warn",
-        key: "warnTooBig",
-        params: { x: r(sx), y: r(sy), z: r(sz), maxXY: U1_BUILD_MM, maxZ: U1_BUILD_Z_MM },
-      });
-    }
+  // Bed-fit / oversize advisory, measured PER PLATE (see lib/fit.ts for why that matters — measuring
+  // the whole file measures the layout, and told people with ordinary multi-plate projects that their
+  // model was 454×516 mm). Two outcomes with two different fixes: a part bigger than the bed has to be
+  // rescaled, a plate packed wider than the bed just has to be rearranged.
+  const fit = useMemo(
+    () => (mesh && !mesh.skipped && mesh.positions.length >= 9 ? fitVerdict(mesh, U1_BUILD_MM, U1_BUILD_Z_MM) : null),
+    [mesh],
+  );
+  if (fit) {
+    const r = (v: number) => Math.round(v);
+    warnings.push(
+      fit.kind === "part"
+        ? {
+            level: "warn",
+            key: "warnTooBig",
+            params: { x: r(fit.x), y: r(fit.y), z: r(fit.z), maxXY: U1_BUILD_MM, maxZ: U1_BUILD_Z_MM },
+          }
+        : { level: "warn", key: "warnLayoutTooBig", params: { x: r(fit.x), y: r(fit.y), maxXY: U1_BUILD_MM } },
+    );
   }
 
   // Preview can show all parts, a whole plate, or one part. viewMesh must be referentially stable
