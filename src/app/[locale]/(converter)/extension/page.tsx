@@ -55,6 +55,43 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
       <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
 
+      {/* ── THE PAGE SOLD A THING IT NEVER SHOWED ────────────────────────────────────────────────
+          The 2026-08-22 design review's last open finding: install buttons for three browsers and
+          not one picture of what the extension does, on a site whose giveaway sticker page was the
+          most attractive thing it had.
+
+          This is a capture of the real `extension/popup.html`, not a mock-up — the same thing
+          `smoke-test.mjs` drives, and its header records why that is faithful: "the popup/content
+          scripts use only DOM + the bundled conversion engine (no chrome.* APIs)". One image per
+          theme, because the popup follows `prefers-color-scheme` and half the point of showing it is
+          that it now looks like this site.
+
+          What is still NOT here is the injected `→ U1` button on a real MakerWorld or Printables
+          download page. That needs somebody with the extension installed: those hosts serve a
+          Cloudflare challenge to an automated browser, and Chrome 149 blocks `--load-extension`
+          under automation (smoke-test.mjs again). A drawn approximation would be a picture of
+          software rather than of THIS software, which is the one thing this page did not need more
+          of. */}
+      <figure className="mt-8">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/extension/popup-light.png"
+          alt={t("popupCaption")}
+          width={704}
+          height={396}
+          className="w-full max-w-md rounded-lg border border-line dark:hidden"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/extension/popup-dark.png"
+          alt={t("popupCaption")}
+          width={704}
+          height={396}
+          className="hidden w-full max-w-md rounded-lg border border-line dark:block"
+        />
+        <figcaption className="mt-2 max-w-md text-sm text-fg-subtle">{t("popupCaption")}</figcaption>
+      </figure>
+
       <div className="mt-8 grid gap-5 sm:grid-cols-2">
         {/* Chrome / Edge — one-click from the Web Store; manual/load-unpacked is a collapsed fallback. */}
         <section className="rounded-lg border border-line bg-surface-2 p-6">
@@ -104,8 +141,10 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
           </details>
         </section>
 
-        {/* Safari (Mac) — Mac App Store only; end users can't load-unpacked, so no manual fallback. */}
-        <section className="rounded-lg border border-line bg-surface-2 p-6">
+        {/* Safari (Mac) — Mac App Store only; end users can't load-unpacked, so no manual fallback.
+            Spans, because three cards in a two-column grid leave the third alone beside an empty
+            cell. Same orphan the review fixed on /features, same fix. */}
+        <section className="rounded-lg border border-line bg-surface-2 p-6 sm:col-span-2">
           <h2 className="eyebrow">{t("safariTitle")}</h2>
           {SAFARI_APPSTORE_URL ? (
             <a href={SAFARI_APPSTORE_URL} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block" aria-label={t("getSafari")}>

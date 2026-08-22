@@ -639,7 +639,8 @@
       "Visit one of those sites — a “Make U1-ready” option appears on .3mf downloads."
     ],
     "installManually": "Or install manually (advanced)",
-    "chromeStoreOnly": "On the Chrome Web Store."
+    "chromeStoreOnly": "On the Chrome Web Store.",
+    "popupCaption": "The extension's popup — drop a .3mf in and get a U1-ready file back, without leaving the page you are on."
   },
   "upload": {
     "loading": "Loading…",

@@ -639,7 +639,8 @@
     "safariPending": "Safari 扩展正在接受 Apple 审核。",
     "safariNote": "Safari 扩展以应用形式分发——安装后在 Safari 的“设置 → 扩展”中启用。",
     "installManually": "或手动安装（进阶）",
-    "chromeStoreOnly": "在 Chrome 应用商店。"
+    "chromeStoreOnly": "在 Chrome 应用商店。",
+    "popupCaption": "扩展的弹窗 —— 把 .3mf 拖进去，直接拿到 U1 可用的文件，不用离开当前页面。"
   },
   "upload": {
     "loading": "加载中…",

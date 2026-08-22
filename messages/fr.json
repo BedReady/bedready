@@ -639,7 +639,8 @@
     "safariPending": "L'extension Safari est en cours de validation par Apple.",
     "safariNote": "Les extensions Safari sont livrées sous forme d'application : installez-la, puis activez-la dans Safari via Réglages → Extensions.",
     "installManually": "Ou installer manuellement (avancé)",
-    "chromeStoreOnly": "Sur le Chrome Web Store."
+    "chromeStoreOnly": "Sur le Chrome Web Store.",
+    "popupCaption": "La fenêtre de l'extension — déposez un .3mf et récupérez un fichier prêt pour la U1, sans quitter la page."
   },
   "upload": {
     "loading": "Chargement…",
