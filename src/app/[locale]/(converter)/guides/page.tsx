@@ -1,12 +1,20 @@
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { GUIDES } from "@/lib/guides";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Guides — BedReady",
-  description: "Guides for printing multicolor models on the Snapmaker U1: MakerWorld, Bambu, PrusaSlicer, Creality, and fixing Snapmaker Orca import issues.",
-  alternates: alternates("/guides"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Guides — BedReady",
+    description: "Guides for printing multicolor models on the Snapmaker U1: MakerWorld, Bambu, PrusaSlicer, Creality, and fixing Snapmaker Orca import issues.",
+    alternates: alternates("/guides", locale),
+  };
+}
 
 export default function GuidesPage() {
   return (

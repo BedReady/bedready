@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Convert a Snapmaker U1 .3mf to Bambu Studio (X1 / P1 / A1) — BedReady",
-  description:
-    "Print a Snapmaker U1 multicolor .3mf on a Bambu Lab X1, P1S or A1. BedReady swaps the U1 profile for the Bambu one and remaps your painted colors onto the AMS slots. Free, in your browser.",
-  alternates: alternates("/u1-to-bambu"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Convert a Snapmaker U1 .3mf to Bambu Studio (X1 / P1 / A1) — BedReady",
+    description:
+      "Print a Snapmaker U1 multicolor .3mf on a Bambu Lab X1, P1S or A1. BedReady swaps the U1 profile for the Bambu one and remaps your painted colors onto the AMS slots. Free, in your browser.",
+    alternates: alternates("/u1-to-bambu", locale),
+  };
+}
 
 const faq = [
   {

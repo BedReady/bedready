@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Multicolor 3D Printer Comparison — Snapmaker U1 vs Bambu vs Prusa vs Creality — BedReady",
-  description:
-    "How the Snapmaker U1, Bambu X1C (AMS), Prusa MK4+MMU3 and Creality K2 Plus compare for multicolor printing — slots, method, purge waste, software — and how to move .3mf files between them.",
-  alternates: alternates("/compare-multicolor-printers"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Multicolor 3D Printer Comparison — Snapmaker U1 vs Bambu vs Prusa vs Creality — BedReady",
+    description:
+      "How the Snapmaker U1, Bambu X1C (AMS), Prusa MK4+MMU3 and Creality K2 Plus compare for multicolor printing — slots, method, purge waste, software — and how to move .3mf files between them.",
+    alternates: alternates("/compare-multicolor-printers", locale),
+  };
+}
 
 // Honest side-by-side. The U1's edge is the toolchanger (no purge/poop); AMS/MMU systems purge on every
 // color change. All figures are the maker-facing basics, not a spec sheet.

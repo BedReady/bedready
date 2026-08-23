@@ -1,13 +1,21 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Browser extension — BedReady",
-  description:
-    "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads to print on the Snapmaker U1, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser.",
-  alternates: alternates("/extension"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Browser extension — BedReady",
+    description:
+      "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads to print on the Snapmaker U1, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser.",
+    alternates: alternates("/extension", locale),
+  };
+}
 
 // Set these to the live store listing URLs to switch each browser's card to a one-click install button.
 // When empty, the card shows only the manual/load-unpacked fallback (collapsed).
