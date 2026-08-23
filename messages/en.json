@@ -207,6 +207,7 @@
     "individualParts": "Individual parts",
     "mainColorTitle": "Main color (from the model) — reorder with ◀ ▶",
     "movePrev": "Move to the previous slot",
+    "slotUnused": "unused",
     "moveNext": "Move to the next slot",
     "reorderHintFs": "Use ◀ ▶ to reorder which physical slot holds each main color — the print is unchanged, only the slot positions (filament list order) move.",
     "reorderHintNormal": "Use ◀ ▶ to reorder slots to match how your filaments are loaded — the model keeps its colors, only the slot positions change.",

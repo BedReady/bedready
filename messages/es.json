@@ -207,6 +207,7 @@
     "individualParts": "Partes individuales",
     "mainColorTitle": "Color principal (del modelo) — reordena con ◀ ▶",
     "movePrev": "Mover a la ranura anterior",
+    "slotUnused": "sin usar",
     "moveNext": "Mover a la ranura siguiente",
     "reorderHintFs": "Usa ◀ ▶ para reordenar qué ranura física tiene cada color principal — la impresión no cambia, solo cambian las posiciones de las ranuras (orden de la lista de filamentos).",
     "reorderHintNormal": "Usa ◀ ▶ para reordenar las ranuras según cómo tengas cargados los filamentos — el modelo mantiene sus colores, solo cambian las posiciones de las ranuras.",

@@ -207,6 +207,7 @@
     "individualParts": "单个部件",
     "mainColorTitle": "主色（来自模型）— 用 ◀ ▶ 重新排序",
     "movePrev": "移到上一个槽位",
+    "slotUnused": "未使用",
     "moveNext": "移到下一个槽位",
     "reorderHintFs": "用 ◀ ▶ 重新排序每种主色由哪个实体槽位承载 — 打印不变，仅槽位位置（耗材列表顺序）改变。",
     "reorderHintNormal": "用 ◀ ▶ 重新排序槽位以匹配你的装料方式 — 模型保留其颜色，仅槽位位置改变。",

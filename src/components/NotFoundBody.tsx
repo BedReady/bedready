@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "@/components/SiteLink";
 import Logo from "@/components/Logo";
@@ -22,6 +23,22 @@ import Logo from "@/components/Logo";
  */
 export default function NotFoundBody({ standalone = false }: { standalone?: boolean }) {
   const t = useTranslations("notFound");
+
+  // The tab said "BedReady — 3D-print files, ready for any bed" on every 404.
+  //
+  // Next gives no server-side way to change it. A page that throws notFound() has its
+  // generateMetadata discarded — three routes in this repo return a "… not found" title believing
+  // otherwise, and none of them reached the page — and `not-found.tsx` cannot export metadata
+  // either; both were measured, not assumed. So the only place left is here, where the 404 body
+  // actually renders. A 404 should not be indexed anyway, which makes a client-set title the right
+  // scope: it fixes the tab, the history entry and the bookmark, and search engines are not the
+  // audience.
+  // `notFound.title` is already the page's own heading, translated in all seven locales — reusing
+  // it needs no new key and no hardcoded brand, which matters because the sister repo has its own
+  // copy of this component.
+  useEffect(() => {
+    document.title = t("title");
+  }, [t]);
   return (
     <main className={`page-read flex flex-col items-center text-center ${standalone ? "py-16" : "py-24"}`}>
       {standalone && (

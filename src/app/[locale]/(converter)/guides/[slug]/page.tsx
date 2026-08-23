@@ -13,6 +13,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const g = guideBySlug(slug);
+  // Inert, and kept only so the shape reads sensibly: a page that throws notFound() has its
+  // generateMetadata discarded, so this title never reaches the document. The 404 tab title is
+  // set in NotFoundBody, where the body actually renders. Measured, not assumed.
   if (!g) return { title: "Guide not found — BedReady" };
   return {
     title: `${g.title} — BedReady`,
