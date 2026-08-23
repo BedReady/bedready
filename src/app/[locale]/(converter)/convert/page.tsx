@@ -1472,6 +1472,15 @@ export default function ConvertPage() {
                           {slotPlates[i].length === 1 ? `Plate ${slotPlates[i][0]}` : `Plates ${slotPlates[i].join(", ")}`}
                         </span>
                       )}
+                      {/* A slot no colour maps to is padded to #FFFFFF, which on screen is a white
+                          swatch — indistinguishable from "load white filament here". Say so instead.
+                          `assign` is the colour→slot mapping and moveSlot remaps it, so this stays
+                          correct after a reorder; Full Spectrum uses all four heads by definition. */}
+                      {!fullSpectrum && assign.length > 0 && !assign.includes(i) && (
+                        <span className="text-xs font-normal leading-tight text-fg-subtle">
+                          {t("slotUnused")}
+                        </span>
+                      )}
                       <input
                         type="color"
                         value={c}

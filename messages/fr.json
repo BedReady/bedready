@@ -207,6 +207,7 @@
     "individualParts": "Pièces individuelles",
     "mainColorTitle": "Couleur principale (du modèle) — réordonnez avec ◀ ▶",
     "movePrev": "Déplacer vers l'emplacement précédent",
+    "slotUnused": "inutilisé",
     "moveNext": "Déplacer vers l'emplacement suivant",
     "reorderHintFs": "Utilisez ◀ ▶ pour réordonner quel emplacement physique contient chaque couleur principale — l'impression ne change pas, seules les positions des emplacements (ordre de la liste des filaments) bougent.",
     "reorderHintNormal": "Utilisez ◀ ▶ pour réordonner les emplacements selon le chargement de vos filaments — le modèle garde ses couleurs, seules les positions des emplacements changent.",

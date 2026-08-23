@@ -26,7 +26,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const r = resolveOrcaSlug(slug);
-  if (!r) return {};
+  // Inert on the notFound() path — Next discards generateMetadata there, which is why the tab
+  // title is set in NotFoundBody instead. Kept for the case Next ever honours it, and because
+  // returning `{}` here said nothing at all about a miss.
+  if (!r) return { title: "Filament brand not found — BedReady" };
   return {
     title: `Add ${r.name} Filament Profiles to Snapmaker Orca (Snapmaker U1) — BedReady`,
     description: `Install ${r.name} filament profiles into Snapmaker Orca for the Snapmaker U1 — one click in Chrome/Edge, or download and import. Free, in your browser, nothing uploaded.`,

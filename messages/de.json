@@ -207,6 +207,7 @@
     "individualParts": "Einzelne Teile",
     "mainColorTitle": "Hauptfarbe (aus dem Modell) — mit ◀ ▶ umordnen",
     "movePrev": "In den vorherigen Slot verschieben",
+    "slotUnused": "ungenutzt",
     "moveNext": "In den nächsten Slot verschieben",
     "reorderHintFs": "Mit ◀ ▶ umordnen, welcher physische Slot welche Hauptfarbe hält — der Druck bleibt gleich, nur die Slot-Positionen (Reihenfolge der Filamentliste) ändern sich.",
     "reorderHintNormal": "Mit ◀ ▶ die Slots passend zu deiner Filament-Ladung umordnen — das Modell behält seine Farben, nur die Slot-Positionen ändern sich.",
