@@ -127,6 +127,39 @@ export function originFor(path: string): string {
 }
 
 /** `originFor`, with the two origins passed in rather than read from the environment. */
+/**
+ * The paths the LIBRARY owns, mirrored from its repo.
+ *
+ * ── WHY THIS SITE NEEDS THE OTHER SITE'S LIST ───────────────────────────────────────────────────
+ * `ownerOrigin` answers "converter route? then ours, else theirs", which is right for every path
+ * that exists and wrong for every path that does not. A typo on this domain was not a 404 here — it
+ * was a 301 to makerrun.com, where the visitor met a different brand's 404:
+ *
+ *     bedready.io/no-such-page  ->  301  ->  makerrun.com/no-such-page  (404)
+ *
+ * The library repo already fixed the mirror of this and recorded why: "serving it here means a 404
+ * on the domain the visitor typed, with that site's own header, footer and 404 page — rather than a
+ * 301 onto the other brand". Only its half shipped; this is the other one.
+ *
+ * Kept in sync by hand, and cheap to be wrong about in one direction only: a library path missing
+ * from this list 404s here instead of redirecting, which is visible. A path listed here that the
+ * library does not serve redirects to their 404, which is what happens today for everything.
+ */
+export const LIBRARY_ROUTES = [
+  "account", "admin", "age", "app", "app-link", "changelog", "collections", "designs", "feedback",
+  "following", "help", "licenses", "login", "makers", "notifications", "privacy", "saves", "terms",
+  "upload", "verified",
+] as const;
+
+/** A storefront is `/@handle` — a rewrite, not a directory, so it can never be enumerated. */
+const isStorefront = (segment: string) => segment.startsWith("@");
+
+/**
+ * Segments belonging to neither group, served by whichever host is asked. `/docs` has its own host,
+ * `/api` and `/auth` are not pages, and `""` is the site root, which each host answers for itself.
+ */
+const UNALLOCATED_BUT_REAL = ["", "docs", "api", "auth"];
+
 function ownerOrigin(path: string, converterOrigin: string, libraryOrigin: string): string {
   const segment = withoutLocale(path).split("/")[1] ?? "";
   return (CONVERTER_ROUTES as readonly string[]).includes(segment) ? converterOrigin : libraryOrigin;
@@ -223,6 +256,16 @@ export function redirectTargetFor(
 ): string | null {
   if (converterOrigin === libraryOrigin) return null; // single origin: nothing to redirect
   if (!host) return null;
+
+  // Neither site owns it, so neither site should be handed it: answer here, with this domain's own
+  // 404, instead of sending someone who mistyped our URL to the other brand. See LIBRARY_ROUTES.
+  const segment = withoutLocale(pathname).split("/")[1] ?? "";
+  const known =
+    (CONVERTER_ROUTES as readonly string[]).includes(segment) ||
+    (LIBRARY_ROUTES as readonly string[]).includes(segment) ||
+    UNALLOCATED_BUT_REAL.includes(segment) ||
+    isStorefront(segment);
+  if (!known) return null;
 
   // Compare bare hostnames: the request header carries no scheme, and may carry a port.
   const bare = host.split(":")[0]!.toLowerCase();
