@@ -23,6 +23,13 @@ import { CONVERTER_ORIGIN, LIBRARY_ORIGIN } from "@/lib/origin";
  */
 export default function NotFound() {
   return (
+    <>
+      {/* This page had NO title at all — the tab showed the bare URL. It renders above the locale
+          layout, so there is no metadata to inherit and no next-intl to translate with; the rest of
+          the file is hand-inlined English for the same reason. A <title> in the tree is hoisted into
+          <head>, which is the only mechanism available here: metadata exports are ignored in
+          not-found.tsx (probed) and a page reached this way never had a generateMetadata to run. */}
+      <title>Page not found</title>
     <main
       style={{
         maxWidth: 520,
@@ -70,5 +77,6 @@ export default function NotFound() {
         BedReady converts the file. MakerRun is its sister site, where the verified files live.
       </p>
     </main>
+    </>
   );
 }
