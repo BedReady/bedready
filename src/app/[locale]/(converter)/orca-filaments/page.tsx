@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
-    alternates: alternates("/orca-filaments"),
+    alternates: alternates("/orca-filaments", locale),
   };
 }
 

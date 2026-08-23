@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Convert a Snapmaker U1 .3mf to the Creality K2 Plus — BedReady",
-  description:
-    "Print a Snapmaker U1 multicolor .3mf on the Creality K2 Plus. Both use OrcaSlicer-family projects, so BedReady swaps the profile and remaps your painted colors onto the K2's slots. Free, in your browser.",
-  alternates: alternates("/u1-to-creality"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Convert a Snapmaker U1 .3mf to the Creality K2 Plus — BedReady",
+    description:
+      "Print a Snapmaker U1 multicolor .3mf on the Creality K2 Plus. Both use OrcaSlicer-family projects, so BedReady swaps the profile and remaps your painted colors onto the K2's slots. Free, in your browser.",
+    alternates: alternates("/u1-to-creality", locale),
+  };
+}
 
 const faq = [
   {

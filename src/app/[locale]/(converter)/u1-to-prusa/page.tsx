@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Convert a Snapmaker U1 .3mf to PrusaSlicer (MK4 + MMU3) — BedReady",
-  description:
-    "Open a Snapmaker U1 .3mf in PrusaSlicer for the Prusa MK4 + MMU3. BedReady saves a clean 3MF PrusaSlicer accepts — geometry preserved. Free, in your browser, nothing uploaded.",
-  alternates: alternates("/u1-to-prusa"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Convert a Snapmaker U1 .3mf to PrusaSlicer (MK4 + MMU3) — BedReady",
+    description:
+      "Open a Snapmaker U1 .3mf in PrusaSlicer for the Prusa MK4 + MMU3. BedReady saves a clean 3MF PrusaSlicer accepts — geometry preserved. Free, in your browser, nothing uploaded.",
+    alternates: alternates("/u1-to-prusa", locale),
+  };
+}
 
 const faq = [
   {

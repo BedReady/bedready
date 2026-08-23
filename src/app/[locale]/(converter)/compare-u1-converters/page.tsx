@@ -16,12 +16,19 @@ import { SOURCE_REPO_URL } from "@/lib/links";
 //   2. Date-stamp it. Competitors ship; a comparison is only true on a given day.
 //   3. Keep the "when to use them instead" section honest. A comparison nobody believes is worthless,
 //      and the fastest way to lose that is to pretend the alternatives have no advantages.
-export const metadata: Metadata = {
-  title: "Snapmaker U1 .3mf converters compared — official, bl2u1, U1 Forge, bambu2orca",
-  description:
-    "An honest comparison of the tools that convert Bambu, Prusa and MakerWorld .3mf files for the Snapmaker U1 — including Snapmaker's own free converter: what each supports, what it costs, whether there's a daily limit, and what actually gets sent to a server.",
-  alternates: alternates("/compare-u1-converters"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Snapmaker U1 .3mf converters compared — official, bl2u1, U1 Forge, bambu2orca",
+    description:
+      "An honest comparison of the tools that convert Bambu, Prusa and MakerWorld .3mf files for the Snapmaker U1 — including Snapmaker's own free converter: what each supports, what it costs, whether there's a daily limit, and what actually gets sent to a server.",
+    alternates: alternates("/compare-u1-converters", locale),
+  };
+}
 
 const UPDATED = "17 August 2026";
 

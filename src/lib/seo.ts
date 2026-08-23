@@ -8,12 +8,26 @@ const LOCALES = ["de", "es", "fr", "zh", "ja", "ar"];
 // so callers can pass "/" or "/foo/" harmlessly and the output matches the sitemap's `alts()`.
 const normalize = (path: string) => (path === "/" ? "" : path.replace(/\/$/, ""));
 
-export function alternates(path: string): { canonical: string; languages: Record<string, string> } {
+export function alternates(
+  path: string,
+  locale: string,
+): { canonical: string; languages: Record<string, string> } {
   const p = normalize(path);
   const base = originFor(p || "/");
   const languages: Record<string, string> = { en: `${base}${p}`, "x-default": `${base}${p}` };
   for (const l of LOCALES) languages[l] = `${base}/${l}${p}`;
-  return { canonical: `${base}${p}`, languages };
+  // SELF-canonical, which is what the comment at the top of this file always claimed and what the
+  // function did not do. It took only a path, so every locale returned the unprefixed English URL:
+  // /de/convert emitted `canonical: https://bedready.io/convert` while also announcing seven
+  // hreflang alternates. Those two statements contradict each other — hreflang describes a set of
+  // equal translations, a cross-language canonical says "index that one instead" — and Google
+  // resolves the conflict by honouring the canonical. So six translated versions of every page
+  // carrying this were being told not to exist, and the entire i18n effort was invisible in search.
+  //
+  // `languages` already holds the right URL for every locale; the canonical is simply this one's.
+  // The parameter is required rather than defaulted so the compiler names every call site, instead
+  // of a missed one silently keeping the old behaviour.
+  return { canonical: languages[locale] ?? `${base}${p}`, languages };
 }
 
 /**

@@ -1,13 +1,21 @@
+import type { Metadata } from "next";
 import { use } from "react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Free 3D-printing stickers — BedReady",
-  description: "Free 3D-printing-themed sticker designs (SVG) — filament spool, build plate, nozzle, Full Spectrum and more. Download and print or cut your own.",
-  alternates: alternates("/stickers"),
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Free 3D-printing stickers — BedReady",
+    description: "Free 3D-printing-themed sticker designs (SVG) — filament spool, build plate, nozzle, Full Spectrum and more. Download and print or cut your own.",
+    alternates: alternates("/stickers", locale),
+  };
+}
 
 const STICKERS = [
   { file: "u1-ready", label: "U1 Ready" },
