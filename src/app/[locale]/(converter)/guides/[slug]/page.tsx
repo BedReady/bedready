@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { GUIDES, guideBySlug } from "@/lib/guides";
 import { absoluteUrl } from "@/lib/origin";
+import { canonicalOnly } from "@/lib/seo";
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
@@ -16,6 +17,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${g.title} — BedReady`,
     description: g.description,
+    // These were the only pages on either site with NO canonical and no alternates — the guides
+    // index has both, the detail pages had neither, so the seven locale copies of each article had
+    // nothing telling Google they are the same page. canonicalOnly rather than alternates() because
+    // lib/guides.ts says it outright: "English content … other locales fall back to this via the
+    // i18n layer." /de/guides/<slug> renders the same English article, so announcing seven
+    // translations would be a claim the pages do not support.
+    alternates: canonicalOnly(`/guides/${slug}`),
     openGraph: { title: g.title, description: g.description, type: "article" },
   };
 }

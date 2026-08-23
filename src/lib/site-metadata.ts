@@ -58,11 +58,19 @@ export async function siteMetadata(locale: string, brand: SiteBrand): Promise<Me
       siteName: brand.name,
       type: "website",
     },
-    twitter: {
-      card: "summary_large_image",
-      title: t("ogTitle"),
-      description: t("ogDescription"),
-    },
+    // NO title/description here, deliberately.
+    //
+    // Next merges metadata per key: a page that sets `openGraph` does not touch `twitter`, so it
+    // inherited these — and 42 pages ended up serving a card that named the SITE while their og:
+    // tags named the page. Sharing a guide on X read "BedReady — ready for any bed" instead of the
+    // guide's own title.
+    //
+    // A card falls back to og:title / og:description when the twitter equivalents are absent, so
+    // omitting them makes every page's card follow its own openGraph — and pages that set no
+    // openGraph still inherit the site's from above, which is what these said anyway. The proof
+    // that the fallback works is already in this site: no twitter.images is set here either, and
+    // a design page's twitter:image correctly resolves to that design's cover.
+    twitter: { card: "summary_large_image" },
     // Google Search Console (URL-prefix) verification. Set GOOGLE_SITE_VERIFICATION in Vercel to the
     // token from GSC ("HTML tag" method) → renders <meta name="google-site-verification">. Blank = no
     // tag. Prefer the DNS/Domain-property method when you can; this is the zero-DNS fallback.
