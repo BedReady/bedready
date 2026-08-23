@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 
 // Header nav link that marks the current page (server SiteHeader can't read the pathname). Active =
 // text-fg + aria-current; inactive keeps the header's muted default.

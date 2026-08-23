@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { alternates } from "@/lib/seo";
 import { SOURCE_REPO_URL } from "@/lib/links";
 

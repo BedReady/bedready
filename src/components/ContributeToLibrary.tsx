@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { track } from "@vercel/analytics";
 import { acquisitionProps } from "@/lib/acquisition";
 

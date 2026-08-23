@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { zipSync, strToU8 } from "fflate";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import NoticeIcon from "@/components/NoticeIcon";
 
 // Shared rich-text tags for the install copy. Passed to t.rich so translators mark up emphasis and
