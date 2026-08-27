@@ -1176,6 +1176,42 @@ function brandFromText(s: string): string | null {
 }
 
 /**
+ * One key out of a PrusaSlicer `Slic3r_PE.config`, which is an INI written as a comment block.
+ *
+ * ── WHY THIS IS NOT `ini.match(/printer_model\s*=\s*(.+)/i)` ────────────────────────────────────
+ *
+ * That is what it was, and every Prusa file in the library's `samples/` came back wrong. Both keys
+ * this reads have a DECOY that sorts ahead of them in the file, and an unanchored search takes the
+ * first hit:
+ *
+ *   line  34  ; compatible_printers_condition_cummulative = "printer_model=~/(COREONE_INDX8T|…
+ *   line 241  ; printer_model = COREONE_INDX8T                          ← the actual key
+ *
+ *   line 237  ; physical_printer_settings_id =                          ← contains the key as a
+ *   line 243  ; printer_settings_id = Prusa CORE One INDX 8T HF0.4 nozzle  substring, and is EMPTY
+ *
+ * So `printer_model` returned three hundred characters of slicer compatibility expression, and that
+ * is the string `detectProfile` reported as the printer.
+ *
+ * `printer_settings_id` failed differently and worse: `\s` matches a newline, so on the empty
+ * `physical_` line `\s*` swallowed the line break and `(.+)` captured the NEXT line — the brand
+ * fallback resolved to the literal text `"; post_process ="`.
+ *
+ * Hence all four of: anchored to a line start; an optional `;` because PrusaSlicer comments the block
+ * out; `[ \t]` rather than `\s` throughout, so no part of the pattern can cross a line break; and
+ * `(\S.*)` rather than `(.+)`, so an empty value is simply no match. Nothing but a `;` and spaces may
+ * sit between the line start and the key, which is what stops `physical_printer_settings_id`
+ * counting as `printer_settings_id` — it is the substring match that made the decoy reachable.
+ *
+ * The anchored form already existed further down this file, in the code that WRITES this key
+ * (`/^(;?\s*printer_model\s*=).*$/im`). Only the reader never got it.
+ */
+export function iniValue(ini: string, key: string): string | null {
+  const m = ini.match(new RegExp(`^[ \\t]*;?[ \\t]*${key}[ \\t]*=[ \\t]*(\\S.*)$`, "im"));
+  return m ? m[1].trim() : null;
+}
+
+/**
  * Inspect a .3mf for a baked-in slicer profile and decide whether it targets the U1.
  * Cheap (just unzips + reads the config text); safe to run on file-select. Non-3mf
  * or unreadable files return an empty (no-profile) result.
@@ -1202,17 +1238,11 @@ export async function detectProfile(file: File): Promise<ProfileInfo> {
       if (base === "slic3r_pe.config") {
         hasProfile = true;
         const ini = strFromU8(data);
-        if (!printer) {
-          const m = ini.match(/printer_model\s*=\s*(.+)/i);
-          if (m) printer = m[1].trim();
-        }
+        if (!printer) printer = iniValue(ini, "printer_model");
         // printer_model is a bare code ("MK4S", "COREONE"); printer_settings_id spells the vendor out
         // ("Original Prusa MK4S 0.4 nozzle"). Keeping it means the brand survives even for a model
         // this code has never heard of, which is the whole point of not being tied to one printer.
-        if (!brandHint) {
-          const sid = ini.match(/printer_settings_id\s*=\s*(.+)/i);
-          if (sid) brandHint = sid[1].trim();
-        }
+        if (!brandHint) brandHint = iniValue(ini, "printer_settings_id");
       }
       // Bambu/Orca/Snapmaker-Orca all use project_settings.config (JSON).
       if (base === "project_settings.config") {
