@@ -77,7 +77,11 @@ test("convert-api.ts pins the list of things this app asks a server for", () => 
   const paths = [...union[1]!.matchAll(/"([^"]+)"/g)].map((m) => m[1]!).sort();
   assert.deepEqual(
     paths,
-    ["/api/convert", "/api/convert-count", "/api/report-conversion", "/api/waitlist"],
+    // Fifth entry added 2026-09-10, deliberately, which is what this pin exists to force. The
+    // sponsorship slot runs on both sites; the booking lives in MakerRun's database and this repo
+    // holds no credential to read it, so the one public row comes over HTTP. Anonymous, cacheable,
+    // decorative — the converter converts perfectly well when it fails.
+    ["/api/convert", "/api/convert-count", "/api/report-conversion", "/api/v1/sponsor", "/api/waitlist"],
     "the backend dependency list changed. That is allowed, but it is a decision about how much an " +
       "open-source in-browser converter should need a server for — and the README states this list " +
       "to the people who trust it. Change both, deliberately.",
@@ -88,7 +92,7 @@ test("the README's endpoint table matches the code", () => {
   // The claim in the README is the one users check the repository against. If the two drift, the
   // documentation is worse than none — it is a promise the code no longer keeps.
   const readme = readFileSync("README.md", "utf8");
-  for (const p of ["/api/convert-count", "/api/report-conversion", "/api/convert", "/api/waitlist"]) {
+  for (const p of ["/api/convert-count", "/api/report-conversion", "/api/convert", "/api/waitlist", "/api/v1/sponsor"]) {
     assert.ok(readme.includes(p), `README does not mention ${p}, which this app calls`);
   }
 });

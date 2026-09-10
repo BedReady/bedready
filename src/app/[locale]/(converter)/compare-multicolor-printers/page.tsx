@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
+import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
 export async function generateMetadata({
   params,
@@ -89,7 +90,7 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
         </table>
       </div>
       <p className="mt-3 text-xs text-fg-subtle">
-        Independent comparison — not sponsored by any manufacturer. Slots/features are the maker-facing basics;
+        Independent comparison — rankings here are editorial and not for sale. {SPONSORSHIP_NOTE} Slots/features are the maker-facing basics;
         check each vendor for full specs.
       </p>
 
@@ -138,8 +139,8 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
       </p>
 
       <p className="mt-8 text-xs text-fg-subtle">
-        Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, Prusa
-        Research or Creality. All product names are trademarks of their respective owners.
+        Independent project — not affiliated with or endorsed by Snapmaker, Bambu Lab, Prusa
+        Research or Creality. All product names are trademarks of their respective owners. {SPONSORSHIP_NOTE}
       </p>
     </main>
   );

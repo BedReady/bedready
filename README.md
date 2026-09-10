@@ -28,7 +28,7 @@ cannot upload". If you would rather it could not, the fallback is one button and
 
 ### What this build talks to
 
-Four small anonymous endpoints, all listed in `src/lib/convert-api.ts` — the only file in the
+Five small anonymous endpoints, all listed in `src/lib/convert-api.ts` — the only file in the
 repository that reaches a server:
 
 | Endpoint | What it is |
@@ -37,6 +37,7 @@ repository that reaches a server:
 | `/api/report-conversion` | opt-in: *"this came out wrong, take my file"* |
 | `/api/convert` | the opt-in server fallback described above |
 | `/api/waitlist` | the notify-me box on the capture panel |
+| `/api/v1/sponsor` | who is sponsoring the site right now, if anyone. Read-only and cacheable |
 
 None require an account. There is **no database client, no authentication and no Supabase
 dependency anywhere in this repository** — `src/lib/convert-backend-free.test.mts` fails the build

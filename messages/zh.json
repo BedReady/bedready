@@ -32,7 +32,8 @@
     "khayt": "Khayt — 打印工作室应用",
     "sponsor": "赞助",
     "copyright": "© 2026 BedReady。为创客而造，而非为机器。",
-    "independent": "独立项目 — 与 Snapmaker、Bambu Lab、MakerWorld、Printables 或 Thingiverse 无关联、未获其认可或赞助。所有产品名称均为其各自所有者的商标。",
+    "independent": "独立项目 — 与 Snapmaker、Bambu Lab、MakerWorld、Printables 或 Thingiverse 无关联、未获其认可。所有产品名称均为其各自所有者的商标。",
+    "sponsorshipNote": "赞助商始终会标注为赞助商；赞助绝不影响任何内容的收录、排序或验证。",
     "features": "功能",
     "stickers": "贴纸",
     "guides": "指南",
@@ -508,7 +509,7 @@
           },
           {
             "q": "BedReady 与 Snapmaker 有关联吗？",
-            "a": "没有。这是一个独立项目，与 Snapmaker、Bambu Lab 或 MakerWorld 无关联，也未获其认可或赞助。"
+            "a": "没有。这是一个独立项目，与 Snapmaker、Bambu Lab 或 MakerWorld 无关联，也未获其认可。"
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "会上传任何内容吗？",
     "faq4a": "不会。整个过程都在你的浏览器中完成——配置文件会写入（或下载）到你自己的电脑上。不上传任何内容，也无需账号。",
     "seeAlso": "另见：<conv>.3mf 转换器</conv>、<cmp>打印机对比</cmp>。",
-    "disclaimer": "独立项目——与 Snapmaker 或 OrcaSlicer 项目无隶属关系，未获其背书或赞助。OrcaSlicer、Snapmaker Orca 以及所有品牌和产品名称均为其各自所有者的商标。耗材配置源自开源项目 OrcaSlicer 并针对 Snapmaker U1 做了适配——仅作为起点提供，请针对你的打印机核对设置。"
+    "disclaimer": "独立项目——与 Snapmaker 或 OrcaSlicer 项目无隶属关系，未获其背书。OrcaSlicer、Snapmaker Orca 以及所有品牌和产品名称均为其各自所有者的商标。耗材配置源自开源项目 OrcaSlicer 并针对 Snapmaker U1 做了适配——仅作为起点提供，请针对你的打印机核对设置。"
   },
   "verified": {
     "metaTitle": "已验证的打印配置 — BedReady",

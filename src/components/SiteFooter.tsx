@@ -119,6 +119,11 @@ export default function SiteFooter() {
           </div>
           <p className="text-xs">{t("copyright")}</p>
           <p className="max-w-md text-xs text-fg-muted">{t("independent")}</p>
+          {/* The promise that replaced "or sponsored by" in the line above — a manufacturer may now
+              buy the slot, so the claim had to change from one about money not existing to one about
+              what money cannot buy. It renders on every page, which is where a site-wide disclosure
+              belongs and is directly under the bottom sponsor slot. See lib/sponsor.ts. */}
+          <p className="mt-1 max-w-md text-xs text-fg-subtle">{t("sponsorshipNote")}</p>
         </div>
       </div>
     </footer>

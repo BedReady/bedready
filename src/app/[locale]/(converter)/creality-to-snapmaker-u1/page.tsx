@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
+import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
 export async function generateMetadata({
   params,
@@ -138,9 +139,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       </p>
 
       <p className="mt-8 text-xs text-fg-subtle">
-        Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker or Creality. Creality
+        Independent project — not affiliated with or endorsed by Snapmaker or Creality. Creality
         Print, CFS and the K-series names are trademarks of Creality. All product names are trademarks of their
-        respective owners.
+        respective owners. {SPONSORSHIP_NOTE}
       </p>
     </main>
   );

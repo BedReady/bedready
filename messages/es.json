@@ -32,7 +32,8 @@
     "khayt": "Khayt — app para talleres de impresión",
     "sponsor": "Patrocinar",
     "copyright": "© 2026 BedReady. Hecho para makers, no para máquinas.",
-    "independent": "Proyecto independiente — sin afiliación, respaldo ni patrocinio de Snapmaker, Bambu Lab, MakerWorld, Printables o Thingiverse. Todos los nombres de productos son marcas de sus respectivos propietarios.",
+    "independent": "Proyecto independiente — sin afiliación ni respaldo de Snapmaker, Bambu Lab, MakerWorld, Printables o Thingiverse. Todos los nombres de productos son marcas de sus respectivos propietarios.",
+    "sponsorshipNote": "Todo patrocinador se identifica como tal, y el patrocinio nunca influye en lo que se publica, se ordena ni se verifica.",
     "features": "Funciones",
     "stickers": "Pegatinas",
     "guides": "Guías",
@@ -508,7 +509,7 @@
           },
           {
             "q": "¿BedReady está afiliado a Snapmaker?",
-            "a": "No. Es un proyecto independiente, no afiliado, respaldado ni patrocinado por Snapmaker, Bambu Lab ni MakerWorld."
+            "a": "No. Es un proyecto independiente, no afiliado ni respaldado por Snapmaker, Bambu Lab ni MakerWorld."
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "¿Se sube algo?",
     "faq4a": "No. Todo se ejecuta en tu navegador: el archivo del perfil se escribe (o se descarga) en tu propio ordenador. No se sube nada y no hace falta cuenta.",
     "seeAlso": "Ver también: <conv>el conversor de .3mf</conv>, <cmp>comparativa de impresoras</cmp>.",
-    "disclaimer": "Proyecto independiente: sin afiliación, respaldo ni patrocinio de Snapmaker ni del proyecto OrcaSlicer. OrcaSlicer, Snapmaker Orca y todos los nombres de marcas y productos son marcas registradas de sus respectivos propietarios. Los perfiles de filamento derivan del proyecto de código abierto OrcaSlicer y están adaptados a la Snapmaker U1; sirven como punto de partida, así que verifica los ajustes para tu impresora."
+    "disclaimer": "Proyecto independiente: sin afiliación ni respaldo de Snapmaker ni del proyecto OrcaSlicer. OrcaSlicer, Snapmaker Orca y todos los nombres de marcas y productos son marcas registradas de sus respectivos propietarios. Los perfiles de filamento derivan del proyecto de código abierto OrcaSlicer y están adaptados a la Snapmaker U1; sirven como punto de partida, así que verifica los ajustes para tu impresora."
   },
   "verified": {
     "metaTitle": "Perfiles de impresión verificados — BedReady",

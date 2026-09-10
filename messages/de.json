@@ -32,7 +32,8 @@
     "khayt": "Khayt — Druckdienst-App",
     "sponsor": "Unterstützen",
     "copyright": "© 2026 BedReady. Für Maker gebaut, nicht für Maschinen.",
-    "independent": "Unabhängiges Projekt — nicht mit Snapmaker, Bambu Lab, MakerWorld, Printables oder Thingiverse verbunden, von ihnen unterstützt oder gesponsert. Alle Produktnamen sind Marken ihrer jeweiligen Inhaber.",
+    "independent": "Unabhängiges Projekt — nicht mit Snapmaker, Bambu Lab, MakerWorld, Printables oder Thingiverse verbunden oder von ihnen unterstützt. Alle Produktnamen sind Marken ihrer jeweiligen Inhaber.",
+    "sponsorshipNote": "Ein Sponsor wird immer als Sponsor gekennzeichnet, und ein Sponsoring beeinflusst niemals, was gelistet, sortiert oder verifiziert wird.",
     "features": "Funktionen",
     "stickers": "Sticker",
     "guides": "Anleitungen",
@@ -508,7 +509,7 @@
           },
           {
             "q": "Ist BedReady mit Snapmaker verbunden?",
-            "a": "Nein. Es ist ein unabhängiges Projekt, nicht mit Snapmaker, Bambu Lab oder MakerWorld verbunden, von ihnen unterstützt oder gesponsert."
+            "a": "Nein. Es ist ein unabhängiges Projekt, nicht mit Snapmaker, Bambu Lab oder MakerWorld verbunden oder von ihnen unterstützt."
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "Wird irgendetwas hochgeladen?",
     "faq4a": "Nein. Alles läuft in deinem Browser — die Profildatei wird auf deinen eigenen Rechner geschrieben (oder dorthin heruntergeladen). Es wird nichts hochgeladen und es gibt kein Konto.",
     "seeAlso": "Siehe auch: <conv>der .3mf-Konverter</conv>, <cmp>Druckervergleich</cmp>.",
-    "disclaimer": "Unabhängiges Projekt — nicht verbunden mit, unterstützt von oder gesponsert durch Snapmaker oder das OrcaSlicer-Projekt. OrcaSlicer, Snapmaker Orca sowie alle Marken- und Produktnamen sind Marken ihrer jeweiligen Inhaber. Die Filamentprofile stammen aus dem Open-Source-Projekt OrcaSlicer und wurden für die Snapmaker U1 angepasst — sie sind ein Ausgangspunkt, prüfe die Einstellungen für deinen Drucker."
+    "disclaimer": "Unabhängiges Projekt — nicht verbunden mit oder unterstützt von Snapmaker oder das OrcaSlicer-Projekt. OrcaSlicer, Snapmaker Orca sowie alle Marken- und Produktnamen sind Marken ihrer jeweiligen Inhaber. Die Filamentprofile stammen aus dem Open-Source-Projekt OrcaSlicer und wurden für die Snapmaker U1 angepasst — sie sind ein Ausgangspunkt, prüfe die Einstellungen für deinen Drucker."
   },
   "verified": {
     "metaTitle": "Geprüfte Druckprofile — BedReady",
