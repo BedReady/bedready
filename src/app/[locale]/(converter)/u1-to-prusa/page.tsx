@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
+import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
 export async function generateMetadata({
   params,
@@ -146,9 +147,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       </p>
 
       <p className="mt-8 text-xs text-fg-subtle">
-        Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker or Prusa Research.
+        Independent project — not affiliated with or endorsed by Snapmaker or Prusa Research.
         PrusaSlicer, MK4 and MMU3 are trademarks of Prusa Research. All product names are trademarks of their
-        respective owners.
+        respective owners. {SPONSORSHIP_NOTE}
       </p>
     </main>
   );

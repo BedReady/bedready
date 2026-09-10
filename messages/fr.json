@@ -32,7 +32,8 @@
     "khayt": "Khayt — appli pour ateliers d'impression",
     "sponsor": "Soutenir",
     "copyright": "© 2026 BedReady. Conçu pour les makers, pas pour les machines.",
-    "independent": "Projet indépendant — non affilié à Snapmaker, Bambu Lab, MakerWorld, Printables ou Thingiverse, ni approuvé ou sponsorisé par eux. Tous les noms de produits sont des marques de leurs propriétaires respectifs.",
+    "independent": "Projet indépendant — non affilié à Snapmaker, Bambu Lab, MakerWorld, Printables ou Thingiverse, ni approuvé par eux. Tous les noms de produits sont des marques de leurs propriétaires respectifs.",
+    "sponsorshipNote": "Tout sponsor est identifié comme tel, et un parrainage n’influence jamais ce qui est référencé, classé ou vérifié.",
     "features": "Fonctionnalités",
     "stickers": "Stickers",
     "guides": "Guides",
@@ -508,7 +509,7 @@
           },
           {
             "q": "BedReady est-il affilié à Snapmaker ?",
-            "a": "Non. C'est un projet indépendant, non affilié à Snapmaker, Bambu Lab ou MakerWorld, ni approuvé ou sponsorisé par eux."
+            "a": "Non. C'est un projet indépendant, non affilié à Snapmaker, Bambu Lab ou MakerWorld, ni approuvé par eux."
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "Quelque chose est-il envoyé en ligne ?",
     "faq4a": "Non. Tout s'exécute dans votre navigateur — le fichier de profil est écrit (ou téléchargé) sur votre propre ordinateur. Rien n'est envoyé et aucun compte n'est requis.",
     "seeAlso": "Voir aussi : <conv>le convertisseur .3mf</conv>, <cmp>comparatif des imprimantes</cmp>.",
-    "disclaimer": "Projet indépendant — sans affiliation, approbation ni parrainage de Snapmaker ou du projet OrcaSlicer. OrcaSlicer, Snapmaker Orca et tous les noms de marques et de produits sont des marques de leurs propriétaires respectifs. Les profils de filament sont dérivés du projet open source OrcaSlicer et adaptés à la Snapmaker U1 — fournis comme point de départ, vérifiez les réglages pour votre imprimante."
+    "disclaimer": "Projet indépendant — sans affiliation ni approbation de Snapmaker ou du projet OrcaSlicer. OrcaSlicer, Snapmaker Orca et tous les noms de marques et de produits sont des marques de leurs propriétaires respectifs. Les profils de filament sont dérivés du projet open source OrcaSlicer et adaptés à la Snapmaker U1 — fournis comme point de départ, vérifiez les réglages pour votre imprimante."
   },
   "verified": {
     "metaTitle": "Profils d’impression vérifiés — BedReady",

@@ -32,7 +32,8 @@
     "khayt": "Khayt — print-shop app",
     "sponsor": "Sponsor",
     "copyright": "© 2026 BedReady. Built for makers, not machines.",
-    "independent": "Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, MakerWorld, Printables, or Thingiverse. All product names are trademarks of their respective owners.",
+    "independent": "Independent project — not affiliated with or endorsed by Snapmaker, Bambu Lab, MakerWorld, Printables, or Thingiverse. All product names are trademarks of their respective owners.",
+    "sponsorshipNote": "Any sponsor is labelled as a sponsor, and sponsorship never affects what is listed, ranked or verified.",
     "features": "Features",
     "stickers": "Stickers",
     "guides": "Guides",
@@ -508,7 +509,7 @@
           },
           {
             "q": "Is BedReady affiliated with Snapmaker?",
-            "a": "No. It's an independent project, not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or MakerWorld."
+            "a": "No. It's an independent project, not affiliated with or endorsed by Snapmaker, Bambu Lab, or MakerWorld."
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "Is anything uploaded?",
     "faq4a": "No. The whole thing runs in your browser — the profile file is written to (or downloaded onto) your own computer. Nothing is uploaded and there's no account.",
     "seeAlso": "See also: <conv>the .3mf converter</conv>, <cmp>printer comparison</cmp>.",
-    "disclaimer": "Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker or the OrcaSlicer project. OrcaSlicer, Snapmaker Orca and all brand and product names are trademarks of their respective owners. Filament profiles are derived from the open-source OrcaSlicer project and adapted for the Snapmaker U1 — provided as a starting point, so verify settings for your printer."
+    "disclaimer": "Independent project — not affiliated with or endorsed by Snapmaker or the OrcaSlicer project. OrcaSlicer, Snapmaker Orca and all brand and product names are trademarks of their respective owners. Filament profiles are derived from the open-source OrcaSlicer project and adapted for the Snapmaker U1 — provided as a starting point, so verify settings for your printer."
   },
   "verified": {
     "metaTitle": "Verified print profiles — BedReady",

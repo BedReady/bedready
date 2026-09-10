@@ -52,6 +52,11 @@
  *                                do — see `COMPETITIVE-2026-08.md` §1d on getting exactly this
  *                                distinction right.
  *   · `/api/waitlist`          — the capture panel's notify-me box (Turnstile + rate limit).
+ *   · `/api/v1/sponsor`        — who is sponsoring the two sites right now, if anyone. Added
+ *                                2026-09-10. The booking lives in MakerRun's database and this repo
+ *                                holds no credential to read it, so the one public row comes over
+ *                                HTTP. Anonymous, cacheable, decorative — the converter converts
+ *                                perfectly well when it fails, which is why it may be added at all.
  *
  * This list was three entries long when it was written, and `convert-backend-free.test.mts` caught
  * the other two the same hour. That is the argument for the test, not a footnote to it.
@@ -60,7 +65,8 @@ export type ConvertApiPath =
   | "/api/convert-count"
   | "/api/report-conversion"
   | "/api/convert"
-  | "/api/waitlist";
+  | "/api/waitlist"
+  | "/api/v1/sponsor";
 
 /**
  * Where the converter's backend lives.

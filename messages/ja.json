@@ -32,7 +32,8 @@
     "khayt": "Khayt — プリントショップ向けアプリ",
     "sponsor": "スポンサー",
     "copyright": "© 2026 BedReady. 機械ではなく、メイカーのために。",
-    "independent": "独立したプロジェクトです — Snapmaker、Bambu Lab、MakerWorld、Printables、Thingiverse とは提携・承認・スポンサー関係はありません。すべての製品名は各所有者の商標です。",
+    "independent": "独立したプロジェクトです — Snapmaker、Bambu Lab、MakerWorld、Printables、Thingiverse とは提携・承認関係はありません。すべての製品名は各所有者の商標です。",
+    "sponsorshipNote": "スポンサーは必ずスポンサーとして表示されます。スポンサーであることが、掲載・順位・検証の結果に影響することはありません。",
     "features": "機能",
     "stickers": "ステッカー",
     "guides": "ガイド",
@@ -508,7 +509,7 @@
           },
           {
             "q": "BedReady は Snapmaker と提携していますか？",
-            "a": "いいえ。独立したプロジェクトであり、Snapmaker・Bambu Lab・MakerWorld との提携・承認・スポンサー関係はありません。"
+            "a": "いいえ。独立したプロジェクトであり、Snapmaker・Bambu Lab・MakerWorld との提携・承認関係はありません。"
           }
         ]
       }
@@ -1208,7 +1209,7 @@
     "faq4q": "何かアップロードされますか？",
     "faq4a": "いいえ。すべてブラウザー内で完結し、プロファイルファイルはご自身のコンピューターに書き込まれる（またはダウンロードされる）だけです。アップロードは一切なく、アカウントも不要です。",
     "seeAlso": "関連： <conv>.3mf コンバーター</conv>、<cmp>プリンター比較</cmp>。",
-    "disclaimer": "独立したプロジェクトです — Snapmaker および OrcaSlicer プロジェクトとの提携・承認・スポンサー関係はありません。OrcaSlicer、Snapmaker Orca、およびすべてのブランド名・製品名は各所有者の商標です。フィラメントプロファイルはオープンソースの OrcaSlicer プロジェクト由来で、Snapmaker U1 向けに調整したものです。出発点として提供しているため、お使いのプリンターに合わせて設定をご確認ください。"
+    "disclaimer": "独立したプロジェクトです — Snapmaker および OrcaSlicer プロジェクトとの提携・承認関係はありません。OrcaSlicer、Snapmaker Orca、およびすべてのブランド名・製品名は各所有者の商標です。フィラメントプロファイルはオープンソースの OrcaSlicer プロジェクト由来で、Snapmaker U1 向けに調整したものです。出発点として提供しているため、お使いのプリンターに合わせて設定をご確認ください。"
   },
   "verified": {
     "metaTitle": "検証済みプリントプロファイル — BedReady",

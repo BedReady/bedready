@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { canonicalOnly } from "@/lib/seo";
 import OrcaFilaments from "@/components/OrcaFilaments";
 import { orcaBrands, orcaMaterials, orcaCombos, resolveOrcaSlug, materialsForBrand, brandsForMaterial } from "@/lib/orca-filaments";
+import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
 // One SEO page per brand, per material, AND per brand×material combo (e.g. "sunlu-petg"), each pre-filtered.
 // ALL of them are prebuilt — see generateStaticParams for why on-demand was the expensive option.
@@ -106,10 +107,10 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
         <Link href="/orca-filaments" className="text-violet-300 hover:underline">Browse all filament profiles →</Link>
       </p>
       <p className="mt-8 text-xs text-fg-subtle">
-        Independent project — not affiliated with, endorsed by, or sponsored by Snapmaker, the OrcaSlicer
+        Independent project — not affiliated with or endorsed by Snapmaker, the OrcaSlicer
         project{r.kind !== "material" ? ` or ${r.kind === "combo" ? r.brand : r.name}` : ""}. All brand and
         product names are trademarks of their respective owners. Filament profiles are provided as a starting
-        point; verify settings for your printer.
+        point; verify settings for your printer. {SPONSORSHIP_NOTE}
       </p>
     </main>
   );
