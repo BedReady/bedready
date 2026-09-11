@@ -134,3 +134,126 @@ test("nothing hands over a file behind deliver()'s back", () => {
       "cannot name it, size it, or offer it again. Call deliver() instead.",
   );
 });
+
+// ── THE HANDOFF THAT CROSSES ORIGINS ────────────────────────────────────────────────────────────
+//
+// Everything above this line watches the WRITE: every conversion producing a single file must call
+// `stageConvertedFile`. That rule held perfectly while the thing it fed stopped working, because the
+// READER moved to the other side of the 2026-08-21 carve and no test on either side saw the pair.
+// Measured before the fix: convert on bedready.io, click "Save to my library", land on
+// makerrun.com/upload, and the store reads null. IndexedDB is scoped to an origin.
+//
+// The bytes go through the tab now — `openLibraryWithHandoff` on the done screen,
+// `receiveHandoffFromOpener` on /upload. These assert the properties that make that safe and that
+// make it free when it does not fire.
+import {
+  HANDOFF_FILE,
+  HANDOFF_READY,
+  HANDOFF_TIMEOUT_MS,
+  openLibraryWithHandoff,
+  receiveHandoffFromOpener,
+} from "./convert-handoff.ts";
+
+const HANDOFF_SRC = readFileSync("src/lib/convert-handoff.ts", "utf8");
+/** Comments stripped — the header explains the origin checks at length, and a scan that cannot tell
+ *  an explanation from the code reports its own documentation. */
+const HANDOFF_CODE = HANDOFF_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+
+function bodyOf(name: string): string {
+  const at = HANDOFF_CODE.indexOf(`export function ${name}`);
+  assert.ok(at >= 0, `${name} is gone — this whole block is reading an empty string`);
+  const rest = HANDOFF_CODE.slice(at);
+  const end = rest.indexOf("\n}\n");
+  return rest.slice(0, end === -1 ? rest.length : end);
+}
+
+// A `message` listener hears everything: extensions, embeds, other frames, anything that can reach
+// a window handle. `event.origin` is the only thing that says who spoke, and it has to be consulted
+// BEFORE the payload is touched — a check further down is a check that runs after the damage.
+test("neither side reads a message before it has checked who sent it", () => {
+  for (const fn of ["openLibraryWithHandoff", "receiveHandoffFromOpener"]) {
+    const body = bodyOf(fn);
+    const originAt = body.search(/e\.origin !== \w+/);
+    assert.ok(originAt >= 0, `${fn} never compares event.origin — it will act on any message`);
+    const dataAt = body.search(/e\.data/);
+    assert.ok(dataAt >= 0, `${fn} does not read e.data at all — has the handshake moved?`);
+    assert.ok(originAt < dataAt, `${fn} touches e.data before checking e.origin`);
+  }
+});
+
+// postMessage's second argument is the only thing that stops a payload being delivered to whoever
+// happens to be in that window. "*" would broadcast a visitor's model file to any site that managed
+// to get itself navigated there.
+test("nothing is ever posted to a wildcard origin", () => {
+  const posts = [...HANDOFF_CODE.matchAll(/postMessage\([\s\S]*?\)/g)].map((m) => m[0]);
+  assert.ok(posts.length >= 2, "expected a send on each side; found " + posts.length);
+  for (const p of posts) {
+    assert.ok(!/["'`]\*["'`]/.test(p), `postMessage to a wildcard origin: ${p.slice(0, 80)}`);
+    assert.match(p, /,\s*\w*[Oo]rigin\s*\)/, `postMessage without a named target origin: ${p.slice(0, 80)}`);
+  }
+});
+
+// The handoff is an accelerator, never a dependency — the rule the module has carried since it was
+// written, now spanning two origins. A popup the browser blocked must leave the click to navigate
+// normally, and an absent opener must cost one unheard message and nothing else.
+test("it costs nothing when it cannot happen", () => {
+  const open = bodyOf("openLibraryWithHandoff");
+  assert.match(open, /if \(!w\) return null/, "a blocked popup must be reported so the caller can let the click through");
+  const receive = bodyOf("receiveHandoffFromOpener");
+  assert.match(receive, /if \(!opener\) return \(\) => \{\}/, "no opener must be a no-op, not a throw");
+  // Both sides stop listening. A page that keeps a listener forever is a page that acts on a message
+  // arriving long after the moment it belonged to.
+  for (const fn of ["openLibraryWithHandoff", "receiveHandoffFromOpener"]) {
+    assert.match(bodyOf(fn), /setTimeout\(stop, HANDOFF_TIMEOUT_MS\)/, `${fn} listens forever`);
+    assert.match(bodyOf(fn), /removeEventListener\("message"/, `${fn} never detaches its listener`);
+  }
+  assert.ok(HANDOFF_TIMEOUT_MS >= 5_000 && HANDOFF_TIMEOUT_MS <= 60_000, "the window must fit a cold document, and end");
+});
+
+// Both halves must agree on the words, and they are in one module precisely so they cannot drift —
+// which matters more here than usual, because the two halves ship from two repositories.
+test("the two message names are distinct, namespaced and versioned", () => {
+  assert.notEqual(HANDOFF_READY, HANDOFF_FILE);
+  for (const k of [HANDOFF_READY, HANDOFF_FILE]) {
+    assert.match(k, /^bedready:/, `${k} is not namespaced — it will collide with someone else's message`);
+    assert.match(k, /\/\d+$/, `${k} carries no version — the two sites deploy separately and can be a release apart`);
+  }
+});
+
+test("the sender and receiver exist as functions, not as intentions", () => {
+  assert.equal(typeof openLibraryWithHandoff, "function");
+  assert.equal(typeof receiveHandoffFromOpener, "function");
+  // No window in node: both must answer rather than throw, which is also what a prerender does.
+  assert.equal(openLibraryWithHandoff("https://example.com/upload", "https://example.com"), null);
+  assert.equal(typeof receiveHandoffFromOpener("https://example.com", () => {}), "function");
+});
+
+// ── AND THE CLICK ITSELF ────────────────────────────────────────────────────────────────────────
+//
+// The done screen's link is the converter's single most important call to action, and it now does
+// something before navigating. Two ways that could quietly cost more than it gains, both asserted
+// here rather than remembered.
+test("the share link still behaves like a link", () => {
+  const src = readFileSync("src/components/ContributeToLibrary.tsx", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // A modified click belongs to the browser. Intercepting ⌘/ctrl/shift/alt or a middle button would
+  // break open-in-new-tab, open-in-new-window and copy-link on the one link that matters most.
+  assert.match(
+    src,
+    /if \(e\.metaKey \|\| e\.ctrlKey \|\| e\.shiftKey \|\| e\.altKey \|\| e\.button !== 0\) return;/,
+    "the handler must hand a modified click straight back to the browser",
+  );
+
+  // preventDefault ONLY once a window is actually open. The other order — prevent, then try to open
+  // — turns a blocked popup into a click that does nothing at all, which is worse than the empty
+  // form it replaced.
+  assert.match(src, /const w = openLibraryWithHandoff\(/, "the handoff must be attempted from the click");
+  assert.match(src, /if \(w\) e\.preventDefault\(\);/, "a blocked popup must be allowed to navigate normally");
+  const openAt = src.indexOf("openLibraryWithHandoff(");
+  const preventAt = src.indexOf("e.preventDefault()");
+  assert.ok(openAt < preventAt, "preventDefault runs before the window is known to exist");
+
+  // The gesture is spent by an await. Opening the tab has to happen in the click's own task.
+  const fn = src.slice(src.indexOf("function onShare"), src.indexOf("\n  }", src.indexOf("function onShare")));
+  assert.ok(!/\bawait\b/.test(fn), "an await before window.open spends the user gesture and the popup is blocked");
+});

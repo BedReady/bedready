@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import Link from "@/components/SiteLink";
 import { track } from "@vercel/analytics";
 import { acquisitionProps } from "@/lib/acquisition";
+import { openLibraryWithHandoff } from "@/lib/convert-handoff";
+import { LIBRARY_ORIGIN } from "@/lib/origin";
 
 /**
  * The one ask on the done screen, and the only one that leads anywhere.
@@ -91,13 +93,34 @@ import { acquisitionProps } from "@/lib/acquisition";
 export default function ContributeToLibrary() {
   const t = useTranslations("convert");
 
+  /**
+   * The click that carries the file, and the reason it opens a tab.
+   *
+   * `/upload` is on makerrun.com and IndexedDB is scoped to an origin, so the staging this link has
+   * relied on since it was written has reached nothing since the 2026-08-21 carve — measured:
+   * convert here, click, land there, and the store reads null. The bytes travel through the tab
+   * instead, which needs the converter document to stay alive to answer, which needs a new tab.
+   *
+   * Everything here degrades to exactly the old behaviour. A modified click (⌘, ctrl, shift, alt,
+   * middle) is left entirely alone so the browser's own new-tab and copy-link semantics survive. A
+   * blocked popup returns null and the plain navigation is allowed to proceed. `preventDefault` is
+   * called ONLY once a window is actually open, so there is no path where the click does nothing.
+   */
+  function onShare(e: React.MouseEvent<HTMLAnchorElement>) {
+    track("convert_to_library", { ...acquisitionProps(), via: "share" });
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    // The href SiteLink resolved — absolute, locale-prefixed, and the same target either way.
+    const w = openLibraryWithHandoff(e.currentTarget.href, LIBRARY_ORIGIN);
+    if (w) e.preventDefault();
+  }
+
   return (
     <div className="mt-3 rounded-lg border border-violet-400/40 bg-violet-400/[0.07] px-5 py-4">
       <p className="text-sm text-fg">{t("contributePrompt")}</p>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Link
           href="/upload"
-          onClick={() => track("convert_to_library", { ...acquisitionProps(), via: "share" })}
+          onClick={onShare}
           className="btn-primary btn-md"
         >
           {t("contributeShare")}
