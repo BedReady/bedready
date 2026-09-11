@@ -119,7 +119,7 @@ export default function CalibratePage() {
       {noContrast && <p className="mt-3 text-sm text-amber-300">{t("warnNoContrast")}</p>}
       {lowContrast && <p className="mt-3 text-sm text-amber-300">{t("warnLowContrast")}</p>}
       {!valid && <p className="mt-3 text-sm text-amber-300">{t("warnHex")}</p>}
-      {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+      {error && <p role="alert" className="mt-3 text-sm text-red-300">{error}</p>}
 
       <button
         onClick={make}

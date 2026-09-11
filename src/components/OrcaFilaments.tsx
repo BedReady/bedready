@@ -315,7 +315,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
 
   const activePath = OS_PATHS.find((o) => o.os === os) ?? OS_PATHS[1];
 
-  if (err) return <p className="notice notice-warn mt-8"><NoticeIcon level="warn" />{err}</p>;
+  if (err) return <p role="alert" className="notice notice-warn mt-8"><NoticeIcon level="warn" />{err}</p>;
   if (!manifest) return <p className="mt-8 text-sm text-fg-muted">{t("loading")}</p>;
 
   return (

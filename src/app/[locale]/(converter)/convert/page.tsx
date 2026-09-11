@@ -1259,7 +1259,7 @@ export default function ConvertPage() {
             </div>
           )}
           {batchState === "done" && <p className="mt-3 text-xs font-medium text-green-300">{batchMsg}</p>}
-          {batchState === "error" && <p className="mt-3 text-xs font-medium text-red-300">{batchMsg}</p>}
+          {batchState === "error" && <p role="alert" className="mt-3 text-xs font-medium text-red-300">{batchMsg}</p>}
           <p className="mt-3 text-xs text-fg-subtle">{t("batchNote")}</p>
         </section>
       )}
@@ -2415,7 +2415,7 @@ export default function ConvertPage() {
       )}
       {status === "error" && analysis && (
         <div className="mt-4">
-          <p className="text-sm text-red-300">{message}</p>
+          <p role="alert" className="text-sm text-red-300">{message}</p>
           {file && (
             <button
               onClick={serverConvert}
