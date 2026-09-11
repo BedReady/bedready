@@ -122,7 +122,7 @@ export default function ConvertCapture() {
           </button>
         </div>
         <Turnstile onToken={setCaptcha} />
-        {status === "error" && <p className="mt-2 text-xs text-red-300">{message}</p>}
+        {status === "error" && <p role="alert" className="mt-2 text-xs text-red-300">{message}</p>}
         <p className="mt-2 text-xs text-fg-subtle">{t("captureNote")}</p>
       </form>
     </div>
