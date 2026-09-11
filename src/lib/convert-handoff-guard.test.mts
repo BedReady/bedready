@@ -257,3 +257,24 @@ test("the share link still behaves like a link", () => {
   const fn = src.slice(src.indexOf("function onShare"), src.indexOf("\n  }", src.indexOf("function onShare")));
   assert.ok(!/\bawait\b/.test(fn), "an await before window.open spends the user gesture and the popup is blocked");
 });
+
+// ── THE OTHER HALF OF THE ONLY MEASUREMENT THE BRIDGE HAS ───────────────────────────────────────
+//
+// The library counts arrivals that carry a file (`upload_handoff_received`). This side counts the
+// clicks. The gap between the two IS the bridge's failure rate — blocked popups, severed openers,
+// tabs closed mid-handshake — and it is the only way either domain can see it, because they share no
+// analytics session.
+//
+// So the click event is load-bearing now, not just a funnel nicety: without it the library's number
+// has no denominator and a drop in deliveries cannot be told from a drop in interest.
+test("the share click is still counted, because it is the denominator", () => {
+  const src = readFileSync("src/components/ContributeToLibrary.tsx", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  assert.match(src, /track\("convert_to_library"/, "the done screen's click is no longer counted");
+  // Before the early return, so a modified click — which opens the library just as surely, by the
+  // browser's own route — is not silently dropped from the count.
+  const trackAt = src.indexOf('track("convert_to_library"');
+  const returnAt = src.indexOf("e.button !== 0) return;");
+  assert.ok(trackAt >= 0 && returnAt >= 0 && trackAt < returnAt,
+    "a modified click must still be counted — it reaches the library too, and dropping it would " +
+      "understate the denominator exactly where the bridge cannot deliver");
+});
