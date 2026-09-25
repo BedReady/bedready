@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      The extension's own surface, in the website's identity.
+
+      ── WHY THIS WAS REDRAWN ────────────────────────────────────────────────────────────────────
+      It was navy #0f172a with an orange #f97316 accent and no theme support, while bedready.io is
+      slate-and-white (or #070a12 in dark) with a violet → cyan → lime spectrum and violet-600 as the
+      one action colour. Someone installing from /extension met a different product. The 2026-08-22
+      design review found the same split on the site — a defined identity that almost nothing used —
+      and this is the last surface still outside it.
+
+      The tokens below are copied from `src/app/globals.css` rather than imported: an extension page
+      has no access to the site's stylesheet, so the only options are duplicate-with-a-note or drift.
+      If those tokens change, this file is the second place to change them.
+
+      The typeface is deliberately NOT matched. The site sets IBM Plex Sans with
+      `ui-sans-serif, system-ui` as its fallback, and bundling ~100KB of woff2 into an extension to
+      win one weight is a bad trade — so this uses the site's own fallback stack, which is a match by
+      the site's own definition rather than a compromise.
+    -->
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface-2: #f1f5f9;
+        --line: #e2e8f0;
+        --fg: #0f172a;
+        --fg-muted: #334155;
+        --fg-subtle: #475569;
+        --action: #7c3aed;        /* violet-600 — "this is the thing to do" */
+        --action-hover: #6d28d9;  /* violet-700 */
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #070a12;
+          --surface-2: #1e293b;
+          --line: rgba(255, 255, 255, 0.1);
+          --fg: #e2e8f0;
+          --fg-muted: #cbd5e1;
+          --fg-subtle: #94a3b8;
+          --action: #8b5cf6;      /* violet-500 — the 600 is too dark on #070a12 */
+          --action-hover: #a78bfa;
+        }
+      }
+      body {
+        width: 320px; margin: 0; padding: 16px; background: var(--bg); color: var(--fg);
+        font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+      }
+      /* The wordmark's spectrum sweep, in the one place a 320px popup can carry it. */
+      .rule { height: 3px; border-radius: 999px; background-image: linear-gradient(100deg, #7c3aed, #06b6d4 55%, #84cc16); }
+      h1 { font-size: 15px; margin: 12px 0 4px; color: var(--fg); letter-spacing: -0.01em; }
+      p.sub { margin: 0 0 12px; color: var(--fg-subtle); font-size: 12px; }
+      label.drop {
+        display: block; padding: 18px; text-align: center; border: 2px dashed var(--line);
+        border-radius: 8px; cursor: pointer; color: var(--fg-muted); background: var(--surface-2);
+        transition: border-color .15s, background .15s, color .15s;
+      }
+      label.drop:hover { border-color: var(--action); color: var(--fg); }
+      label.drop.dragging { border-color: var(--action); background: color-mix(in srgb, var(--action) 10%, var(--surface-2)); color: var(--fg); }
+      input[type="file"] { display: none; }
+      #status { margin-top: 12px; white-space: pre-wrap; font-size: 12px; color: var(--fg-muted); }
+      a { color: var(--action); font-weight: 500; }
+      a:hover { color: var(--action-hover); }
+      :where(a, label, input):focus-visible { outline: 2px solid var(--action); outline-offset: 2px; border-radius: 4px; }
+      @media (prefers-reduced-motion: reduce) { label.drop { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="rule"></div>
+    <h1>3MF → Snapmaker U1</h1>
+    <p class="sub">100% in your browser — nothing is uploaded.</p>
+    <label class="drop" id="drop">
+      Drop a .3mf here, or click to choose
+      <input id="file" type="file" accept=".3mf" />
+    </label>
+    <div id="opts"></div>
+    <div id="status"></div>
+    <p class="sub" style="margin-top: 12px">Full preview &amp; color editor at <a href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
+    <script src="dist/popup.js"></script>
+  </body>
+</html>
