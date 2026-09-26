@@ -120,7 +120,7 @@
     "readingLocal": "(in your browser — nothing is uploaded)",
     "title": "Make any .3mf U1-ready",
     "intro": "Drop a .3mf from MakerWorld, Bambu Studio, PrusaSlicer, Orca or Creality Print — get back a U1-ready file: the foreign profile swapped for the real Snapmaker U1 profile, painted multicolor mapped to the U1's 4 slots, colors preserved. Runs entirely in your browser — nothing is uploaded.",
-    "livePreview": "· Live colored preview before you download",
+    "livePreview": "Live colored preview before you download",
     "tip": "Tip: the <link>browser extension</link> does this right on the MakerWorld/Printables download page.",
     "settingsTitle": "U1 print settings",
     "keepSettings": "Keep creator's settings",

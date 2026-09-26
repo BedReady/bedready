@@ -120,7 +120,7 @@
     "readingLocal": "(en tu navegador — no se sube nada)",
     "title": "Prepara cualquier .3mf para la U1",
     "intro": "Suelta un .3mf de MakerWorld, Bambu Studio, PrusaSlicer, Orca o Creality Print — recibes un archivo listo para la U1: el perfil ajeno se cambia por el perfil real de la Snapmaker U1, el multicolor pintado se asigna a las 4 ranuras de la U1 y se conservan los colores. Funciona por completo en tu navegador — no se sube nada.",
-    "livePreview": "· Vista previa en color antes de descargar",
+    "livePreview": "Vista previa en color antes de descargar",
     "tip": "Consejo: la <link>extensión de navegador</link> hace esto directamente en la página de descarga de MakerWorld/Printables.",
     "settingsTitle": "Ajustes de impresión U1",
     "keepSettings": "Mantener los ajustes del creador",
