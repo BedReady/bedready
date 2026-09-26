@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { reloadOnceForChunkError } from "@/lib/chunk-reload";
 
 // Localized error boundary for the locale segment. Catches render/runtime errors and offers a retry.
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -18,6 +19,9 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     } catch {
       /* ignore */
     }
+    // A tab left open across a deploy asks for a chunk that no longer exists, and "Try again" cannot
+    // fetch it. One reload picks up the new build; see chunk-reload.ts for why it is only one.
+    reloadOnceForChunkError(error);
   }, [error]);
 
   return (

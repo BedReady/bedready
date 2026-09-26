@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { reloadOnceForChunkError } from "@/lib/chunk-reload";
 
 // Root error boundary — catches failures above the locale layout (where the localized error.tsx can't
 // run). Must render its own <html>/<body>. Reports to the lightweight client-error sink.
@@ -15,6 +16,9 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     } catch {
       /* ignore */
     }
+    // A tab left open across a deploy asks for a chunk that no longer exists, and "Try again" cannot
+    // fetch it. One reload picks up the new build; see chunk-reload.ts for why it is only one.
+    reloadOnceForChunkError(error);
   }, [error]);
 
   return (
