@@ -39,8 +39,9 @@ export default async function OrcaFilamentsPage({ params }: { params: Promise<{ 
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("heading")}</h1>
       <p className="mt-4 max-w-2xl text-lg text-fg-muted">{t("intro")}</p>
 
-      <OrcaFilaments />
-
+      {/* Once. #4 left this rendered twice, so the page carried two full copies of the catalogue
+          (2,542 cards for 1,271 profiles, two search boxes) and ran to 164,000px on a desktop.
+          orca-filaments-once.test.mts keeps it single. */}
       <OrcaFilaments />
 
       {/* ── THE TAG CLOUD MOVED BELOW THE TOOL ────────────────────────────────────────────────────

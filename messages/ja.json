@@ -120,7 +120,7 @@
     "readingLocal": "(ブラウザ内で処理 — アップロードされません)",
     "title": "どんな .3mf も U1 対応に",
     "intro": "MakerWorld、Bambu Studio、PrusaSlicer、Orca、Creality Print の .3mf をドロップすると、U1 対応ファイルが得られます。外部のプロファイルを本物の Snapmaker U1 プロファイルに置き換え、ペイントされたマルチカラーを U1 の 4 スロットに割り当て、色はそのまま保持します。すべてブラウザ内で実行され、何もアップロードされません。",
-    "livePreview": "· ダウンロード前にカラーのライブプレビュー",
+    "livePreview": "ダウンロード前にカラーのライブプレビュー",
     "tip": "ヒント：<link>ブラウザ拡張機能</link>を使えば、MakerWorld/Printables のダウンロードページで直接できます。",
     "settingsTitle": "U1 印刷設定",
     "keepSettings": "作者の設定を維持",

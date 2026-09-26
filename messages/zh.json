@@ -120,7 +120,7 @@
     "readingLocal": "(在你的浏览器中 — 不会上传任何内容)",
     "title": "让任意 .3mf 适配 U1",
     "intro": "拖入来自 MakerWorld、Bambu Studio、PrusaSlicer、Orca 或 Creality Print 的 .3mf — 即可获得适配 U1 的文件：外来配置被替换为真正的 Snapmaker U1 配置，绘制的多色被映射到 U1 的 4 个槽位，并保留原有颜色。全部在你的浏览器中完成 — 不上传任何内容。",
-    "livePreview": "· 下载前提供彩色实时预览",
+    "livePreview": "下载前提供彩色实时预览",
     "tip": "提示：<link>浏览器扩展</link>可直接在 MakerWorld/Printables 的下载页面完成此操作。",
     "settingsTitle": "U1 打印设置",
     "keepSettings": "保留创作者的设置",

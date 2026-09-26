@@ -1107,8 +1107,16 @@ export default function ConvertPage() {
         {t("title")}
       </h1>
       {!busy && <p className="mt-3 text-base leading-relaxed text-fg-muted">{t("intro")}</p>}
-      {/* The claim, shown. See BeforeAfter for why it is drawn rather than photographed. */}
-      {!busy && <BeforeAfter />}
+      {/* The claim, shown. See BeforeAfter for why it is drawn rather than photographed.
+          Above the drop zone from `sm` up, below it on a phone: there it pushed the page's one action
+          off the first screen (the drop text sat at 750px on a 664px iPhone 13 viewport, 826px on an
+          iPhone SE's 568px — 2026-09-26 UI review). Two mounts, one ever displayed; `hidden` is
+          display:none, so assistive tech meets the figure once as well. */}
+      {!busy && (
+        <div className="hidden sm:block">
+          <BeforeAfter />
+        </div>
+      )}
 
       <div
         role="button"
@@ -1151,6 +1159,12 @@ export default function ConvertPage() {
         </div>
         <input ref={inputRef} type="file" accept=".3mf,.stl" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
       </div>
+
+      {!busy && (
+        <div className="sm:hidden">
+          <BeforeAfter />
+        </div>
+      )}
 
       {/* ── THE REASSURANCE, NOW BELOW THE ACTION ────────────────────────────────────────────────
           Same blocks, same words, after the drop zone instead of in front of it. */}
