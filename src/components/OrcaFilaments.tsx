@@ -25,6 +25,8 @@ type Profile = { id: string; name: string; vendor: string; type: string; nozzleT
 type Manifest = { machine: string; vendors: string[]; types: string[]; profiles: Profile[] };
 
 const BASE = "/orca-filaments/";
+/** Cards drawn per page: divisible by the grid's 2 and 3 columns, so a page never ends mid-row. */
+const PAGE = 48;
 const WARNED_KEY = "bedready.orca-filaments.warned";
 
 const OS_PATHS: { os: string; path: string }[] = [
@@ -111,6 +113,9 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
   const [busy, setBusy] = useState<string | null>(null); // id of the profile currently installing
   const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null); // bulk install progress
   const [showGuide, setShowGuide] = useState(false);
+  // How many cards are drawn. Keyed to the filter that produced them, so a new search or dropdown
+  // choice starts again at one page without an effect to reset it.
+  const [page, setPage] = useState<{ sig: string; n: number }>({ sig: "", n: PAGE });
 
   useEffect(() => {
     const fsApi = typeof window !== "undefined" && "showDirectoryPicker" in window;
@@ -148,6 +153,15 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
         (!q || p.name.toLowerCase().includes(q) || p.vendor.toLowerCase().includes(q)),
     );
   }, [manifest, vendor, type, query]);
+
+  // ── ONE PAGE OF CARDS, THEN "SHOW MORE" ──────────────────────────────────────────────────────
+  // With nothing filtered this list is all 1,271 profiles, drawn as 1,271 cards: 83,000px of page on
+  // a desktop and 244,000px on a phone, with the search box the only way to the one you wanted
+  // (2026-09-26 UI review). Searching and filtering still see every profile, and "Download all"
+  // still acts on every match: only what is DRAWN is capped.
+  const sig = `${vendor}|${type}|${query.trim().toLowerCase()}`;
+  const limit = page.sig === sig ? page.n : PAGE;
+  const visible = shown.length > limit ? shown.slice(0, limit) : shown;
 
   async function download(p: Profile) {
     try {
@@ -402,7 +416,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
         <p className="mt-8 text-sm text-fg-muted">{t("noMatch")}</p>
       ) : (
         <div className="page-breakout mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map((p) => (
+          {visible.map((p) => (
             <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
               <h3 className="font-semibold text-fg">{p.name}</h3>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -439,6 +453,20 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {shown.length > visible.length && (
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage({ sig, n: limit + PAGE })}
+            className="btn-secondary btn-md"
+          >
+            {t("showMore", { count: Math.min(PAGE, shown.length - visible.length) })}
+          </button>
+          <p className="text-xs text-fg-subtle" aria-live="polite">
+            {t("showingOf", { shown: visible.length, total: shown.length })}
+          </p>
         </div>
       )}
 

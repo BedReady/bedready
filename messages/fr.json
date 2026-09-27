@@ -1169,6 +1169,8 @@
     "allMaterials": "Tous les matériaux",
     "profileCount": "{count, plural, one {# profil} other {# profils}}",
     "builtFor": "conçu pour {machine}",
+    "showMore": "Afficher {count, number} de plus",
+    "showingOf": "{shown, number} sur {total, number} affichés",
     "bulkInstalling": "Installation {done}/{total}…",
     "bulkZipping": "Compression {done}/{total}…",
     "installAll": "Tout installer ({count, number}) — un seul choix de dossier",

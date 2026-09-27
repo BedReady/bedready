@@ -1169,6 +1169,8 @@
     "allMaterials": "すべての素材",
     "profileCount": "{count} 件のプロファイル",
     "builtFor": "{machine} 用",
+    "showMore": "さらに {count, number} 件を表示",
+    "showingOf": "{total, number} 件中 {shown, number} 件を表示",
     "bulkInstalling": "インストール中 {done}/{total}…",
     "bulkZipping": "圧縮中 {done}/{total}…",
     "installAll": "{count, number} 件すべてインストール（フォルダー選択は 1 回）",
