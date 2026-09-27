@@ -1169,6 +1169,8 @@
     "allMaterials": "全部材料",
     "profileCount": "{count} 个配置",
     "builtFor": "为 {machine} 制作",
+    "showMore": "再显示 {count, number} 个",
+    "showingOf": "显示 {shown, number} / {total, number}",
     "bulkInstalling": "正在安装 {done}/{total}…",
     "bulkZipping": "正在打包 {done}/{total}…",
     "installAll": "安装全部 {count, number} 个（只需选一次文件夹）",

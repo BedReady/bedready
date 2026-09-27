@@ -1169,6 +1169,8 @@
     "allMaterials": "All materials",
     "profileCount": "{count, plural, one {# profile} other {# profiles}}",
     "builtFor": "built for {machine}",
+    "showMore": "Show {count, number} more",
+    "showingOf": "Showing {shown, number} of {total, number}",
     "bulkInstalling": "Installing {done}/{total}…",
     "bulkZipping": "Zipping {done}/{total}…",
     "installAll": "Install all {count, number} (one folder pick)",

@@ -1169,6 +1169,8 @@
     "allMaterials": "كل المواد",
     "profileCount": "{count, plural, zero {لا ملفات تعريف} one {ملف تعريف واحد} two {ملفا تعريف} few {# ملفات تعريف} many {# ملف تعريف} other {# ملف تعريف}}",
     "builtFor": "مُعدّ لـ {machine}",
+    "showMore": "عرض {count, number} أخرى",
+    "showingOf": "عرض {shown, number} من {total, number}",
     "bulkInstalling": "جارٍ التثبيت {done}/{total}…",
     "bulkZipping": "جارٍ الضغط {done}/{total}…",
     "installAll": "تثبيت الكل ({count, number}) — اختيار مجلد واحد",
