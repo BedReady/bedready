@@ -252,7 +252,7 @@ test("retarget Bambu → another Bambu (X1C): printer identity rewritten, colour
   assert.equal(r.reduced, false);
 });
 
-test("retarget across ecosystems (Bambu → Prusa): falls back to a Generic-stripped 3MF", async () => {
+test("retarget Bambu → Prusa MK4 + MMU3: a PrusaSlicer project naming the MMU3 preset", async () => {
   const f = file3mf({
     "[Content_Types].xml": `<?xml version="1.0"?><Types/>`,
     "_rels/.rels": `<?xml version="1.0"?><Relationships/>`,
@@ -260,12 +260,28 @@ test("retarget across ecosystems (Bambu → Prusa): falls back to a Generic-stri
     "Metadata/project_settings.config": project(),
     "Metadata/slice_info.config": `<config/>`,
   });
-  const r = await cleanThreeMF(f, "prusa-mk4-mmu3"); // Bambu source, Prusa target → cross family
+  const r = await cleanThreeMF(f, "prusa-mk4-mmu3");
+  const e = unzipSync(new Uint8Array(await r.blob.arrayBuffer()));
+  const cfg = strFromU8(e["Metadata/Slic3r_PE.config"]);
+  // MK4ISMMU3, not "MK4IS": that is the single-extruder MK4, which a 5-colour project is not.
+  assert.match(cfg, /^; printer_model = MK4ISMMU3$/m);
+  assert.match(cfg, /^; printer_settings_id = Original Prusa MK4 MMU3 0\.4 nozzle$/m);
+  assert.ok(!Object.keys(e).some((p) => /project_settings|slice_info/i.test(p)), "Bambu configs dropped");
+  assert.equal(r.diff, null);
+});
+
+test("retarget across ecosystems the other way (Prusa → Bambu): still a Generic-stripped 3MF", async () => {
+  const f = file3mf({
+    "[Content_Types].xml": `<?xml version="1.0"?><Types/>`,
+    "_rels/.rels": `<?xml version="1.0"?><Relationships/>`,
+    "3D/3dmodel.model": model(`<metadata name="paint_color">1</metadata>`),
+    "Metadata/Slic3r_PE.config": "; printer_model = MK4IS\n; filament_colour = #FF0000\n",
+  });
+  const r = await cleanThreeMF(f, "bambu-x1c"); // Prusa source, Bambu target → cross family
   const e = unzipSync(new Uint8Array(await r.blob.arrayBuffer()));
   const paths = Object.keys(e);
   assert.ok(!paths.some((p) => /\.config$/i.test(p)), "vendor configs stripped (generic fallback)");
   assert.ok(paths.includes("3D/3dmodel.model"), "geometry kept");
-  assert.ok(strFromU8(e["3D/3dmodel.model"]).includes("paint_color"), "colours/paint preserved in the mesh");
   assert.equal(r.diff, null);
 });
 

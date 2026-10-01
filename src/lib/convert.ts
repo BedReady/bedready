@@ -1283,6 +1283,7 @@ export type CleanTarget =
   | "bambu-p1s"
   | "bambu-a1"
   | "prusa-mk4-mmu3"
+  | "prusa-mk4s-mmu3"
   | "prusa-core-one-indx-8t"
   | "prusa-core-one-indx-4t"
   | "creality-k2";
@@ -1424,7 +1425,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
   // with the painting remapped onto the target's tools (prusa-project.ts). Every other cross-family
   // pair (or an unrecognised source) → clean Generic 3MF; there's no coherent metadata rewrite.
   // Only for a machine whose exact PrusaSlicer preset name is known: the project names that preset,
-  // and a guessed name resolves to nothing. The INDX entries carry one; the MK4 + MMU3 does not yet.
+  // and a guessed name resolves to nothing. Every Prusa entry in targets.ts now carries one.
   const toPrusa = srcFamily === "bbl" && tgtFamily === "prusa" && !!machine.printerSettingsId;
   if (!reprofile && !toPrusa) return stripToGeneric(entries);
 
