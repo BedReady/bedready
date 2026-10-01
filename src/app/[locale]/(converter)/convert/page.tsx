@@ -76,6 +76,7 @@ import ShareBedReady from "@/components/ShareBedReady";
 import ContributeToLibrary from "@/components/ContributeToLibrary";
 import ConvertCapture from "@/components/ConvertCapture";
 import MyFilaments from "@/components/MyFilaments";
+import { matchToSpools } from "@/lib/spool-match";
 import { absoluteUrl } from "@/lib/origin";
 
 type Status = "idle" | "ready" | "working" | "done" | "error";
@@ -115,6 +116,9 @@ export default function ConvertPage() {
   const [bigFile, setBigFile] = useState(false);
   const [slots, setSlots] = useState<string[]>(["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"]);
   const [assign, setAssign] = useState<number[]>([]);
+  // The last "match to my spools" result, for its one-line report: how many colours were matched and
+  // how many have no spool that resembles them. Null until the button is used; cleared with the file.
+  const [spoolMatch, setSpoolMatch] = useState<{ count: number; far: number } | null>(null);
   const [status, setStatus] = useState<Status>("idle");
 
   // ── The denominator for the done screen ───────────────────────────────────────────────────────
@@ -272,6 +276,7 @@ export default function ConvertPage() {
     setBigFile(false);
     setSlots(["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"]);
     setAssign([]);
+    setSpoolMatch(null);
     setStatus("idle");
     setTargetId("u1");
     setMessage("");
@@ -1534,6 +1539,51 @@ export default function ConvertPage() {
                     ? t("reorderHintFs")
                     : t("reorderHintNormal")}
                 </p>
+                {/* ── PRINT WITH WHAT IS LOADED ─────────────────────────────────────────────────
+                    The slots above are proposed FROM the model. This runs the other way: the printer
+                    is already loaded, so make the file fit it. Set each slot to the spool that is in
+                    it (by hand, or from My Filaments below) and every model colour goes to the
+                    nearest one. See lib/spool-match.ts. */}
+                {!fullSpectrum && !bandSwap && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="btn-secondary btn-sm"
+                      onClick={() => {
+                        const r = matchToSpools(palette, slots);
+                        setAssign(r.map);
+                        setSpoolMatch({ count: palette.length, far: r.far.length });
+                      }}
+                    >
+                      {t("matchSpools")}
+                    </button>
+                    <span className="text-xs text-fg-subtle">{t("matchSpoolsHint")}</span>
+                  </div>
+                )}
+                {!fullSpectrum && spoolMatch && (
+                  <p
+                    className={`mt-2 text-xs ${spoolMatch.far ? "text-amber-200" : "text-emerald-300"}`}
+                    aria-live="polite"
+                  >
+                    {spoolMatch.far
+                      ? t("spoolsFar", { far: spoolMatch.far, count: spoolMatch.count })
+                      : t("spoolsMatched", { count: spoolMatch.count })}
+                  </p>
+                )}
+                {/* The same inventory the Full Spectrum picker uses. Here "load" puts the closest
+                    distinct spools in the slots, then matches every colour to them. */}
+                {!fullSpectrum && !bandSwap && (
+                  <MyFilaments
+                    targets={slots.map((hex, index) => ({ index, hex }))}
+                    onApply={(picks) => {
+                      const next = slots.map((hex, i) => picks[i] ?? hex);
+                      setSlots(next);
+                      const r = matchToSpools(palette, next);
+                      setAssign(r.map);
+                      setSpoolMatch({ count: palette.length, far: r.far.length });
+                    }}
+                  />
+                )}
               </>
             );
           })()}
