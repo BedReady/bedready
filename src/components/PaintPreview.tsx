@@ -144,8 +144,11 @@ export default function PaintPreview({
       const w = mount.clientWidth || width;
       const split = compareRef.current;
       if (split !== wasCompare) {
-        // Each half is its own picture, so the camera takes a half-width aspect in compare mode.
+        // Each half is its own picture, so the camera takes a half-width aspect in compare mode — and
+        // zooms out to match. The vertical field of view stays put while the horizontal one halves,
+        // so a model framed for the full width would overflow both halves sideways.
         camera.aspect = (split ? w / 2 : w) / height;
+        camera.zoom = split ? 0.6 : 1;
         camera.updateProjectionMatrix();
         wasCompare = split;
       }
