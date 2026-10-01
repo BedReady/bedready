@@ -23,6 +23,7 @@ export type Machine = {
   nozzle: number; // default nozzle diameter (mm)
   printerModel?: string; // vendor printer_model written into project settings on a retarget
   printerSettingsId?: string; // exact library preset name (printer_settings_id); falls back to printerModel
+  printerVariant?: string; // PrusaSlicer printer_variant (the nozzle variant the preset name carries)
   printableArea?: string[]; // exact build-plate polygon (keeps plate layout correct); else derived from bed
   printableHeight?: string; // exact printable_height string; else derived from bed.z
   supportsMixedFilament?: boolean; // Full Spectrum dithering is a hardware feature — gate on this, NOT flavour
@@ -153,6 +154,21 @@ const RETARGET: Machine[] = [
     id: "prusa-mk4-mmu3", name: "Prusa MK4 + MMU3", vendor: "Prusa Research", flavour: "prusa",
     toolheads: 5, buildMM: 250, buildZMM: 220, bed: { x: 250, y: 210, z: 220 }, nozzle: 0.4,
     printerModel: "MK4IS", // source: app printer-profiles.js prusa-mk4-mmu3
+  },
+  // The CORE One INDX toolchanger, in both its configurations. Every value is Prusa's own: printer
+  // model ids, preset names, variant, bed and height are read from the PrusaResearch 2.5.10 profile
+  // bundle (prusa3d/PrusaSlicer-settings-prusa-fff, min PrusaSlicer 2.9.6), sections
+  // [printer_model:COREONE_INDX8T|4T] and [printer:*C1_INDX_8T_common*]. Bambu/Orca sources become a
+  // real PrusaSlicer project for these (prusa-project.ts), not a Generic 3MF.
+  {
+    id: "prusa-core-one-indx-8t", name: "Prusa CORE One INDX 8T", vendor: "Prusa Research", flavour: "prusa",
+    toolheads: 8, buildMM: 248, buildZMM: 270, bed: { x: 248, y: 205, z: 270 }, nozzle: 0.4,
+    printerModel: "COREONE_INDX8T", printerSettingsId: "Prusa CORE One INDX 8T HF0.4 nozzle", printerVariant: "HF0.4",
+  },
+  {
+    id: "prusa-core-one-indx-4t", name: "Prusa CORE One INDX 4T", vendor: "Prusa Research", flavour: "prusa",
+    toolheads: 4, buildMM: 248, buildZMM: 270, bed: { x: 248, y: 205, z: 270 }, nozzle: 0.4,
+    printerModel: "COREONE_INDX4T", printerSettingsId: "Prusa CORE One INDX 4T HF0.4 nozzle", printerVariant: "HF0.4",
   },
   {
     id: "creality-k2", name: "Creality K2 Plus", vendor: "Creality", flavour: "orca",

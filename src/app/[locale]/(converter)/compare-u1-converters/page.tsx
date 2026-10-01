@@ -78,7 +78,7 @@ const ROWS: Row[] = [
     note: "Only my 0.4 profile is a real export from a U1 that has printed; the other three scale it by nozzle ratio, and the converter says so when you pick one. bambu2orca ships a preset for each size.",
     pp: "Not applicable: it remaps paint and blends, not printer profiles",
   },
-  { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality", bl2u1: "No", forge: "No", b2o: "No", pp: "Painted 3MF → Prusa Core One INDX, Bambu Studio or Snapmaker Orca" },
+  { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality; Bambu or Orca → a Prusa CORE One INDX (8T or 4T) project", bl2u1: "No", forge: "No", b2o: "No", pp: "Painted 3MF → Prusa Core One INDX, Bambu Studio or Snapmaker Orca" },
   { label: "STL ⇄ 3MF", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "No", pp: "No: painted 3MF only" },
   { label: "Batch convert a folder", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "Ko-fi supporter tier only", pp: "Not documented" },
   { label: "Live colored 3D preview", bedready: "Yes, before you download", bl2u1: "No", forge: "Not documented", b2o: "Not documented", pp: "Yes, original against mapped" },
@@ -230,9 +230,11 @@ export default async function CompareConvertersPage({ params }: { params: Promis
             starts from <strong className="text-fg">the spools you actually have loaded</strong>: you enter the
             color in each slot (or pick a CMY, CMYK or CMYKW preset) and it matches every painted color to the
             closest one, blending the ones with no close match. If your colors are set and the file has to fit
-            them, that is the better question to start from. It is also the tool to use for a{" "}
-            <strong className="text-fg">Prusa Core One INDX</strong>, and it writes Bambu Studio&apos;s and
-            Prusa&apos;s mixing formats as well as Snapmaker&apos;s. What it does not do is supply the target
+            them, that is the better question to start from. Both tools now turn a Bambu or Orca file into a{" "}
+            <strong className="text-fg">Prusa CORE One INDX</strong> project with the colors on the right
+            tools, but PaintPort also writes <strong className="text-fg">ColorMix blends</strong> for it, in
+            Prusa&apos;s and Bambu Studio&apos;s mixing formats as well as Snapmaker&apos;s. I don&apos;t blend
+            on the INDX yet; if you want mixed colors there, use it. What it does not do is supply the target
             printer&apos;s profile: its README notes that opening the result as a project can put placeholder
             presets in place of yours. It is open source (AGPL-3.0), and the whole tool is one HTML file that
             runs offline.

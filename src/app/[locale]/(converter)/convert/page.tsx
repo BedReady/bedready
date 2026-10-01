@@ -752,7 +752,7 @@ export default function ConvertPage() {
       // Custom Vercel Analytics event — counts real conversions, not just /convert visits.
       track("convert_success", { ...acquisitionProps(),
         mode: target,
-        profile: target === "u1" ? (res.preserved ? "preserve" : "stamp") : isRetarget ? (sameFamily ? "reprofile" : "generic") : "",
+        profile: target === "u1" ? (res.preserved ? "preserve" : "stamp") : isRetarget ? (sameFamily ? "reprofile" : analysis?.flavour && configFamily(analysis.flavour) === "bbl" && targetMachine!.flavour === "prusa" && targetMachine!.printerSettingsId ? "prusa-project" : "generic") : "",
         reduced: res.reduced,
         colors: res.colorsTotal,
         // Feature-adoption tags — which advanced modes fired, so we can see what actually drives usage.
@@ -1523,10 +1523,12 @@ export default function ConvertPage() {
             const view = fullSpectrum ? fsColors : slots;
             const last = view.length - 1;
             // Column count: Full Spectrum is always the U1's 4 physical heads; the plain editor follows the
-            // selected target's slot count. Class names must be literal for Tailwind — toolheads are 4 or 5,
+            // selected target's slot count. Class names must be literal for Tailwind — toolheads are 4, 5 or 8,
             // so 4-slot targets keep the exact "grid-cols-4" they render today. The 5-slot case drops to 3
             // columns on mobile so the pickers/buttons stay tappable instead of cramming 5 across a phone.
-            const gridColsClass = (fullSpectrum ? 4 : slotCount) >= 5 ? "grid-cols-3 sm:grid-cols-5" : "grid-cols-4";
+            const cols = fullSpectrum ? 4 : slotCount;
+            // 8 (CORE One INDX 8T): one row of eight from sm up, two rows of four on a phone.
+            const gridColsClass = cols >= 8 ? "grid-cols-4 sm:grid-cols-8" : cols >= 5 ? "grid-cols-3 sm:grid-cols-5" : "grid-cols-4";
             const move = (i: number, dir: -1 | 1) => (fullSpectrum ? movePhysical(i, dir) : moveSlot(i, dir));
             return (
               <>
@@ -2222,9 +2224,14 @@ export default function ConvertPage() {
       {file && (() => {
         const srcFam = analysis?.flavour ? configFamily(analysis.flavour) : null;
         const keeps = RETARGET_MACHINES.filter((m) => srcFam !== null && configFamily(m.flavour) === srcFam);
-        const others = RETARGET_MACHINES.filter((m) => !keeps.includes(m));
+        // Bambu/Orca → Prusa is no longer a Generic 3MF: it is a PrusaSlicer project with the painting on
+        // the right tools (lib/prusa-project.ts). Its own group, so the "saved as Generic" label is not
+        // stuck to the printers it is no longer true of.
+        const prusaProject = RETARGET_MACHINES.filter((m) => srcFam === "bbl" && configFamily(m.flavour) === "prusa" && !!m.printerSettingsId);
+        const others = RETARGET_MACHINES.filter((m) => !keeps.includes(m) && !prusaProject.includes(m));
         const chosen = targetId !== "u1" ? MACHINES[targetId] : undefined;
         const chosenSame = chosen && srcFam !== null && configFamily(chosen.flavour) === srcFam;
+        const chosenProject = chosen ? prusaProject.includes(chosen) : false;
         return (
           <div className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
             <label htmlFor="target-printer" className="text-sm font-semibold text-fg">{t("targetPrinterLabel")}</label>
@@ -2242,6 +2249,13 @@ export default function ConvertPage() {
                   ))}
                 </optgroup>
               )}
+              {prusaProject.length > 0 && (
+                <optgroup label={t("targetPrusaProjectGroup")}>
+                  {prusaProject.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </optgroup>
+              )}
               {others.length > 0 && (
                 <optgroup label={t("targetGenericGroup")}>
                   {others.map((m) => (
@@ -2252,7 +2266,11 @@ export default function ConvertPage() {
             </select>
             {chosen && (
               <p className="mt-2 text-xs text-fg-subtle">
-                {chosenSame ? t("targetKeepNote", { name: chosen.name }) : t("targetGenericNote", { name: chosen.name })}
+                {chosenSame
+                  ? t("targetKeepNote", { name: chosen.name })
+                  : chosenProject
+                    ? t("targetPrusaProjectNote", { name: chosen.name })
+                    : t("targetGenericNote", { name: chosen.name })}
               </p>
             )}
             {chosen && (

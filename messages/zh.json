@@ -158,6 +158,8 @@
     "targetU1Default": "Snapmaker U1（默认）",
     "targetKeepGroup": "同一生态 — 保留打印机设置",
     "targetGenericGroup": "其他生态 — 另存为通用 3MF",
+    "targetPrusaProjectGroup": "PrusaSlicer 项目 — 颜色对应到各工具头",
+    "targetPrusaProjectNote": "保存为 {name} 的 PrusaSlicer 项目：每种涂色都会进入上方槽位所分配的工具头，{name} 的配置由 PrusaSlicer 补全。请用“文件 → 打开”以项目方式打开——若作为几何体导入，槽位颜色会丢失。",
     "targetKeepNote": "将文件的打印机配置改写为 {name}，并把颜色重新映射到它的槽位。",
     "targetGenericNote": "{name} 使用不同的切片软件格式 — 另存为干净的通用 3MF，打开后在其切片软件中选择 {name}。",
     "convertForPrinter": "为 {name} 转换",
