@@ -150,10 +150,19 @@ const RETARGET: Machine[] = [
     toolheads: 4, buildMM: 256, buildZMM: 256, bed: { x: 256, y: 256, z: 256 }, nozzle: 0.4,
     printerModel: "Bambu Lab A1", // source: app printer-profiles.js bambu-a1
   },
+  // The MK4 with an MMU3. Its printer_model was "MK4IS" (ported from the app's printer-profiles.js),
+  // which is Prusa's id for the SINGLE-extruder MK4: a retarget relabelled a 5-colour project as a
+  // printer with one filament. Identity now from Prusa's PrusaResearch 2.5.10 bundle,
+  // [printer_model:MK4ISMMU3|MK4SMMU3] and [printer:Original Prusa MK4(S) MMU3 0.4 nozzle].
   {
     id: "prusa-mk4-mmu3", name: "Prusa MK4 + MMU3", vendor: "Prusa Research", flavour: "prusa",
     toolheads: 5, buildMM: 250, buildZMM: 220, bed: { x: 250, y: 210, z: 220 }, nozzle: 0.4,
-    printerModel: "MK4IS", // source: app printer-profiles.js prusa-mk4-mmu3
+    printerModel: "MK4ISMMU3", printerSettingsId: "Original Prusa MK4 MMU3 0.4 nozzle", printerVariant: "0.4",
+  },
+  {
+    id: "prusa-mk4s-mmu3", name: "Prusa MK4S + MMU3", vendor: "Prusa Research", flavour: "prusa",
+    toolheads: 5, buildMM: 250, buildZMM: 220, bed: { x: 250, y: 210, z: 220 }, nozzle: 0.4,
+    printerModel: "MK4SMMU3", printerSettingsId: "Original Prusa MK4S MMU3 0.4 nozzle", printerVariant: "0.4",
   },
   // The CORE One INDX toolchanger, in both its configurations. Every value is Prusa's own: printer
   // model ids, preset names, variant, bed and height are read from the PrusaResearch 2.5.10 profile
