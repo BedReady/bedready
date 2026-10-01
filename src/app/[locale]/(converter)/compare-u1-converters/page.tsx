@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title: "Snapmaker U1 .3mf converters compared — official, bl2u1, U1 Forge, bambu2orca",
+    title: "Snapmaker U1 .3mf converters compared — official, bl2u1, U1 Forge, bambu2orca, PaintPort",
     description:
       "An honest comparison of the tools that convert Bambu, Prusa and MakerWorld .3mf files for the Snapmaker U1 — including Snapmaker's own free converter: what each supports, what it costs, whether there's a daily limit, and what actually gets sent to a server.",
     alternates: alternates("/compare-u1-converters", locale),
@@ -31,11 +31,15 @@ export async function generateMetadata({
 }
 
 const UPDATED = "17 August 2026";
+// PaintPort joined later than the rest, so it carries its own date rather than re-stamping columns
+// nobody re-read. Read from its README, its CHANGELOG (v0.8.4, 2026-09-21) and the tool itself.
+const PAINTPORT_READ = "1 October 2026";
+const PAINTPORT = "https://perspektive3d.github.io/paintport/";
 
-type Row = { label: string; bedready: string; bl2u1: string; forge: string; b2o: string; note?: string };
+type Row = { label: string; bedready: string; bl2u1: string; forge: string; b2o: string; pp: string; note?: string };
 
 const ROWS: Row[] = [
-  { label: "Source files", bedready: "Bambu, Prusa, Creality, Orca", bl2u1: "Bambu Lab only", forge: "Bambu, Prusa, MakerWorld", b2o: "Bambu Studio only" },
+  { label: "Source files", bedready: "Bambu, Prusa, Creality, Orca", bl2u1: "Bambu Lab only", forge: "Bambu, Prusa, MakerWorld", b2o: "Bambu Studio only", pp: "Bambu, MakerWorld, Orca, PrusaSlicer (painted 3MF)" },
   {
     label: "Where conversion runs",
     bedready: "Your browser",
@@ -43,8 +47,9 @@ const ROWS: Row[] = [
     forge: "Your browser",
     b2o: "Your browser, but settings are sent to their server",
     note: "bl2u1's own page states uploaded files are deleted from the server after 8 hours. bambu2orca keeps your geometry local and posts the project's settings and object names to its own API — see the section above.",
+    pp: "Your browser, or offline as one HTML file",
   },
-  { label: "Price", bedready: "Free", bl2u1: "Free (donations)", forge: "First export free, then ~$2 each", b2o: "Free" },
+  { label: "Price", bedready: "Free", bl2u1: "Free (donations)", forge: "First export free, then ~$2 each", b2o: "Free", pp: "Free (AGPL-3.0)" },
   {
     label: "Daily limit",
     bedready: "None",
@@ -52,8 +57,9 @@ const ROWS: Row[] = [
     forge: "Not documented",
     b2o: "35 conversions per 24 hours; 150 on the Ko-fi supporter tier",
     note: "A converter that runs entirely on your own machine has nothing to meter. One that calls an API has to.",
+    pp: "None stated; runs locally",
   },
-  { label: "Keeps painted multicolor", bedready: "Yes", bl2u1: "Yes", forge: "Yes", b2o: "Yes" },
+  { label: "Keeps painted multicolor", bedready: "Yes", bl2u1: "Yes", forge: "Yes", b2o: "Yes", pp: "Yes" },
   {
     label: "More than 4 colors",
     bedready: "Full Spectrum mixing, M600 swap pauses, or band-swap",
@@ -61,23 +67,25 @@ const ROWS: Row[] = [
     forge: "Not documented",
     b2o: "All slots passed through; you map them in Orca",
     note: "The U1 has 4 physical slots, so every tool has to do something here — the question is what.",
+    pp: "Maps to the spools you have loaded by color distance; the rest as ColorMix blends",
   },
   {
     label: "U1 nozzle profiles",
-    bedready: "0.4",
+    bedready: "0.4 tested; 0.2, 0.6 and 0.8 derived from it, and labeled as derived",
     bl2u1: "Not documented",
     forge: "Not documented",
     b2o: "0.2, 0.4, 0.6, 0.8",
-    note: "The one row on this page where somebody beats me outright. If you print with a 0.2 or 0.6 nozzle, that matters — it's on my list.",
+    note: "Only my 0.4 profile is a real export from a U1 that has printed; the other three scale it by nozzle ratio, and the converter says so when you pick one. bambu2orca ships a preset for each size.",
+    pp: "Not applicable: it remaps paint and blends, not printer profiles",
   },
-  { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality", bl2u1: "No", forge: "No", b2o: "No" },
-  { label: "STL ⇄ 3MF", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "No" },
-  { label: "Batch convert a folder", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "Ko-fi supporter tier only" },
-  { label: "Live colored 3D preview", bedready: "Yes, before you download", bl2u1: "No", forge: "Not documented", b2o: "Not documented" },
-  { label: "Installs Orca filament profiles", bedready: "Yes", bl2u1: "No", forge: "No", b2o: "No — but it relabels presets to Generic or Snapmaker" },
-  { label: "Browser extension", bedready: "Chrome + Firefox", bl2u1: "Separate extension exists", forge: "No", b2o: "No" },
-  { label: "Desktop app", bedready: "macOS, Windows, Linux", bl2u1: "No", forge: "No", b2o: "No" },
-  { label: "Languages", bedready: "7", bl2u1: "English", forge: "English", b2o: "English" },
+  { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality", bl2u1: "No", forge: "No", b2o: "No", pp: "Painted 3MF → Prusa Core One INDX, Bambu Studio or Snapmaker Orca" },
+  { label: "STL ⇄ 3MF", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "No", pp: "No: painted 3MF only" },
+  { label: "Batch convert a folder", bedready: "Yes", bl2u1: "No", forge: "Not documented", b2o: "Ko-fi supporter tier only", pp: "Not documented" },
+  { label: "Live colored 3D preview", bedready: "Yes, before you download", bl2u1: "No", forge: "Not documented", b2o: "Not documented", pp: "Yes, original against mapped" },
+  { label: "Installs Orca filament profiles", bedready: "Yes", bl2u1: "No", forge: "No", b2o: "No — but it relabels presets to Generic or Snapmaker", pp: "No" },
+  { label: "Browser extension", bedready: "Chrome + Firefox", bl2u1: "Separate extension exists", forge: "No", b2o: "No", pp: "No" },
+  { label: "Desktop app", bedready: "macOS, Windows, Linux", bl2u1: "No", forge: "No", b2o: "No", pp: "No, but the single HTML file works offline" },
+  { label: "Languages", bedready: "7", bl2u1: "English", forge: "English", b2o: "English", pp: "English, German" },
 ];
 
 export default async function CompareConvertersPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -87,7 +95,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
   const cell = "px-3 py-2.5 align-top text-sm";
 
   return (
-    // max-w-5xl, not 4xl: a fifth competitor column pushes the table past a 4xl container, and a
+    // max-w-5xl, not 4xl: a fifth (now sixth) competitor column pushes the table past a 4xl container, and a
     // comparison table that needs sideways scrolling on a desktop is a comparison nobody compares.
     // The prose below stays at max-w-2xl, so only the table uses the extra width.
     <main className="page-read py-12">
@@ -100,7 +108,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         themselves. I build one of them, so treat this as informed rather than neutral: every claim
         below comes from the other tools&apos; own pages and is linked, so you can check it.
       </p>
-      <p className="mt-2 text-xs text-fg-subtle">Last checked: {UPDATED}. These tools ship changes; if something here is out of date, <Link href="/feedback" className="text-violet-300 hover:underline">tell me</Link> and I&apos;ll fix it.</p>
+      <p className="mt-2 text-xs text-fg-subtle">Last checked: {UPDATED}; PaintPort added {PAINTPORT_READ}. These tools ship changes; if something here is out of date, <Link href="/feedback" className="text-violet-300 hover:underline">tell me</Link> and I&apos;ll fix it.</p>
 
       {/* Start with the official one. A comparison page that quietly omits the manufacturer's own
           free tool is the kind of thing that destroys the credibility of everything else on it. */}
@@ -127,7 +135,9 @@ export default async function CompareConvertersPage({ params }: { params: Promis
       <section className="mt-6 rounded-lg border border-emerald-400/25 bg-emerald-500/[0.07] p-5">
         <h2 className="font-semibold text-fg">Does your file leave your computer?</h2>
         <p className="mt-2 text-base text-fg-muted">
-          BedReady, U1 Forge and the{" "}
+          BedReady, U1 Forge,{" "}
+          <a href={PAINTPORT} target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">PaintPort</a>{" "}
+          and the{" "}
           <a href="https://github.com/ericreid/3mf-to-u1" target="_blank" rel="noopener noreferrer nofollow" className="text-violet-300 hover:underline">3mf-to-u1</a>{" "}
           extension all convert inside your browser. <strong className="text-fg">bl2u1 uploads your
           file to a server</strong> and, per its own page, keeps it there for 8 hours. That&apos;s fine
@@ -152,7 +162,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
 
       {/* Wider than the measure, so it widens about the same centre rather than moving the page. */}
       <div className="page-breakout mt-8 overflow-x-auto">
-        <table className="w-full min-w-[58rem] border-collapse">
+        <table className="w-full min-w-[68rem] border-collapse">
           <thead>
             <tr className="border-b border-line text-left">
               <th className={`${cell} font-medium text-fg-muted`}></th>
@@ -162,6 +172,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
               <th className={`${cell} font-semibold text-fg-muted`}>bl2u1</th>
               <th className={`${cell} font-semibold text-fg-muted`}>U1 Forge</th>
               <th className={`${cell} font-semibold text-fg-muted`}>bambu2orca</th>
+              <th className={`${cell} font-semibold text-fg-muted`}>PaintPort</th>
             </tr>
           </thead>
           <tbody>
@@ -175,6 +186,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
                 <td className={`${cell} text-fg-muted`}>{r.bl2u1}</td>
                 <td className={`${cell} text-fg-muted`}>{r.forge}</td>
                 <td className={`${cell} text-fg-muted`}>{r.b2o}</td>
+                <td className={`${cell} text-fg-muted`}>{r.pp}</td>
               </tr>
             ))}
           </tbody>
@@ -207,10 +219,23 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           <li>
             <a href="https://bambu2orca.kuzuriao.com/" target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-fg hover:underline">bambu2orca</a>{" "}
             ships U1 profiles for <strong className="text-fg">0.2, 0.4, 0.6 and 0.8 nozzles</strong> and picks
-            one to match your file&apos;s layer height. I only ship 0.4. If you print with a different nozzle,
-            use it — that is a real gap on my side and no amount of the rest of this table closes it. It also
+            one to match your file&apos;s layer height. I offer the same four, but only my 0.4 is a real export
+            from a machine that has printed; the others are derived from it. If you print with a different
+            nozzle and want a profile nobody had to derive, that is a fair reason to use it. It also
             carries every filament slot through untouched rather than fitting them to the U1&apos;s 4 heads,
             which is what you want if you&apos;d rather do the mapping yourself in Orca.
+          </li>
+          <li>
+            <a href={PAINTPORT} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-fg hover:underline">PaintPort</a>{" "}
+            starts from <strong className="text-fg">the spools you actually have loaded</strong>: you enter the
+            color in each slot (or pick a CMY, CMYK or CMYKW preset) and it matches every painted color to the
+            closest one, blending the ones with no close match. If your colors are set and the file has to fit
+            them, that is the better question to start from. It is also the tool to use for a{" "}
+            <strong className="text-fg">Prusa Core One INDX</strong>, and it writes Bambu Studio&apos;s and
+            Prusa&apos;s mixing formats as well as Snapmaker&apos;s. What it does not do is supply the target
+            printer&apos;s profile: its README notes that opening the result as a project can put placeholder
+            presets in place of yours. It is open source (AGPL-3.0), and the whole tool is one HTML file that
+            runs offline.
           </li>
           <li>
             <a href="https://github.com/ericreid/3mf-to-u1" target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-fg hover:underline">3mf-to-u1</a>{" "}
@@ -258,7 +283,11 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         <a href="https://wiki.snapmaker.com/en/resource_hub/u1_3mf_converter_user_guide" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">Snapmaker U1 3MF Converter guide</a>,{" "}
         <a href="https://github.com/ericreid/3mf-to-u1" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">ericreid/3mf-to-u1</a>,{" "}
         <a href="https://bambu2orca.kuzuriao.com/" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">bambu2orca</a>{" "}
-        (its landing page and FAQ, read {UPDATED}).
+        (its landing page and FAQ, read {UPDATED}),{" "}
+        <a href={PAINTPORT} target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">PaintPort</a>{" "}
+        and{" "}
+        <a href="https://github.com/perspektive3d/paintport" target="_blank" rel="noopener noreferrer nofollow" className="hover:underline">perspektive3d/paintport</a>{" "}
+        (its page, README and changelog, read {PAINTPORT_READ}).
         BedReady is an independent project and is not affiliated with Snapmaker, Bambu Lab, or the authors of the tools above.
         &ldquo;Not documented&rdquo; means the tool&apos;s public page doesn&apos;t mention the feature — not that it definitely lacks it.
       </p>
