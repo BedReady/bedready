@@ -158,6 +158,8 @@
     "targetU1Default": "Snapmaker U1 (par défaut)",
     "targetKeepGroup": "Même écosystème — conserve les réglages de l'imprimante",
     "targetGenericGroup": "Autres écosystèmes — enregistré en 3MF générique",
+    "targetPrusaProjectGroup": "Projet PrusaSlicer — couleurs sur ses outils",
+    "targetPrusaProjectNote": "Enregistré comme projet PrusaSlicer pour {name} : chaque couleur peinte va sur l'outil que lui attribuent les emplacements ci-dessus, et PrusaSlicer complète le profil {name}. Ouvrez-le avec Fichier → Ouvrir, en tant que projet : importé comme géométrie, les couleurs des emplacements sont perdues.",
     "targetKeepNote": "Réécrit le profil d'imprimante du fichier vers {name} et réaffecte vos couleurs à ses emplacements.",
     "targetGenericNote": "{name} utilise un format de slicer différent — enregistré en 3MF générique propre à ouvrir et affecter à {name}.",
     "convertForPrinter": "Convertir pour {name}",

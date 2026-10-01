@@ -158,6 +158,8 @@
     "targetU1Default": "Snapmaker U1（既定）",
     "targetKeepGroup": "同じエコシステム — プリンター設定を保持",
     "targetGenericGroup": "他のエコシステム — 汎用3MFとして保存",
+    "targetPrusaProjectGroup": "PrusaSlicer プロジェクト — 色を各ツールへ",
+    "targetPrusaProjectNote": "{name} 用の PrusaSlicer プロジェクトとして保存します。塗られた各色は上のスロットの割り当てどおりのツールに入り、{name} のプロファイルは PrusaSlicer が補います。「ファイル → 開く」でプロジェクトとして開いてください。ジオメトリとして読み込むとスロットの色は失われます。",
     "targetKeepNote": "ファイルのプリンタープロファイルを{name}に書き換え、色をそのスロットに再割り当てします。",
     "targetGenericNote": "{name}は別のスライサー形式を使います — クリーンな汎用3MFとして保存し、開いて{name}を選んでください。",
     "convertForPrinter": "{name}用に変換",

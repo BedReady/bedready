@@ -82,6 +82,7 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
 // near this many spools; a larger count means a malformed/hostile file.
 const MAX_COLORS = 64;
 import { remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
+import { toPrusaProject } from "./prusa-project";
 import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
 import { insertSwapPauses, buildBandSwapPlan, type SwapInstruction } from "./swap-pauses";
 import { mixRgb } from "./filament-mixer";
@@ -1282,6 +1283,8 @@ export type CleanTarget =
   | "bambu-p1s"
   | "bambu-a1"
   | "prusa-mk4-mmu3"
+  | "prusa-core-one-indx-8t"
+  | "prusa-core-one-indx-4t"
   | "creality-k2";
 
 /** Manual override from the color picker: the 4 final slot colors + old->slot(0..3) assignment.
@@ -1417,8 +1420,13 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
   const srcFamily = configFamily(srcFlavour);
   const tgtFamily = configFamily(machine.flavour);
   const reprofile = srcFamily !== "generic" && srcFamily === tgtFamily;
-  // Cross-family (or an unrecognised source) → clean Generic 3MF; there's no coherent metadata rewrite.
-  if (!reprofile) return stripToGeneric(entries);
+  // Bambu/Orca → Prusa is the one cross-family pair with a coherent target: a PrusaSlicer project
+  // with the painting remapped onto the target's tools (prusa-project.ts). Every other cross-family
+  // pair (or an unrecognised source) → clean Generic 3MF; there's no coherent metadata rewrite.
+  // Only for a machine whose exact PrusaSlicer preset name is known: the project names that preset,
+  // and a guessed name resolves to nothing. The INDX entries carry one; the MK4 + MMU3 does not yet.
+  const toPrusa = srcFamily === "bbl" && tgtFamily === "prusa" && !!machine.printerSettingsId;
+  if (!reprofile && !toPrusa) return stripToGeneric(entries);
 
   // Read the source palette (Bambu/Orca JSON project settings, else a Prusa Slic3r_PE.config).
   let srcColours: string[] = [];
@@ -1468,6 +1476,26 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     });
   }
   const reduced = !!map && (colorsTotal > slots || !map.every((a, i) => a === i));
+
+  if (toPrusa) {
+    const colours = (map ? useColours : srcColours).map(normalizeHex);
+    const project = toPrusaProject(entries, machine, { map, colours, types: map ? useTypes : srcTypes });
+    const zippedProject = zipSync(project.out, { level: 6 });
+    return {
+      blob: new Blob([zippedProject.buffer as ArrayBuffer], { type: "model/3mf" }),
+      removed: project.removed,
+      kept: Object.keys(project.out).length,
+      colorsKept: Math.min(colours.length || colorsTotal, slots),
+      colorsTotal,
+      over4: colorsTotal > 4,
+      reduced,
+      painted: project.painted,
+      manual,
+      preserved: false,
+      swaps: [],
+      diff: null,
+    };
+  }
 
   const settingsId = machine.printerSettingsId || machine.printerModel || machine.name;
   const nozzleStr = String(machine.nozzle ?? 0.4);

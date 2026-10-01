@@ -158,6 +158,8 @@
     "targetU1Default": "Snapmaker U1 (Standard)",
     "targetKeepGroup": "Gleiches Ökosystem – behält Druckereinstellungen",
     "targetGenericGroup": "Andere Ökosysteme – als generisches 3MF gespeichert",
+    "targetPrusaProjectGroup": "PrusaSlicer-Projekt — Farben auf seinen Werkzeugen",
+    "targetPrusaProjectNote": "Als PrusaSlicer-Projekt für {name} gespeichert: Jede bemalte Farbe kommt auf das Werkzeug, das die Slots oben zuweisen, und PrusaSlicer ergänzt das {name}-Profil. Öffne es mit Datei → Öffnen als Projekt — als Geometrie importiert gehen die Slot-Farben verloren.",
     "targetKeepNote": "Schreibt das Druckerprofil der Datei auf {name} um und ordnet deine Farben seinen Slots zu.",
     "targetGenericNote": "{name} nutzt ein anderes Slicer-Format – als sauberes generisches 3MF gespeichert, das du öffnest und {name} zuweist.",
     "convertForPrinter": "Für {name} konvertieren",

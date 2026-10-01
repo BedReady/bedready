@@ -158,6 +158,8 @@
     "targetU1Default": "Snapmaker U1 (افتراضي)",
     "targetKeepGroup": "نفس النظام — يحتفظ بإعدادات الطابعة",
     "targetGenericGroup": "أنظمة أخرى — يُحفظ كملف 3MF عام",
+    "targetPrusaProjectGroup": "مشروع PrusaSlicer — الألوان على أدواته",
+    "targetPrusaProjectNote": "يُحفظ كمشروع PrusaSlicer لـ {name}: يذهب كل لون مرسوم إلى الأداة التي تحددها له الخانات أعلاه، ويكمل PrusaSlicer ملف تعريف {name}. افتحه عبر ملف ← فتح كمشروع؛ إن استُورد كهندسة فقط تضيع ألوان الخانات.",
     "targetKeepNote": "يعيد كتابة ملف تعريف الطابعة إلى {name} ويعيد تعيين ألوانك إلى فتحاتها.",
     "targetGenericNote": "تستخدم {name} صيغة مقطّع مختلفة — يُحفظ كملف 3MF عام نظيف تفتحه وتختار {name} في مقطّعها.",
     "convertForPrinter": "التحويل لأجل {name}",
