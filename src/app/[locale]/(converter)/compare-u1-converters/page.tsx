@@ -71,11 +71,11 @@ const ROWS: Row[] = [
   },
   {
     label: "U1 nozzle profiles",
-    bedready: "0.4",
+    bedready: "0.4 tested; 0.2, 0.6 and 0.8 derived from it, and labeled as derived",
     bl2u1: "Not documented",
     forge: "Not documented",
     b2o: "0.2, 0.4, 0.6, 0.8",
-    note: "The one row on this page where somebody beats me outright. If you print with a 0.2 or 0.6 nozzle, that matters — it's on my list.",
+    note: "Only my 0.4 profile is a real export from a U1 that has printed; the other three scale it by nozzle ratio, and the converter says so when you pick one. bambu2orca ships a preset for each size.",
     pp: "Not applicable: it remaps paint and blends, not printer profiles",
   },
   { label: "Retarget to other printers", bedready: "U1 → Bambu / Prusa / Creality", bl2u1: "No", forge: "No", b2o: "No", pp: "Painted 3MF → Prusa Core One INDX, Bambu Studio or Snapmaker Orca" },
@@ -219,8 +219,9 @@ export default async function CompareConvertersPage({ params }: { params: Promis
           <li>
             <a href="https://bambu2orca.kuzuriao.com/" target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-fg hover:underline">bambu2orca</a>{" "}
             ships U1 profiles for <strong className="text-fg">0.2, 0.4, 0.6 and 0.8 nozzles</strong> and picks
-            one to match your file&apos;s layer height. I only ship 0.4. If you print with a different nozzle,
-            use it — that is a real gap on my side and no amount of the rest of this table closes it. It also
+            one to match your file&apos;s layer height. I offer the same four, but only my 0.4 is a real export
+            from a machine that has printed; the others are derived from it. If you print with a different
+            nozzle and want a profile nobody had to derive, that is a fair reason to use it. It also
             carries every filament slot through untouched rather than fitting them to the U1&apos;s 4 heads,
             which is what you want if you&apos;d rather do the mapping yourself in Orca.
           </li>
