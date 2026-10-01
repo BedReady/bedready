@@ -119,6 +119,8 @@ export default function ConvertPage() {
   // The last "match to my spools" result, for its one-line report: how many colours were matched and
   // how many have no spool that resembles them. Null until the button is used; cleared with the file.
   const [spoolMatch, setSpoolMatch] = useState<{ count: number; far: number } | null>(null);
+  // Split the preview: the model's own colours on the left, what will print on the right.
+  const [compareView, setCompareView] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
   // ── The denominator for the done screen ───────────────────────────────────────────────────────
@@ -277,6 +279,7 @@ export default function ConvertPage() {
     setSlots(["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"]);
     setAssign([]);
     setSpoolMatch(null);
+    setCompareView(false);
     setStatus("idle");
     setTargetId("u1");
     setMessage("");
@@ -670,6 +673,31 @@ export default function ConvertPage() {
       return slots[0];
     },
     [mesh, slots, assign, mixMatches, customMix],
+  );
+
+  // ── THE TWO HALVES OF THE COMPARISON ─────────────────────────────────────────────────────────
+  // Left: the creator's colours, untouched. Right: what the file will actually print. That is
+  // `colorForState` in every mode except one — a >4-colour file in plain mode, where the main preview
+  // deliberately shows the TRUE colours (the lossy merge only bites if Full Spectrum stays off). In a
+  // side-by-side whose whole job is "what changes", the right half must show the merge, or the one
+  // case where the most changes would look identical on both sides.
+  const originalColorForState = useCallback(
+    (s: number) => {
+      if (!mesh) return "#888888";
+      const idx = s === 0 ? mesh.baseState - 1 : s - 1;
+      return mesh.palette[idx] ?? "#888888";
+    },
+    [mesh],
+  );
+  const printedColorForState = useCallback(
+    (s: number) => {
+      if (!mesh) return "#888888";
+      const idx = s === 0 ? mesh.baseState - 1 : s - 1;
+      if (idx < 0 || idx >= mesh.palette.length) return slots[0];
+      if (customMix || mixMatches) return colorForState(s);
+      return slots[assign[idx] ?? 0] ?? "#888888";
+    },
+    [mesh, slots, assign, customMix, mixMatches, colorForState],
   );
 
   // Toggle a colour as a physical (main) Full Spectrum filament — exactly 4 allowed. Changing the
@@ -1463,7 +1491,27 @@ export default function ConvertPage() {
           )}
 
           <div className="mt-4">
-            {viewMesh && <PaintPreview mesh={viewMesh} colorForState={colorForState} colorKey={colorKey} />}
+            <label className="mb-2 inline-flex cursor-pointer items-center gap-2 text-xs text-fg-muted">
+              <input
+                type="checkbox"
+                checked={compareView}
+                onChange={(e) => setCompareView(e.target.checked)}
+                className="h-3.5 w-3.5 accent-violet-500"
+              />
+              {t("compareToggle")}
+            </label>
+            {viewMesh &&
+              (compareView ? (
+                <PaintPreview
+                  mesh={viewMesh}
+                  colorForState={printedColorForState}
+                  compareColorForState={originalColorForState}
+                  labels={[t("compareOriginal"), t("comparePrinted")]}
+                  colorKey={colorKey}
+                />
+              ) : (
+                <PaintPreview mesh={viewMesh} colorForState={colorForState} colorKey={colorKey} />
+              ))}
           </div>
 
           {/* 4 slot editors. In Full Spectrum the slots ARE the physical heads (from `physical`); their
@@ -1553,6 +1601,7 @@ export default function ConvertPage() {
                         const r = matchToSpools(palette, slots);
                         setAssign(r.map);
                         setSpoolMatch({ count: palette.length, far: r.far.length });
+                        setCompareView(true);
                       }}
                     >
                       {t("matchSpools")}
@@ -1581,6 +1630,7 @@ export default function ConvertPage() {
                       const r = matchToSpools(palette, next);
                       setAssign(r.map);
                       setSpoolMatch({ count: palette.length, far: r.far.length });
+                      setCompareView(true);
                     }}
                   />
                 )}
