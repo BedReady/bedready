@@ -22,18 +22,37 @@ function gradientTexture(top: string, bottom: string): THREE.CanvasTexture {
   return t;
 }
 
-/** Renders a painted mesh in its real (or remapped) colors. `colorKey` triggers recolor. */
+/**
+ * Renders a painted mesh in its real (or remapped) colors. `colorKey` triggers recolor.
+ *
+ * With `compareColorForState`, the canvas splits in two: the LEFT half paints with that function (the
+ * model's original colours), the RIGHT with `colorForState` (what will print). It is one scene, one
+ * camera and one set of controls drawn twice per frame through two scissored viewports, so dragging
+ * either half turns both identically. Two components side by side would each own a camera, and a
+ * comparison that drifts out of alignment the moment you touch it is not a comparison.
+ */
 export default function PaintPreview({
   mesh,
   colorForState,
   colorKey,
+  compareColorForState,
+  labels,
 }: {
   mesh: MeshData;
   colorForState: (state: number) => string;
   colorKey: string;
+  compareColorForState?: (state: number) => string;
+  /** [left, right] captions for compare mode. */
+  labels?: [string, string];
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const geomRef = useRef<THREE.BufferGeometry | null>(null);
+  // The original-colour buffer for compare mode, and whether it is on. Refs, because the render loop is
+  // built once per mesh and must read the CURRENT choice rather than the one it was created with.
+  const origAttrRef = useRef<THREE.BufferAttribute | null>(null);
+  const compareRef = useRef(false);
+  const compare = !!compareColorForState;
+  compareRef.current = compare;
 
   // build scene once per mesh
   useEffect(() => {
@@ -75,6 +94,9 @@ export default function PaintPreview({
     );
     geom.computeVertexNormals();
     geomRef.current = geom;
+    const mappedAttr = geom.getAttribute("color") as THREE.BufferAttribute;
+    const origAttr = new THREE.BufferAttribute(new Float32Array(mesh.positions.length), 3);
+    origAttrRef.current = origAttr;
 
     const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0 });
     const obj = new THREE.Mesh(geom, mat);
@@ -115,16 +137,44 @@ export default function PaintPreview({
     controls.addEventListener("start", () => { controls.autoRotate = false; });
 
     let raf = 0;
+    let wasCompare: boolean | null = null;
     const animate = () => {
       raf = requestAnimationFrame(animate);
       controls.update();
+      const w = mount.clientWidth || width;
+      const split = compareRef.current;
+      if (split !== wasCompare) {
+        // Each half is its own picture, so the camera takes a half-width aspect in compare mode — and
+        // zooms out to match. The vertical field of view stays put while the horizontal one halves,
+        // so a model framed for the full width would overflow both halves sideways.
+        camera.aspect = (split ? w / 2 : w) / height;
+        camera.zoom = split ? 0.6 : 1;
+        camera.updateProjectionMatrix();
+        wasCompare = split;
+      }
+      if (!split) {
+        renderer.setScissorTest(false);
+        renderer.setViewport(0, 0, w, height);
+        geom.setAttribute("color", mappedAttr);
+        renderer.render(scene, camera);
+        return;
+      }
+      const half = Math.floor(w / 2);
+      renderer.setScissorTest(true);
+      geom.setAttribute("color", origAttr);
+      renderer.setViewport(0, 0, half, height);
+      renderer.setScissor(0, 0, half, height);
+      renderer.render(scene, camera);
+      geom.setAttribute("color", mappedAttr);
+      renderer.setViewport(half, 0, w - half, height);
+      renderer.setScissor(half, 0, w - half, height);
       renderer.render(scene, camera);
     };
     animate();
 
     const onResize = () => {
       const w = mount.clientWidth;
-      camera.aspect = w / height;
+      camera.aspect = (compareRef.current ? w / 2 : w) / height;
       camera.updateProjectionMatrix();
       renderer.setSize(w, height);
     };
@@ -135,6 +185,7 @@ export default function PaintPreview({
       window.removeEventListener("resize", onResize);
       controls.dispose();
       geom.dispose();
+      origAttrRef.current = null;
       mat.dispose();
       ground.geometry.dispose();
       (ground.material as THREE.Material).dispose();
@@ -151,37 +202,61 @@ export default function PaintPreview({
   useEffect(() => {
     const geom = geomRef.current;
     if (!geom) return;
-    const colorAttr = geom.getAttribute("color") as THREE.BufferAttribute;
-    const colors = colorAttr.array as Float32Array;
-    const cache = new Map<number, [number, number, number]>();
-    const tmp = new THREE.Color();
-    for (let f = 0; f < mesh.faceState.length; f++) {
-      const s = mesh.faceState[f];
-      let rgb = cache.get(s);
-      if (!rgb) {
-        // Vertex colours must be LINEAR — the renderer's colour management converts linear→sRGB at
-        // output. setStyle() parses the hex as sRGB and stores linear-light in r/g/b. Feeding raw sRGB
-        // here (the old hexRgb) is what made colours look faded and clipped bright ones (yellow→white,
-        // green→pale) — the sRGB curve was applied twice.
-        tmp.setStyle(colorForState(s));
-        rgb = [tmp.r, tmp.g, tmp.b];
-        cache.set(s, rgb);
+    // The render loop swaps the "color" attribute between the two buffers in compare mode, so the
+    // mapped buffer is found by elimination rather than by whatever happens to be attached right now.
+    const orig = origAttrRef.current;
+    const current = geom.getAttribute("color") as THREE.BufferAttribute;
+    const mapped = current === orig ? null : current;
+    const fill = (attr: THREE.BufferAttribute, fn: (state: number) => string) => {
+      const colors = attr.array as Float32Array;
+      const cache = new Map<number, [number, number, number]>();
+      const tmp = new THREE.Color();
+      for (let f = 0; f < mesh.faceState.length; f++) {
+        const s = mesh.faceState[f];
+        let rgb = cache.get(s);
+        if (!rgb) {
+          // Vertex colours must be LINEAR — the renderer's colour management converts linear→sRGB at
+          // output. setStyle() parses the hex as sRGB and stores linear-light in r/g/b. Feeding raw
+          // sRGB here (the old hexRgb) is what made colours look faded and clipped bright ones
+          // (yellow→white, green→pale) — the sRGB curve was applied twice.
+          tmp.setStyle(fn(s));
+          rgb = [tmp.r, tmp.g, tmp.b];
+          cache.set(s, rgb);
+        }
+        const o = f * 9;
+        for (let v = 0; v < 3; v++) {
+          colors[o + v * 3] = rgb[0];
+          colors[o + v * 3 + 1] = rgb[1];
+          colors[o + v * 3 + 2] = rgb[2];
+        }
       }
-      const o = f * 9;
-      for (let v = 0; v < 3; v++) {
-        colors[o + v * 3] = rgb[0];
-        colors[o + v * 3 + 1] = rgb[1];
-        colors[o + v * 3 + 2] = rgb[2];
-      }
-    }
-    colorAttr.needsUpdate = true;
-  }, [mesh, colorForState, colorKey]);
+      attr.needsUpdate = true;
+    };
+    if (mapped) fill(mapped, colorForState);
+    if (orig && compareColorForState) fill(orig, compareColorForState);
+  }, [mesh, colorForState, colorKey, compareColorForState]);
 
   return (
-    <div
-      ref={mountRef}
-      className="w-full overflow-hidden rounded-lg border border-white/10"
-      style={{ height: 380 }}
-    />
+    <div className="relative">
+      <div
+        ref={mountRef}
+        className="w-full overflow-hidden rounded-lg border border-white/10"
+        style={{ height: 380 }}
+      />
+      {compare && labels && (
+        <>
+          {/* Captions sit over the canvas, one per half, and a hairline marks the seam. PHYSICAL left
+              and right, not start/end: the WebGL halves do not mirror in RTL, so logical positioning
+              would put the "original" caption over the mapped half on /ar. */}
+          <span className="pointer-events-none absolute left-3 top-3 rounded bg-black/55 px-2 py-0.5 text-xs text-white">
+            {labels[0]}
+          </span>
+          <span className="pointer-events-none absolute top-3 rounded bg-black/55 px-2 py-0.5 text-xs text-white" style={{ left: "calc(50% + 0.75rem)" }}>
+            {labels[1]}
+          </span>
+          <span className="pointer-events-none absolute inset-y-0 left-1/2 w-px bg-white/20" aria-hidden />
+        </>
+      )}
+    </div>
   );
 }
