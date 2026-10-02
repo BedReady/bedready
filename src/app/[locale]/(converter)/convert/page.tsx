@@ -77,6 +77,7 @@ import ContributeToLibrary from "@/components/ContributeToLibrary";
 import ConvertCapture from "@/components/ConvertCapture";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
+import { planColorMix } from "@/lib/prusa-project";
 import { absoluteUrl } from "@/lib/origin";
 
 type Status = "idle" | "ready" | "working" | "done" | "error";
@@ -121,6 +122,9 @@ export default function ConvertPage() {
   const [spoolMatch, setSpoolMatch] = useState<{ count: number; far: number } | null>(null);
   // Split the preview: the model's own colours on the left, what will print on the right.
   const [compareView, setCompareView] = useState(false);
+  // Prusa CORE One INDX: recreate colours no loaded spool matches as FullSpectrum blends (opt-in —
+  // every blended region costs a tool change per layer).
+  const [colorMix, setColorMix] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
   // ── The denominator for the done screen ───────────────────────────────────────────────────────
@@ -280,6 +284,7 @@ export default function ConvertPage() {
     setAssign([]);
     setSpoolMatch(null);
     setCompareView(false);
+    setColorMix(false);
     setStatus("idle");
     setTargetId("u1");
     setMessage("");
@@ -689,15 +694,22 @@ export default function ConvertPage() {
     },
     [mesh],
   );
+  // The same planner convert.ts runs on export, over the same palette and slots, so what the preview
+  // shows as blended is what the file will blend.
+  const mixPlan = useMemo(
+    () => (colorMix && MACHINES[targetId]?.prusaColorMix && palette.length ? planColorMix(palette, slots, slotCount) : null),
+    [colorMix, targetId, palette, slots, slotCount],
+  );
   const printedColorForState = useCallback(
     (s: number) => {
       if (!mesh) return "#888888";
       const idx = s === 0 ? mesh.baseState - 1 : s - 1;
       if (idx < 0 || idx >= mesh.palette.length) return slots[0];
       if (customMix || mixMatches) return colorForState(s);
+      if (mixPlan && mixPlan.map[idx] >= slotCount) return mixPlan.predicted[idx];
       return slots[assign[idx] ?? 0] ?? "#888888";
     },
-    [mesh, slots, assign, customMix, mixMatches, colorForState],
+    [mesh, slots, assign, customMix, mixMatches, colorForState, mixPlan, slotCount],
   );
 
   // Toggle a colour as a physical (main) Full Spectrum filament — exactly 4 allowed. Changing the
@@ -737,7 +749,7 @@ export default function ConvertPage() {
       // Painted files only use the manual mapping when the preview loaded; otherwise
       // cleanThreeMF auto-reduces by painted area.
       const useManual = analysis && (analysis.encoding !== "painted" || mesh);
-      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand };
+      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, colorMix: colorMix && !!targetMachine?.prusaColorMix };
       const res = await cleanThreeMFAsync(file, target, opts);
       setSwapPlan(res.swaps ?? []);
       setDiff(res.diff);
@@ -2272,6 +2284,28 @@ export default function ConvertPage() {
                     ? t("targetPrusaProjectNote", { name: chosen.name })
                     : t("targetGenericNote", { name: chosen.name })}
               </p>
+            )}
+            {chosen && chosenProject && chosen.prusaColorMix && (
+              <div className="mt-3 rounded-lg border border-line bg-surface p-3">
+                <label className="flex cursor-pointer items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={colorMix}
+                    onChange={(e) => {
+                      setColorMix(e.target.checked);
+                      if (e.target.checked) setCompareView(true);
+                    }}
+                    className="mt-0.5 h-4 w-4 accent-violet-500"
+                  />
+                  <span className="text-sm font-medium text-fg">{t("colorMixLabel")}</span>
+                </label>
+                <p className="mt-1 ps-6 text-xs text-fg-subtle">{t("colorMixHint")}</p>
+                {mixPlan && (
+                  <p className="mt-1 ps-6 text-xs text-violet-300" aria-live="polite">
+                    {t("colorMixCount", { count: mixPlan.map.filter((m) => m >= slotCount).length })}
+                  </p>
+                )}
+              </div>
             )}
             {chosen && (
               <button
