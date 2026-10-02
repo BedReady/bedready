@@ -159,7 +159,7 @@
     "targetKeepGroup": "Same ecosystem — keeps printer settings",
     "targetGenericGroup": "Other ecosystems — saved as Generic 3MF",
     "targetPrusaProjectGroup": "PrusaSlicer project — colors on its tools",
-    "targetPrusaProjectNote": "Saved as a PrusaSlicer project for {name}: every painted color goes to the tool the slots above assign it, and PrusaSlicer fills in the {name} profile. Open it with File → Open, as a project — imported as geometry, the slot colors are dropped.",
+    "targetPrusaProjectNote": "Saved as a PrusaSlicer project for {name}: every painted color goes to the tool the slots below assign it, and PrusaSlicer fills in the {name} profile. Open it with File → Open, as a project — imported as geometry, the slot colors are dropped.",
     "colorMixLabel": "Mix colors no spool matches (ColorMix)",
     "colorMixHint": "A color with no close spool is printed as a blend of two or three loaded spools, alternated layer by layer, in PrusaSlicer's own FullSpectrum format. More tool changes, so compare the preview first.",
     "colorMixCount": "{count, plural, =0 {Every color has a close spool, so nothing needs mixing.} one {# color will be mixed from the loaded spools.} other {# colors will be mixed from the loaded spools.}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "Other outputs",
     "beforeCaption": "Opened as-is: foreign profile, paint dropped to plain geometry.",
     "afterCaption": "After BedReady: real U1 profile, paint mapped onto the 4 slots.",
-    "slotsLabel": "U1 slots"
+    "slotsLabel": "U1 slots",
+    "printSettingsTitle": "Print settings",
+    "previewHeaderTarget": "{count, plural, one {# color} other {# colors}} → {slots} {name} slots",
+    "spoolsFarColorMix": "{far, plural, one {# color has} other {# colors have}} no close spool among these. ColorMix can blend {far, plural, one {it} other {them}} from what's loaded.",
+    "spoolsFarPlain": "{far, plural, one {# color has} other {# colors have}} no close spool among these, so {far, plural, one {it prints} other {they print}} from the nearest one."
   },
   "help": {
     "title": "Help & FAQ",

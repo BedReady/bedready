@@ -31,8 +31,12 @@ export type SpoolMatch = {
  * Map every model colour to the nearest loaded slot. Unlike `assignFilaments`, slots MAY be shared:
  * five reds on a model with one red spool should all print red. Ties go to the lower slot, so the
  * result is deterministic.
+ *
+ * `usable` marks the slots that really hold a spool (see planColorMix); unmarked placeholder slots are
+ * never matched. Omitted, or nothing marked, every slot counts.
  */
-export function matchToSpools(palette: string[], slots: string[]): SpoolMatch {
+export function matchToSpools(palette: string[], slots: string[], usable?: boolean[]): SpoolMatch {
+  const anyUsable = !!usable && slots.some((_, j) => usable[j]);
   const map: number[] = [];
   const distance: number[] = [];
   const far: number[] = [];
@@ -41,6 +45,7 @@ export function matchToSpools(palette: string[], slots: string[]): SpoolMatch {
     let best = 0;
     let bestD = Infinity;
     slots.forEach((s, j) => {
+      if (anyUsable && !usable![j]) return;
       const d = colorDistance(hex, s);
       if (d < bestD) {
         bestD = d;

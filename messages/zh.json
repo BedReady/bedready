@@ -159,7 +159,7 @@
     "targetKeepGroup": "同一生态 — 保留打印机设置",
     "targetGenericGroup": "其他生态 — 另存为通用 3MF",
     "targetPrusaProjectGroup": "PrusaSlicer 项目 — 颜色对应到各工具头",
-    "targetPrusaProjectNote": "保存为 {name} 的 PrusaSlicer 项目：每种涂色都会进入上方槽位所分配的工具头，{name} 的配置由 PrusaSlicer 补全。请用“文件 → 打开”以项目方式打开——若作为几何体导入，槽位颜色会丢失。",
+    "targetPrusaProjectNote": "保存为 {name} 的 PrusaSlicer 项目：每种涂色都会进入下方槽位所分配的工具头，{name} 的配置由 PrusaSlicer 补全。请用“文件 → 打开”以项目方式打开——若作为几何体导入，槽位颜色会丢失。",
     "colorMixLabel": "混合没有相近耗材的颜色 (ColorMix)",
     "colorMixHint": "没有相近耗材的颜色会用两到三卷已装载耗材逐层交替混合打印，采用 PrusaSlicer 自己的 FullSpectrum 格式。换头次数会增加，请先对比预览。",
     "colorMixCount": "{count, plural, =0 {每种颜色都有相近的耗材，无需混色。} other {将用已装载的耗材混合出 # 种颜色。}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "其他输出",
     "beforeCaption": "直接打开：外来配置，上色掉成纯几何。",
     "afterCaption": "经 BedReady 之后：真正的 U1 配置，上色映射到 4 个槽位。",
-    "slotsLabel": "U1 槽位"
+    "slotsLabel": "U1 槽位",
+    "printSettingsTitle": "打印设置",
+    "previewHeaderTarget": "{count} 种颜色 → {slots} 个 {name} 槽位",
+    "spoolsFarColorMix": "有 {far} 种颜色在这里没有相近的耗材。ColorMix 可以用已装载的耗材混出它们。",
+    "spoolsFarPlain": "有 {far} 种颜色在这里没有相近的耗材，将使用最接近的耗材打印。"
   },
   "help": {
     "title": "帮助与常见问题",

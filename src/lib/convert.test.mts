@@ -1170,3 +1170,15 @@ test("filamentPresetId: the mapping itself", () => {
   assert.equal(filamentPresetId("PETG", "source"), "Generic PETG", "source with nothing to keep");
   assert.equal(filamentPresetId("", "generic"), "Generic PLA", "an empty type is not a preset name");
 });
+
+// An INDX 8T has eight slots: a 6-colour model must keep all six, not be merged down to the U1's 4.
+test("reduceColors: target sets the group count; 4 stays the default", () => {
+  const six = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
+  assert.equal(reduceColors(six, [6, 5, 4, 3, 2, 1]).colors.length, 4);
+  const r8 = reduceColors(six, [6, 5, 4, 3, 2, 1], undefined, 8);
+  assert.equal(r8.colors.length, 6);
+  assert.deepEqual(r8.map, [0, 1, 2, 3, 4, 5]);
+  const r5 = reduceColors(six, [6, 5, 4, 3, 2, 1], undefined, 5);
+  assert.equal(r5.colors.length, 5);
+  assert.ok(r5.map.every((g) => g >= 0 && g < 5));
+});

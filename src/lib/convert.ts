@@ -326,7 +326,7 @@ export function bestPhysicalSet(hexes: string[], usage: number[] = [], pinned: n
 }
 
 /**
- * Reduce N colors to 4, perceptually (CIELAB ΔE) and usage-aware: repeatedly take
+ * Reduce N colors to `target` (4 unless the printer has another slot count), perceptually (CIELAB ΔE) and usage-aware: repeatedly take
  * the LEAST-used color and fold it into its nearest-looking neighbor, so dominant
  * colors are preserved and only minor/similar ones get merged. Falls back to
  * nearest-pair merging when no usage counts are available.
@@ -339,6 +339,7 @@ export function reduceColors(
   hexes: string[],
   usage?: number[],
   pinned?: number[],
+  target = 4,
 ): { colors: string[]; map: number[] } {
   const pinSet = new Set(pinned ?? []);
   type G = { lab: [number, number, number]; members: number[]; rep: string; use: number; pin: boolean };
@@ -350,12 +351,13 @@ export function reduceColors(
     pin: pinSet.has(i),
   }));
 
-  while (groups.length > 4) {
+  const want = Math.max(1, target);
+  while (groups.length > want) {
     if (usage) {
       // remove the least-used UNPINNED colour; fold it into its nearest-looking neighbor.
       let li = -1;
       for (let i = 0; i < groups.length; i++) if (!groups[i].pin && (li < 0 || groups[i].use < groups[li].use)) li = i;
-      if (li < 0) for (let i = 0; i < groups.length; i++) if (li < 0 || groups[i].use < groups[li].use) li = i; // >4 pins: relax
+      if (li < 0) for (let i = 0; i < groups.length; i++) if (li < 0 || groups[i].use < groups[li].use) li = i; // more pins than slots: relax
       let ni = -1,
         nd = Infinity;
       for (let j = 0; j < groups.length; j++) {
@@ -1303,6 +1305,8 @@ export type CleanOpts = {
   assign?: number[];
   /** Prusa CORE One INDX: recreate colours no loaded spool matches as FullSpectrum blends. */
   colorMix?: boolean;
+  /** Which of `slots` hold a real spool, for colorMix. The preview passes the same mask it planned with. */
+  loadedSlots?: boolean[];
   mode?: "preserve" | "stamp";
   // For by-layer files with >4 colours: keep ALL colours via M600 spool-swap pauses (experimental)
   // instead of merging down to 4. Ignored unless the file has a per-layer colour sequence.
@@ -1476,8 +1480,8 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
       return oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA";
     });
   } else if (colorsTotal > slots) {
-    const r = reduceColors(srcColours, tallyUsage(entries, colorsTotal));
-    // reduceColors targets 4 groups; clamp any group index into the target slot range for safety.
+    const r = reduceColors(srcColours, tallyUsage(entries, colorsTotal), undefined, slots);
+    // One group per target slot; the clamp is belt and braces.
     map = r.map.map((g) => Math.min(g, slots - 1));
     useColours = r.colors.slice(0, slots).map(normalizeHex);
     useTypes = useColours.map((_, s) => {
@@ -1494,7 +1498,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     let projectMap = map;
     let blends: PrusaBlend[] = [];
     if (opts?.colorMix && machine.prusaColorMix && srcColours.length) {
-      const plan = planColorMix(srcColours.map(normalizeHex), colours, slots);
+      const plan = planColorMix(srcColours.map(normalizeHex), colours, slots, opts.loadedSlots);
       if (plan.blends.length) {
         blends = plan.blends;
         projectMap = srcColours.map((_, i) => (plan.map[i] >= slots ? plan.map[i] : map ? map[i] : Math.min(i, slots - 1)));

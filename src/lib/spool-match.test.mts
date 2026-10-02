@@ -43,3 +43,11 @@ test("no slots is not a crash: everything goes to slot 0 and is flagged", () => 
   assert.deepEqual(r.map, [0, 0]);
   assert.deepEqual(r.far, [0, 1]);
 });
+
+// A white placeholder padded onto an unused slot is not a loaded spool.
+test("matchToSpools: slots not marked usable are never matched", () => {
+  const r = matchToSpools(["#FAFAFA"], ["#FF0000", "#FFFFFF"], [true, false]);
+  assert.deepEqual(r.map, [0]);
+  assert.deepEqual(matchToSpools(["#FAFAFA"], ["#FF0000", "#FFFFFF"]).map, [1], "no mask: every slot counts");
+  assert.deepEqual(matchToSpools(["#FAFAFA"], ["#FF0000", "#FFFFFF"], [false, false]).map, [1], "nothing marked: every slot counts");
+});

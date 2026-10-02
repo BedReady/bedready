@@ -159,7 +159,7 @@
     "targetKeepGroup": "Même écosystème — conserve les réglages de l'imprimante",
     "targetGenericGroup": "Autres écosystèmes — enregistré en 3MF générique",
     "targetPrusaProjectGroup": "Projet PrusaSlicer — couleurs sur ses outils",
-    "targetPrusaProjectNote": "Enregistré comme projet PrusaSlicer pour {name} : chaque couleur peinte va sur l'outil que lui attribuent les emplacements ci-dessus, et PrusaSlicer complète le profil {name}. Ouvrez-le avec Fichier → Ouvrir, en tant que projet : importé comme géométrie, les couleurs des emplacements sont perdues.",
+    "targetPrusaProjectNote": "Enregistré comme projet PrusaSlicer pour {name} : chaque couleur peinte va sur l'outil que lui attribuent les emplacements ci-dessous, et PrusaSlicer complète le profil {name}. Ouvrez-le avec Fichier → Ouvrir, en tant que projet : importé comme géométrie, les couleurs des emplacements sont perdues.",
     "colorMixLabel": "Mélanger les couleurs sans bobine proche (ColorMix)",
     "colorMixHint": "Une couleur sans bobine proche est imprimée comme un mélange de deux ou trois bobines chargées, alternées couche par couche, au format FullSpectrum de PrusaSlicer. Plus de changements d'outil : comparez d'abord l'aperçu.",
     "colorMixCount": "{count, plural, =0 {Chaque couleur a une bobine proche, rien à mélanger.} one {# couleur sera mélangée à partir des bobines chargées.} other {# couleurs seront mélangées à partir des bobines chargées.}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "Autres sorties",
     "beforeCaption": "Ouvert tel quel : profil étranger, la peinture retombe en géométrie brute.",
     "afterCaption": "Après BedReady : vrai profil U1, peinture répartie sur les 4 emplacements.",
-    "slotsLabel": "Emplacements U1"
+    "slotsLabel": "Emplacements U1",
+    "printSettingsTitle": "Réglages d'impression",
+    "previewHeaderTarget": "{count, plural, one {# couleur} other {# couleurs}} → {slots} emplacements {name}",
+    "spoolsFarColorMix": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici. ColorMix peut les mélanger à partir de ce qui est chargé.",
+    "spoolsFarPlain": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici : elles sont imprimées avec la plus proche."
   },
   "help": {
     "title": "Aide & FAQ",
