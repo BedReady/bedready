@@ -80,17 +80,18 @@ const rgb3 = (hex: string): Rgb3 => {
 const hex3 = ([r, g, b]: Rgb3) => rgbToHex(r, g, b).toUpperCase();
 
 /** Every blend PrusaSlicer's dialog can express from these slots: pairs at 1:1, 1:3, 3:1, triples 1:1:1. */
-function candidateBlends(slots: string[]): PrusaBlend[] {
+function candidateBlends(slots: string[], loaded: (i: number) => boolean = () => true): PrusaBlend[] {
   const c = slots.map(rgb3);
   const out: PrusaBlend[] = [];
+  const ok = (...ix: number[]) => ix.every(loaded);
   for (let i = 0; i < c.length; i++)
     for (let j = i + 1; j < c.length; j++)
-      for (const t of [0.5, 0.25, 0.75])
+      if (ok(i, j)) for (const t of [0.5, 0.25, 0.75])
         out.push({ components: [{ tool: i + 1, ratio: 1 - t }, { tool: j + 1, ratio: t }], hex: hex3(mixRgb(c[i], c[j], t)) });
   for (let i = 0; i < c.length; i++)
     for (let j = i + 1; j < c.length; j++)
       for (let k = j + 1; k < c.length; k++)
-        out.push({
+        if (ok(i, j, k)) out.push({
           components: [{ tool: i + 1, ratio: 1 / 3 }, { tool: j + 1, ratio: 1 / 3 }, { tool: k + 1, ratio: 1 / 3 }],
           hex: hex3(mixRgb(mixRgb(c[i], c[j], 0.5), c[k], 1 / 3)),
         });
@@ -103,16 +104,23 @@ const blendKey = (b: PrusaBlend) => b.components.map((x) => `${x.tool}:${x.ratio
  * For each palette colour: the nearest loaded spool, or a blend of them when no spool is close and a
  * blend is clearly closer. Identical blends are shared. If more blends are wanted than ids exist, the
  * ones that improve their colour least go back to their spool.
+ *
+ * `usable` marks the slots that really hold a spool. The converter pads a 5-colour model to an 8-tool
+ * INDX with white placeholders; without the mask those were matched and blended as if white were
+ * loaded. Omitted (or nothing marked), every slot counts.
  */
-export function planColorMix(palette: string[], slots: string[], tools: number): ColorMixPlan {
+export function planColorMix(palette: string[], slots: string[], tools: number, usable?: boolean[]): ColorMixPlan {
   const n = Math.min(Math.max(1, tools), slots.length || tools);
   const loaded = slots.slice(0, n).map(normalizeHex);
-  const cands = candidateBlends(loaded);
+  const anyUsable = !!usable && loaded.some((_, i) => usable[i]);
+  const isLoaded = (i: number) => !anyUsable || !!usable![i];
+  const cands = candidateBlends(loaded, isLoaded);
   type Pick = { spool: number; spoolDE: number; blend: PrusaBlend | null; blendDE: number };
   const picks: Pick[] = palette.map((hex) => {
     let spool = 0;
     let spoolDE = Infinity;
     loaded.forEach((s, i) => {
+      if (!isLoaded(i)) return;
       const d = deltaE(hex, s);
       if (d < spoolDE) {
         spoolDE = d;

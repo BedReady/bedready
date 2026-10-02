@@ -159,7 +159,7 @@
     "targetKeepGroup": "Gleiches Ökosystem – behält Druckereinstellungen",
     "targetGenericGroup": "Andere Ökosysteme – als generisches 3MF gespeichert",
     "targetPrusaProjectGroup": "PrusaSlicer-Projekt — Farben auf seinen Werkzeugen",
-    "targetPrusaProjectNote": "Als PrusaSlicer-Projekt für {name} gespeichert: Jede bemalte Farbe kommt auf das Werkzeug, das die Slots oben zuweisen, und PrusaSlicer ergänzt das {name}-Profil. Öffne es mit Datei → Öffnen als Projekt — als Geometrie importiert gehen die Slot-Farben verloren.",
+    "targetPrusaProjectNote": "Als PrusaSlicer-Projekt für {name} gespeichert: Jede bemalte Farbe kommt auf das Werkzeug, das die Slots unten zuweisen, und PrusaSlicer ergänzt das {name}-Profil. Öffne es mit Datei → Öffnen als Projekt — als Geometrie importiert gehen die Slot-Farben verloren.",
     "colorMixLabel": "Farben ohne passende Spule mischen (ColorMix)",
     "colorMixHint": "Eine Farbe ohne ähnliche Spule wird als Mischung aus zwei oder drei geladenen Spulen gedruckt, Schicht für Schicht abwechselnd, im FullSpectrum-Format von PrusaSlicer. Mehr Werkzeugwechsel – vergleiche vorher die Vorschau.",
     "colorMixCount": "{count, plural, =0 {Jede Farbe hat eine ähnliche Spule, nichts muss gemischt werden.} one {# Farbe wird aus den geladenen Spulen gemischt.} other {# Farben werden aus den geladenen Spulen gemischt.}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "Weitere Ausgaben",
     "beforeCaption": "So geöffnet: fremdes Profil, Bemalung fällt auf reine Geometrie zurück.",
     "afterCaption": "Nach BedReady: echtes U1-Profil, Bemalung auf die 4 Slots verteilt.",
-    "slotsLabel": "U1-Slots"
+    "slotsLabel": "U1-Slots",
+    "printSettingsTitle": "Druckeinstellungen",
+    "previewHeaderTarget": "{count, plural, one {# Farbe} other {# Farben}} → {slots} {name}-Slots",
+    "spoolsFarColorMix": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule. ColorMix kann sie aus den geladenen mischen.",
+    "spoolsFarPlain": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule; gedruckt wird mit der nächstliegenden."
   },
   "help": {
     "title": "Hilfe & FAQ",

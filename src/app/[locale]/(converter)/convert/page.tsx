@@ -177,6 +177,9 @@ export default function ConvertPage() {
   const [bandSwap, setBandSwap] = useState(false);
   const [diff, setDiff] = useState<DiffReport | null>(null);
   const [pinned, setPinned] = useState<number[]>([]); // palette indices protected from >4 reduction
+  // Slots the user set by hand (a picker, My Filaments). With the slots a colour maps to, these are the
+  // ones that hold a real spool; the rest are white placeholders padded up to the printer's slot count.
+  const [touched, setTouched] = useState<number[]>([]);
   const [fullSpectrum, setFullSpectrum] = useState(false); // approximate >4 colors by mixing the 4 filaments
   const [customFS, setCustomFS] = useState(false); // reproduce colors from a custom filament palette (CMYK)
   const [customBases, setCustomBases] = useState(["#29ABE2", "#ED1E79", "#FCEE21", "#111111"]); // default CMYK
@@ -216,6 +219,12 @@ export default function ConvertPage() {
   useEffect(() => {
     setSlots((prev) => (prev.length === slotCount ? prev : padN(prev, slotCount)));
   }, [slotCount]);
+  // The file-load path is async and reads the slot count after awaits; a ref, not the stale closure.
+  const slotCountRef = useRef(slotCount);
+  slotCountRef.current = slotCount;
+  // Full Spectrum is the U1's own mixing. Prusa's INDX has ColorMix; offering both there was two
+  // switches for one idea, and neither U1 option applies to any other printer.
+  const fsAllowed = targetId === "u1";
 
   // Deep-link: /convert?to=bambu-x1c preselects a target printer (used by the reverse "U1 → X" landing
   // pages). Read once on mount from the URL and ignore unknown values so the default stays "u1".
@@ -292,6 +301,7 @@ export default function ConvertPage() {
     setSwapPlan([]);
     setDiff(null);
     setPinned([]);
+    setTouched([]);
     setFullSpectrum(false);
     setCustomFS(false);
     setBandSwap(false);
@@ -432,6 +442,7 @@ export default function ConvertPage() {
     setDiff(null);
     setSwapPlan([]);
     setPinned([]);
+    setTouched([]);
     setFullSpectrum(false);
     setCustomFS(false);
     setBandSwap(false);
@@ -476,10 +487,11 @@ export default function ConvertPage() {
     }
 
     // initial slot guess (refined once the mesh loads — but must stand on its own if the preview fails)
-    if (a.colors.length > 4) {
-      const r = reduceColors(a.colors, a.usage);
+    const n = slotCountRef.current;
+    if (a.colors.length > n) {
+      const r = reduceColors(a.colors, a.usage, undefined, n);
       setAssign(r.map);
-      setSlots(padN(r.colors, slotCount));
+      setSlots(padN(r.colors, n));
       if (a.fullSpectrumFile) {
         // A ColorMix file already declares its 4 physical bases (palette 0-3) + mixes — use those as the
         // heads (never re-pick, or a virtual mix colour becomes a "filament") and turn Full Spectrum on.
@@ -491,8 +503,8 @@ export default function ConvertPage() {
         setPhysical(bestPhysicalSet(a.colors, a.usage, [0]));
       }
     } else {
-      setAssign(a.colors.map((_, i) => Math.min(i, slotCount - 1)));
-      setSlots(padN(a.colors, slotCount));
+      setAssign(a.colors.map((_, i) => Math.min(i, n - 1)));
+      setSlots(padN(a.colors, n));
     }
 
     // Load a colored 3D preview for ANY file. Failure must NOT block conversion.
@@ -510,12 +522,13 @@ export default function ConvertPage() {
         // Count colours ACTUALLY used by the geometry (painted states + base) — not the full
         // filament list, which often carries extra spools the model never paints.
         const usedCount = new Set([m.baseState, ...m.statesPresent].filter((s) => s >= 1 && s <= m.palette.length)).size;
-        if (m.palette.length > 4) {
-          // Collapse to 4 — this also drops any phantom/unused filaments, so a 4-colour model with a
-          // 5-entry filament list maps cleanly to 4 slots.
-          const r = reduceColors(m.palette, m.usage);
+        const sc = slotCountRef.current;
+        if (m.palette.length > sc) {
+          // Collapse to the printer's slots — this also drops any phantom/unused filaments, so a
+          // 4-colour model with a 5-entry filament list maps cleanly to 4 slots.
+          const r = reduceColors(m.palette, m.usage, undefined, sc);
           setAssign(r.map);
-          setSlots(padN(r.colors, slotCount));
+          setSlots(padN(r.colors, sc));
           if (usedCount > 4) {
             // Genuinely >4 used → offer Full Spectrum. Default physical = the 4 colours a mix can least
             // reproduce (keeps un-mixable colours like white eyes physical, virtualises mixable ones
@@ -532,7 +545,7 @@ export default function ConvertPage() {
           }
         } else {
           setAssign(m.palette.map((_, i) => i));
-          setSlots(padN(m.palette.length ? m.palette : ["#cccccc"], slotCount));
+          setSlots(padN(m.palette.length ? m.palette : ["#cccccc"], sc));
         }
         setMesh(m);
         // Start grouped by plate when the file has several; else on the first part; else whole model.
@@ -696,9 +709,10 @@ export default function ConvertPage() {
   );
   // The same planner convert.ts runs on export, over the same palette and slots, so what the preview
   // shows as blended is what the file will blend.
+  const loadedSlots = useMemo(() => slots.map((_, i) => assign.includes(i) || touched.includes(i)), [slots, assign, touched]);
   const mixPlan = useMemo(
-    () => (colorMix && MACHINES[targetId]?.prusaColorMix && palette.length ? planColorMix(palette, slots, slotCount) : null),
-    [colorMix, targetId, palette, slots, slotCount],
+    () => (colorMix && MACHINES[targetId]?.prusaColorMix && palette.length ? planColorMix(palette, slots, slotCount, loadedSlots) : null),
+    [colorMix, targetId, palette, slots, slotCount, loadedSlots],
   );
   const printedColorForState = useCallback(
     (s: number) => {
@@ -721,16 +735,46 @@ export default function ConvertPage() {
     setMixOverrides({});
   }
 
+  // A different printer is a different number of slots, and the plan for the old ones is stale: the
+  // reducer collapsed to the old count, a spool match and a ColorMix plan were against the old slots,
+  // and Full Spectrum is U1-only. Re-reduce from the model and drop what was planned against them.
+  function changeTarget(next: CleanTarget) {
+    setTargetId(next);
+    setSpoolMatch(null);
+    setColorMix(false);
+    if (next !== "u1") {
+      setFullSpectrum(false);
+      setCustomFS(false);
+    }
+    const n = MACHINES[next]?.toolheads ?? 4;
+    if (n === slotCount) return;
+    const src = mesh ? { colors: mesh.palette, usage: mesh.usage } : analysis ? { colors: analysis.colors, usage: analysis.usage } : null;
+    if (!src || !src.colors.length) return;
+    const keepPins = pinned.slice(0, n);
+    setPinned(keepPins);
+    setTouched([]);
+    if (src.colors.length > n) {
+      const r = reduceColors(src.colors, src.usage, keepPins, n);
+      setAssign(r.map);
+      setSlots(padN(r.colors, n));
+    } else {
+      setAssign(src.colors.map((_, i) => Math.min(i, n - 1)));
+      setSlots(padN(src.colors, n));
+    }
+  }
+
   // Pin/unpin a palette color so the >4→4 reducer won't merge it away; recompute the reduction.
   function togglePin(i: number) {
     if (!mesh) return;
     const has = pinned.includes(i);
-    if (!has && pinned.length >= 4) return; // only 4 slots — can't protect more than 4 colors
+    if (!has && pinned.length >= slotCount) return; // can't protect more colours than there are slots
     const next = has ? pinned.filter((x) => x !== i) : [...pinned, i];
     setPinned(next);
-    const r = reduceColors(mesh.palette, mesh.usage, next);
+    const r = reduceColors(mesh.palette, mesh.usage, next, slotCount);
     setAssign(r.map);
     setSlots(padN(r.colors, slotCount));
+    setTouched([]);
+    setSpoolMatch(null);
   }
 
   async function clean(target: CleanTarget) {
@@ -749,7 +793,7 @@ export default function ConvertPage() {
       // Painted files only use the manual mapping when the preview loaded; otherwise
       // cleanThreeMF auto-reduces by painted area.
       const useManual = analysis && (analysis.encoding !== "painted" || mesh);
-      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, colorMix: colorMix && !!targetMachine?.prusaColorMix };
+      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, colorMix: colorMix && !!targetMachine?.prusaColorMix, loadedSlots };
       const res = await cleanThreeMFAsync(file, target, opts);
       setSwapPlan(res.swaps ?? []);
       setDiff(res.diff);
@@ -807,6 +851,7 @@ export default function ConvertPage() {
     if (j < 0 || j >= slots.length) return;
     setSlots((prev) => { const n = [...prev]; [n[i], n[j]] = [n[j], n[i]]; return n; });
     setAssign((prev) => prev.map((a) => (a === i ? j : a === j ? i : a)));
+    setTouched((prev) => prev.map((a) => (a === i ? j : a === j ? i : a)));
   }
 
   // Full Spectrum equivalent: reorder which physical head holds each main colour by swapping entries
@@ -1018,7 +1063,11 @@ export default function ConvertPage() {
   const totalFaces = mesh ? mesh.faceState.length : 0;
   const usedCount = usedStates.length; // colours actually used (not the full filament list)
   const colorKey = JSON.stringify([slots, assign, fullSpectrum, physical, customFS, customBases, mixOverrides, bandSwap]);
-  const warnings = analysis ? convertWarnings(analysis, mesh ? usedCount : undefined) : [];
+  // These name the U1, its 4 slots, its bed or Full Spectrum; for another printer they were wrong.
+  const U1_ONLY_WARNINGS = new Set(["warnMixedFilaments", "warnOverFourByLayer", "warnOverFourMerge", "warnTooBig", "warnLayoutTooBig"]);
+  const warnings = analysis
+    ? convertWarnings(analysis, mesh ? usedCount : undefined).filter((w) => targetId === "u1" || !U1_ONLY_WARNINGS.has(w.key))
+    : [];
   // Overhang advisory: recommend supports only when the geometry actually has steep unsupported faces.
   // The converter keeps the source file's own support setting (preserve mode) — this just tells the user
   // whether this particular model is likely to need them. Skipped when the preview mesh is unavailable.
@@ -1398,6 +1447,90 @@ export default function ConvertPage() {
         </p>
       )}
 
+      {/* The printer comes first: it decides how many slots the colours below are reduced to, and
+          which mixing option exists at all. It sat under the slot editor, so a choice made last
+          silently re-did everything above it.
+          Target-printer picker. Default = Snapmaker U1 so every existing flow is unchanged. Same-ecosystem
+          printers keep their settings (the file's profile is retargeted); other ecosystems are saved as a
+          clean Generic 3MF you assign to that printer in its own slicer. */}
+      {file && (() => {
+        const srcFam = analysis?.flavour ? configFamily(analysis.flavour) : null;
+        const keeps = RETARGET_MACHINES.filter((m) => srcFam !== null && configFamily(m.flavour) === srcFam);
+        // Bambu/Orca → Prusa is no longer a Generic 3MF: it is a PrusaSlicer project with the painting on
+        // the right tools (lib/prusa-project.ts). Its own group, so the "saved as Generic" label is not
+        // stuck to the printers it is no longer true of.
+        const prusaProject = RETARGET_MACHINES.filter((m) => srcFam === "bbl" && configFamily(m.flavour) === "prusa" && !!m.printerSettingsId);
+        const others = RETARGET_MACHINES.filter((m) => !keeps.includes(m) && !prusaProject.includes(m));
+        const chosen = targetId !== "u1" ? MACHINES[targetId] : undefined;
+        const chosenSame = chosen && srcFam !== null && configFamily(chosen.flavour) === srcFam;
+        const chosenProject = chosen ? prusaProject.includes(chosen) : false;
+        return (
+          <div className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
+            <label htmlFor="target-printer" className="text-sm font-semibold text-fg">{t("targetPrinterLabel")}</label>
+            <select
+              id="target-printer"
+              value={targetId}
+              onChange={(e) => changeTarget(e.target.value as CleanTarget)}
+              className="mt-2 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
+            >
+              <option value="u1">{t("targetU1Default")}</option>
+              {keeps.length > 0 && (
+                <optgroup label={t("targetKeepGroup")}>
+                  {keeps.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </optgroup>
+              )}
+              {prusaProject.length > 0 && (
+                <optgroup label={t("targetPrusaProjectGroup")}>
+                  {prusaProject.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </optgroup>
+              )}
+              {others.length > 0 && (
+                <optgroup label={t("targetGenericGroup")}>
+                  {others.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </optgroup>
+              )}
+            </select>
+            {chosen && (
+              <p className="mt-2 text-xs text-fg-subtle">
+                {chosenSame
+                  ? t("targetKeepNote", { name: chosen.name })
+                  : chosenProject
+                    ? t("targetPrusaProjectNote", { name: chosen.name })
+                    : t("targetGenericNote", { name: chosen.name })}
+              </p>
+            )}
+            {chosen && chosenProject && chosen.prusaColorMix && (
+              <div className="mt-3 rounded-lg border border-line bg-surface p-3">
+                <label className="flex cursor-pointer items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={colorMix}
+                    onChange={(e) => {
+                      setColorMix(e.target.checked);
+                      if (e.target.checked) setCompareView(true);
+                    }}
+                    className="mt-0.5 h-4 w-4 accent-violet-500"
+                  />
+                  <span className="text-sm font-medium text-fg">{t("colorMixLabel")}</span>
+                </label>
+                <p className="mt-1 ps-6 text-xs text-fg-subtle">{t("colorMixHint")}</p>
+                {mixPlan && (
+                  <p className="mt-1 ps-6 text-xs text-violet-300" aria-live="polite">
+                    {t("colorMixCount", { count: mixPlan.map.filter((m) => m >= slotCount).length })}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Fallback when the live preview couldn't load (a very large painted file OOMs the preview worker):
           still surface the color count + Full Spectrum, driven by the lightweight analysis. Conversion
           reads the full file, and `physical` is seeded from the analysis, so Full Spectrum still works. */}
@@ -1412,6 +1545,7 @@ export default function ConvertPage() {
               <span key={i} className="h-6 w-6 rounded border border-line" style={{ background: c }} title={c} />
             ))}
           </div>
+          {fsAllowed && (
           <label className="mt-4 flex cursor-pointer items-start gap-2 text-sm text-fg-muted">
             <input
               type="checkbox"
@@ -1425,6 +1559,7 @@ export default function ConvertPage() {
               <span className="mt-1 block text-xs text-fg-subtle">{t("fsDesc2")}</span>
             </span>
           </label>
+          )}
           {fullSpectrum && mixMatches && (() => {
             const bad = mixMatches.filter((m, i) => m && !physical.includes(i) && m.deltaE > 12).length;
             if (!bad) return null;
@@ -1443,10 +1578,14 @@ export default function ConvertPage() {
       {mesh && (
         <section className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
           <h2 className="text-sm font-semibold text-fg">
-            {usedCount > 4 ? t("previewHeader", { count: usedCount }) : t("previewHeaderShort")}
+            {usedCount > slotCount
+              ? targetId !== "u1" && MACHINES[targetId]
+                ? t("previewHeaderTarget", { count: usedCount, slots: slotCount, name: MACHINES[targetId].name })
+                : t("previewHeader", { count: usedCount })
+              : t("previewHeaderShort")}
           </h2>
           <p className="mt-1 text-xs text-fg-muted">
-            {usedCount > 4 ? t("previewNoteReduce") : t("previewNoteNormal")}
+            {usedCount > slotCount ? t("previewNoteReduce") : t("previewNoteNormal")}
           </p>
 
           {hasGroups && (
@@ -1566,7 +1705,12 @@ export default function ConvertPage() {
                         type="color"
                         value={c}
                         disabled={fullSpectrum}
-                        onChange={(e) => !fullSpectrum && setSlots(slots.map((s, j) => (j === i ? e.target.value.toUpperCase() : s)))}
+                        onChange={(e) => {
+                          if (fullSpectrum) return;
+                          setSlots(slots.map((s, j) => (j === i ? e.target.value.toUpperCase() : s)));
+                          setTouched((prev) => (prev.includes(i) ? prev : [...prev, i]));
+                          setSpoolMatch(null);
+                        }}
                         title={fullSpectrum ? t("mainColorTitle") : undefined}
                         className="h-9 w-full cursor-pointer rounded-lg border border-line bg-transparent disabled:cursor-default"
                       />
@@ -1612,7 +1756,7 @@ export default function ConvertPage() {
                       type="button"
                       className="btn-secondary btn-sm"
                       onClick={() => {
-                        const r = matchToSpools(palette, slots);
+                        const r = matchToSpools(palette, slots, loadedSlots);
                         setAssign(r.map);
                         setSpoolMatch({ count: palette.length, far: r.far.length });
                         setCompareView(true);
@@ -1629,7 +1773,7 @@ export default function ConvertPage() {
                     aria-live="polite"
                   >
                     {spoolMatch.far
-                      ? t("spoolsFar", { far: spoolMatch.far, count: spoolMatch.count })
+                      ? t(fsAllowed ? "spoolsFar" : MACHINES[targetId]?.prusaColorMix ? "spoolsFarColorMix" : "spoolsFarPlain", { far: spoolMatch.far, count: spoolMatch.count })
                       : t("spoolsMatched", { count: spoolMatch.count })}
                   </p>
                 )}
@@ -1641,7 +1785,9 @@ export default function ConvertPage() {
                     onApply={(picks) => {
                       const next = slots.map((hex, i) => picks[i] ?? hex);
                       setSlots(next);
-                      const r = matchToSpools(palette, next);
+                      const nowTouched = [...new Set([...touched, ...Object.keys(picks).map(Number)])];
+                      setTouched(nowTouched);
+                      const r = matchToSpools(palette, next, next.map((_, i) => assign.includes(i) || nowTouched.includes(i)));
                       setAssign(r.map);
                       setSpoolMatch({ count: palette.length, far: r.far.length });
                       setCompareView(true);
@@ -1698,7 +1844,7 @@ export default function ConvertPage() {
 
           {/* Custom-palette Full Spectrum (e.g. CMYK) — reproduce the model's colors as mixes of your OWN
               loaded filaments, at ANY color count. Mutually exclusive with the >4 palette-mixing below. */}
-          {analysis?.painted && (
+          {analysis?.painted && fsAllowed && (
             <div className="mt-5 rounded-lg border border-line bg-surface-2 p-4">
               <label className="flex cursor-pointer items-start gap-2 text-sm text-fg-muted">
                 <input
@@ -1850,6 +1996,7 @@ export default function ConvertPage() {
           {/* used colors, ranked by area, each assigned to a slot (only when reducing) */}
           {usedCount > 4 && (
           <div className="mt-5">
+            {fsAllowed && (
             <label className="flex cursor-pointer items-start gap-2 border-b border-line pb-3 text-sm text-fg-muted">
               <input
                 type="checkbox"
@@ -1863,6 +2010,7 @@ export default function ConvertPage() {
                 <span className="mt-1 block text-xs text-fg-subtle">{t("fsDesc2")}</span>
               </span>
             </label>
+            )}
             {fullSpectrum && mixMatches && mesh && (() => {
               // Colours Full Spectrum can't fake from the 4 heads (a mix can't manufacture a primary that
               // isn't loaded). ΔE > 12 is a clearly-visible shift. Warn instead of silently showing them wrong.
@@ -2088,7 +2236,8 @@ export default function ConvertPage() {
 
       {file && (
         <div className="mt-6 rounded-lg border border-line bg-surface-2 p-4">
-          <p className="text-sm font-medium text-fg-muted">{t("settingsTitle")}</p>
+          <p className="text-sm font-medium text-fg-muted">{targetId === "u1" ? t("settingsTitle") : t("printSettingsTitle")}</p>
+          {targetId === "u1" && (<>
           <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-1 text-sm">
             <button
               type="button"
@@ -2108,6 +2257,7 @@ export default function ConvertPage() {
           <p className="mt-2 text-xs text-fg-subtle">
             {profileMode === "preserve" ? t("preserveDesc") : t("stampDesc", { nozzle: nozzle })}
           </p>
+          </>)}
 
           {/* U1 nozzle. The U1 ships in four sizes and Snapmaker Orca has a preset for each, but we
               bundle a real export for only one of them — so this control has to say which is which
@@ -2230,96 +2380,6 @@ export default function ConvertPage() {
       {/* Save/reuse the target + color settings across files (localStorage; file-specific state excluded). */}
       {file && <ConvertPresets current={presetSettings} onApply={applyPreset} />}
 
-      {/* Target-printer picker. Default = Snapmaker U1 so every existing flow is unchanged. Same-ecosystem
-          printers keep their settings (the file's profile is retargeted); other ecosystems are saved as a
-          clean Generic 3MF you assign to that printer in its own slicer. */}
-      {file && (() => {
-        const srcFam = analysis?.flavour ? configFamily(analysis.flavour) : null;
-        const keeps = RETARGET_MACHINES.filter((m) => srcFam !== null && configFamily(m.flavour) === srcFam);
-        // Bambu/Orca → Prusa is no longer a Generic 3MF: it is a PrusaSlicer project with the painting on
-        // the right tools (lib/prusa-project.ts). Its own group, so the "saved as Generic" label is not
-        // stuck to the printers it is no longer true of.
-        const prusaProject = RETARGET_MACHINES.filter((m) => srcFam === "bbl" && configFamily(m.flavour) === "prusa" && !!m.printerSettingsId);
-        const others = RETARGET_MACHINES.filter((m) => !keeps.includes(m) && !prusaProject.includes(m));
-        const chosen = targetId !== "u1" ? MACHINES[targetId] : undefined;
-        const chosenSame = chosen && srcFam !== null && configFamily(chosen.flavour) === srcFam;
-        const chosenProject = chosen ? prusaProject.includes(chosen) : false;
-        return (
-          <div className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
-            <label htmlFor="target-printer" className="text-sm font-semibold text-fg">{t("targetPrinterLabel")}</label>
-            <select
-              id="target-printer"
-              value={targetId}
-              onChange={(e) => setTargetId(e.target.value as CleanTarget)}
-              className="mt-2 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
-            >
-              <option value="u1">{t("targetU1Default")}</option>
-              {keeps.length > 0 && (
-                <optgroup label={t("targetKeepGroup")}>
-                  {keeps.map((m) => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </optgroup>
-              )}
-              {prusaProject.length > 0 && (
-                <optgroup label={t("targetPrusaProjectGroup")}>
-                  {prusaProject.map((m) => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </optgroup>
-              )}
-              {others.length > 0 && (
-                <optgroup label={t("targetGenericGroup")}>
-                  {others.map((m) => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </optgroup>
-              )}
-            </select>
-            {chosen && (
-              <p className="mt-2 text-xs text-fg-subtle">
-                {chosenSame
-                  ? t("targetKeepNote", { name: chosen.name })
-                  : chosenProject
-                    ? t("targetPrusaProjectNote", { name: chosen.name })
-                    : t("targetGenericNote", { name: chosen.name })}
-              </p>
-            )}
-            {chosen && chosenProject && chosen.prusaColorMix && (
-              <div className="mt-3 rounded-lg border border-line bg-surface p-3">
-                <label className="flex cursor-pointer items-start gap-2">
-                  <input
-                    type="checkbox"
-                    checked={colorMix}
-                    onChange={(e) => {
-                      setColorMix(e.target.checked);
-                      if (e.target.checked) setCompareView(true);
-                    }}
-                    className="mt-0.5 h-4 w-4 accent-violet-500"
-                  />
-                  <span className="text-sm font-medium text-fg">{t("colorMixLabel")}</span>
-                </label>
-                <p className="mt-1 ps-6 text-xs text-fg-subtle">{t("colorMixHint")}</p>
-                {mixPlan && (
-                  <p className="mt-1 ps-6 text-xs text-violet-300" aria-live="polite">
-                    {t("colorMixCount", { count: mixPlan.map.filter((m) => m >= slotCount).length })}
-                  </p>
-                )}
-              </div>
-            )}
-            {chosen && (
-              <button
-                onClick={() => clean(targetId)}
-                disabled={status === "working" || meshLoading}
-                className="btn-secondary btn-md mt-4"
-              >
-                {t("convertForPrinter", { name: chosen.name })}
-              </button>
-            )}
-          </div>
-        );
-      })()}
-
       {/* ── THE MOMENT THE WHOLE PAGE CONVERGES ON ────────────────────────────────────────────────
           These were four identical 144×218px tiles at the bottom of a 2,991px page. The primary one
           carried a faint lavender tint and nothing else: no fill, no download glyph, no size
@@ -2336,7 +2396,7 @@ export default function ConvertPage() {
       {file && (
         <div className="mt-6">
           <button
-            onClick={() => clean("u1")}
+            onClick={() => clean(targetId)}
             disabled={status === "working" || meshLoading}
             className="btn-primary btn-lg w-full"
           >
@@ -2345,14 +2405,23 @@ export default function ConvertPage() {
               <path d="m8 12 4 4 4-4" />
               <path d="M4 20h16" />
             </svg>
-            {t("cleanU1")}
+            {targetId !== "u1" && MACHINES[targetId] ? t("convertForPrinter", { name: MACHINES[targetId].name }) : t("cleanU1")}
           </button>
-          <p className="mt-2 text-center text-sm text-fg-subtle">
-            {profileMode === "preserve" ? t("cleanU1PreserveDesc") : t("cleanU1StampDesc")}
-          </p>
+          {targetId === "u1" && (
+            <p className="mt-2 text-center text-sm text-fg-subtle">
+              {profileMode === "preserve" ? t("cleanU1PreserveDesc") : t("cleanU1StampDesc")}
+            </p>
+          )}
 
           <p className="eyebrow mt-7">{t("otherOutputs")}</p>
-          <div className="mt-2 grid gap-2 sm:grid-cols-3">
+          <div className={`mt-2 grid gap-2 ${targetId !== "u1" ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
+            {/* Another printer is the primary now; the U1 stays one click away, as an alternative. */}
+            {targetId !== "u1" && (
+              <button onClick={() => clean("u1")} disabled={status === "working" || meshLoading} className="btn-secondary btn-sm flex-col items-start gap-0.5 px-4 py-3 text-start">
+                <span className="font-medium text-fg">{t("cleanU1")}</span>
+                <span className="text-xs font-normal leading-snug text-fg-subtle">{profileMode === "preserve" ? t("cleanU1PreserveDesc") : t("cleanU1StampDesc")}</span>
+              </button>
+            )}
             <button onClick={() => clean("generic")} disabled={status === "working"} className="btn-secondary btn-sm flex-col items-start gap-0.5 px-4 py-3 text-start">
               <span className="font-medium text-fg">{t("genericStrip")}</span>
               <span className="text-xs font-normal leading-snug text-fg-subtle">{t("genericStripDesc")}</span>

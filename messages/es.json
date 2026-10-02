@@ -159,7 +159,7 @@
     "targetKeepGroup": "Mismo ecosistema: conserva los ajustes de la impresora",
     "targetGenericGroup": "Otros ecosistemas: guardado como 3MF genérico",
     "targetPrusaProjectGroup": "Proyecto de PrusaSlicer — colores en sus herramientas",
-    "targetPrusaProjectNote": "Guardado como proyecto de PrusaSlicer para {name}: cada color pintado va a la herramienta que le asignan las ranuras de arriba, y PrusaSlicer completa el perfil de {name}. Ábrelo con Archivo → Abrir, como proyecto: importado como geometría se pierden los colores de las ranuras.",
+    "targetPrusaProjectNote": "Guardado como proyecto de PrusaSlicer para {name}: cada color pintado va a la herramienta que le asignan las ranuras de abajo, y PrusaSlicer completa el perfil de {name}. Ábrelo con Archivo → Abrir, como proyecto: importado como geometría se pierden los colores de las ranuras.",
     "colorMixLabel": "Mezclar colores sin bobina parecida (ColorMix)",
     "colorMixHint": "Un color sin bobina parecida se imprime como mezcla de dos o tres bobinas cargadas, alternadas capa a capa, en el formato FullSpectrum de PrusaSlicer. Más cambios de herramienta: compara antes la vista previa.",
     "colorMixCount": "{count, plural, =0 {Todos los colores tienen una bobina parecida; no hay que mezclar nada.} one {# color se mezclará con las bobinas cargadas.} other {# colores se mezclarán con las bobinas cargadas.}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "Otras salidas",
     "beforeCaption": "Abierto tal cual: perfil ajeno, la pintura cae a geometría plana.",
     "afterCaption": "Tras BedReady: perfil U1 real, pintura asignada a las 4 ranuras.",
-    "slotsLabel": "Ranuras U1"
+    "slotsLabel": "Ranuras U1",
+    "printSettingsTitle": "Ajustes de impresión",
+    "previewHeaderTarget": "{count, plural, one {# color} other {# colores}} → {slots} ranuras {name}",
+    "spoolsFarColorMix": "{far, plural, one {# color no tiene} other {# colores no tienen}} una bobina parecida aquí. ColorMix puede mezclarlos con lo cargado.",
+    "spoolsFarPlain": "{far, plural, one {# color no tiene} other {# colores no tienen}} una bobina parecida aquí, así que se imprimen con la más cercana."
   },
   "help": {
     "title": "Ayuda y preguntas frecuentes",

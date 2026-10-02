@@ -164,3 +164,14 @@ test("cleanThreeMF writes blends only when asked, and only for a ColorMix machin
   const mk4 = unzipSync(new Uint8Array(await (await cleanThreeMF(file, "prusa-mk4-mmu3", { ...opts, slots: LOADED.slice(0, 5), colorMix: true })).blob.arrayBuffer()));
   assert.equal(mk4[FULL_SPECTRUM_FILE], undefined, "MMU3 is not a ColorMix target");
 });
+
+// Placeholder slots on an 8-tool INDX are padded white; they must not be blended or matched.
+test("planColorMix: unusable slots are neither spools nor blend components", () => {
+  const slots = ["#FF0000", "#0000FF", "#FFFFFF", "#FFFFFF"];
+  const usable = [true, true, false, false];
+  const plan = planColorMix(["#FFC0CB", "#FF0000"], slots, 4, usable);
+  for (const b of plan.blends) for (const c of b.components) assert.ok(c.tool <= 2, `blend uses placeholder tool ${c.tool}`);
+  assert.ok(plan.map.every((m) => m >= 4 || usable[m]), "a colour was matched to a placeholder slot");
+  const open = planColorMix(["#FFC0CB"], slots, 4);
+  assert.ok(open.map[0] === 2 || open.blends.some((b) => b.components.some((c) => c.tool > 2)), "without a mask white counts as loaded");
+});

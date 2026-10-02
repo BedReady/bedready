@@ -159,7 +159,7 @@
     "targetKeepGroup": "نفس النظام — يحتفظ بإعدادات الطابعة",
     "targetGenericGroup": "أنظمة أخرى — يُحفظ كملف 3MF عام",
     "targetPrusaProjectGroup": "مشروع PrusaSlicer — الألوان على أدواته",
-    "targetPrusaProjectNote": "يُحفظ كمشروع PrusaSlicer لـ {name}: يذهب كل لون مرسوم إلى الأداة التي تحددها له الخانات أعلاه، ويكمل PrusaSlicer ملف تعريف {name}. افتحه عبر ملف ← فتح كمشروع؛ إن استُورد كهندسة فقط تضيع ألوان الخانات.",
+    "targetPrusaProjectNote": "يُحفظ كمشروع PrusaSlicer لـ {name}: يذهب كل لون مرسوم إلى الأداة التي تحددها له الخانات أدناه، ويكمل PrusaSlicer ملف تعريف {name}. افتحه عبر ملف ← فتح كمشروع؛ إن استُورد كهندسة فقط تضيع ألوان الخانات.",
     "colorMixLabel": "امزج الألوان التي لا تطابقها بكرة (ColorMix)",
     "colorMixHint": "يُطبع اللون الذي لا تقاربه أي بكرة كمزيج من بكرتين أو ثلاث محمّلة، بالتناوب طبقةً بطبقة، بصيغة FullSpectrum الخاصة بـ PrusaSlicer. عدد تبديل الأدوات يزيد، فقارن المعاينة أولًا.",
     "colorMixCount": "{count, plural, =0 {لكل لون بكرة قريبة، فلا حاجة للمزج.} one {سيُمزج لون واحد من البكرات المحمّلة.} other {ستُمزج # ألوان من البكرات المحمّلة.}}",
@@ -379,7 +379,11 @@
     "otherOutputs": "مخرجات أخرى",
     "beforeCaption": "بفتحه كما هو: تعريف غريب، ويسقط التلوين إلى هندسة صمّاء.",
     "afterCaption": "بعد ‎BedReady: تعريف ‎U1 الحقيقي، والتلوين موزّع على الفتحات الأربع.",
-    "slotsLabel": "فتحات ‎U1"
+    "slotsLabel": "فتحات ‎U1",
+    "printSettingsTitle": "إعدادات الطباعة",
+    "previewHeaderTarget": "{count, plural, zero {لا ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} → {slots} فتحات {name}",
+    "spoolsFarColorMix": "{far, plural, one {لون واحد ليس له} other {# ألوان ليس لها}} بكرة قريبة هنا. يمكن لـ ColorMix مزجها مما هو محمّل.",
+    "spoolsFarPlain": "{far, plural, one {لون واحد ليس له} other {# ألوان ليس لها}} بكرة قريبة هنا، فتُطبع من أقرب بكرة."
   },
   "help": {
     "title": "المساعدة والأسئلة الشائعة",
