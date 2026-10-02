@@ -24,6 +24,7 @@ export type Machine = {
   printerModel?: string; // vendor printer_model written into project settings on a retarget
   printerSettingsId?: string; // exact library preset name (printer_settings_id); falls back to printerModel
   printerVariant?: string; // PrusaSlicer printer_variant (the nozzle variant the preset name carries)
+  prusaColorMix?: boolean; // PrusaSlicer FullSpectrum virtual extruders (ColorMix) — prusa-project.ts
   printableArea?: string[]; // exact build-plate polygon (keeps plate layout correct); else derived from bed
   printableHeight?: string; // exact printable_height string; else derived from bed.z
   supportsMixedFilament?: boolean; // Full Spectrum dithering is a hardware feature — gate on this, NOT flavour
@@ -173,11 +174,13 @@ const RETARGET: Machine[] = [
     id: "prusa-core-one-indx-8t", name: "Prusa CORE One INDX 8T", vendor: "Prusa Research", flavour: "prusa",
     toolheads: 8, buildMM: 248, buildZMM: 270, bed: { x: 248, y: 205, z: 270 }, nozzle: 0.4,
     printerModel: "COREONE_INDX8T", printerSettingsId: "Prusa CORE One INDX 8T HF0.4 nozzle", printerVariant: "HF0.4",
+    prusaColorMix: true, // a toolchanger: blending costs tool changes, not purge
   },
   {
     id: "prusa-core-one-indx-4t", name: "Prusa CORE One INDX 4T", vendor: "Prusa Research", flavour: "prusa",
     toolheads: 4, buildMM: 248, buildZMM: 270, bed: { x: 248, y: 205, z: 270 }, nozzle: 0.4,
     printerModel: "COREONE_INDX4T", printerSettingsId: "Prusa CORE One INDX 4T HF0.4 nozzle", printerVariant: "HF0.4",
+    prusaColorMix: true,
   },
   {
     id: "creality-k2", name: "Creality K2 Plus", vendor: "Creality", flavour: "orca",

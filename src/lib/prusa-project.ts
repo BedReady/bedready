@@ -24,13 +24,161 @@
 
 import { strFromU8, strToU8 } from "fflate";
 import { encodeSolidPaint, remapPaintCode, normalizeHex } from "./paint";
+import { mixRgb } from "./filament-mixer";
+import { deltaE, hexToRgb, rgbToHex } from "./color-mix";
 import type { Machine } from "./targets";
 
 const SLIC3RPE_NS = "http://schemas.slic3r.org/3mf/2017/06";
 
+// ── COLORMIX: PRUSASLICER FULLSPECTRUM VIRTUAL EXTRUDERS ─────────────────────────────────────────
+//
+// PrusaSlicer 2.9.6 prints a "virtual extruder" as a repeating cycle of physical tools, one per
+// layer, in proportion to its component ratios. Read from its source (libslic3r/Feature/
+// FullSpectrum/VirtualExtruder.cpp, Format/3mf.cpp at version_2.9.6) and confirmed by slicing on
+// 2026-10-02: a face painted with virtual id 9 = {T1 0.5, T2 0.5} alternated T0/T1 through its
+// layers, and the same file without the JSON fell back to T0.
+//
+//   · The definitions live in Metadata/Prusa_Slicer_full_spectrum.json, version 1:
+//     { physical_extruders: [{id, color}], virtual_extruders: [{id, kind: "fullspectrum",
+//       components: [{extruder, ratio}]}] }. `color` is optional and left out, so PrusaSlicer predicts
+//     the blend with its own calibrated mixer rather than displaying ours.
+//   · Virtual ids sit above the physical tools (9+ on the 8T). physical_extruders lists every tool,
+//     so PrusaSlicer's import-time remap never runs (it shifts paint states only, not base extruders).
+//   · 2 or 3 components (MAX_BLEND_COMPONENTS = 3). Ratios are the ones PrusaSlicer's own dialog
+//     offers, 1:1, 1:3, 3:1 and 1:1:1, because any ratio becomes a layer cycle and an odd one makes a
+//     long cycle of tool changes.
+//   · Paint states stay ≤ 16, the encoding paint_color and mmu_segmentation share without the
+//     MmPaintingVersion 2 extension, so the 8T gets at most 8 blends and the 4T 12, capped at 8.
+export const FULL_SPECTRUM_FILE = "Metadata/Prusa_Slicer_full_spectrum.json";
+const MAX_PAINT_STATE = 16;
+const MAX_BLENDS = 8;
+/** A spool this close needs no blend: a toolchange on every layer is not worth a near-invisible shift. */
+const KEEP_SPOOL_DE = 6;
+/** A blend has to beat the nearest spool by this much (CIEDE2000) to be worth its tool changes. */
+const BLEND_MARGIN_DE = 2;
+
+export type PrusaBlend = {
+  /** 1-based physical tools and their shares; shares sum to 1. */
+  components: { tool: number; ratio: number }[];
+  /** Our predicted colour (Snapmaker's pigment model), for the preview only. */
+  hex: string;
+};
+
+export type ColorMixPlan = {
+  /** Per palette colour: 0-based target. < tools = a physical slot; tools + k = blend k. */
+  map: number[];
+  blends: PrusaBlend[];
+  /** Per palette colour: what it is predicted to print as. */
+  predicted: string[];
+};
+
+type Rgb3 = [number, number, number];
+const rgb3 = (hex: string): Rgb3 => {
+  const c = hexToRgb(hex) ?? { r: 255, g: 255, b: 255 };
+  return [c.r, c.g, c.b];
+};
+const hex3 = ([r, g, b]: Rgb3) => rgbToHex(r, g, b).toUpperCase();
+
+/** Every blend PrusaSlicer's dialog can express from these slots: pairs at 1:1, 1:3, 3:1, triples 1:1:1. */
+function candidateBlends(slots: string[]): PrusaBlend[] {
+  const c = slots.map(rgb3);
+  const out: PrusaBlend[] = [];
+  for (let i = 0; i < c.length; i++)
+    for (let j = i + 1; j < c.length; j++)
+      for (const t of [0.5, 0.25, 0.75])
+        out.push({ components: [{ tool: i + 1, ratio: 1 - t }, { tool: j + 1, ratio: t }], hex: hex3(mixRgb(c[i], c[j], t)) });
+  for (let i = 0; i < c.length; i++)
+    for (let j = i + 1; j < c.length; j++)
+      for (let k = j + 1; k < c.length; k++)
+        out.push({
+          components: [{ tool: i + 1, ratio: 1 / 3 }, { tool: j + 1, ratio: 1 / 3 }, { tool: k + 1, ratio: 1 / 3 }],
+          hex: hex3(mixRgb(mixRgb(c[i], c[j], 0.5), c[k], 1 / 3)),
+        });
+  return out;
+}
+
+const blendKey = (b: PrusaBlend) => b.components.map((x) => `${x.tool}:${x.ratio.toFixed(4)}`).join("|");
+
+/**
+ * For each palette colour: the nearest loaded spool, or a blend of them when no spool is close and a
+ * blend is clearly closer. Identical blends are shared. If more blends are wanted than ids exist, the
+ * ones that improve their colour least go back to their spool.
+ */
+export function planColorMix(palette: string[], slots: string[], tools: number): ColorMixPlan {
+  const n = Math.min(Math.max(1, tools), slots.length || tools);
+  const loaded = slots.slice(0, n).map(normalizeHex);
+  const cands = candidateBlends(loaded);
+  type Pick = { spool: number; spoolDE: number; blend: PrusaBlend | null; blendDE: number };
+  const picks: Pick[] = palette.map((hex) => {
+    let spool = 0;
+    let spoolDE = Infinity;
+    loaded.forEach((s, i) => {
+      const d = deltaE(hex, s);
+      if (d < spoolDE) {
+        spoolDE = d;
+        spool = i;
+      }
+    });
+    if (spoolDE < KEEP_SPOOL_DE) return { spool, spoolDE, blend: null, blendDE: Infinity };
+    let blend: PrusaBlend | null = null;
+    let blendDE = Infinity;
+    for (const b of cands) {
+      const d = deltaE(hex, b.hex);
+      if (d < blendDE) {
+        blendDE = d;
+        blend = b;
+      }
+    }
+    return blendDE < spoolDE - BLEND_MARGIN_DE ? { spool, spoolDE, blend, blendDE } : { spool, spoolDE, blend: null, blendDE };
+  });
+  // Distinct blends, best improvement first, capped by the ids the paint encoding can address.
+  const room = Math.max(0, Math.min(MAX_BLENDS, MAX_PAINT_STATE - n));
+  const gain = new Map<string, number>();
+  for (const p of picks) if (p.blend) gain.set(blendKey(p.blend), Math.max(gain.get(blendKey(p.blend)) ?? 0, p.spoolDE - p.blendDE));
+  const kept = [...gain.entries()].sort((a, b) => b[1] - a[1]).slice(0, room).map(([k]) => k);
+  const blends: PrusaBlend[] = [];
+  const idOf = new Map<string, number>();
+  for (const p of picks) {
+    if (!p.blend) continue;
+    const k = blendKey(p.blend);
+    if (!kept.includes(k) || idOf.has(k)) continue;
+    idOf.set(k, blends.length);
+    blends.push(p.blend);
+  }
+  return {
+    map: picks.map((p) => (p.blend && idOf.has(blendKey(p.blend)) ? n + idOf.get(blendKey(p.blend))! : p.spool)),
+    blends,
+    predicted: picks.map((p, i) => (p.blend && idOf.has(blendKey(p.blend)) ? p.blend.hex : loaded[p.spool] ?? palette[i])),
+  };
+}
+
+/** The FullSpectrum JSON, in the shape PrusaSlicer 2.9.6 writes it (minus the optional colour). */
+export function fullSpectrumJson(machine: Machine, colours: string[], blends: PrusaBlend[]): string {
+  const n = Math.max(1, machine.toolheads);
+  return JSON.stringify(
+    {
+      version: 1,
+      physical_extruders: Array.from({ length: n }, (_, i) => ({ id: i + 1, color: normalizeHex(colours[i] ?? "#FFFFFF") })),
+      virtual_extruders: blends.map((b, k) => ({
+        id: n + 1 + k,
+        kind: "fullspectrum",
+        components: b.components.map((c) => ({ extruder: c.tool, ratio: +c.ratio.toFixed(6) })),
+      })),
+    },
+    null,
+    4,
+  );
+}
+
 export type PrusaProjectInput = {
-  /** Source filament index (0-based) → target slot (0-based); null = identity. */
+  /**
+   * Source filament index (0-based) → target (0-based); null = identity. A target at or past the
+   * machine's tool count is a blend: tools + k means `blends[k]`, written as virtual extruder
+   * tools + 1 + k.
+   */
   map: number[] | null;
+  /** ColorMix blends the map may point at. Empty or absent: no FullSpectrum file is written. */
+  blends?: PrusaBlend[];
   /** One colour per target slot. */
   colours: string[];
   /** One filament type per target slot. */
@@ -125,10 +273,11 @@ export function toPrusaProject(
   input: PrusaProjectInput,
 ): { out: Record<string, Uint8Array>; removed: string[]; painted: boolean } {
   const slots = Math.max(1, machine.toolheads);
+  const blends = (input.blends ?? []).slice(0, Math.max(0, MAX_PAINT_STATE - slots));
   const toSlot = (filament: number): number => {
-    // 1-based source filament → 1-based target tool, clamped onto the machine.
+    // 1-based source filament → 1-based target tool or virtual extruder, clamped onto what exists.
     const s = input.map ? (input.map[filament - 1] ?? 0) + 1 : filament;
-    return Math.min(Math.max(1, s), slots);
+    return Math.min(Math.max(1, s), slots + blends.length);
   };
   const baseOf = baseFilaments(entries, readExtruders(entries));
 
@@ -186,5 +335,6 @@ export function toPrusaProject(
     out[path] = strToU8(xml);
   }
   out["Metadata/Slic3r_PE.config"] = strToU8(prusaProjectConfig(machine, input.colours, input.types));
+  if (blends.length) out[FULL_SPECTRUM_FILE] = strToU8(fullSpectrumJson(machine, input.colours, blends));
   return { out, removed, painted };
 }

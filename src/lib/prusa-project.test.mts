@@ -6,7 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { zipSync, unzipSync, strToU8, strFromU8 } from "fflate";
-import { toPrusaProject, prusaProjectConfig } from "./prusa-project.ts";
+import { toPrusaProject, prusaProjectConfig, planColorMix, fullSpectrumJson, FULL_SPECTRUM_FILE } from "./prusa-project.ts";
 import { MACHINES } from "./targets.ts";
 import { cleanThreeMF } from "./convert.ts";
 
@@ -104,4 +104,63 @@ test("cleanThreeMF routes a Bambu file to a Prusa project for the INDX, and nowh
   // A Bambu → Creality (Orca family) retarget is unchanged: same-family reprofile, no Prusa config.
   const k2 = unzipSync(new Uint8Array(await (await cleanThreeMF(file, "creality-k2")).blob.arrayBuffer()));
   assert.equal(k2["Metadata/Slic3r_PE.config"], undefined);
+});
+
+// ── ColorMix (FullSpectrum virtual extruders) ────────────────────────────────────────────────────
+// Checked against PrusaSlicer 2.9.6 by slicing (2026-10-02): with these blends written, a purple face
+// printed from red + blue and the black tool it was assigned to went unused.
+
+const LOADED = ["#FF0000", "#0000FF", "#FFFFFF", "#000000", "#00FF00", "#FFFF00", "#00FFFF", "#FF8000"];
+
+test("a colour with a close spool stays on it; one with none becomes a blend above the tools", () => {
+  const plan = planColorMix(["#FF0000", "#800080"], LOADED, 8);
+  assert.equal(plan.map[0], 0, "red is loaded: no blend");
+  assert.equal(plan.map[1], 8, "purple → the first virtual id after 8 tools");
+  assert.deepEqual(plan.blends[0].components.map((c) => c.tool).sort(), [1, 2], "from red and blue");
+});
+
+test("only PrusaSlicer's dialog ratios are used: 1:1, 1:3, 3:1, 1:1:1", () => {
+  const plan = planColorMix(["#800080", "#C04040", "#4040C0", "#808080", "#7F3F7F"], LOADED, 8);
+  for (const b of plan.blends) {
+    const r = b.components.map((c) => +c.ratio.toFixed(4)).sort();
+    const ok = [[0.5, 0.5], [0.25, 0.75], [0.3333, 0.3333, 0.3333]].some((x) => JSON.stringify(x) === JSON.stringify(r));
+    assert.ok(ok, `ratio ${r}`);
+    assert.ok(Math.abs(b.components.reduce((s, c) => s + c.ratio, 0) - 1) < 1e-9);
+  }
+});
+
+test("identical blends are shared, and the paint encoding caps how many exist", () => {
+  const same = planColorMix(["#800080", "#7F007F"], LOADED, 8);
+  assert.equal(same.blends.length, 1);
+  assert.equal(same.map[0], same.map[1]);
+  // Many distinct mixed colours on an 8T: never more than 8 blends (ids 9..16).
+  const many = Array.from({ length: 30 }, (_, i) => `#${((i * 2654435761) >>> 8 & 0xffffff).toString(16).padStart(6, "0")}`);
+  const capped = planColorMix(many, LOADED, 8);
+  assert.ok(capped.blends.length <= 8);
+  assert.ok(capped.map.every((m) => m < 8 + capped.blends.length));
+});
+
+test("the FullSpectrum JSON has PrusaSlicer's shape: every physical tool, virtual ids after them", () => {
+  const plan = planColorMix(["#800080"], LOADED, 8);
+  const j = JSON.parse(fullSpectrumJson(INDX8, LOADED, plan.blends));
+  assert.equal(j.version, 1);
+  assert.equal(j.physical_extruders.length, 8);
+  assert.deepEqual(j.physical_extruders[1], { id: 2, color: "#0000FF" });
+  assert.equal(j.virtual_extruders[0].id, 9);
+  assert.equal(j.virtual_extruders[0].kind, "fullspectrum");
+  assert.equal(j.virtual_extruders[0].color, undefined, "left to PrusaSlicer's own mixer");
+});
+
+test("cleanThreeMF writes blends only when asked, and only for a ColorMix machine", async () => {
+  const purple = fixture();
+  purple["Metadata/project_settings.config"] = strToU8(JSON.stringify({ filament_colour: ["#FF0000", "#0000FF", "#FFFFFF", "#800080"], filament_type: ["PLA", "PLA", "PLA", "PLA"] }));
+  const file = new File([zipSync(purple)], "m.3mf");
+  const opts = { slots: LOADED, assign: [0, 1, 2, 3] };
+  const off = unzipSync(new Uint8Array(await (await cleanThreeMF(file, "prusa-core-one-indx-8t", opts)).blob.arrayBuffer()));
+  assert.equal(off[FULL_SPECTRUM_FILE], undefined);
+  const on = unzipSync(new Uint8Array(await (await cleanThreeMF(file, "prusa-core-one-indx-8t", { ...opts, colorMix: true })).blob.arrayBuffer()));
+  assert.ok(on[FULL_SPECTRUM_FILE]);
+  assert.equal(paints(on)[3], "6C", "filament 4 (purple) → virtual extruder 9");
+  const mk4 = unzipSync(new Uint8Array(await (await cleanThreeMF(file, "prusa-mk4-mmu3", { ...opts, slots: LOADED.slice(0, 5), colorMix: true })).blob.arrayBuffer()));
+  assert.equal(mk4[FULL_SPECTRUM_FILE], undefined, "MMU3 is not a ColorMix target");
 });

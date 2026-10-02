@@ -232,9 +232,8 @@ export default async function CompareConvertersPage({ params }: { params: Promis
             closest one, blending the ones with no close match. If your colors are set and the file has to fit
             them, that is the better question to start from. Both tools now turn a Bambu or Orca file into a{" "}
             <strong className="text-fg">Prusa CORE One INDX</strong> project with the colors on the right
-            tools, but PaintPort also writes <strong className="text-fg">ColorMix blends</strong> for it, in
-            Prusa&apos;s and Bambu Studio&apos;s mixing formats as well as Snapmaker&apos;s. I don&apos;t blend
-            on the INDX yet; if you want mixed colors there, use it. What it does not do is supply the target
+            tools and <strong className="text-fg">ColorMix blends</strong> for the ones no spool matches.
+            PaintPort also writes Bambu Studio&apos;s mixing format, so if you blend on a Bambu printer, use it. What it does not do is supply the target
             printer&apos;s profile: its README notes that opening the result as a project can put placeholder
             presets in place of yours. It is open source (AGPL-3.0), and the whole tool is one HTML file that
             runs offline.

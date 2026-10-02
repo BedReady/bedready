@@ -82,7 +82,7 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
 // near this many spools; a larger count means a malformed/hostile file.
 const MAX_COLORS = 64;
 import { remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
-import { toPrusaProject } from "./prusa-project";
+import { toPrusaProject, planColorMix, type PrusaBlend } from "./prusa-project";
 import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
 import { insertSwapPauses, buildBandSwapPlan, type SwapInstruction } from "./swap-pauses";
 import { mixRgb } from "./filament-mixer";
@@ -1294,6 +1294,8 @@ export type CleanTarget =
 export type CleanOpts = {
   slots?: string[];
   assign?: number[];
+  /** Prusa CORE One INDX: recreate colours no loaded spool matches as FullSpectrum blends. */
+  colorMix?: boolean;
   mode?: "preserve" | "stamp";
   // For by-layer files with >4 colours: keep ALL colours via M600 spool-swap pauses (experimental)
   // instead of merging down to 4. Ignored unless the file has a per-layer colour sequence.
@@ -1480,7 +1482,18 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
 
   if (toPrusa) {
     const colours = (map ? useColours : srcColours).map(normalizeHex);
-    const project = toPrusaProject(entries, machine, { map, colours, types: map ? useTypes : srcTypes });
+    // ColorMix: colours the planner blends point at virtual extruders; every other colour keeps the
+    // slot the user (or the reducer) assigned it. Same planner the converter's preview uses.
+    let projectMap = map;
+    let blends: PrusaBlend[] = [];
+    if (opts?.colorMix && machine.prusaColorMix && srcColours.length) {
+      const plan = planColorMix(srcColours.map(normalizeHex), colours, slots);
+      if (plan.blends.length) {
+        blends = plan.blends;
+        projectMap = srcColours.map((_, i) => (plan.map[i] >= slots ? plan.map[i] : map ? map[i] : Math.min(i, slots - 1)));
+      }
+    }
+    const project = toPrusaProject(entries, machine, { map: projectMap, blends, colours, types: map ? useTypes : srcTypes });
     const zippedProject = zipSync(project.out, { level: 6 });
     return {
       blob: new Blob([zippedProject.buffer as ArrayBuffer], { type: "model/3mf" }),
