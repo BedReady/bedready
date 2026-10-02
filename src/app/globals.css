@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* A link inside running text is told apart by colour alone unless it is underlined (WCAG 1.4.1); the
+   ones here were `text-violet-… hover:underline`, an underline only after you find it. Links styled
+   as buttons or chips keep their own look. Same rule as makerrun's globals.css. */
+p a:not([class*="btn"]):not([class*="rounded"]),
+li > p a:not([class*="btn"]) {
+  text-decoration-line: underline;
+  text-underline-offset: 2px;
+}
+
 /* Class-based dark mode: `.dark` on <html> flips the theme (set by the no-flash script in layout). */
 @custom-variant dark (&:where(.dark, .dark *));
 
