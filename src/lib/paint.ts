@@ -1,6 +1,73 @@
 // Bambu/OrcaSlicer "paint_color" triangle-paint codec + mesh extraction.
 // Codec verified by round-tripping all distinct codes in real files (0 failures).
-import { unzipSync, strFromU8, strToU8 } from "fflate";
+import { Unzip, UnzipInflate, strFromU8, strToU8 } from "fflate";
+
+/**
+ * Unzip an untrusted archive, stopping once `maxTotal` bytes have REALLY been inflated, or once one
+ * entry passes `maxEntry(name)`.
+ *
+ * unzipSync sizes its output from the zip header's declared size, which whoever made the file wrote,
+ * and inflates the whole stream regardless: an entry declaring 16 bytes over 1 MB of compressed
+ * zeros is 1 GB of work that passes any check on the header (2026-10-02 security review). Streaming
+ * and counting what comes out bounds the work by the cap, whatever the headers say. safeUnzip and
+ * the preview both read archives through this; makerrun runs both on its server too.
+ */
+export function boundedUnzip(
+  buf: Uint8Array,
+  maxTotal: number,
+  maxEntry: (name: string) => number = () => Infinity,
+): { out: Record<string, Uint8Array>; inflated: number; overflow: boolean; entryOverflow: { name: string; size: number } | null } {
+  const out: Record<string, Uint8Array> = {};
+  let inflated = 0;
+  let overflow = false;
+  let entryOverflow: { name: string; size: number } | null = null;
+  let failure: Error | null = null;
+  const uz = new Unzip((file) => {
+    if (overflow || entryOverflow || failure) return;
+    const limit = maxEntry(file.name);
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    file.ondata = (err, chunk, final) => {
+      if (err) {
+        failure = err;
+        return;
+      }
+      if (overflow || entryOverflow) return;
+      size += chunk.length;
+      inflated += chunk.length;
+      if (inflated > maxTotal || size > limit) {
+        if (inflated > maxTotal) overflow = true;
+        else entryOverflow = { name: file.name, size };
+        file.terminate();
+        return;
+      }
+      chunks.push(chunk);
+      if (final) {
+        if (chunks.length === 1) out[file.name] = chunks[0];
+        else {
+          const all = new Uint8Array(size);
+          let o = 0;
+          for (const c of chunks) {
+            all.set(c, o);
+            o += c.length;
+          }
+          out[file.name] = all;
+        }
+      }
+    };
+    file.start();
+  });
+  uz.register(UnzipInflate);
+  // Fed in slices: inflate emits everything one push decodes as ONE chunk, so a single push of the
+  // whole file would inflate the bomb before the count above ever saw it. Deflate expands at most
+  // ~1032:1, so a slice this size can overshoot the cap by ~17 MB at worst.
+  const SLICE = 16 * 1024;
+  for (let o = 0; o < buf.length && !overflow && !entryOverflow && !failure; o += SLICE) {
+    uz.push(buf.subarray(o, o + SLICE), o + SLICE >= buf.length);
+  }
+  if (failure) throw failure;
+  return { out, inflated, overflow, entryOverflow };
+}
 
 export function normalizeHex(h: string): string {
   const s = (h || "").replace("#", "");
@@ -80,7 +147,10 @@ export function applyPrusaVolumePaint(entries: Record<string, Uint8Array>): Reco
         return info.objExtruder;
       };
       let t = -1;
-      return block.replace(/<triangle\b([^>]*?)\s*\/>/g, (tri, attrs: string) => {
+      // Linear on purpose: `([^>]*?)\s*\/>` let both halves match whitespace, so a run of spaces with no
+      // "/>" backtracked quadratically — a 903-byte file held the main thread 15 s (2026-10-02 review).
+      return block.replace(/<triangle\b([^>]*)\/>/g, (tri, rawAttrs: string) => {
+        const attrs = rawAttrs.trimEnd();
         t++;
         if (/paint_color=|mmu_segmentation=/.test(attrs)) return tri; // explicitly painted → leave it
         // Paint every face with its exact filament (no reliance on an ambiguous "base" extruder).
@@ -176,9 +246,13 @@ export type MeshData = {
   plates: { name: string; partIndices: number[] }[];
 };
 
+/** Real bytes one preview may inflate. The same ceiling safeUnzip puts on a conversion. */
+export const MAX_PREVIEW_INFLATED = 800 * 1024 * 1024;
 /** Triangles we actually render. Bigger models are SAMPLED down to this (every Nth triangle) so the
  *  preview shows the shape + colours without the full memory/parse cost — the full model still converts. */
 export const PREVIEW_BUDGET = 2_000_000;
+/** Component-graph nodes one preview may visit, across every pass and instance. See `walk`. */
+export const MAX_WALK_VISITS = 2_000_000;
 /** Above this, even decoding/parsing is impractical (huge XML string) — skip the preview entirely. */
 export const HARD_CAP = 30_000_000;
 export const DEFAULT_MAX_FACES = PREVIEW_BUDGET; // back-compat alias
@@ -274,7 +348,12 @@ export function recipesFromFullSpectrum(entries: Record<string, Uint8Array>): Ma
 }
 
 export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET, hardCap = HARD_CAP): MeshData {
-  const entries = applyPrusaVolumePaint(unzipSync(buf)); // translate Prusa multi-volume → paint
+  const unzipped = boundedUnzip(buf, MAX_PREVIEW_INFLATED);
+  if (unzipped.overflow) {
+    // Too big to inflate is too big to preview: the same "skipped" answer as past hardCap.
+    return { positions: new Float32Array(0), mmPerUnit: 1, faceState: new Uint8Array(0), palette: [], usage: [], statesPresent: [], baseState: 1, triangleCount: 0, skipped: true, sampled: false, parts: [], plates: [] };
+  }
+  const entries = applyPrusaVolumePaint(unzipped.out); // translate Prusa multi-volume → paint
 
   let palette: string[] = [];
   let prusaPalette: string[] = []; // fallback from Slic3r_PE.config (Prusa has no project_settings)
@@ -390,8 +469,14 @@ export function extractMeshFromBuffer(buf: Uint8Array, maxFaces = PREVIEW_BUDGET
     return node.triCount;
   };
   // Walk the object graph from one root, applying composed transforms; calls onLeaf for each mesh.
+  //
+  // The depth guard stops cycles but not fan-out: objects that each reference the next one twice
+  // double the work per level, so 22 levels in a 513-byte file took 41 s and 40 never finished
+  // (2026-10-02 review). A budget on TOTAL visits bounds it; real projects visit thousands of nodes.
+  let visits = 0;
   const walk = (path: string, oid: number, M: number[], depth: number, onLeaf: (node: GeomObject, M: number[], oid: number) => void) => {
     if (depth > 64) return; // cycle / runaway guard
+    if (++visits > MAX_WALK_VISITS) throw new Error("model graph too large to preview");
     const node = files.get(path)?.get(oid);
     if (!node) return;
     if (node.mesh != null) { onLeaf(node, M, oid); return; }

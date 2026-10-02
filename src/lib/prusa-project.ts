@@ -312,7 +312,10 @@ export function toPrusaProject(
       if (!block.includes("<triangle")) return block; // a component wrapper: nothing to paint
       const base = toSlot(baseOf(filePath, oid));
       const stateMap = (s: number) => (s === 0 ? base : toSlot(s));
-      return block.replace(/<triangle\b([^>]*?)\s*\/>/g, (_t, attrs: string) => {
+      // Linear on purpose: `([^>]*?)\s*\/>` let both halves match whitespace, so a run of spaces with no
+      // "/>" backtracked quadratically — a 903-byte file held the main thread 15 s (2026-10-02 review).
+      return block.replace(/<triangle\b([^>]*)\/>/g, (_t, rawAttrs: string) => {
+        const attrs = rawAttrs.trimEnd();
         painted = true;
         const m = /\s(?:paint_color|slic3rpe:mmu_segmentation)="([0-9A-Fa-f]+)"/.exec(attrs);
         const rest = attrs.replace(/\s(?:paint_color|slic3rpe:mmu_segmentation)="[0-9A-Fa-f]*"/g, "");
