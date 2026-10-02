@@ -48,18 +48,25 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
   if (buf.length > MAX_ZIP_COMPRESSED) {
     throw new ThreeMFError("too_large", Math.round(buf.length / MB), Math.round(MAX_ZIP_COMPRESSED / MB));
   }
-  let inflated = 0;
-  let overflow = false;
-  const out = unzipSync(buf, {
-    filter: (f) => {
-      inflated += f.originalSize || 0; // originalSize = uncompressed size, read from the header pre-inflate
-      if (inflated > MAX_ZIP_INFLATED) { overflow = true; return false; }
-      return true;
-    },
-  });
-  // `inflated` kept counting past the cap, so it reports the file's real expanded size, not the cap.
+  // ── COUNT WHAT IS INFLATED, NOT WHAT THE HEADER CLAIMS ──────────────────────────────────────────
+  //
+  // This used to add up each entry's `originalSize` from the zip header and let unzipSync inflate into
+  // a buffer of that size. The header is written by whoever made the file, and fflate does not stop
+  // at the end of a fixed output buffer: it decodes the whole stream and drops the overflow. So an
+  // entry declaring 16 bytes over 1 MB of compressed zeros (1 GB real) passed the cap and burned 35 s
+  // of CPU on the main thread; at the 200 MB compressed cap, hours (2026-10-02 security review).
+  // makerrun runs this same function on its server.
+  //
+  // Streamed instead, counting the bytes actually produced. The moment the total passes the cap (or
+  // one entry passes the V8 string ceiling below) inflation of that entry is terminated, so the work
+  // is bounded by MAX_ZIP_INFLATED of real output whatever the headers say. Checked byte-identical to
+  // unzipSync across 553 real .3mf files before it shipped.
+  const { out, inflated, overflow, entryOverflow } = boundedUnzip(buf, MAX_ZIP_INFLATED, (name) => (TEXT_ENTRY.test(name) ? MAX_TEXT_ENTRY : Infinity));
   if (overflow) {
     throw new ThreeMFError("expands_too_large", Math.round(inflated / MB), Math.round(MAX_ZIP_INFLATED / MB));
+  }
+  if (entryOverflow) {
+    throw new ThreeMFError("expands_too_large", Math.round(entryOverflow.size / MB), Math.round(MAX_TEXT_ENTRY / MB));
   }
 
   // A SINGLE entry can also be too big even when the total is under the cap. Every .model/.config is
@@ -81,7 +88,7 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
 // search are ~O(N⁴) in the colour count, which comes straight from the file). No real file has anywhere
 // near this many spools; a larger count means a malformed/hostile file.
 const MAX_COLORS = 64;
-import { remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
+import { boundedUnzip, remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
 import { toPrusaProject, planColorMix, type PrusaBlend } from "./prusa-project";
 import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
 import { insertSwapPauses, buildBandSwapPlan, type SwapInstruction } from "./swap-pauses";
