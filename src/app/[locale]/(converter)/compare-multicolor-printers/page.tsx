@@ -65,11 +65,12 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
         <code className="text-violet-300">.3mf</code> between them.
       </p>
 
-      <div className="mt-8 overflow-x-auto">
+      {/* Scrolls sideways on a phone; focusable so a keyboard can scroll it too (axe scrollable-region-focusable). */}
+      <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label="Printer comparison table">
         <table className="w-full min-w-[640px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-line text-left">
-              <th className="py-2 pe-3 font-semibold text-fg-subtle"> </th>
+              <th className="py-2 pe-3 font-semibold text-fg-subtle"><span className="sr-only">Feature</span></th>
               <th className="py-2 pe-3 font-semibold text-fg">Snapmaker U1</th>
               <th className="py-2 pe-3 font-semibold text-fg">Bambu X1C</th>
               <th className="py-2 pe-3 font-semibold text-fg">Prusa MK4+MMU3</th>

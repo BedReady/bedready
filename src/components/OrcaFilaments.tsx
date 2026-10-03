@@ -384,9 +384,10 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
         </select>
       </div>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs text-fg-subtle">
+        {/* The grid's heading, so the card titles (h3) sit under an h2 rather than straight under the h1. */}
+        <h2 className="text-xs font-normal text-fg-subtle">
           {t("profileCount", { count: shown.length })} · {t("builtFor", { machine: manifest.machine })}
-        </p>
+        </h2>
         {shown.length > 1 && (
           <button
             onClick={installAll}

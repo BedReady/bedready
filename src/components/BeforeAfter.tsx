@@ -76,12 +76,14 @@ export default function BeforeAfter() {
       </div>
       <div className="mt-3 flex items-center justify-center gap-2 border-t border-line pt-2.5">
         <span className="eyebrow">{t("slotsLabel")}</span>
-        {SLOTS.map((c, i) => (
+        {SLOTS.map((c) => (
           <span
             key={c}
             className="h-3.5 w-7 rounded border border-line"
             style={{ background: c }}
-            aria-label={`${i + 1}`}
+            // Decoration beside the "U1 slots" label. aria-label on a span with no role is not
+            // announced anyway (axe aria-prohibited-attr); hide it rather than name four colours "1"–"4".
+            aria-hidden="true"
           />
         ))}
       </div>
