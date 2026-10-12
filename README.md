@@ -38,6 +38,7 @@ repository that reaches a server:
 | `/api/convert` | the opt-in server fallback described above |
 | `/api/waitlist` | the notify-me box on the capture panel |
 | `/api/v1/sponsor` | who is sponsoring the site right now, if anyone. Read-only and cacheable |
+| `/api/v1/designs` | after a conversion: MakerRun files already verified for the printer you converted for. Read-only |
 
 None require an account. There is **no database client, no authentication and no Supabase
 dependency anywhere in this repository** — `src/lib/convert-backend-free.test.mts` fails the build
