@@ -57,6 +57,10 @@
  *                                holds no credential to read it, so the one public row comes over
  *                                HTTP. Anonymous, cacheable, decorative — the converter converts
  *                                perfectly well when it fails, which is why it may be added at all.
+ *   · `/api/v1/designs`        — verified MakerRun files for the machine just converted for, on the
+ *                                done screen. Added 2026-10-12, read-only, `?verified=true`. Same
+ *                                terms as the sponsor: anonymous, and the strip simply does not
+ *                                render when it fails. See verified-for-printer.ts.
  *
  * This list was three entries long when it was written, and `convert-backend-free.test.mts` caught
  * the other two the same hour. That is the argument for the test, not a footnote to it.
@@ -66,7 +70,8 @@ export type ConvertApiPath =
   | "/api/report-conversion"
   | "/api/convert"
   | "/api/waitlist"
-  | "/api/v1/sponsor";
+  | "/api/v1/sponsor"
+  | "/api/v1/designs";
 
 /**
  * Where the converter's backend lives.

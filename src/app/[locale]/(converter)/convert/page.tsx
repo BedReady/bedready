@@ -74,6 +74,7 @@ const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
 });
 import ShareBedReady from "@/components/ShareBedReady";
 import ContributeToLibrary from "@/components/ContributeToLibrary";
+import VerifiedForYourPrinter from "@/components/VerifiedForYourPrinter";
 import ConvertCapture from "@/components/ConvertCapture";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
@@ -2635,6 +2636,9 @@ export default function ConvertPage() {
         </div>
       )}
       {status === "done" && <ContributeToLibrary />}
+      {status === "done" && (
+        <VerifiedForYourPrinter printerModel={MACHINES[targetId]?.printerModel} printerName={MACHINES[targetId]?.name} />
+      )}
       {status === "done" && <ShareBedReady />}
       {status === "done" && <ConvertCapture />}
       {status === "done" && (
