@@ -697,7 +697,9 @@ function renamePrusaPaint(xml: string): string {
 // Rewriting the <metadata name="Application"> value to an OrcaSlicer- string makes the converted file
 // be trusted as a native project. Verified against OrcaSlicer/CrealityPrint Format/bbs_3mf.cpp.
 const ORCA_GENERATOR = "OrcaSlicer-2.1.1";
-const TRUSTED_GENERATORS = /^(BambuStudio-|OrcaSlicer-|SnapmakerOrca-)/;
+// Snapmaker Orca 2.4 signs its own saves `Snapmaker_Orca-2.4.0`, with an underscore. Without that
+// spelling here, a file that had already been through Snapmaker Orca got its producer rewritten.
+const TRUSTED_GENERATORS = /^(BambuStudio-|OrcaSlicer-|SnapmakerOrca-|Snapmaker_Orca-)/;
 function applicationValue(xml: string): string | null {
   const m = /<metadata\s+name="Application"[^>]*>([^<]*)<\/metadata>/.exec(xml);
   return m ? m[1].trim() : null;
