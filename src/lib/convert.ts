@@ -2,6 +2,7 @@
 // The three-dependent helpers (modelSizeMM, threeMFToSTL) live in ./convert-mesh.
 import { unzipSync, zipSync, strToU8, strFromU8 } from "fflate";
 import { U1, MACHINES, configFamily, type Machine, type Flavour } from "./targets";
+import { applyU1FilamentPreset } from "./u1-filament-presets";
 
 // A .3mf is an untrusted zip. Guard against decompression bombs / oversized input BEFORE inflating it
 // into memory: cap the compressed input, and (via the filter, which sees each entry's uncompressed size
@@ -444,6 +445,11 @@ export function filamentPresetId(type: string, brand: FilamentBrand = "source", 
   return sourceId ?? `Generic ${t}`;
 }
 
+/** The U1 and its nozzle variants: the machines built from `u1-profile.json`, which is Generic ABS per slot. */
+function isU1Reference(machine: Machine): boolean {
+  return machine.id === U1.id || machine.id.startsWith(`${U1.id}-`);
+}
+
 /** Build a complete U1 project_settings.config from the bundled profile + given colors/types. */
 function buildU1Config(colors: string[], types: string[], hasVLH = false, diff?: DiffReport, machine: Machine = U1, brand: FilamentBrand = "source"): string {
   const cfg = JSON.parse(JSON.stringify(machine.profile)) as Record<string, unknown[]>;
@@ -454,19 +460,28 @@ function buildU1Config(colors: string[], types: string[], hasVLH = false, diff?:
   const sid: string[] = [];
   for (let i = 0; i < 4; i++) {
     colour.push(normalizeHex(colors[i] ?? (cfg.filament_colour[i] as string) ?? "#FFFFFF"));
-    const t = types[i] ?? (cfg.filament_type[i] as string) ?? "PLA";
+    // A slot the source says nothing about takes the print's first material, not the reference's.
+    // The reference's is ABS (see u1-filament-presets.ts), so a one-colour PLA print used to open
+    // with three "Generic ABS" slots beside it.
+    const known = types[i] ?? types[0];
+    const t = known ?? (cfg.filament_type[i] as string) ?? "PLA";
     type.push(t);
     // Stamp mode has no author preset to fall back on, so "source" keeps the reference profile's own
     // name — the behaviour every stamp produced before brand modes existed.
     sid.push(
       brand === "source"
-        ? (types[i] ? baseId.replace(/^Generic\s+\S+/, `Generic ${t}`) : (cfg.filament_settings_id[i] as string))
+        ? (known ? baseId.replace(/^Generic\s+\S+/, `Generic ${t}`) : (cfg.filament_settings_id[i] as string))
         : filamentPresetId(t, brand),
     );
   }
   cfg.filament_colour = colour;
   cfg.filament_type = type;
   cfg.filament_settings_id = sid;
+  // Renaming a slot is not enough: the reference's temperatures, bed, cooling and flow are ABS's, and
+  // a slot now called "Generic PLA" printed at 270 °C on a 90 °C bed. Each slot takes its material's
+  // values. Only on the U1 and its nozzle variants (`u1-0.6` …), which share its reference; these are
+  // the 0.4 mm presets, so a variant keeps the reference's own nozzle scaling and nothing finer.
+  if (isU1Reference(machine)) for (let i = 0; i < 4; i++) applyU1FilamentPreset(cfg, i, type[i]);
   if (hasVLH) applyVlhGuard(cfg as Record<string, unknown>, diff);
   return JSON.stringify(cfg);
 }
