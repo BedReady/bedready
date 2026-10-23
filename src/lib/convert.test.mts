@@ -603,7 +603,7 @@ test("foreign producer (Creality_Print) Application string is rewritten to OrcaS
 });
 
 test("native OrcaSlicer/Bambu producer is left untouched", async () => {
-  for (const app of ["OrcaSlicer-2.1.1", "BambuStudio-01.09.00", "SnapmakerOrca-1.0.0"]) {
+  for (const app of ["OrcaSlicer-2.1.1", "BambuStudio-01.09.00", "SnapmakerOrca-1.0.0", "Snapmaker_Orca-2.4.0"]) {
     const f = file3mf({ "3D/3dmodel.model": modelWithApp(app), "Metadata/project_settings.config": project() });
     const r = await cleanThreeMF(f, "u1");
     assert.equal(appOf(await modelOf(r.blob)), app);
