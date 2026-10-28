@@ -1,10 +1,13 @@
-// Popup: drag-drop / pick any .3mf and convert it for the U1. The always-works path (independent of
+// Popup: drag-drop / pick any .3mf and convert it for the printer picked at the top (the U1 by default),
+// and set what the background does with downloads (settings.ts). The always-works path (independent of
 // site selectors). Reuses the website's conversion core, so behaviour matches /convert exactly.
 //
 // For a PAINTED file with >4 colours it offers Full Spectrum — keep every colour by dithering mixes of
 // the 4 heads (2- and 3-filament) — instead of silently merging the extras into their nearest match.
 // Simple files (≤4 colours or unpainted) stay drop-and-go: analyse, convert, done.
-import { analyzeThreeMF, cleanThreeMF, convertWarnings, download, isWebKit, warningTextEn, OVER_FOUR_KEYS, type Analysis, type ConvertWarning } from "../../src/lib/convert";
+import { analyzeThreeMF, cleanThreeMF, convertWarnings, detectProfile, download, isWebKit, warningTextEn, OVER_FOUR_KEYS, type Analysis, type ConvertWarning } from "../../src/lib/convert";
+import { configFamily, U1_NOZZLES, U1_TESTED_NOZZLE } from "../../src/lib/targets";
+import { TARGETS, loadSettings, saveSettings, machineOf, quickOpts, shortName, suffixOf, alreadyFor, DEFAULTS, type Settings } from "./settings";
 
 declare const browser: any;
 declare const chrome: any;
@@ -68,10 +71,70 @@ async function saveResult(blob: Blob, filename: string): Promise<void> {
 const input = document.getElementById("file") as HTMLInputElement;
 const status = document.getElementById("status") as HTMLElement;
 const opts = document.getElementById("opts") as HTMLElement;
+const targetSel = document.getElementById("target") as HTMLSelectElement;
+const nozzleSel = document.getElementById("nozzle") as HTMLSelectElement;
+const nozzleField = document.getElementById("nozzle-field") as HTMLElement;
+const nozzleNote = document.getElementById("nozzle-note") as HTMLElement;
+const autoBox = document.getElementById("auto") as HTMLInputElement;
+const keepBox = document.getElementById("keep") as HTMLInputElement;
+const prefs = document.getElementById("prefs") as HTMLElement;
+const title = document.getElementById("title") as HTMLElement;
+const siteLink = document.getElementById("site") as HTMLAnchorElement;
+
+let settings: Settings = { ...DEFAULTS };
+
+// ---------- settings UI ----------
+// Grouped by vendor, as the website's picker is; the list is the engine's own registry (settings.ts).
+function fillPicker(): void {
+  const groups = new Map<string, typeof TARGETS>();
+  for (const t of TARGETS) groups.set(t.vendor, [...(groups.get(t.vendor) ?? []), t]);
+  for (const [vendor, list] of groups) {
+    const g = document.createElement("optgroup");
+    g.label = vendor;
+    for (const t of list) g.append(new Option(t.label, t.id));
+    targetSel.append(g);
+  }
+  for (const n of U1_NOZZLES) nozzleSel.append(new Option(n === U1_TESTED_NOZZLE ? `${n} mm (tested)` : `${n} mm`, String(n)));
+}
+
+function reflect(): void {
+  targetSel.value = settings.target;
+  nozzleSel.value = String(settings.nozzle);
+  autoBox.checked = settings.autoConvert;
+  keepBox.checked = settings.keepOriginal;
+  nozzleField.hidden = settings.target !== "u1";
+  // Say which nozzle values are arithmetic rather than a real export — the site's rule (targets.ts).
+  nozzleNote.hidden = settings.nozzle === U1_TESTED_NOZZLE;
+  nozzleNote.textContent = `Scaled from the tested ${U1_TESTED_NOZZLE} mm profile — nobody has printed this one yet.`;
+  const m = machineOf(settings);
+  title.textContent = `3MF → ${settings.target === "generic" ? "any slicer" : m?.name.replace(/\s*\(.*\)$/, "") ?? shortName(settings)}`;
+  siteLink.href = `https://bedready.io/convert?to=${encodeURIComponent(settings.target)}`;
+}
+
+async function update(patch: Partial<Settings>): Promise<void> {
+  settings = { ...settings, ...patch };
+  reflect();
+  opts.replaceChildren(); // a half-made Full Spectrum choice was for the old printer
+  await saveSettings(settings);
+}
+
+fillPicker();
+targetSel.addEventListener("change", () => void update({ target: targetSel.value as Settings["target"] }));
+nozzleSel.addEventListener("change", () => void update({ nozzle: Number(nozzleSel.value) }));
+autoBox.addEventListener("change", () => void update({ autoConvert: autoBox.checked }));
+keepBox.addEventListener("change", () => void update({ keepOriginal: keepBox.checked }));
+// No downloads API (Safari) → interception cannot run, so its switches would promise nothing.
+prefs.hidden = !api?.downloads;
+reflect();
+void (async () => {
+  settings = await loadSettings();
+  reflect();
+})();
 
 type CleanResult = Awaited<ReturnType<typeof cleanThreeMF>>;
 
-function resultText(r: CleanResult, fullSpectrum: boolean, warns: ConvertWarning[]): string {
+function resultText(r: CleanResult, fullSpectrum: boolean, warns: ConvertWarning[], a?: Analysis, already = false): string {
+  if (settings.target !== "u1") return retargetText(a, warns, already);
   const mixes = r.diff?.fullSpectrumMixes ?? 0;
   const headline =
     fullSpectrum && mixes > 0
@@ -79,6 +142,7 @@ function resultText(r: CleanResult, fullSpectrum: boolean, warns: ConvertWarning
       : `✓ Done — ${r.colorsKept}/${r.colorsTotal} colours, ${r.preserved ? "kept the creator's settings" : "tested U1 profile"}.`;
   return [
     headline,
+    already ? "This file was already set up for the U1 — re-converting it changed little." : "",
     r.diff?.bedShift ? `Nudged onto the U1 bed (+${r.diff.bedShift.dx}, +${r.diff.bedShift.dy}mm).` : "",
     r.diff && r.diff.clamped.length ? `Capped ${r.diff.clamped.length} speed setting(s) to U1 limits.` : "",
     r.diff?.vlhGuard ? "Disabled prime tower (variable layer height)." : "",
@@ -93,17 +157,38 @@ async function runConvert(f: File, fullSpectrum: boolean, analysis?: Analysis): 
   status.textContent = "Converting in your browser…";
   try {
     const a = analysis ?? (await analyzeThreeMF(f));
-    const r = await cleanThreeMF(f, "u1", { mode: "preserve", ...(fullSpectrum ? { fullSpectrum: true } : {}) });
-    await saveResult(r.blob, f.name.replace(/\.3mf$/i, "") + ".u1.3mf");
+    const info = await detectProfile(f).catch(() => null);
+    const already = !!info && alreadyFor(settings, info);
+    // The popup asks before Full Spectrum; quickOpts turns it on unconditionally, so override it here.
+    const o = settings.target === "u1" ? { ...quickOpts(settings), fullSpectrum } : quickOpts(settings);
+    if (!o.fullSpectrum) delete o.fullSpectrum;
+    const r = await cleanThreeMF(f, settings.target, o);
+    await saveResult(r.blob, f.name.replace(/\.3mf$/i, "") + suffixOf(settings.target));
     let warns = convertWarnings(a);
     // When Full Spectrum actually kept every colour, drop the "extra colours merge" advisory — it's the
     // no-mixing case's warning and would contradict the "all N colours kept" headline.
     if (fullSpectrum && (r.diff?.fullSpectrumMixes ?? 0) > 0)
       warns = warns.filter((w) => !OVER_FOUR_KEYS.includes(w.key));
-    status.textContent = resultText(r, fullSpectrum, warns);
+    status.textContent = resultText(r, fullSpectrum, warns, a, already);
   } catch (e) {
     status.textContent = "Error: " + (e instanceof Error ? e.message : String(e));
   }
+}
+
+// A non-U1 target: same slicer family → the printer profile was rewritten; otherwise the file became a
+// clean generic 3MF, because a Bambu config means nothing to PrusaSlicer. Say which, as /convert does.
+function retargetText(a: Analysis | undefined, warns: ConvertWarning[], already: boolean): string {
+  const m = machineOf(settings);
+  const n = a?.colors.length ?? 0;
+  const lines: string[] = [];
+  if (!m) lines.push("✓ Done — a clean generic 3MF: geometry and colours kept, no printer settings.");
+  else if (a?.flavour && configFamily(a.flavour) === configFamily(m.flavour)) lines.push(`✓ Done — printer profile rewritten for the ${m.name}.`);
+  else lines.push(`✓ Done — saved as a clean 3MF for the ${m.name}'s slicer (the source was made for a different slicer, so its print settings were dropped).`);
+  if (already) lines.push(`This file was already set up for the ${m?.name ?? "target"} — re-converting it changed little.`);
+  if (m && n > m.toolheads) lines.push(`⚠ This file uses ${n} colours and the ${m.name} holds ${m.toolheads} — assign the extras in your slicer.`);
+  // The over-four advisories are U1 sentences (4 heads); everything else applies to any printer.
+  lines.push(...warns.filter((w) => !OVER_FOUR_KEYS.includes(w.key)).map((w) => `⚠ ${warningTextEn(w)}`));
+  return lines.join("\n");
 }
 
 // >4 painted colours → let the user choose Full Spectrum (default on: keep all colours) vs merge.
@@ -111,19 +196,17 @@ function offerFullSpectrum(f: File, analysis: Analysis, colorCount: number): voi
   status.textContent = "";
   opts.innerHTML = "";
   const box = document.createElement("div");
-  box.style.cssText = "margin-top:12px;padding:12px;border:1px solid #334155;border-radius:10px;background:#111c33";
+  box.className = "choice";
 
   const info = document.createElement("p");
-  info.style.cssText = "margin:0 0 8px;font-size:12px;color:#cbd5e1";
   info.textContent = `This file has ${colorCount} painted colours — more than the U1's 4 slots.`;
   box.appendChild(info);
 
   const lbl = document.createElement("label");
-  lbl.style.cssText = "display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#e2e8f0;cursor:pointer";
+  lbl.className = "toggle";
   const cb = document.createElement("input");
   cb.type = "checkbox";
   cb.checked = true;
-  cb.style.marginTop = "2px";
   const span = document.createElement("span");
   span.textContent =
     "Keep every colour with Full Spectrum (mix the 4 filaments). Uncheck to merge the least-used extras into their nearest colour.";
@@ -132,8 +215,7 @@ function offerFullSpectrum(f: File, analysis: Analysis, colorCount: number): voi
 
   const btn = document.createElement("button");
   btn.textContent = "Convert for U1";
-  btn.style.cssText =
-    "margin-top:10px;width:100%;padding:8px;border:0;border-radius:8px;background:#f97316;color:#fff;font-size:13px;font-weight:600;cursor:pointer";
+  btn.className = "btn";
   btn.addEventListener("click", () => void runConvert(f, cb.checked, analysis));
   box.appendChild(btn);
 
@@ -153,8 +235,9 @@ async function handle(f: File): Promise<void> {
   } catch {
     return runConvert(f, false); // unreadable metadata → just do the plain convert
   }
-  // Only a painted file with >4 colours has a real choice to make; everything else is drop-and-go.
-  if (analysis.painted && analysis.colors.length > 4) offerFullSpectrum(f, analysis, analysis.colors.length);
+  // Only a painted file with >4 colours, going to the U1 (the one target with Full Spectrum), has a real
+  // choice to make; everything else is drop-and-go.
+  if (settings.target === "u1" && analysis.painted && analysis.colors.length > 4) offerFullSpectrum(f, analysis, analysis.colors.length);
   else await runConvert(f, false, analysis);
 }
 

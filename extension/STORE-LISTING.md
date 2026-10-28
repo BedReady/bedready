@@ -4,7 +4,9 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- Published version: **0.2.0** · in this repo: **0.3.0** — an update is pending upload.
+- Published version: **0.2.0** · in this repo: **0.4.0** — an update is pending upload (0.3.0 was never
+  uploaded, so 0.4.0 carries both). 0.4.0 adds the `storage` permission; Chrome shows no install
+  warning for it, so existing users are not asked to re-approve.
 
 Firefox is a separate submission with its own artifact; see "Package". Safari is its own store
 entirely — `STORE-LISTING-SAFARI.md`.
@@ -66,6 +68,11 @@ It runs ENTIRELY in your browser — your file is never uploaded to a server. Fr
 Prefer not to install? The same converter, plus a library of files with profiles tested to print on
 a U1, is free at bedready.io.
 
+Not on a U1? Pick your printer in the toolbar button — Bambu Lab X1 Carbon, P1S and A1, Prusa MK4/MK4S
+with MMU3 and CORE One INDX, Creality K2 Plus — or save a clean generic 3MF for any slicer. U1 owners
+can also pick their nozzle (0.2, 0.4, 0.6 or 0.8 mm). Files already set up for your printer are left
+exactly as downloaded, and you can switch automatic conversion off or keep the original too.
+
 Works on MakerWorld, Bambu Lab, Printables, and Thingiverse.
 
 Not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or MakerWorld.
@@ -75,11 +82,15 @@ Not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or Maker
 ## Privacy tab (required to pass review)
 
 **Single purpose:**
-Convert .3mf 3D-print files downloaded from model sites so they print correctly on the Snapmaker U1.
+Convert .3mf 3D-print files downloaded from model sites so they print correctly on the user's printer
+(the Snapmaker U1 by default).
 
 **Permission justifications:**
 - **downloads** — to read the .3mf the user is downloading and save the converted file back.
 - **notifications** — to tell the user when a conversion finishes.
+- **storage** — to remember the user's choices in the toolbar popup (which printer and nozzle to
+  convert for, whether to convert downloads automatically, whether to keep the original). Stored only
+  in this browser; nothing else is stored and nothing leaves the device.
 - **host permissions (makerworld.com, bblmw.com, printables.com, thingiverse.com)** — the content
   script only runs on these model sites to detect .3mf downloads and offer in-page conversion. The
   extension does nothing on any other site.

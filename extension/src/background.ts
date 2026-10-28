@@ -1,12 +1,13 @@
 // Background download interception (the primary, selector-free mechanism). Detects a .3mf download from
 // MakerWorld / Printables / Thingiverse, converts it in-place using the SAME engine as the site (nothing
-// is uploaded), and saves the U1-ready file. Works regardless of how the page's download button is built.
+// is uploaded), and saves the file for the printer picked in the popup (settings.ts; the U1 by default). Works regardless of how the page's download button is built.
 // Runs as a service worker in Chrome and as a non-persistent event page in Firefox (see the two manifests).
 //
 // ⚠️ UNTESTED in a live browser — verify manually: load unpacked, download a real .3mf, then open the
 // background console (Chrome: chrome://extensions → "service worker"; Firefox: about:debugging → Inspect)
 // to see the [BedReady] logs / any errors.
-import { cleanThreeMF } from "../../src/lib/convert";
+import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
+import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor } from "./settings";
 
 // Cross-browser API handle: Firefox exposes `browser` (promise-based); Chrome MV3's `chrome` is also
 // promise-based. `browser ?? chrome` yields a promise-returning API in both, so `await`/`.catch()` work.
@@ -76,7 +77,7 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
   const base = (item.filename || url).split(/[\\/?#]/).pop() || "model.3mf";
   // Our own converted output ends in .u1.3mf and is saved via a data: URL (no site referrer, so the
   // check below would already skip it) — but guard explicitly so we can never loop on our own download.
-  if (/\.u1\.3mf$/i.test(base)) return;
+  if (isOurOutput(base)) return;
   if (!is3mf(base) && !is3mf(url)) return;
   // Only act on downloads tied to the target sites, so we don't touch unrelated .3mf. Check every signal
   // we have — the referrer, the pre-redirect URL (item.url, e.g. thingiverse.com/download:..), and the
@@ -89,6 +90,10 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
   const fromSite = SITE_RE.test(refHost) || SITE_RE.test(srcHost) || SITE_RE.test(urlHost);
   const fromCdn = CDN_RE.test(srcHost) || CDN_RE.test(urlHost);
   if (!fromSite && !fromCdn) return;
+  // Read on every event, never cached in a variable: a service worker is torn down between downloads.
+  const settings = await loadSettings();
+  if (!settings.autoConvert) return; // the popup's "Convert downloads automatically" switch is off
+  const who = shortName(settings);
 
   const key = url.split("?")[0]; // ignore expiring query params
   if (inFlight.has(key)) {
@@ -97,8 +102,8 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
   }
   inFlight.add(key);
   setBadge("…", "#f97316"); // instant feedback: we caught the download and are working on it
-  toast("working", `Converting ${base} for your U1… the U1-ready file will download automatically.`);
-  notify("BedReady — converting…", `Making ${base} U1-ready in your browser. The converted file will download automatically.`);
+  toast("working", `Converting ${base} for your ${who}… the converted file will download automatically.`);
+  notify("BedReady — converting…", `Converting ${base} for your ${who} in your browser. The converted file will download automatically.`);
   console.log("[BedReady] intercepting .3mf:", url, "(from", from + ")");
   try {
     // NB: we do NOT cancel the user's original download yet. We convert first and only cancel it on
@@ -113,10 +118,19 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     if (!res.ok) throw new Error("download fetch " + res.status);
     const name = base.toLowerCase().endsWith(".3mf") ? base : base + ".3mf";
     const file = new File([await res.arrayBuffer()], name);
+    // Already set up for this printer (a creator who published a U1 profile, say) → converting again
+    // would only rewrite what is there. Leave the user's own download untouched and say so.
+    const info = await detectProfile(file).catch(() => null);
+    if (info && alreadyFor(settings, info)) {
+      setBadge("✓", "#16a34a", 6000);
+      toast("done", `${base} is already set up for the ${who} — kept as downloaded.`);
+      console.log("[BedReady] already for target, left alone:", base, info.printer);
+      return;
+    }
     // Interception has no UI to ask, so default to keeping every colour: pass fullSpectrum, which the
     // engine applies ONLY to painted files with >4 colours (dithered 2-/3-filament mixes of the 4 heads)
     // and ignores otherwise. So ≤4-colour and unpainted files convert exactly as before.
-    const out = await cleanThreeMF(file, "u1", { mode: "preserve", fullSpectrum: true });
+    const out = await cleanThreeMF(file, settings.target, quickOpts(settings));
     const outBytes = new Uint8Array(await out.blob.arrayBuffer());
     // A data: URL holds the output ~1.33× as base64; guard very large outputs rather than risk a failed/
     // memory-heavy save. Leave the original download in place and point to the popup.
@@ -127,14 +141,14 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
       return;
     }
     // Success — now replace the original with the converted file.
-    await api.downloads.cancel(item.id).catch(() => {});
-    const outName = name.replace(/\.3mf$/i, "") + ".u1.3mf";
+    if (!settings.keepOriginal) await api.downloads.cancel(item.id).catch(() => {});
+    const outName = name.replace(/\.3mf$/i, "") + suffixOf(settings.target);
     await api.downloads.download({ url: bytesToDataUrl(outBytes), filename: outName, saveAs: false });
     const fsMixes = out.diff?.fullSpectrumMixes ?? 0;
     const colorNote = fsMixes > 0 ? ` Kept all ${out.colorsTotal} colours via Full Spectrum.` : "";
-    setBadge("✓U1", "#16a34a", 6000);
-    toast("done", `Converted — ${outName} saved to Downloads, ready to slice on your U1.${colorNote}`);
-    notify("BedReady ✓ Converted", `${outName} saved to Downloads — ready to slice on your U1.${colorNote}`);
+    setBadge("✓", "#16a34a", 6000);
+    toast("done", `Converted — ${outName} saved to Downloads, ready to slice for your ${who}.${colorNote}`);
+    notify("BedReady ✓ Converted", `${outName} saved to Downloads — ready to slice for your ${who}.${colorNote}`);
     console.log("[BedReady] converted →", outName);
   } catch (e) {
     // We never cancelled the original, so the user still has their real .3mf — just point to the popup.

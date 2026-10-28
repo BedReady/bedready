@@ -65,19 +65,57 @@
       a:hover { color: var(--action-hover); }
       :where(a, label, input):focus-visible { outline: 2px solid var(--action); outline-offset: 2px; border-radius: 4px; }
       @media (prefers-reduced-motion: reduce) { label.drop { transition: none; } }
+      :root { color-scheme: light dark; accent-color: var(--action); }
+      /* `hidden` loses to any author `display` rule (.field is a grid) — make it win, for every element. */
+      [hidden] { display: none !important; }
+      /* Settings: which printer, and what happens on a download. Native controls on purpose — a
+         <select> and checkboxes keep keyboard, screen-reader and OS behaviour with no script. */
+      .field { display: grid; gap: 4px; margin: 0 0 10px; font-size: 12px; color: var(--fg-muted); }
+      .field select {
+        font: inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line);
+        border-radius: 8px; padding: 6px 8px;
+      }
+      .field select:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+      .note { margin: 4px 0 0; font-size: 11px; color: var(--fg-subtle); }
+      .toggle { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 6px; font-size: 12px; color: var(--fg-muted); cursor: pointer; }
+      .toggle input { margin: 2px 0 0; flex: none; }
+      .toggle input:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+      details.prefs { margin: 0 0 12px; }
+      details.prefs summary { cursor: pointer; font-size: 12px; color: var(--fg-subtle); margin-bottom: 6px; }
+      /* The Full Spectrum choice and its button, in the same tokens as everything else. */
+      .choice { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+      .choice p { margin: 0 0 8px; font-size: 12px; color: var(--fg-muted); }
+      .btn {
+        margin-top: 10px; width: 100%; padding: 8px; border: 0; border-radius: 8px; background: var(--action);
+        color: #fff; font: 600 13px/1.4 inherit; cursor: pointer;
+      }
+      .btn:hover { background: var(--action-hover); }
+      .btn:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
     </style>
   </head>
   <body>
     <div class="rule"></div>
-    <h1>3MF → Snapmaker U1</h1>
+    <h1 id="title">3MF → Snapmaker U1</h1>
     <p class="sub">100% in your browser — nothing is uploaded.</p>
+    <label class="field">Convert for
+      <select id="target"></select>
+    </label>
+    <label class="field" id="nozzle-field">Nozzle
+      <select id="nozzle"></select>
+      <span class="note" id="nozzle-note" hidden></span>
+    </label>
+    <details class="prefs" id="prefs">
+      <summary>On download</summary>
+      <label class="toggle"><input type="checkbox" switch id="auto" /> <span>Convert .3mf downloads from MakerWorld, Printables and Thingiverse automatically</span></label>
+      <label class="toggle"><input type="checkbox" switch id="keep" /> <span>Keep the original download as well</span></label>
+    </details>
     <label class="drop" id="drop">
       Drop a .3mf here, or click to choose
       <input id="file" type="file" accept=".3mf" />
     </label>
     <div id="opts"></div>
     <div id="status"></div>
-    <p class="sub" style="margin-top: 12px">Full preview &amp; color editor at <a href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
+    <p class="sub" style="margin-top: 12px">Full preview &amp; color editor at <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
     <script src="dist/popup.js"></script>
   </body>
 </html>

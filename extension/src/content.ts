@@ -1,11 +1,12 @@
 // Content script: on MakerWorld / Printables / Thingiverse, find .3mf download links and add a
-// "→ U1" button that converts the file in-page (nothing uploaded) and downloads the U1-ready result.
+// "→ <printer>" button that converts the file in-page (nothing uploaded) for the printer picked in the popup.
 // This reuses the SAME conversion core as the website (../../src/lib/convert) — bundled in by esbuild.
 //
 // ⚠️ Selectors below catch direct <a href="*.3mf"> links. Several of these sites trigger downloads via
 // JS/buttons rather than plain anchors — those need per-site selector tuning (see README). The popup
 // (drag-drop a downloaded file) is the always-works fallback.
 import { cleanThreeMF, download } from "../../src/lib/convert";
+import { DEFAULTS, loadSettings, onSettingsChanged, quickOpts, shortName, suffixOf, type Settings } from "./settings";
 // import { initMakerWorldColors } from "./makerworld-colors"; // paused — see note at the call site below
 
 // Cross-browser: Firefox exposes `browser`, Chrome exposes `chrome`; either works for runtime.onMessage.
@@ -55,6 +56,16 @@ try {
   });
 } catch { /* not in an extension context (e.g. the smoke-test page) */ }
 
+// The printer the popup picked. Loaded once and kept current, so every button on the page says the
+// same target and a change in the popup relabels them without a reload.
+let settings: Settings = { ...DEFAULTS };
+const label = () => `→ ${shortName(settings)}`;
+function relabel(): void {
+  document.querySelectorAll<HTMLButtonElement>("button[data-bedready]").forEach((b) => {
+    if (b.dataset.state === "idle") b.textContent = label();
+  });
+}
+
 async function convertUrl(url: string, name: string): Promise<void> {
   const res = await fetch(url, { credentials: "same-origin" });
   if (!res.ok) throw new Error(`download failed (${res.status})`);
@@ -62,8 +73,8 @@ async function convertUrl(url: string, name: string): Promise<void> {
   const file = new File([await res.arrayBuffer()], fname);
   // One-click button, no UI to ask — keep every colour by default (Full Spectrum applies only to painted
   // files with >4 colours, no-op otherwise), matching the download-interception path.
-  const out = await cleanThreeMF(file, "u1", { mode: "preserve", fullSpectrum: true });
-  download(out.blob, fname.replace(/\.3mf$/i, "") + ".u1.3mf");
+  const out = await cleanThreeMF(file, settings.target, quickOpts(settings));
+  download(out.blob, fname.replace(/\.3mf$/i, "") + suffixOf(settings.target));
 }
 
 function injectButton(anchor: HTMLAnchorElement): void {
@@ -73,8 +84,10 @@ function injectButton(anchor: HTMLAnchorElement): void {
   // No emoji. This button is the most-seen piece of the product — it appears on MakerWorld,
   // Printables and Thingiverse, pages we do not control — and `✨` rendered as a different glyph on
   // every OS. The site dropped 203 emoji on 2026-08-22; this was the one still out in the world.
-  btn.textContent = "→ U1";
-  btn.title = "Convert this .3mf for the Snapmaker U1 — in your browser, nothing uploaded";
+  btn.dataset.bedready = "1";
+  btn.dataset.state = "idle";
+  btn.textContent = label();
+  btn.title = "Convert this .3mf for your printer (pick it in the BedReady toolbar button) — in your browser, nothing uploaded";
   // SOLID violet, not a tint. The old button was `#f97316` text on a 10% orange wash, which assumes
   // a light host page: on a dark one it was orange-on-near-black at roughly 3:1. A filled
   // violet-600 with white text is 5.70:1 against its own fill and therefore legible on ANY
@@ -89,10 +102,11 @@ function injectButton(anchor: HTMLAnchorElement): void {
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btn.dataset.state = "busy";
     btn.textContent = "converting…";
     try {
       await convertUrl(anchor.href, anchor.getAttribute("download") || "model.3mf");
-      btn.textContent = "✓ U1 ready";
+      btn.textContent = `✓ ${shortName(settings)} ready`;
     } catch (err) {
       console.error("[BedReady]", err);
       btn.textContent = "open bedready.io →";
@@ -112,6 +126,8 @@ function scan(): void {
 }
 
 if (HOSTS.test(location.host)) {
+  onSettingsChanged((s) => { settings = s; relabel(); });
+  void (async () => { settings = await loadSettings(); relabel(); })();
   scan();
   // initMakerWorldColors(): PAUSED — MakerWorld's grid feed carries no filament/colour data (it lives only
   // in each model's print profile on the detail page), so grid badging isn't achievable without a
