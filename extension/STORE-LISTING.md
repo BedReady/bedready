@@ -4,8 +4,9 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- Published version: **0.2.0** · in this repo: **0.4.0** — an update is pending upload (0.3.0 was never
-  uploaded, so 0.4.0 carries both). 0.4.0 adds the `storage` permission; Chrome shows no install
+- Published version: **0.2.0** · in this repo: **0.5.0** — an update is pending upload (0.3.0 and 0.4.0
+  were never uploaded, so 0.5.0 carries all three). 0.4.0 added the `storage` permission and 0.5.0
+  `externally_connectable` for https://bedready.io (not a permission); Chrome shows no install
   warning for it, so existing users are not asked to re-approve.
 
 Firefox is a separate submission with its own artifact; see "Package". Safari is its own store
@@ -73,6 +74,10 @@ with MMU3 and CORE One INDX, Creality K2 Plus — or save a clean generic 3MF fo
 can also pick their nozzle (0.2, 0.4, 0.6 or 0.8 mm). Files already set up for your printer are left
 exactly as downloaded, and you can switch automatic conversion off or keep the original too.
 
+Want to choose which colour goes in which slot? "Edit colours on bedready.io" opens the full editor —
+3D preview, slot mapping, Full Spectrum — with your file already loaded. It is handed over inside your
+browser; it still never touches a server.
+
 Works on MakerWorld, Bambu Lab, Printables, and Thingiverse.
 
 Not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or MakerWorld.
@@ -91,6 +96,9 @@ Convert .3mf 3D-print files downloaded from model sites so they print correctly 
 - **storage** — to remember the user's choices in the toolbar popup (which printer and nozzle to
   convert for, whether to convert downloads automatically, whether to keep the original). Stored only
   in this browser; nothing else is stored and nothing leaves the device.
+- *(not a permission, but reviewers ask)* **externally_connectable: https://bedready.io** — lets the
+  BedReady converter page, and only it, ask for the one file the user just chose to "Edit colours on
+  bedready.io". The file goes from the extension to that tab inside the browser; nothing is uploaded.
 - **host permissions (makerworld.com, bblmw.com, printables.com, thingiverse.com)** — the content
   script only runs on these model sites to detect .3mf downloads and offer in-page conversion. The
   extension does nothing on any other site.

@@ -20,7 +20,7 @@ const HOSTS = /makerworld\.com|printables\.com|thingiverse\.com/;
 // The background worker messages us on intercept start/done/fail; we render it right on the page in a
 // shadow root so the host site's CSS can't touch it.
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
-function showToast(state: "working" | "done" | "error", text: string) {
+function showToast(state: "working" | "done" | "error", text: string, action?: "edit") {
   let hostEl = document.getElementById("bedready-toast");
   if (!hostEl) {
     hostEl = document.createElement("div");
@@ -44,15 +44,27 @@ function showToast(state: "working" | "done" | "error", text: string) {
   root.innerHTML = `<div style="position:fixed;top:16px;right:16px;z-index:2147483647;font:13px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;border:1px solid ${c};border-left:4px solid ${c};border-radius:10px;padding:10px 14px;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.4)"><b style="color:${c};display:inline-flex;align-items:center;gap:6px">${icon}BedReady</b><div class="bd-msg" style="margin-top:3px;color:#e2e8f0"></div></div>`;
   const msgEl = root.querySelector(".bd-msg");
   if (msgEl) msgEl.textContent = text;
+  if (action === "edit") {
+    // The one-click result used the defaults; this opens the full editor with the original file.
+    const b = document.createElement("button");
+    b.textContent = "Edit colours on bedready.io →";
+    b.setAttribute("style", "margin-top:8px;padding:4px 10px;border:0;border-radius:8px;background:#7c3aed;color:#fff;font:500 12px/1.4 inherit;cursor:pointer");
+    b.addEventListener("click", () => {
+      api.runtime.sendMessage({ type: "bedready-open-editor" }).catch?.(() => {});
+      hostEl?.remove();
+    });
+    root.querySelector("div")?.appendChild(b);
+  }
   clearTimeout(toastTimer);
-  if (state !== "working") toastTimer = setTimeout(() => hostEl?.remove(), 5000);
+  // Long enough to reach the button; a toast with nothing to click still goes after 5 s.
+  if (state !== "working") toastTimer = setTimeout(() => hostEl?.remove(), action ? 12000 : 5000);
 }
 try {
-  api.runtime?.onMessage?.addListener((msg: { type?: string; state?: "working" | "done" | "error"; text?: string }) => {
+  api.runtime?.onMessage?.addListener((msg: { type?: string; state?: "working" | "done" | "error"; text?: string; action?: string }) => {
     // Validate state against the known set before it indexes the colour/icon maps (defensive — messages
     // only come from our own background worker, but never trust a message field blindly).
     if (msg?.type === "bedready-toast" && (msg.state === "working" || msg.state === "done" || msg.state === "error"))
-      showToast(msg.state, msg.text || "");
+      showToast(msg.state, msg.text || "", msg.action === "edit" ? "edit" : undefined);
   });
 } catch { /* not in an extension context (e.g. the smoke-test page) */ }
 
