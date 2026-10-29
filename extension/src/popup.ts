@@ -7,19 +7,12 @@
 // Simple files (≤4 colours or unpainted) stay drop-and-go: analyse, convert, done.
 import { analyzeThreeMF, cleanThreeMF, convertWarnings, detectProfile, download, isWebKit, warningTextEn, OVER_FOUR_KEYS, type Analysis, type ConvertWarning } from "../../src/lib/convert";
 import { configFamily, U1_NOZZLES, U1_TESTED_NOZZLE } from "../../src/lib/targets";
+import { stash, canHandOff, editorUrl, bytesToBase64 } from "./handoff";
 import { TARGETS, loadSettings, saveSettings, machineOf, quickOpts, shortName, suffixOf, alreadyFor, DEFAULTS, type Settings } from "./settings";
 
 declare const browser: any;
 declare const chrome: any;
 const api: any = typeof browser !== "undefined" ? browser : chrome;
-
-// Base64-encode bytes in chunks (avoids arg-length limits on String.fromCharCode for big files).
-function bytesToBase64(u8: Uint8Array): string {
-  let bin = "";
-  const CHUNK = 0x8000;
-  for (let i = 0; i < u8.length; i += CHUNK) bin += String.fromCharCode(...u8.subarray(i, i + CHUNK));
-  return btoa(bin);
-}
 
 // This function is injected into the ACTIVE TAB and runs in the page's origin. Safari honors the
 // <a download> filename on a normal https page (unlike the extension-origin popup, where it saves a
@@ -82,6 +75,18 @@ const title = document.getElementById("title") as HTMLElement;
 const siteLink = document.getElementById("site") as HTMLAnchorElement;
 
 let settings: Settings = { ...DEFAULTS };
+const editBtn = document.getElementById("edit") as HTMLButtonElement;
+let current: File | null = null; // the file last chosen, for "Edit colours on bedready.io"
+
+// Open the full editor with the ORIGINAL file (not our converted copy), for the chosen printer.
+editBtn.addEventListener("click", () => {
+  void (async () => {
+    if (!current) return;
+    const handed = canHandOff(api) && (await stash(current, current.name).catch(() => false));
+    await api.tabs.create({ url: editorUrl(api, settings.target, handed) });
+    if (!handed) status.textContent = `Opened bedready.io/convert — drop ${current.name} on the page there.`;
+  })();
+});
 
 // ---------- settings UI ----------
 // Grouped by vendor, as the website's picker is; the list is the engine's own registry (settings.ts).
@@ -228,6 +233,8 @@ async function handle(f: File): Promise<void> {
     return;
   }
   opts.innerHTML = "";
+  current = f;
+  editBtn.hidden = !api?.tabs; // outside an extension (the smoke-test page) there is nothing to open
   status.textContent = "Analysing…";
   let analysis: Analysis | undefined;
   try {

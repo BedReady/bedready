@@ -109,6 +109,12 @@ is needed. Don't re-run the converter over a project you've configured signing o
 - `src/popup.ts` — drag-drop fallback (always works, site-independent); reports the diff + warnings.
   Also the extension's settings: which printer to convert for (the website's registry, `targets.ts` —
   U1 with its nozzle, the retarget printers, or generic) and two download switches.
+- `src/handoff.ts` + `../src/lib/extension-handoff.ts` — "Edit colours on bedready.io" (popup button,
+  and a button on the download toast): the extension keeps the ORIGINAL file in its IndexedDB and opens
+  `bedready.io/convert?ext=<id>`; the page asks for it with `runtime.sendMessage`, allowed by
+  `externally_connectable` (https://bedready.io only — no permission, no install warning). One take,
+  30-minute life, 40 MB cap. Firefox lacks `externally_connectable`, so there the page opens empty.
+  Verified installed in Chrome against a local production build (2026-10-29).
 - `src/settings.ts` — that one settings record (`storage.local`), validated on every read, and read on
   every download event rather than held in the service worker. Interception and the in-page button
   convert for the chosen printer, leave a file already set up for it alone, and keep the original when
@@ -145,8 +151,11 @@ smoke test drives both paths (drop-and-go and the Full Spectrum click). No runti
 - **Full Spectrum everywhere:** the popup offers it (default on, with an off toggle); the interception
   and in-page button apply it automatically (keep every colour). It's a no-op for ≤4-colour/unpainted
   files, so those convert byte-identically to before.
-- **Download-interception (`background.ts`):** ⚠️ implemented, not yet runtime-tested (extension can't
-  be auto-loaded under Chrome 137+). **Manual test:** load unpacked → download a `.3mf` from MakerWorld
+- **Download-interception (`background.ts`):** ✅ tested installed in Chrome 156 by
+  `node extension/installed-test.mjs` (2026-10-29) — `--load-extension` is gone since Chrome 137, but
+  DevTools `Extensions.loadUnpacked` still works; the test fakes a MakerWorld download for the page and
+  the service worker. Still worth one manual run against the real site (CDN redirects, Firefox).
+  Earlier note, kept for that manual run: **Manual test:** load unpacked → download a `.3mf` from MakerWorld
   (try a >4-colour model too) → a `*.u1.3mf` should appear with a green `✓U1` badge + toast; a
   multicolour file's toast should read "Kept all N colours via Full Spectrum." If nothing happens, open
   the **service-worker console** (`chrome://extensions` → the card's "service worker" → inspect) — it

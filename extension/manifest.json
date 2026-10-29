@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BedReady — 3MF → Snapmaker U1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Convert MakerWorld/Bambu/Prusa/Orca .3mf files for the Snapmaker U1 and other printers — in your browser, nothing uploaded.",
   "homepage_url": "https://bedready.io/extension",
   "permissions": [
@@ -36,6 +36,11 @@
   },
   "background": {
     "service_worker": "dist/background.js"
+  },
+  "externally_connectable": {
+    "matches": [
+      "https://bedready.io/*"
+    ]
   },
   "content_scripts": [
     {

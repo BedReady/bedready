@@ -30,6 +30,7 @@ import {
   type DiffReport,
 } from "@/lib/convert";
 import { cleanThreeMFAsync } from "@/lib/convert-client";
+import { receiveFromExtension } from "@/lib/extension-handoff";
 import { MACHINES, RETARGET_MACHINES, configFamily, u1NozzleVariant, U1_NOZZLES, U1_TESTED_NOZZLE } from "@/lib/targets";
 import { stlTo3MF } from "@/lib/stl";
 import ConvertPresets, { type ConvertSettings } from "@/components/ConvertPresets";
@@ -232,6 +233,21 @@ export default function ConvertPage() {
   useEffect(() => {
     const to = new URLSearchParams(window.location.search).get("to");
     if (to && (to in MACHINES || to === "current" || to === "generic")) setTargetId(to as CleanTarget);
+  }, []);
+
+  // The browser extension's "Edit colours on bedready.io" opens this page with ?ext=<its id>; ask it
+  // for the original file and load it as if dropped here (src/lib/extension-handoff.ts). The id is
+  // taken out of the address first, so a reload or a shared link does not ask again.
+  useEffect(() => {
+    const search = window.location.search;
+    if (!new URLSearchParams(search).has("ext")) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("ext");
+    window.history.replaceState(window.history.state, "", url);
+    void receiveFromExtension(search).then((f) => {
+      if (f) void pick(f);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on arrival from the extension
   }, []);
 
   // Saved presets capture only reusable settings (target + profile/color toggles), never file-specific

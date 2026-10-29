@@ -91,6 +91,8 @@
       }
       .btn:hover { background: var(--action-hover); }
       .btn:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+      .btn.ghost { background: transparent; color: var(--action); border: 1px solid var(--line); }
+      .btn.ghost:hover { background: var(--surface-2); color: var(--action-hover); }
     </style>
   </head>
   <body>
@@ -115,6 +117,7 @@
     </label>
     <div id="opts"></div>
     <div id="status"></div>
+    <button type="button" class="btn ghost" id="edit" hidden>Edit colours on bedready.io →</button>
     <p class="sub" style="margin-top: 12px">Full preview &amp; color editor at <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
     <script src="dist/popup.js"></script>
   </body>
