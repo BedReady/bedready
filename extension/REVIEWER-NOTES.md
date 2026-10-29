@@ -28,9 +28,12 @@ A clean `npm ci && node extension/build.mjs` reproduces the shipped `dist/*.js` 
 (esbuild output is deterministic; `tsconfig.json` is included because esbuild reads it).
 
 ## Source layout
-- **Extension entry points:** `extension/src/{background,content,popup}.ts`
-- **Shared conversion engine** (browser-agnostic, no network access): `src/lib/` —
-  `convert.ts`, `targets.ts`, `paint.ts`, `swap-pauses.ts`, `filament-mixer.ts`, `mixed-filament.ts`
+- **Extension entry points:** `extension/src/{background,content,popup}.ts`, plus the modules they
+  import: `extension/src/settings.ts` (the user's printer choice) and `extension/src/handoff.ts`
+  (hands a file to bedready.io/convert on request)
+- **Shared conversion engine** (browser-agnostic, no network access): `src/lib/` — `convert.ts` and
+  every module it imports. The archive holds exactly the files esbuild reads (taken from its metafile
+  by `extension/pack-source.mjs`), so nothing needed for the build is missing.
 - **Only third-party code bundled into the add-on:** `fflate` (ZIP read/write). `esbuild` is build-only.
 - **Firefox manifest:** `extension/manifest.firefox.json` (packaged as `manifest.json`).
 - Cross-browser API access is via `const api = browser ?? chrome` (see the entry-point files).
