@@ -107,6 +107,12 @@ is needed. Don't re-run the converter over a project you've configured signing o
 - `src/content.ts` — secondary: injects a "→ U1" button next to plain `<a href="*.3mf">` links (rare on
   these JS-driven sites; interception is the real path).
 - `src/popup.ts` — drag-drop fallback (always works, site-independent); reports the diff + warnings.
+  Also the extension's settings: which printer to convert for (the website's registry, `targets.ts` —
+  U1 with its nozzle, the retarget printers, or generic) and two download switches.
+- `src/settings.ts` — that one settings record (`storage.local`), validated on every read, and read on
+  every download event rather than held in the service worker. Interception and the in-page button
+  convert for the chosen printer, leave a file already set up for it alone, and keep the original when
+  asked. Tests: `src/lib/extension-settings.test.mts`.
 - `build.mjs` — esbuild bundles each entry with the shared core inlined, then packages both store zips
   (Chrome + Firefox) from the same `dist/` + the two manifests.
 - `manifest.json` (Chrome) / `manifest.firefox.json` (Firefox) — identical except background type
