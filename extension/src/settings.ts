@@ -117,7 +117,9 @@ export function alreadyFor(s: Settings, info: { isU1: boolean; printer: string |
     if (!info.isU1) return false;
     // "Snapmaker U1 (0.4 nozzle)": a U1 file at another nozzle still needs converting to the chosen one.
     const nz = /\(([\d.]+)\s*nozzle\)/i.exec(info.printer || "");
-    return !nz || Number(nz[1]) === s.nozzle;
+    // No nozzle in the name ("Snapmaker U1" — seen from a real file): it is most likely the default
+    // 0.4, so only a 0.4 owner may skip it; anyone else gets it converted to their nozzle.
+    return nz ? Number(nz[1]) === s.nozzle : s.nozzle === U1_TESTED_NOZZLE;
   }
   if (s.target === "generic" || !info.printer) return false;
   const m = MACHINES[s.target];

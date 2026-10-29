@@ -47,6 +47,9 @@ test("already set up for the target: U1 by flag and nozzle, others by printer na
   // a 0.4 U1 file still needs converting for a 0.6 U1
   assert.ok(!alreadyFor({ ...DEFAULTS, nozzle: 0.6 }, { isU1: true, printer: "Snapmaker U1 (0.4 nozzle)" }));
   assert.ok(!alreadyFor(DEFAULTS, { isU1: false, printer: "Bambu Lab X1 Carbon 0.4 nozzle" }));
+  // a bare "Snapmaker U1" (no nozzle named) is taken as 0.4: skipped for 0.4 owners only
+  assert.ok(alreadyFor(DEFAULTS, { isU1: true, printer: "Snapmaker U1" }));
+  assert.ok(!alreadyFor({ ...DEFAULTS, nozzle: 0.6 }, { isU1: true, printer: "Snapmaker U1" }));
   const x1 = { ...DEFAULTS, target: "bambu-x1c" as const };
   assert.ok(alreadyFor(x1, { isU1: false, printer: `${MACHINES["bambu-x1c"].name} 0.4 nozzle` }));
   assert.ok(!alreadyFor(x1, { isU1: false, printer: "Bambu Lab P1S 0.4 nozzle" }));
