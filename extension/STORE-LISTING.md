@@ -69,9 +69,9 @@ It runs ENTIRELY in your browser — your file is never uploaded to a server. Fr
 Prefer not to install? The same converter, plus a library of files with profiles tested to print on
 a U1, is free at bedready.io.
 
-Not on a U1? Pick your printer in the toolbar button — Bambu Lab X1 Carbon, P1S and A1, Prusa MK4/MK4S
-with MMU3 and CORE One INDX, Creality K2 Plus — or save a clean generic 3MF for any slicer. U1 owners
-can also pick their nozzle (0.2, 0.4, 0.6 or 0.8 mm). Files already set up for your printer are left
+Not on a U1? Choose your printer in the toolbar button — several Bambu Lab, Prusa and Creality
+multicolor printers are supported — or save a clean generic 3MF for any slicer. U1 owners can also
+pick their nozzle size. Files already set up for your printer are left
 exactly as downloaded, and you can switch automatic conversion off or keep the original too.
 
 Want to choose which colour goes in which slot? "Edit colours on bedready.io" opens the full editor —
@@ -83,6 +83,10 @@ Works on MakerWorld, Bambu Lab, Printables, and Thingiverse.
 Not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or MakerWorld.
 "Snapmaker" and "U1" are trademarks of their respective owners.
 ```
+
+> **Rejected 2026-10-29 (Keyword Spam, "Yellow Argon")** for listing printer models in the
+> description ("Bambu Lab X1 Carbon, P1S and A1, Prusa MK4/MK4S with MMU3 and CORE One INDX, Creality
+> K2 Plus"). Don't list models here — the popup shows them. Brands in a sentence are fine.
 
 ## Privacy tab (required to pass review)
 
