@@ -37,39 +37,35 @@ const base = `
     box-shadow: 0 30px 80px rgba(0,0,0,.5); }
 `;
 
-// 1) The popup (mirrors extension/popup.html), shown as a floating panel.
+// 1) The popup — the REAL one, captured installed by capture-popup.mjs (run that first), not a redraw.
+//    0.5.0 added the printer picker, nozzle and "On download" switches; a drawn copy had drifted once.
+const popupPng = readFileSync(join(HERE, "..", "public", "extension", "popup-dark.png")).toString("base64");
 const scene1 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
-  .row { flex: 1; display: flex; align-items: center; gap: 64px; margin-top: 40px; }
-  .popup { width: 380px; padding: 28px; }
-  /* the popup opens on the wordmark's spectrum sweep — its most recognisable element */
-  .popup .rule { height: 4px; border-radius: 999px; margin-bottom: 18px;
-    background-image: linear-gradient(100deg, #7c3aed, #06b6d4 55%, #84cc16); }
-  .popup h2 { font-size: 22px; color: #fff; }
-  .popup .ps { color: #94a3b8; font-size: 16px; margin-top: 4px; }
-  .drop { margin-top: 20px; padding: 40px; text-align: center; border: 2px dashed #8b5cf6;
-    border-radius: 14px; color: #cbd5e1; font-size: 18px; }
-  .popup .link { margin-top: 18px; font-size: 15px; color: #94a3b8; }
+  .row { flex: 1; display: flex; align-items: center; gap: 64px; margin-top: 24px; }
+  .popup { width: 440px; padding: 0; overflow: hidden; flex: none; }
+  .popup img { display: block; width: 440px; }  /* the capture is 704 px wide (@2x), so 440 stays sharp */
+  ul { margin-top: 26px; padding: 0; list-style: none; font-size: 24px; color: #cbd5e1; }
+  li { margin-top: 12px; } li::before { content: "✓  "; color: #34d399; font-weight: 700; }
 </style></head><body><div class="wrap">
   <div class="brand"><span class="dot"></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
   <div class="row">
     <div style="flex:1">
-      <h1>Convert 3MF files<br>for the Snapmaker&nbsp;U1</h1>
-      <p class="sub">Right in your browser. Nothing is uploaded.</p>
-      <div style="margin-top:28px"><span class="pill">100% private · free</span></div>
+      <h1>Convert 3MF files<br>for your printer</h1>
+      <p class="sub">The Snapmaker U1 and other multicolor printers.</p>
+      <ul>
+        <li>Pick your printer and nozzle once</li>
+        <li>Downloads convert automatically</li>
+        <li>Nothing is uploaded · free</li>
+      </ul>
     </div>
-    <div class="card popup">
-      <div class="rule"></div>
-      <h2>3MF → Snapmaker U1</h2>
-      <div class="ps">100% in your browser — nothing is uploaded.</div>
-      <div class="drop">Drop a .3mf here, or click to choose</div>
-      <div class="link">Full preview &amp; color editor at <span class="accent">bedready.io/convert</span></div>
-    </div>
+    <div class="card popup"><img src="data:image/png;base64,${popupPng}" alt=""></div>
   </div>
 </div></body></html>`;
 
 // 2) The in-page "→ U1" button on a model download page — label, fill and radius as shipped.
 const scene2 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
   .row { flex: 1; display: flex; align-items: center; gap: 64px; margin-top: 40px; }
+  .browser { flex: none; }
   .browser { width: 560px; }
   .bar { display: flex; gap: 8px; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
   .bar i { width: 12px; height: 12px; border-radius: 999px; background: #334155; display: block; }
@@ -86,6 +82,7 @@ const scene2 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
     <div style="flex:1">
       <h1>A “→ U1” button,<br>right on the<br>download page</h1>
       <p class="sub">MakerWorld · Bambu · Printables · Thingiverse</p>
+      <p class="sub" style="font-size:22px">The button names the printer you picked.</p>
     </div>
     <div class="card browser">
       <div class="bar"><i></i><i></i><i></i></div>

@@ -634,7 +634,7 @@
   },
   "extension": {
     "title": "BedReady browser extension",
-    "intro": "Convert multicolor .3mf files to print on the Snapmaker U1 right from the download page on MakerWorld, Bambu, Printables & Thingiverse. It runs entirely in your browser — nothing is uploaded. Available for Chrome, Edge, Firefox, and Safari.",
+    "intro": "Convert multicolor .3mf files for the Snapmaker U1 — or pick another printer, or a clean generic 3MF — right from the download page on MakerWorld, Bambu, Printables & Thingiverse. Want to choose which color goes in which slot? One click opens the file in the full editor here. It runs entirely in your browser — nothing is uploaded. Available for Chrome, Edge, Firefox, and Safari.",
     "chromeTitle": "Chrome & Edge",
     "firefoxTitle": "Firefox",
     "safariTitle": "Safari (Mac)",
@@ -662,7 +662,7 @@
     ],
     "installManually": "Or install manually (advanced)",
     "chromeStoreOnly": "On the Chrome Web Store.",
-    "popupCaption": "The extension's popup — drop a .3mf in and get a U1-ready file back, without leaving the page you are on."
+    "popupCaption": "The extension's popup — choose your printer and nozzle once, and downloads arrive ready to slice. Or drop a .3mf in, without leaving the page you are on."
   },
   "upload": {
     "loading": "Loading…",

@@ -634,7 +634,7 @@
   },
   "extension": {
     "title": "BedReady ブラウザ拡張機能",
-    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 で印刷できるように直接変換します。すべてブラウザ内で動作し、何もアップロードされません。Chrome、Edge、Firefox に対応。",
+    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 向けに直接変換します。ほかのプリンターや、クリーンな汎用 3MF も選べます。どの色をどのスロットに入れるか自分で決めたいときは、ワンクリックでこのサイトのフルエディターにファイルが開きます。すべてブラウザ内で動作し、何もアップロードされません。Chrome、Edge、Firefox に対応。",
     "chromeTitle": "Chrome と Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ Chrome に追加",
@@ -662,7 +662,7 @@
     "safariNote": "Safari 拡張機能はアプリとして配布されます。インストール後、Safari の「設定 → 機能拡張」で有効にしてください。",
     "installManually": "手動でインストール（上級者向け）",
     "chromeStoreOnly": "Chrome ウェブストアで公開中。",
-    "popupCaption": "拡張機能のポップアップ — .3mf をドロップすると、そのページを離れずに U1 対応ファイルが返ってきます。"
+    "popupCaption": "拡張機能のポップアップ — プリンターとノズルを一度選べば、ダウンロードはそのままスライスできる状態で届きます。ページを離れずに .3mf をドロップすることもできます。"
   },
   "upload": {
     "loading": "読み込み中…",
