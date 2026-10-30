@@ -28,6 +28,7 @@ const paths = [...new Set([
   "tsconfig.json", // esbuild reads it (alwaysStrict etc.) — required for a byte-identical rebuild
   "extension/REVIEWER-NOTES.md",
   "extension/build.mjs",
+  "extension/messages-plugin.mjs", // build.mjs imports it; the messages/*.json it reads come in via the metafile
   "extension/manifest.json",
   "extension/manifest.firefox.json",
   "extension/popup.html",

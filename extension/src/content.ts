@@ -6,6 +6,7 @@
 // JS/buttons rather than plain anchors — those need per-site selector tuning (see README). The popup
 // (drag-drop a downloaded file) is the always-works fallback.
 import { cleanThreeMF, download } from "../../src/lib/convert";
+import { t, dir } from "./i18n";
 import { DEFAULTS, loadSettings, onSettingsChanged, quickOpts, shortName, suffixOf, type Settings } from "./settings";
 // import { initMakerWorldColors } from "./makerworld-colors"; // paused — see note at the call site below
 
@@ -41,13 +42,13 @@ function showToast(state: "working" | "done" | "error", text: string, action?: "
   }[state];
   // Static chrome only via innerHTML (icon/colour are from fixed internal maps). The dynamic `text`
   // (derived from a third-party download filename) is set via textContent so markup can't be injected.
-  root.innerHTML = `<div style="position:fixed;top:16px;right:16px;z-index:2147483647;font:13px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;border:1px solid ${c};border-left:4px solid ${c};border-radius:10px;padding:10px 14px;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.4)"><b style="color:${c};display:inline-flex;align-items:center;gap:6px">${icon}BedReady</b><div class="bd-msg" style="margin-top:3px;color:#e2e8f0"></div></div>`;
+  root.innerHTML = `<div dir="${dir}" style="position:fixed;top:16px;right:16px;z-index:2147483647;font:13px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;border:1px solid ${c};border-left:4px solid ${c};border-radius:10px;padding:10px 14px;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.4)"><b style="color:${c};display:inline-flex;align-items:center;gap:6px">${icon}BedReady</b><div class="bd-msg" style="margin-top:3px;color:#e2e8f0"></div></div>`;
   const msgEl = root.querySelector(".bd-msg");
   if (msgEl) msgEl.textContent = text;
   if (action === "edit") {
     // The one-click result used the defaults; this opens the full editor with the original file.
     const b = document.createElement("button");
-    b.textContent = "Edit colours on bedready.io →";
+    b.textContent = t("editColors");
     b.setAttribute("style", "margin-top:8px;padding:4px 10px;border:0;border-radius:8px;background:#7c3aed;color:#fff;font:500 12px/1.4 inherit;cursor:pointer");
     b.addEventListener("click", () => {
       api.runtime.sendMessage({ type: "bedready-open-editor" }).catch?.(() => {});
@@ -99,7 +100,7 @@ function injectButton(anchor: HTMLAnchorElement): void {
   btn.dataset.bedready = "1";
   btn.dataset.state = "idle";
   btn.textContent = label();
-  btn.title = "Convert this .3mf for your printer (pick it in the BedReady toolbar button) — in your browser, nothing uploaded";
+  btn.title = t("buttonTitle");
   // SOLID violet, not a tint. The old button was `#f97316` text on a 10% orange wash, which assumes
   // a light host page: on a dark one it was orange-on-near-black at roughly 3:1. A filled
   // violet-600 with white text is 5.70:1 against its own fill and therefore legible on ANY
@@ -115,13 +116,13 @@ function injectButton(anchor: HTMLAnchorElement): void {
     e.preventDefault();
     e.stopPropagation();
     btn.dataset.state = "busy";
-    btn.textContent = "converting…";
+    btn.textContent = t("buttonBusy");
     try {
       await convertUrl(anchor.href, anchor.getAttribute("download") || "model.3mf");
-      btn.textContent = `✓ ${shortName(settings)} ready`;
+      btn.textContent = t("buttonReady", { printer: shortName(settings) });
     } catch (err) {
       console.error("[BedReady]", err);
-      btn.textContent = "open bedready.io →";
+      btn.textContent = t("buttonFailed");
       btn.onclick = () => window.open("https://bedready.io/convert", "_blank");
     }
   });

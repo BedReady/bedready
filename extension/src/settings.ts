@@ -14,6 +14,7 @@
 // to the U1 rather than reach the engine.
 import { RETARGET_MACHINES, MACHINES, U1, U1_NOZZLES, U1_TESTED_NOZZLE, u1NozzleVariant, type Machine } from "../../src/lib/targets";
 import type { CleanTarget, CleanOpts } from "../../src/lib/convert";
+import { t } from "./i18n";
 
 declare const browser: any;
 declare const chrome: any;
@@ -31,8 +32,8 @@ export const DEFAULTS: Settings = { target: "u1", nozzle: U1_TESTED_NOZZLE, auto
 /** Every target the extension offers, in the order the picker shows them. */
 export const TARGETS: { id: CleanTarget; label: string; vendor: string }[] = [
   { id: "u1", label: "Snapmaker U1", vendor: "Snapmaker" },
-  ...RETARGET_MACHINES.map((m) => ({ id: m.id as CleanTarget, label: m.name, vendor: m.vendor ?? "Other" })),
-  { id: "generic", label: "Any slicer (clean generic 3MF)", vendor: "Other" },
+  ...RETARGET_MACHINES.map((m) => ({ id: m.id as CleanTarget, label: m.name, vendor: m.vendor ?? t("vendorOther") })),
+  { id: "generic", label: t("generic"), vendor: t("vendorOther") },
 ];
 
 const isTarget = (v: unknown): v is CleanTarget => TARGETS.some((t) => t.id === v);
@@ -91,7 +92,7 @@ export function quickOpts(s: Settings): CleanOpts {
 /** The short name a button or toast uses: "U1", "X1 Carbon", "MK4S + MMU3", "generic". */
 export function shortName(s: Settings): string {
   if (s.target === "u1") return "U1";
-  if (s.target === "generic") return "generic 3MF";
+  if (s.target === "generic") return t("genericShort");
   const m = MACHINES[s.target];
   if (!m) return s.target;
   return m.vendor && m.name.startsWith(m.vendor + " ") ? m.name.slice(m.vendor.length + 1) : m.name;

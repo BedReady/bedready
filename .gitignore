@@ -41,3 +41,4 @@ bedready-extension-source.zip
 
 # CI checks out the desktop app here for the engine-parity test (see .github/workflows/ci.yml)
 .khayt-app/
+extension/_locales/

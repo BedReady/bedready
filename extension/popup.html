@@ -98,27 +98,27 @@
   <body>
     <div class="rule"></div>
     <h1 id="title">3MF → Snapmaker U1</h1>
-    <p class="sub">100% in your browser — nothing is uploaded.</p>
-    <label class="field">Convert for
+    <p class="sub" data-i18n="subtitle">100% in your browser — nothing is uploaded.</p>
+    <label class="field" data-i18n="convertFor">Convert for
       <select id="target"></select>
     </label>
-    <label class="field" id="nozzle-field">Nozzle
+    <label class="field" id="nozzle-field" data-i18n="nozzle">Nozzle
       <select id="nozzle"></select>
       <span class="note" id="nozzle-note" hidden></span>
     </label>
     <details class="prefs" id="prefs">
-      <summary>On download</summary>
-      <label class="toggle"><input type="checkbox" switch id="auto" /> <span>Convert .3mf downloads from MakerWorld, Printables and Thingiverse automatically</span></label>
-      <label class="toggle"><input type="checkbox" switch id="keep" /> <span>Keep the original download as well</span></label>
+      <summary data-i18n="onDownload">On download</summary>
+      <label class="toggle"><input type="checkbox" switch id="auto" /> <span data-i18n="autoConvert">Convert .3mf downloads from MakerWorld, Printables and Thingiverse automatically</span></label>
+      <label class="toggle"><input type="checkbox" switch id="keep" /> <span data-i18n="keepOriginal">Keep the original download as well</span></label>
     </details>
-    <label class="drop" id="drop">
+    <label class="drop" id="drop" data-i18n="drop">
       Drop a .3mf here, or click to choose
       <input id="file" type="file" accept=".3mf" />
     </label>
     <div id="opts"></div>
     <div id="status"></div>
-    <button type="button" class="btn ghost" id="edit" hidden>Edit colours on bedready.io →</button>
-    <p class="sub" style="margin-top: 12px">Full preview &amp; color editor at <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
+    <button type="button" class="btn ghost" id="edit" data-i18n="editColors" hidden>Edit colours on bedready.io →</button>
+    <p class="sub" style="margin-top: 12px"><span data-i18n="footer">Full preview &amp; color editor:</span> <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
     <script src="dist/popup.js"></script>
   </body>
 </html>

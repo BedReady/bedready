@@ -4,6 +4,8 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
+- In this repo: **0.6.0** — pending upload: the extension in the site's 7 languages (en, ar, de, es,
+  fr, ja, zh), following the browser's language; no new permissions.
 - Published version: **0.5.0** (live on Chrome and Firefox 2026-10-29) · 0.5.0 was the first upload since 0.2.0 (0.3.0 and 0.4.0
   were never uploaded, so 0.5.0 carries all three). 0.4.0 added the `storage` permission and 0.5.0
   `externally_connectable` for https://bedready.io (not a permission); Chrome shows no install
@@ -39,7 +41,9 @@ Convert MakerWorld & Bambu multicolor 3MF files to print on the Snapmaker U1 —
 
 **Category:** Productivity *(alt: Functionality & UI)*
 
-**Language:** English
+**Language:** English. Since 0.6.0 the package carries `_locales` for ar, de, en, es, fr, ja and zh_CN
+(the manifest description comes from `ext.storeDescription` in `messages/<locale>.json`), so the
+dashboard offers a per-language listing; the English description is used wherever none is entered.
 
 **Privacy policy URL (required):** https://makerrun.com/privacy
 
@@ -74,7 +78,7 @@ multicolor printers are supported — or save a clean generic 3MF for any slicer
 pick their nozzle size. Files already set up for your printer are left
 exactly as downloaded, and you can switch automatic conversion off or keep the original too.
 
-Want to choose which colour goes in which slot? "Edit colours on bedready.io" opens the full editor —
+Want to choose which color goes in which slot? "Edit colors on bedready.io" opens the full editor —
 3D preview, slot mapping, Full Spectrum — with your file already loaded. It is handed over inside your
 browser; it still never touches a server.
 

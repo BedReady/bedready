@@ -10,6 +10,7 @@
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
 import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor } from "./settings";
 import { stash, take, editorUrl, bytesToBase64 } from "./handoff";
+import { t } from "./i18n";
 
 // Cross-browser API handle: Firefox exposes `browser` (promise-based); Chrome MV3's `chrome` is also
 // promise-based. `browser ?? chrome` yields a promise-returning API in both, so `await`/`.catch()` work.
@@ -104,8 +105,8 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
   }
   inFlight.add(key);
   setBadge("…", "#f97316"); // instant feedback: we caught the download and are working on it
-  toast("working", `Converting ${base} for your ${who}… the converted file will download automatically.`);
-  notify("BedReady — converting…", `Converting ${base} for your ${who} in your browser. The converted file will download automatically.`);
+  toast("working", t("toastWorking", { file: base, printer: who }));
+  notify(t("notifyWorkingTitle"), t("notifyWorking", { file: base, printer: who }));
   console.log("[BedReady] intercepting .3mf:", url, "(from", from + ")");
   try {
     // NB: we do NOT cancel the user's original download yet. We convert first and only cancel it on
@@ -128,7 +129,7 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     const info = await detectProfile(file).catch(() => null);
     if (info && alreadyFor(settings, info)) {
       setBadge("✓", "#16a34a", 6000);
-      toast("done", `${base} is already set up for the ${who} — kept as downloaded.`);
+      toast("done", t("toastAlready", { file: base, printer: who }));
       console.log("[BedReady] already for target, left alone:", base, info.printer);
       return;
     }
@@ -141,8 +142,8 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     // memory-heavy save. Leave the original download in place and point to the popup.
     if (outBytes.length > MAX_OUTPUT_BYTES) {
       setBadge("!", "#dc2626", 8000);
-      toast("error", `${base} converted but is too large to auto-save. Your original downloaded — convert it via the popup or bedready.io/convert.`);
-      notify("BedReady — file too large to auto-save", `${base}: your original downloaded; convert it via the popup.`);
+      toast("error", t("toastTooLarge", { file: base }));
+      notify(t("notifyTooLargeTitle"), t("notifyTooLarge", { file: base }));
       return;
     }
     // Success — now replace the original with the converted file.
@@ -150,17 +151,17 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     const outName = name.replace(/\.3mf$/i, "") + suffixOf(settings.target);
     await api.downloads.download({ url: bytesToDataUrl(outBytes), filename: outName, saveAs: false });
     const fsMixes = out.diff?.fullSpectrumMixes ?? 0;
-    const colorNote = fsMixes > 0 ? ` Kept all ${out.colorsTotal} colours via Full Spectrum.` : "";
+    const colorNote = fsMixes > 0 ? " " + t("fullSpectrumNote", { total: out.colorsTotal }) : "";
     setBadge("✓", "#16a34a", 6000);
-    toast("done", `Converted — ${outName} saved to Downloads, ready to slice for your ${who}.${colorNote}`, kept ? "edit" : undefined);
-    notify("BedReady ✓ Converted", `${outName} saved to Downloads — ready to slice for your ${who}.${colorNote}`);
+    toast("done", t("toastDone", { out: outName, printer: who }) + colorNote, kept ? "edit" : undefined);
+    notify(t("notifyDoneTitle"), t("notifyDone", { out: outName, printer: who }) + colorNote);
     console.log("[BedReady] converted →", outName);
   } catch (e) {
     // We never cancelled the original, so the user still has their real .3mf — just point to the popup.
     console.error("[BedReady] interception failed (original download left intact):", e);
     setBadge("!", "#dc2626", 8000);
-    toast("error", `Couldn't convert ${base}. Your original .3mf downloaded — convert it via the popup.`);
-    notify("BedReady — conversion failed", `Couldn't convert ${base}. Your original .3mf downloaded — convert it via the popup.`);
+    toast("error", t("toastFailed", { file: base }));
+    notify(t("notifyFailedTitle"), t("toastFailed", { file: base }));
   } finally {
     inFlight.delete(key);
   }
