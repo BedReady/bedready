@@ -19,7 +19,8 @@ import { build } from "esbuild";
 import { zipSync } from "fflate";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { messagesSubset } from "./messages-plugin.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const r = (p) => resolve(here, p);
@@ -31,10 +32,30 @@ await build({
   // esbuild only needs a floor that supports the syntax we emit; both Chrome MV3 and Firefox 115+ run it.
   target: ["chrome110", "firefox115"],
   loader: { ".json": "json" },
+  plugins: [messagesSubset],
   outdir: r("dist"),
   logLevel: "info",
 });
 console.log("✓ built extension/dist/{content,popup,background}.js");
+
+// _locales: the manifest's description and toolbar tooltip in the seven languages the site speaks,
+// generated from messages/<locale>.json (`ext.storeDescription`, `ext.actionTitle`) so they cannot
+// drift from it. Written into extension/ too (gitignored), because load-unpacked and the installed
+// test read the folder, and a manifest with `default_locale` refuses to load without _locales.
+const STORE_LOCALES = { en: "en", ar: "ar", de: "de", es: "es", fr: "fr", ja: "ja", zh: "zh_CN" };
+const localeFiles = {};
+rmSync(r("_locales"), { recursive: true, force: true });
+for (const [site, store] of Object.entries(STORE_LOCALES)) {
+  const ext = JSON.parse(readFileSync(r(`../messages/${site}.json`), "utf8")).ext;
+  const body = JSON.stringify({
+    description: { message: ext.storeDescription },
+    actionTitle: { message: ext.actionTitle },
+  }, null, 2) + "\n";
+  if (ext.storeDescription.length > 132) throw new Error(`${site}: ext.storeDescription is over Chrome's 132 characters`);
+  mkdirSync(r(`_locales/${store}`), { recursive: true });
+  writeFileSync(r(`_locales/${store}/messages.json`), body);
+  localeFiles[`_locales/${store}/messages.json`] = new Uint8Array(Buffer.from(body));
+}
 
 // Package: shared assets + a per-store manifest (named manifest.json inside each zip).
 const read = (p) => new Uint8Array(readFileSync(r(p)));
@@ -47,6 +68,7 @@ const shared = {
   "dist/background.js": read("dist/background.js"),
   "dist/content.js": read("dist/content.js"),
   "dist/popup.js": read("dist/popup.js"),
+  ...localeFiles,
 };
 /**
  * Where the two zips go. `../public` normally — they are committed, because they are also the

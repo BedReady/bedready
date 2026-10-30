@@ -5,9 +5,10 @@
 // For a PAINTED file with >4 colours it offers Full Spectrum — keep every colour by dithering mixes of
 // the 4 heads (2- and 3-filament) — instead of silently merging the extras into their nearest match.
 // Simple files (≤4 colours or unpainted) stay drop-and-go: analyse, convert, done.
-import { analyzeThreeMF, cleanThreeMF, convertWarnings, detectProfile, download, isWebKit, warningTextEn, OVER_FOUR_KEYS, type Analysis, type ConvertWarning } from "../../src/lib/convert";
+import { analyzeThreeMF, cleanThreeMF, convertWarnings, detectProfile, download, isWebKit, OVER_FOUR_KEYS, type Analysis, type ConvertWarning } from "../../src/lib/convert";
 import { configFamily, U1_NOZZLES, U1_TESTED_NOZZLE } from "../../src/lib/targets";
 import { stash, canHandOff, editorUrl, bytesToBase64 } from "./handoff";
+import { t, warningText, localizeDocument } from "./i18n";
 import { TARGETS, loadSettings, saveSettings, machineOf, quickOpts, shortName, suffixOf, alreadyFor, DEFAULTS, type Settings } from "./settings";
 
 declare const browser: any;
@@ -84,7 +85,7 @@ editBtn.addEventListener("click", () => {
     if (!current) return;
     const handed = canHandOff(api) && (await stash(current, current.name).catch(() => false));
     await api.tabs.create({ url: editorUrl(api, settings.target, handed) });
-    if (!handed) status.textContent = `Opened bedready.io/convert — drop ${current.name} on the page there.`;
+    if (!handed) status.textContent = t("openedSite", { file: current.name });
   })();
 });
 
@@ -99,7 +100,7 @@ function fillPicker(): void {
     for (const t of list) g.append(new Option(t.label, t.id));
     targetSel.append(g);
   }
-  for (const n of U1_NOZZLES) nozzleSel.append(new Option(n === U1_TESTED_NOZZLE ? `${n} mm (tested)` : `${n} mm`, String(n)));
+  for (const n of U1_NOZZLES) nozzleSel.append(new Option(t(n === U1_TESTED_NOZZLE ? "nozzleTested" : "nozzleSize", { size: n }), String(n)));
 }
 
 function reflect(): void {
@@ -110,9 +111,9 @@ function reflect(): void {
   nozzleField.hidden = settings.target !== "u1";
   // Say which nozzle values are arithmetic rather than a real export — the site's rule (targets.ts).
   nozzleNote.hidden = settings.nozzle === U1_TESTED_NOZZLE;
-  nozzleNote.textContent = `Scaled from the tested ${U1_TESTED_NOZZLE} mm profile — nobody has printed this one yet.`;
+  nozzleNote.textContent = t("nozzleNote", { size: U1_TESTED_NOZZLE });
   const m = machineOf(settings);
-  title.textContent = `3MF → ${settings.target === "generic" ? "any slicer" : m?.name.replace(/\s*\(.*\)$/, "") ?? shortName(settings)}`;
+  title.textContent = t("title", { printer: settings.target === "generic" ? t("anySlicer") : m?.name.replace(/\s*\(.*\)$/, "") ?? shortName(settings) });
   siteLink.href = `https://bedready.io/convert?to=${encodeURIComponent(settings.target)}`;
 }
 
@@ -123,6 +124,7 @@ async function update(patch: Partial<Settings>): Promise<void> {
   await saveSettings(settings);
 }
 
+localizeDocument();
 fillPicker();
 targetSel.addEventListener("change", () => void update({ target: targetSel.value as Settings["target"] }));
 nozzleSel.addEventListener("change", () => void update({ nozzle: Number(nozzleSel.value) }));
@@ -143,15 +145,15 @@ function resultText(r: CleanResult, fullSpectrum: boolean, warns: ConvertWarning
   const mixes = r.diff?.fullSpectrumMixes ?? 0;
   const headline =
     fullSpectrum && mixes > 0
-      ? `✓ Done — all ${r.colorsTotal} colours kept (4 filaments + ${mixes} Full Spectrum mix${mixes === 1 ? "" : "es"}).`
-      : `✓ Done — ${r.colorsKept}/${r.colorsTotal} colours, ${r.preserved ? "kept the creator's settings" : "tested U1 profile"}.`;
+      ? t("doneFullSpectrum", { total: r.colorsTotal, mixes })
+      : t(r.preserved ? "doneKept" : "doneTested", { kept: r.colorsKept, total: r.colorsTotal });
   return [
     headline,
-    already ? "This file was already set up for the U1 — re-converting it changed little." : "",
-    r.diff?.bedShift ? `Nudged onto the U1 bed (+${r.diff.bedShift.dx}, +${r.diff.bedShift.dy}mm).` : "",
-    r.diff && r.diff.clamped.length ? `Capped ${r.diff.clamped.length} speed setting(s) to U1 limits.` : "",
-    r.diff?.vlhGuard ? "Disabled prime tower (variable layer height)." : "",
-    ...warns.map((w) => `⚠ ${warningTextEn(w)}`),
+    already ? t("alreadySetUp", { printer: "U1" }) : "",
+    r.diff?.bedShift ? t("bedShift", { dx: r.diff.bedShift.dx, dy: r.diff.bedShift.dy }) : "",
+    r.diff && r.diff.clamped.length ? t("clamped", { count: r.diff.clamped.length }) : "",
+    r.diff?.vlhGuard ? t("vlhGuard") : "",
+    ...warns.map((w) => `⚠ ${warningText(w)}`),
   ]
     .filter(Boolean)
     .join("\n");
@@ -159,7 +161,7 @@ function resultText(r: CleanResult, fullSpectrum: boolean, warns: ConvertWarning
 
 async function runConvert(f: File, fullSpectrum: boolean, analysis?: Analysis): Promise<void> {
   opts.innerHTML = "";
-  status.textContent = "Converting in your browser…";
+  status.textContent = t("converting");
   try {
     const a = analysis ?? (await analyzeThreeMF(f));
     const info = await detectProfile(f).catch(() => null);
@@ -176,7 +178,7 @@ async function runConvert(f: File, fullSpectrum: boolean, analysis?: Analysis): 
       warns = warns.filter((w) => !OVER_FOUR_KEYS.includes(w.key));
     status.textContent = resultText(r, fullSpectrum, warns, a, already);
   } catch (e) {
-    status.textContent = "Error: " + (e instanceof Error ? e.message : String(e));
+    status.textContent = t("error", { message: e instanceof Error ? e.message : String(e) });
   }
 }
 
@@ -186,13 +188,13 @@ function retargetText(a: Analysis | undefined, warns: ConvertWarning[], already:
   const m = machineOf(settings);
   const n = a?.colors.length ?? 0;
   const lines: string[] = [];
-  if (!m) lines.push("✓ Done — a clean generic 3MF: geometry and colours kept, no printer settings.");
-  else if (a?.flavour && configFamily(a.flavour) === configFamily(m.flavour)) lines.push(`✓ Done — printer profile rewritten for the ${m.name}.`);
-  else lines.push(`✓ Done — saved as a clean 3MF for the ${m.name}'s slicer (the source was made for a different slicer, so its print settings were dropped).`);
-  if (already) lines.push(`This file was already set up for the ${m?.name ?? "target"} — re-converting it changed little.`);
-  if (m && n > m.toolheads) lines.push(`⚠ This file uses ${n} colours and the ${m.name} holds ${m.toolheads} — assign the extras in your slicer.`);
+  if (!m) lines.push(t("doneGeneric"));
+  else if (a?.flavour && configFamily(a.flavour) === configFamily(m.flavour)) lines.push(t("doneRewritten", { printer: m.name }));
+  else lines.push(t("doneOtherSlicer", { printer: m.name }));
+  if (already) lines.push(t("alreadySetUp", { printer: m?.name ?? shortName(settings) }));
+  if (m && n > m.toolheads) lines.push("⚠ " + t("tooManyColors", { count: n, printer: m.name, heads: m.toolheads }));
   // The over-four advisories are U1 sentences (4 heads); everything else applies to any printer.
-  lines.push(...warns.filter((w) => !OVER_FOUR_KEYS.includes(w.key)).map((w) => `⚠ ${warningTextEn(w)}`));
+  lines.push(...warns.filter((w) => !OVER_FOUR_KEYS.includes(w.key)).map((w) => `⚠ ${warningText(w)}`));
   return lines.join("\n");
 }
 
@@ -204,7 +206,7 @@ function offerFullSpectrum(f: File, analysis: Analysis, colorCount: number): voi
   box.className = "choice";
 
   const info = document.createElement("p");
-  info.textContent = `This file has ${colorCount} painted colours — more than the U1's 4 slots.`;
+  info.textContent = t("fsIntro", { count: colorCount });
   box.appendChild(info);
 
   const lbl = document.createElement("label");
@@ -213,13 +215,12 @@ function offerFullSpectrum(f: File, analysis: Analysis, colorCount: number): voi
   cb.type = "checkbox";
   cb.checked = true;
   const span = document.createElement("span");
-  span.textContent =
-    "Keep every colour with Full Spectrum (mix the 4 filaments). Uncheck to merge the least-used extras into their nearest colour.";
+  span.textContent = t("fsToggle");
   lbl.append(cb, span);
   box.appendChild(lbl);
 
   const btn = document.createElement("button");
-  btn.textContent = "Convert for U1";
+  btn.textContent = t("fsButton");
   btn.className = "btn";
   btn.addEventListener("click", () => void runConvert(f, cb.checked, analysis));
   box.appendChild(btn);
@@ -229,13 +230,13 @@ function offerFullSpectrum(f: File, analysis: Analysis, colorCount: number): voi
 
 async function handle(f: File): Promise<void> {
   if (!f.name.toLowerCase().endsWith(".3mf")) {
-    status.textContent = "Please choose a .3mf file.";
+    status.textContent = t("chooseFile");
     return;
   }
   opts.innerHTML = "";
   current = f;
   editBtn.hidden = !api?.tabs; // outside an extension (the smoke-test page) there is nothing to open
-  status.textContent = "Analysing…";
+  status.textContent = t("analysing");
   let analysis: Analysis | undefined;
   try {
     analysis = await analyzeThreeMF(f);
