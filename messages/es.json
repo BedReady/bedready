@@ -634,7 +634,7 @@
   },
   "extension": {
     "title": "Extensión de navegador BedReady",
-    "intro": "Convierte archivos .3mf multicolor para imprimir en la Snapmaker U1 directamente desde la página de descarga de MakerWorld, Bambu, Printables y Thingiverse. Funciona por completo en tu navegador — no se sube nada. Disponible para Chrome, Edge y Firefox.",
+    "intro": "Convierte archivos .3mf multicolor para la Snapmaker U1 —o elige otra impresora, o un 3MF genérico limpio— directamente desde la página de descarga de MakerWorld, Bambu, Printables y Thingiverse. ¿Quieres elegir qué color va en cada ranura? Un clic abre el archivo en el editor completo aquí. Funciona por completo en tu navegador — no se sube nada. Disponible para Chrome, Edge y Firefox.",
     "chromeTitle": "Chrome y Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ Añadir a Chrome",
@@ -662,7 +662,7 @@
     "safariNote": "Las extensiones de Safari se distribuyen como una app: instálala y luego actívala en Safari, en Ajustes → Extensiones.",
     "installManually": "O instalar manualmente (avanzado)",
     "chromeStoreOnly": "En Chrome Web Store.",
-    "popupCaption": "La ventana de la extensión: suelta un .3mf y recibe un archivo listo para la U1 sin salir de la página."
+    "popupCaption": "La ventana de la extensión: elige tu impresora y boquilla una vez y las descargas llegan listas para laminar. O suelta un .3mf sin salir de la página."
   },
   "upload": {
     "loading": "Cargando…",

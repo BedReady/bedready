@@ -12,7 +12,7 @@ export async function generateMetadata({
   return {
     title: "Browser extension — BedReady",
     description:
-      "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads to print on the Snapmaker U1, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser.",
+      "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser.",
     alternates: alternates("/extension", locale),
   };
 }
@@ -68,9 +68,9 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
           not one picture of what the extension does, on a site whose giveaway sticker page was the
           most attractive thing it had.
 
-          This is a capture of the real `extension/popup.html`, not a mock-up — the same thing
-          `smoke-test.mjs` drives, and its header records why that is faithful: "the popup/content
-          scripts use only DOM + the bundled conversion engine (no chrome.* APIs)". One image per
+          This is a capture of the real `extension/popup.html`, not a mock-up: since 0.5.0 it is taken
+          with the extension INSTALLED (`extension/capture-popup.mjs`), because the printer picker and
+          the "On download" switches only fill in with real chrome.* APIs. One image per
           theme, because the popup follows `prefers-color-scheme` and half the point of showing it is
           that it now looks like this site.
 
@@ -86,7 +86,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
           src="/extension/popup-light.png"
           alt={t("popupCaption")}
           width={704}
-          height={396}
+          height={854}
           className="w-full max-w-md rounded-lg border border-line dark:hidden"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -94,7 +94,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
           src="/extension/popup-dark.png"
           alt={t("popupCaption")}
           width={704}
-          height={396}
+          height={854}
           className="hidden w-full max-w-md rounded-lg border border-line dark:block"
         />
         <figcaption className="mt-2 max-w-md text-sm text-fg-subtle">{t("popupCaption")}</figcaption>

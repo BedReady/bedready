@@ -4,7 +4,7 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- Published version: **0.2.0** · in this repo: **0.5.0** — an update is pending upload (0.3.0 and 0.4.0
+- Published version: **0.5.0** (live on Chrome and Firefox 2026-10-29) · 0.5.0 was the first upload since 0.2.0 (0.3.0 and 0.4.0
   were never uploaded, so 0.5.0 carries all three). 0.4.0 added the `storage` permission and 0.5.0
   `externally_connectable` for https://bedready.io (not a permission); Chrome shows no install
   warning for it, so existing users are not asked to re-approve.
@@ -69,9 +69,9 @@ It runs ENTIRELY in your browser — your file is never uploaded to a server. Fr
 Prefer not to install? The same converter, plus a library of files with profiles tested to print on
 a U1, is free at bedready.io.
 
-Not on a U1? Pick your printer in the toolbar button — Bambu Lab X1 Carbon, P1S and A1, Prusa MK4/MK4S
-with MMU3 and CORE One INDX, Creality K2 Plus — or save a clean generic 3MF for any slicer. U1 owners
-can also pick their nozzle (0.2, 0.4, 0.6 or 0.8 mm). Files already set up for your printer are left
+Not on a U1? Choose your printer in the toolbar button — several Bambu Lab, Prusa and Creality
+multicolor printers are supported — or save a clean generic 3MF for any slicer. U1 owners can also
+pick their nozzle size. Files already set up for your printer are left
 exactly as downloaded, and you can switch automatic conversion off or keep the original too.
 
 Want to choose which colour goes in which slot? "Edit colours on bedready.io" opens the full editor —
@@ -83,6 +83,10 @@ Works on MakerWorld, Bambu Lab, Printables, and Thingiverse.
 Not affiliated with, endorsed by, or sponsored by Snapmaker, Bambu Lab, or MakerWorld.
 "Snapmaker" and "U1" are trademarks of their respective owners.
 ```
+
+> **Rejected 2026-10-29 (Keyword Spam, "Yellow Argon")** for listing printer models in the
+> description ("Bambu Lab X1 Carbon, P1S and A1, Prusa MK4/MK4S with MMU3 and CORE One INDX, Creality
+> K2 Plus"). Don't list models here — the popup shows them. Brands in a sentence are fine.
 
 ## Privacy tab (required to pass review)
 
@@ -111,8 +115,9 @@ not used to determine creditworthiness/lending.
 ## Graphics checklist
 - [x] Icon 128×128 — `extension/icon128.png` (already in the package)
 - [x] Screenshots (1280×800) — **`extension/store-screenshots/screenshot-1..3.png`**, ready to upload:
-      1. Popup + value prop · 2. The in-page "→ U1" button · 3. Before/after colors
-      Regenerate anytime: `node extension/make-screenshots.mjs`
+      1. The real popup (printer picker, nozzle, on-download switches) · 2. The in-page "→ U1" button · 3. Before/after colors
+      Regenerate anytime: `node extension/build.mjs && node extension/capture-popup.mjs && node extension/make-screenshots.mjs`
+      (scene 1 embeds the real installed popup; the capture also refreshes the images on /extension)
 - [ ] Small promo tile 440×280 (optional) — BedReady logo + "3MF → U1". Nice-to-have, not required.
 
 Note: the screenshots are designed promo scenes that accurately depict the extension (the real
