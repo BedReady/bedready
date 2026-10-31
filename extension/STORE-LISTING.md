@@ -4,9 +4,10 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- In this repo: **0.6.0** — pending upload: the extension in the site's 7 languages (en, ar, de, es,
-  fr, ja, zh), following the browser's language; no new permissions.
-- Published version: **0.5.0** (live on Chrome and Firefox 2026-10-29) · 0.5.0 was the first upload since 0.2.0 (0.3.0 and 0.4.0
+- In this repo: **0.6.1** — pending upload: renamed to "BedReady — 3MF Converter" (it converts for
+  several printers, not just the U1); no code or permission changes.
+- Published version: **0.6.0** (live on Chrome and Firefox 2026-10-31): the extension in the site's 7
+  languages. Before that, **0.5.0** (live 2026-10-29) · 0.5.0 was the first upload since 0.2.0 (0.3.0 and 0.4.0
   were never uploaded, so 0.5.0 carries all three). 0.4.0 added the `storage` permission and 0.5.0
   `externally_connectable` for https://bedready.io (not a permission); Chrome shows no install
   warning for it, so existing users are not asked to re-approve.
@@ -34,7 +35,10 @@ stores reject a re-used version number.
 
 ## Store listing fields
 
-**Name:** BedReady — 3MF → Snapmaker U1
+**Name:** BedReady — 3MF Converter
+
+The Chrome dashboard has no name field: the name is the manifest's `name`, so renaming means
+shipping a version (0.6.1 did). AMO's listing name is edited on AMO and can be set to match.
 
 **Summary (≤132 chars):**
 Convert MakerWorld & Bambu multicolor 3MF files to print on the Snapmaker U1 — right from the download page. Free, private.
