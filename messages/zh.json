@@ -386,7 +386,8 @@
     "printSettingsTitle": "打印设置",
     "previewHeaderTarget": "{count} 种颜色 → {slots} 个 {name} 槽位",
     "spoolsFarColorMix": "有 {far} 种颜色在这里没有相近的耗材。ColorMix 可以用已装载的耗材混出它们。",
-    "spoolsFarPlain": "有 {far} 种颜色在这里没有相近的耗材，将使用最接近的耗材打印。"
+    "spoolsFarPlain": "有 {far} 种颜色在这里没有相近的耗材，将使用最接近的耗材打印。",
+    "noWebGL": "此浏览器无法显示 3D 预览（WebGL 已关闭或不可用）。其他功能均正常——文件照常转换和下载。"
   },
   "help": {
     "title": "帮助与常见问题",

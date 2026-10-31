@@ -386,7 +386,8 @@
     "printSettingsTitle": "印刷設定",
     "previewHeaderTarget": "{count} 色 → {slots} つの {name} スロット",
     "spoolsFarColorMix": "{far} 色に近いスプールがありません。ColorMix なら装填中のフィラメントから混色できます。",
-    "spoolsFarPlain": "{far} 色に近いスプールがないため、最も近いスプールで印刷されます。"
+    "spoolsFarPlain": "{far} 色に近いスプールがないため、最も近いスプールで印刷されます。",
+    "noWebGL": "このブラウザでは3Dプレビューを表示できません（WebGLが無効か利用できません）。それ以外は通常どおり動作し、ファイルの変換とダウンロードも問題なく行えます。"
   },
   "help": {
     "title": "ヘルプ & FAQ",

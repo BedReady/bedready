@@ -386,7 +386,8 @@
     "printSettingsTitle": "Ajustes de impresión",
     "previewHeaderTarget": "{count, plural, one {# color} other {# colores}} → {slots} ranuras {name}",
     "spoolsFarColorMix": "{far, plural, one {# color no tiene} other {# colores no tienen}} una bobina parecida aquí. ColorMix puede mezclarlos con lo cargado.",
-    "spoolsFarPlain": "{far, plural, one {# color no tiene} other {# colores no tienen}} una bobina parecida aquí, así que se imprimen con la más cercana."
+    "spoolsFarPlain": "{far, plural, one {# color no tiene} other {# colores no tienen}} una bobina parecida aquí, así que se imprimen con la más cercana.",
+    "noWebGL": "Este navegador no puede mostrar la vista previa 3D (WebGL está desactivado o no disponible). Todo lo demás sigue funcionando: tu archivo se convierte y se descarga como siempre."
   },
   "help": {
     "title": "Ayuda y preguntas frecuentes",

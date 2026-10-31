@@ -386,7 +386,8 @@
     "printSettingsTitle": "Print settings",
     "previewHeaderTarget": "{count, plural, one {# color} other {# colors}} → {slots} {name} slots",
     "spoolsFarColorMix": "{far, plural, one {# color has} other {# colors have}} no close spool among these. ColorMix can blend {far, plural, one {it} other {them}} from what's loaded.",
-    "spoolsFarPlain": "{far, plural, one {# color has} other {# colors have}} no close spool among these, so {far, plural, one {it prints} other {they print}} from the nearest one."
+    "spoolsFarPlain": "{far, plural, one {# color has} other {# colors have}} no close spool among these, so {far, plural, one {it prints} other {they print}} from the nearest one.",
+    "noWebGL": "This browser can't show the 3D preview (WebGL is turned off or unavailable). Everything else still works — your file converts and downloads as normal."
   },
   "help": {
     "title": "Help & FAQ",

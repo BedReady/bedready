@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
@@ -53,6 +54,8 @@ export default function PaintPreview({
   const compareRef = useRef(false);
   const compare = !!compareColorForState;
   compareRef.current = compare;
+  const t = useTranslations("convert");
+  const [noWebGL, setNoWebGL] = useState(false);
 
   // build scene once per mesh
   useEffect(() => {
@@ -65,7 +68,17 @@ export default function PaintPreview({
     const bgTex = gradientTexture("#48566b", "#0b0f1a");
     scene.background = bgTex;
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Some browsers have WebGL off or blocklisted (seen on Windows Chrome/Edge and Android). three throws
+    // "Error creating WebGL context" here, and uncaught that takes down the whole converter page through
+    // the error boundary. The preview is the only part that needs WebGL, so only the preview gives way.
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+    } catch {
+      bgTex.dispose();
+      setNoWebGL(true);
+      return;
+    }
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     // NB: no ACES tone mapping here (unlike ModelViewer) — this is the colour-checking view, so painted
@@ -235,6 +248,18 @@ export default function PaintPreview({
     if (mapped) fill(mapped, colorForState);
     if (orig && compareColorForState) fill(orig, compareColorForState);
   }, [mesh, colorForState, colorKey, compareColorForState]);
+
+  if (noWebGL) {
+    return (
+      <div
+        className="flex w-full items-center justify-center rounded-lg border border-white/10 px-6 text-center text-sm text-fg-subtle"
+        style={{ height: 380 }}
+        role="status"
+      >
+        {t("noWebGL")}
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
