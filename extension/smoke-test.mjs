@@ -29,6 +29,8 @@ const server = createServer((req, res) => {
       return;
     }
   } catch {}
+  // Chrome asks every served page for /favicon.ico; a 404 there would read as a page error below.
+  if (req.url === "/favicon.ico") return void res.writeHead(204).end();
   res.writeHead(404).end("nf");
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
