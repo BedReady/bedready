@@ -386,7 +386,8 @@
     "printSettingsTitle": "Druckeinstellungen",
     "previewHeaderTarget": "{count, plural, one {# Farbe} other {# Farben}} → {slots} {name}-Slots",
     "spoolsFarColorMix": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule. ColorMix kann sie aus den geladenen mischen.",
-    "spoolsFarPlain": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule; gedruckt wird mit der nächstliegenden."
+    "spoolsFarPlain": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule; gedruckt wird mit der nächstliegenden.",
+    "noWebGL": "Dieser Browser kann die 3D-Vorschau nicht anzeigen (WebGL ist deaktiviert oder nicht verfügbar). Alles andere funktioniert weiter – deine Datei wird wie gewohnt konvertiert und heruntergeladen."
   },
   "help": {
     "title": "Hilfe & FAQ",

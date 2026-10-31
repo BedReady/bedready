@@ -386,7 +386,8 @@
     "printSettingsTitle": "Réglages d'impression",
     "previewHeaderTarget": "{count, plural, one {# couleur} other {# couleurs}} → {slots} emplacements {name}",
     "spoolsFarColorMix": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici. ColorMix peut les mélanger à partir de ce qui est chargé.",
-    "spoolsFarPlain": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici : elles sont imprimées avec la plus proche."
+    "spoolsFarPlain": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici : elles sont imprimées avec la plus proche.",
+    "noWebGL": "Ce navigateur ne peut pas afficher l'aperçu 3D (WebGL est désactivé ou indisponible). Tout le reste fonctionne : votre fichier est converti et téléchargé normalement."
   },
   "help": {
     "title": "Aide & FAQ",

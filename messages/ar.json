@@ -386,7 +386,8 @@
     "printSettingsTitle": "إعدادات الطباعة",
     "previewHeaderTarget": "{count, plural, zero {لا ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} → {slots} فتحات {name}",
     "spoolsFarColorMix": "{far, plural, one {لون واحد ليس له} other {# ألوان ليس لها}} بكرة قريبة هنا. يمكن لـ ColorMix مزجها مما هو محمّل.",
-    "spoolsFarPlain": "{far, plural, one {لون واحد ليس له} other {# ألوان ليس لها}} بكرة قريبة هنا، فتُطبع من أقرب بكرة."
+    "spoolsFarPlain": "{far, plural, one {لون واحد ليس له} other {# ألوان ليس لها}} بكرة قريبة هنا، فتُطبع من أقرب بكرة.",
+    "noWebGL": "لا يستطيع هذا المتصفح عرض المعاينة ثلاثية الأبعاد (WebGL معطّل أو غير متاح). كل شيء آخر يعمل — يُحوَّل ملفك ويُنزَّل كالمعتاد."
   },
   "help": {
     "title": "المساعدة والأسئلة الشائعة",
