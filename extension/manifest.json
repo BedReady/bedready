@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "BedReady — 3MF → Snapmaker U1",
-  "version": "0.6.0",
+  "name": "BedReady — 3MF Converter",
+  "version": "0.6.1",
   "description": "__MSG_description__",
   "default_locale": "en",
   "homepage_url": "https://bedready.io/extension",
