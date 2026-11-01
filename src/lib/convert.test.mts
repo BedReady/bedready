@@ -8,7 +8,7 @@ import { readFile } from "node:fs/promises";
 import { remapPaintCode, dominantState, encodeSolidPaint } from "./paint.ts";
 import { U1, u1NozzleVariant, type Machine } from "./targets.ts";
 import { mixRgb } from "./filament-mixer.ts";
-import { bestMix, bestPhysicalSet } from "./convert.ts";
+import { bestMix, bestPhysicalSet, materialFromPresetName } from "./convert.ts";
 import { parseStl, stlTo3MF } from "./stl.ts";
 
 // ---------- fixtures ----------
@@ -1182,3 +1182,37 @@ test("reduceColors: target sets the group count; 4 stays the default", () => {
   assert.equal(r5.colors.length, 5);
   assert.ok(r5.map.every((g) => g >= 0 && g < 5));
 });
+
+// A compact Bambu config (only keys differing from the system preset) names its material only in
+// filament_settings_id. Missing keys used to fall through to the ABS reference: Keychain+S.3mf, a PLA
+// MakerWorld file, converted to ABS at 270/90 in both modes (2026-11-01).
+test("materialFromPresetName reads the material out of a preset name", () => {
+  assert.equal(materialFromPresetName("Bambu PLA Basic @BBL A1"), "PLA");
+  assert.equal(materialFromPresetName("Bambu PETG HF @BBL X1C"), "PETG");
+  assert.equal(materialFromPresetName("Generic PETG-CF @System"), "PETG-CF");
+  assert.equal(materialFromPresetName("Bambu PC FR @BBL X1C"), "PC");
+  assert.equal(materialFromPresetName("Polymaker PolyTerra"), undefined);
+  assert.equal(materialFromPresetName(undefined), undefined);
+});
+for (const mode of ["preserve", "stamp"] as const) {
+  test(`compact config (${mode}): material from the preset name, its U1 temps for keys the source left out`, async () => {
+    const f = file3mf({
+      "Metadata/project_settings.config": JSON.stringify({
+        printer_settings_id: "Bambu Lab A1 0.4 nozzle",
+        filament_colour: ["#000000", "#FFFFFF"],
+        filament_settings_id: ["Bambu PLA Basic @BBL A1", "Bambu PETG HF @BBL A1"],
+        ...(mode === "preserve" ? { hot_plate_temp: ["60", "70"] } : {}),
+      }),
+      "3D/3dmodel.model": model(),
+    });
+    const c = await cfgOf((await cleanThreeMF(f, "u1", { mode })).blob);
+    const types = c.filament_type as string[];
+    assert.deepEqual(types.slice(0, 2), ["PLA", "PETG"]);
+    assert.ok(!types.includes("ABS"), `no ABS slots: ${types}`);
+    const noz = (c.nozzle_temperature as string[]).map(Number);
+    assert.ok(noz[0] <= 230, `PLA nozzle ${noz[0]}`);
+    assert.ok(noz[1] < 270, `PETG nozzle ${noz[1]}`);
+    // A key the creator DID set survives preserve mode.
+    if (mode === "preserve") assert.deepEqual((c.hot_plate_temp as string[]).slice(0, 2), ["60", "70"]);
+  });
+}
