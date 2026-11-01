@@ -19,7 +19,8 @@ import NoticeIcon from "@/components/NoticeIcon";
 // literal paths (folder names, "File → Import") inline instead of us splitting sentences — which
 // never survives translation into languages with different word order.
 const b = (c: ReactNode) => <span className="font-semibold text-fg">{c}</span>;
-const code = (c: ReactNode) => <code className="text-violet-300">{c}</code>;
+// dir="ltr": these hold paths and menu names, which the RTL bidi algorithm otherwise turns into "Library/~".
+const code = (c: ReactNode) => <code dir="ltr" className="text-violet-300">{c}</code>;
 
 type Profile = { id: string; name: string; vendor: string; type: string; nozzleTemp: number; bedTemp: number; file: string };
 type Manifest = { machine: string; vendors: string[]; types: string[]; profiles: Profile[] };
@@ -418,7 +419,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
         </p>
         <p className="mt-2 text-xs text-fg-subtle">
           {t("folderLabel", { os: activePath.os })}{" "}
-          <code className="rounded bg-surface px-1.5 py-0.5 text-violet-300">{activePath.path}</code>
+          <code dir="ltr" className="rounded bg-surface px-1.5 py-0.5 text-violet-300">{activePath.path}</code>
         </p>
         <p className="mt-1 text-xs text-fg-subtle">
           {t.rich("folderVaries", { code })}
@@ -542,7 +543,7 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
             </p>
             <ul className="mt-1 space-y-0.5 text-xs text-fg-subtle">
               {OS_PATHS.map((o) => (
-                <li key={o.os}><span className={o.os === os ? "font-medium text-fg-muted" : ""}>{o.os}:</span> <code className="text-violet-300">{o.path}</code></li>
+                <li key={o.os}><span className={o.os === os ? "font-medium text-fg-muted" : ""}>{o.os}:</span> <code dir="ltr" className="text-violet-300">{o.path}</code></li>
               ))}
             </ul>
           </div>

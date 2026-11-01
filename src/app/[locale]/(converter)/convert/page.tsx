@@ -2292,7 +2292,7 @@ export default function ConvertPage() {
                   >
                     {format.number(n)} {t("nozzleUnit")}
                     {n === U1_TESTED_NOZZLE && (
-                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-violet-100" : "text-fg-subtle"}`}>
+                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-white/80" : "text-fg-subtle"}`}>
                         {t("nozzleTested")}
                       </span>
                     )}

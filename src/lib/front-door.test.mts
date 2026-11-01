@@ -38,7 +38,13 @@ test("a two-letter segment that is not a locale is left alone", () => {
   // `/xy` is a missing page and should 404 as one, rather than being quietly sent to the converter
   // as though every unknown two-letter path were a language.
   assert.equal(frontDoorPath("/xy"), null);
-  assert.equal(frontDoorPath("/en"), null, "`en` is unprefixed in this app — /en is not a front door");
+});
+
+test("`/en` reaches the converter, not the other site", () => {
+  // `en` is unprefixed here, so `/en` was left alone and fell through to the cross-origin rule, which
+  // 301'd it to makerrun.com/en (2026-11-01 audit). It is the English front door spelled out.
+  assert.equal(frontDoorPath("/en"), "/convert");
+  assert.equal(frontDoorPath("/en/"), "/convert");
 });
 
 test("the middleware runs the front door BEFORE next-intl", () => {

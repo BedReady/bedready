@@ -273,7 +273,7 @@
     "diffClamped": "Capped {count, plural, one {# speed/accel setting} other {# speed/accel settings}} to U1 limits:",
     "diffMore": "+{count} more",
     "diffSentinel": "Fixed {count, plural, one {# auto/placeholder value} other {# auto/placeholder values}} Orca needs spelled out (e.g. filament slots, line widths)",
-    "diffDropped": "Removed {count, plural, one {# setting} other {# settings}} specific to the source printer that don't apply to the U1",
+    "diffDropped": "Removed {count, plural, one {# setting specific to the source printer that doesn't} other {# settings specific to the source printer that don't}} apply to the U1",
     "diffVlh": "Variable layer height detected — turned off the prime tower / switched tree→normal supports so Orca can slice it",
     "diffBedShift": "Nudged the model onto the U1's printable area (+{dx}, +{dy} mm) so it clears the bed's excluded border",
     "diffPrusaPaint": "Translated PrusaSlicer paint data (colors / supports / seams) to Orca's format so it loads on the U1",
