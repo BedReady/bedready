@@ -1212,7 +1212,11 @@
     "modalBulk": "Installation {count, plural, one {du # filament affiché} other {des # filaments affichés}}.",
     "modalSingle": "Installation de « {name} ».",
     "cancel": "Annuler",
-    "continueClosed": "Orca est fermé — continuer"
+    "continueClosed": "Orca est fermé — continuer",
+    "noProfileTitle": "Aucun profil pour « {query} »",
+    "noProfileBody": "Les filaments non répertoriés, de marque distributeur ou abandonnés s'impriment bien à partir d'un profil de base. Partez de l'un de ces profils {material} : celui de Snapmaker est conçu pour la U1, et le profil Generic est une solution neutre.",
+    "noProfilePick": "Les filaments non répertoriés, de marque distributeur ou abandonnés s'impriment bien à partir d'un profil de base. Choisissez le matériau pour en voir un conçu pour la U1 :",
+    "noProfileTuning": "Séchez d'abord une bobine ancienne (environ 65 °C pendant 4 à 6 heures pour l'ABS ou le PETG), puis ajustez la température de la buse par paliers de 5 °C avec une tour de température."
   },
   "orcaPage": {
     "metaTitle": "Ajouter des profils de filament OrcaSlicer à Snapmaker Orca (Snapmaker U1) — BedReady",

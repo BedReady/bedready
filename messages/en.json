@@ -1212,7 +1212,11 @@
     "modalBulk": "Installing all {count, plural, one {# shown filament} other {# shown filaments}}.",
     "modalSingle": "Installing “{name}”.",
     "cancel": "Cancel",
-    "continueClosed": "Orca is closed — continue"
+    "continueClosed": "Orca is closed — continue",
+    "noProfileTitle": "No profile for “{query}”",
+    "noProfileBody": "Unlisted, store-brand and discontinued filaments print well from a base profile. Start from one of these {material} profiles: Snapmaker's own is made for the U1, and the Generic one is a neutral fallback.",
+    "noProfilePick": "Unlisted, store-brand and discontinued filaments print well from a base profile. Pick the material to see one made for the U1:",
+    "noProfileTuning": "Dry an older spool first (about 65 °C for 4–6 hours for ABS or PETG), then adjust the nozzle temperature in 5 °C steps with a temperature tower."
   },
   "orcaPage": {
     "metaTitle": "Add OrcaSlicer Filament Profiles to Snapmaker Orca (Snapmaker U1) — BedReady",

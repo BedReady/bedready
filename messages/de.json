@@ -1212,7 +1212,11 @@
     "modalBulk": "Es werden alle {count, plural, one {# angezeigte Filament} other {# angezeigten Filamente}} installiert.",
     "modalSingle": "„{name}“ wird installiert.",
     "cancel": "Abbrechen",
-    "continueClosed": "Orca ist geschlossen — weiter"
+    "continueClosed": "Orca ist geschlossen — weiter",
+    "noProfileTitle": "Kein Profil für „{query}“",
+    "noProfileBody": "Nicht gelistete, Eigenmarken- und eingestellte Filamente drucken gut mit einem Basisprofil. Starte mit einem dieser {material}-Profile: Das eigene Profil von Snapmaker ist für den U1 gemacht, das Generic-Profil ist eine neutrale Alternative.",
+    "noProfilePick": "Nicht gelistete, Eigenmarken- und eingestellte Filamente drucken gut mit einem Basisprofil. Wähle das Material, um eines für den U1 zu sehen:",
+    "noProfileTuning": "Trockne eine ältere Spule zuerst (etwa 65 °C für 4–6 Stunden bei ABS oder PETG) und passe dann die Düsentemperatur in 5-°C-Schritten mit einem Temperaturturm an."
   },
   "orcaPage": {
     "metaTitle": "OrcaSlicer-Filamentprofile zu Snapmaker Orca hinzufügen (Snapmaker U1) — BedReady",
