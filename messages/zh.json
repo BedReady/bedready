@@ -1212,7 +1212,11 @@
     "modalBulk": "将安装显示的全部 {count} 个耗材。",
     "modalSingle": "正在安装“{name}”。",
     "cancel": "取消",
-    "continueClosed": "Orca 已关闭——继续"
+    "continueClosed": "Orca 已关闭——继续",
+    "noProfileTitle": "没有“{query}”的配置文件",
+    "noProfileBody": "未收录、商店自有品牌和已停产的耗材，从基础配置文件起步也能打印得很好。请从以下 {material} 配置文件开始：Snapmaker 官方配置专为 U1 制作，Generic 配置是中性的备选。",
+    "noProfilePick": "未收录、商店自有品牌和已停产的耗材，从基础配置文件起步也能打印得很好。选择材料即可看到专为 U1 制作的配置文件：",
+    "noProfileTuning": "先烘干旧耗材（ABS 或 PETG 约 65 °C 烘 4–6 小时），再用温度塔以 5 °C 为步长调整喷嘴温度。"
   },
   "orcaPage": {
     "metaTitle": "将 OrcaSlicer 耗材配置添加到 Snapmaker Orca（Snapmaker U1）— BedReady",

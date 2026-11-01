@@ -1212,7 +1212,11 @@
     "modalBulk": "Se {count, plural, one {instalará el # filamento mostrado} other {instalarán los # filamentos mostrados}}.",
     "modalSingle": "Instalando «{name}».",
     "cancel": "Cancelar",
-    "continueClosed": "Orca está cerrado: continuar"
+    "continueClosed": "Orca está cerrado: continuar",
+    "noProfileTitle": "No hay perfil para «{query}»",
+    "noProfileBody": "Los filamentos no listados, de marca blanca o descatalogados imprimen bien a partir de un perfil base. Empieza con uno de estos perfiles de {material}: el propio de Snapmaker está hecho para la U1 y el Generic es una alternativa neutra.",
+    "noProfilePick": "Los filamentos no listados, de marca blanca o descatalogados imprimen bien a partir de un perfil base. Elige el material para ver uno hecho para la U1:",
+    "noProfileTuning": "Seca primero una bobina antigua (unos 65 °C durante 4–6 horas para ABS o PETG) y luego ajusta la temperatura de la boquilla en pasos de 5 °C con una torre de temperatura."
   },
   "orcaPage": {
     "metaTitle": "Añadir perfiles de filamento de OrcaSlicer a Snapmaker Orca (Snapmaker U1) — BedReady",

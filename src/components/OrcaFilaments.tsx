@@ -99,6 +99,30 @@ function fileNameFor(p: Profile, used: Set<string>): string {
   return name;
 }
 
+// ── WHEN THE BRAND IS NOT LISTED ─────────────────────────────────────────────────────────────────
+// A search for an unlisted brand ("hictop abs": a defunct Amazon label) used to end at "No filaments
+// match", and the owner had to email to ask which profile to pick (feedback, 2026-11-01). The answer is
+// always the same: start from Snapmaker's own profile for that material, or the Generic one, then tune.
+// So the empty result offers exactly those two, for the material the filter or the query names.
+
+/** The materials offered as chips when nothing names one, in the order people own them. */
+const COMMON_TYPES = ["PLA", "PETG", "ABS", "ASA", "TPU", "PC", "PA"];
+
+/** A material named in the query as a whole word ("hictop abs" → "ABS"), or "" if none is. */
+function materialInQuery(q: string, types: string[]): string {
+  const words = new Set(q.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  return types.find((ty) => ty !== "Other" && words.has(ty.toLowerCase())) ?? "";
+}
+
+/** Snapmaker's own profile for a material (made for the U1) and a Generic one, whichever exist. */
+function startersFor(material: string, profiles: Profile[]): Profile[] {
+  const own = profiles.find((p) => p.vendor === "Snapmaker" && p.name === `Snapmaker ${material}`);
+  // "Generic ABS" ships under several vendors' folders; Orca's own is the neutral one.
+  const generics = profiles.filter((p) => p.name === `Generic ${material}`);
+  const generic = generics.find((p) => p.vendor === "Orca") ?? generics[0];
+  return [own, generic].filter((p): p is Profile => !!p);
+}
+
 export default function OrcaFilaments({ initialVendor = "", initialType = "" }: { initialVendor?: string; initialType?: string }) {
   const t = useTranslations("orca");
   const [manifest, setManifest] = useState<Manifest | null>(null);
@@ -327,7 +351,50 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
     else if (p) doInstall(p);
   }
 
+  // The unlisted-brand fallback: only for a search that found nothing, never for the dropdowns alone.
+  const fallbackMaterial = manifest && query.trim() && shown.length === 0 ? type || materialInQuery(query, manifest.types) : "";
+  const starters = manifest && fallbackMaterial ? startersFor(fallbackMaterial, manifest.profiles) : [];
+  const chipTypes = manifest ? COMMON_TYPES.filter((ty) => startersFor(ty, manifest.profiles).length > 0) : [];
+
   const activePath = OS_PATHS.find((o) => o.os === os) ?? OS_PATHS[1];
+
+  const card = (p: Profile) => (
+    <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
+      <h3 className="font-semibold text-fg">{p.name}</h3>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
+        <span className="rounded-full border border-line bg-surface px-2 py-0.5 text-xs text-fg-muted">{p.vendor}</span>
+        <span className="rounded-full border border-violet-400/40 bg-violet-400/10 px-2 py-0.5 text-xs text-violet-300">{p.type}</span>
+      </div>
+      <p className="mt-3 text-xs text-fg-subtle">{t("temps", { nozzle: p.nozzleTemp, bed: p.bedTemp })}</p>
+      <div className="mt-4 flex flex-col gap-2">
+        {directInstall ? (
+          <>
+            <button
+              onClick={() => onAdd(p)}
+              disabled={busy === p.id}
+              className="btn-secondary btn-sm"
+            >
+              {busy === p.id ? t("installing") : t("addToOrca")}
+            </button>
+            <button
+              onClick={() => download(p)}
+              className="btn-secondary btn-sm"
+            >
+              {t("downloadJson")}
+            </button>
+          </>
+        ) : (
+          // No direct write (macOS ~/Library block, or Safari/Firefox): download → import in Orca.
+          <button
+            onClick={() => onAdd(p)}
+            className="btn-secondary btn-sm"
+          >
+            {t("downloadForOrca")}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   if (err) return <p role="alert" className="notice notice-warn mt-8"><NoticeIcon level="warn" />{err}</p>;
   if (!manifest) return <p className="mt-8 text-sm text-fg-muted">{t("loading")}</p>;
@@ -413,47 +480,33 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
 
           Exactly inverted now: one primary above the grid, secondary in each card. */}
       {/* Grid */}
-      {shown.length === 0 ? (
+      {shown.length === 0 && query.trim() ? (
+        <div className="mt-6 rounded-lg border border-line bg-surface p-5 text-sm">
+          <h3 className="font-semibold text-fg">{t("noProfileTitle", { query: query.trim() })}</h3>
+          {starters.length > 0 ? (
+            <>
+              <p className="mt-2 text-fg-muted">{t("noProfileBody", { material: fallbackMaterial })}</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">{starters.map(card)}</div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 text-fg-muted">{t("noProfilePick")}</p>
+              <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={t("materialLabel")}>
+                {chipTypes.map((ty) => (
+                  <button key={ty} type="button" onClick={() => setType(ty)} className="btn-secondary btn-sm">
+                    {ty}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <p className="mt-4 text-xs text-fg-subtle">{t("noProfileTuning")}</p>
+        </div>
+      ) : shown.length === 0 ? (
         <p className="mt-8 text-sm text-fg-muted">{t("noMatch")}</p>
       ) : (
         <div className="page-breakout mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((p) => (
-            <div key={p.id} className="flex flex-col rounded-lg border border-line bg-surface-2 p-5">
-              <h3 className="font-semibold text-fg">{p.name}</h3>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-line bg-surface px-2 py-0.5 text-xs text-fg-muted">{p.vendor}</span>
-                <span className="rounded-full border border-violet-400/40 bg-violet-400/10 px-2 py-0.5 text-xs text-violet-300">{p.type}</span>
-              </div>
-              <p className="mt-3 text-xs text-fg-subtle">{t("temps", { nozzle: p.nozzleTemp, bed: p.bedTemp })}</p>
-              <div className="mt-4 flex flex-col gap-2">
-                {directInstall ? (
-                  <>
-                    <button
-                      onClick={() => onAdd(p)}
-                      disabled={busy === p.id}
-                      className="btn-secondary btn-sm"
-                    >
-                      {busy === p.id ? t("installing") : t("addToOrca")}
-                    </button>
-                    <button
-                      onClick={() => download(p)}
-                      className="btn-secondary btn-sm"
-                    >
-                      {t("downloadJson")}
-                    </button>
-                  </>
-                ) : (
-                  // No direct write (macOS ~/Library block, or Safari/Firefox): download → import in Orca.
-                  <button
-                    onClick={() => onAdd(p)}
-                    className="btn-secondary btn-sm"
-                  >
-                    {t("downloadForOrca")}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+          {visible.map(card)}
         </div>
       )}
       {shown.length > visible.length && (

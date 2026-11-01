@@ -1212,7 +1212,11 @@
     "modalBulk": "表示中の {count} 件すべてをインストールします。",
     "modalSingle": "「{name}」をインストールします。",
     "cancel": "キャンセル",
-    "continueClosed": "Orca は終了済み — 続行"
+    "continueClosed": "Orca は終了済み — 続行",
+    "noProfileTitle": "「{query}」のプロファイルはありません",
+    "noProfileBody": "掲載されていないフィラメントやストアブランド品、販売終了品も、ベースのプロファイルから始めればきれいに印刷できます。次の{material}プロファイルから始めてください。Snapmaker純正はU1向けに作られており、Genericは汎用の代替です。",
+    "noProfilePick": "掲載されていないフィラメントやストアブランド品、販売終了品も、ベースのプロファイルから始めればきれいに印刷できます。素材を選ぶとU1向けのプロファイルが表示されます：",
+    "noProfileTuning": "古いスプールはまず乾燥させ（ABSやPETGなら約65 °Cで4〜6時間）、温度タワーを使ってノズル温度を5 °Cずつ調整してください。"
   },
   "orcaPage": {
     "metaTitle": "OrcaSlicer のフィラメントプロファイルを Snapmaker Orca に追加（Snapmaker U1）— BedReady",
