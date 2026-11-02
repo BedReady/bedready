@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { reliefGrid } from "@/lib/relief-grid";
 import dynamic from "next/dynamic";
 import { quantize, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh } from "@/lib/image-model";
 import { cleanThreeMFAsync } from "@/lib/convert-client";
@@ -52,6 +53,7 @@ function panelToMeshData(panel: PanelMesh, baseState = 1): MeshData {
 
 type Status = "idle" | "ready" | "working" | "done" | "error";
 
+
 // Draw an image file onto a canvas downsampled so the LONGEST side is `grid` px, and read its RGBA.
 async function pixelsFromFile(file: File, grid: number): Promise<{ px: Uint8ClampedArray; w: number; h: number }> {
   const url = URL.createObjectURL(file);
@@ -101,6 +103,7 @@ export default function ImagePage() {
     { deltaE: number; colors: number; automatic: boolean; filaments: string[] } | null
   >(null);
   const rawPixels = useRef<{ px: Uint8ClampedArray; w: number; h: number } | null>(null);
+  const fileRef = useRef<File | null>(null); // re-read at print resolution for the relief
   const lumaRef = useRef<Float32Array | null>(null); // per-cell brightness 0..1 for relief height
   const previewCanvas = useRef<HTMLCanvasElement | null>(null);
 
@@ -127,6 +130,7 @@ export default function ImagePage() {
 
   const onFile = useCallback(async (file: File | undefined) => {
     if (!file) return;
+    fileRef.current = file;
     if (!/^image\//.test(file.type)) { setStatus("error"); setMessage(t("errNotImage")); return; }
     setStatus("working"); setMessage(t("reading")); setFileName(file.name);
     try {
@@ -165,14 +169,16 @@ export default function ImagePage() {
   }, [q]);
   const colorKey = (q?.palette.join(",") ?? "") + (relief ? `-r${reliefDepth}` : "");
 
-  /** Photo -> relief -> Orca-ready U1 3MF. Uses the full-resolution pixels, not the quantised map. */
+  /** Photo -> relief -> Orca-ready U1 3MF, from the photo re-read at print resolution (reliefGrid). */
   async function makeHueForge() {
-    const px = rawPixels.current;
-    if (!px) return;
+    const preview = rawPixels.current;
+    const file = fileRef.current;
+    if (!preview || !file) return;
     setStatus("working");
     setMessage(t("hfBuilding"));
     setHfQuality(null);
     try {
+      const px = await pixelsFromFile(file, reliefGrid(sizeMM, preview.w, preview.h, detail));
       const base = fileName.replace(/\.[^.]+$/, "") || "image";
       // Loaded on demand: the relief engine plus the 572-key U1 settings template are dead weight
       // for everyone who only wants the flat panel.
