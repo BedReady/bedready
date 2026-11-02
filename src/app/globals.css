@@ -444,10 +444,12 @@ body {
   padding-inline: 1.5rem;
 }
 .page-breakout {
+  /* Equal negative margins on both sides, not left:50% + translateX(-50%): that pair centres only in
+     LTR. In RTL `left` still pulls from the left edge, so /ar card grids sat 176px off-screen with the
+     first column clipped (2026-11-01 audit). Percentage margins resolve against the column's width in
+     either direction. */
   width: min(64rem, 100vw - 3rem);
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-inline: calc((100% - min(64rem, 100vw - 3rem)) / 2);
 }
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────

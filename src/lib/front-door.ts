@@ -41,5 +41,8 @@ export function frontDoorPath(pathname: string): string | null {
   if (pathname === "/") return "/convert";
   const m = pathname.match(/^\/([a-z]{2})\/?$/);
   if (m && LOCALES.includes(m[1]!)) return `/${m[1]}/convert`;
+  // `/en` is the default locale spelled out (an old link, a hand-typed URL). Unhandled, it fell through
+  // to the cross-origin rule and was sent to makerrun.com/en, the other site.
+  if (m && m[1] === "en") return "/convert";
   return null;
 }
