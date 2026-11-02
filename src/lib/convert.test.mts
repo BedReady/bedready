@@ -133,6 +133,56 @@ test("tower-safety: output forces rib wall type (preserve)", async () => {
   const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
   assert.equal(c.wipe_tower_wall_type, "rib");
 });
+// Snapmaker Orca 2.4 stores each filament's standard AND high-flow values side by side (step size 2).
+// Shape copied from a real 2.4.0 export (four SnapSpeed slots, standard hot ends).
+const FLOW_VARIANT_SOURCE = {
+  printer_settings_id: "Snapmaker U1 (0.4 nozzle)",
+  filament_colour: ["#2D9E59", "#080A0D", "#E2DEDB", "#F97429"],
+  filament_type: ["PLA", "PLA", "PLA", "PLA"],
+  filament_settings_id: Array(4).fill("Snapmaker PLA SnapSpeed @U1"),
+  filament_flow_step_size: ["2", "2", "2", "2"],
+  filament_flow_support: Array(4).fill(["standard", "high_flow"]).flat(),
+  filament_volume_type: Array(4).fill("standard"),
+  nozzle_volume_type: Array(4).fill("standard"),
+  filament_max_volumetric_speed: Array(4).fill(["20", "40"]).flat(),
+  enable_pressure_advance: Array(4).fill(["0", "1"]).flat(),
+  pressure_advance: Array(4).fill(["0.02", "0.024"]).flat(),
+  process_flow_support: ["standard", "high_flow"],
+  outer_wall_speed: ["200", "500"],
+};
+test("flow variants: every slot keeps its STANDARD value, not slot 0's high-flow one (preserve)", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": JSON.stringify(FLOW_VARIANT_SOURCE), "3D/3dmodel.model": model() });
+  const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
+  assert.deepEqual(c.filament_max_volumetric_speed, ["20", "20", "20", "20"]);
+  assert.deepEqual(c.enable_pressure_advance, ["0", "0", "0", "0"]);
+  assert.deepEqual(c.pressure_advance, ["0.02", "0.02", "0.02", "0.02"]);
+  assert.deepEqual(c.outer_wall_speed, ["200"]);
+});
+test("flow variants: a filament that declares high_flow first still collapses to standard", async () => {
+  const { collapseFlowVariants } = await import("./convert.ts");
+  const o = collapseFlowVariants({
+    filament_flow_step_size: ["2", "1"],
+    filament_flow_support: ["high_flow", "standard", "standard"],
+    filament_volume_type: ["high_flow", "standard"],
+    nozzle_volume_type: ["high_flow"],
+    nozzle_temperature: ["230", "220", "210"],
+    process_flow_support: ["high_flow", "standard"],
+    sparse_infill_speed: ["600", "270"],
+  });
+  assert.deepEqual(o.nozzle_temperature, ["220", "210"]);
+  assert.deepEqual(o.filament_flow_step_size, ["1", "1"]);
+  assert.deepEqual(o.filament_flow_support, ["standard", "standard"]);
+  assert.deepEqual(o.filament_volume_type, ["standard", "standard"]);
+  assert.deepEqual(o.nozzle_volume_type, ["standard"]);
+  assert.deepEqual(o.sparse_infill_speed, ["270"]);
+  assert.deepEqual(o.process_flow_support, ["standard"]);
+});
+test("flow variants: a same-family retarget does not carry eight entries into four slots", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": JSON.stringify(FLOW_VARIANT_SOURCE), "3D/3dmodel.model": model() });
+  const c = await cfgOf((await cleanThreeMF(f, "creality-k2", { mode: "preserve" })).blob);
+  assert.deepEqual(c.filament_max_volumetric_speed, ["20", "20", "20", "20"]);
+  assert.deepEqual(c.filament_flow_step_size, ["1", "1", "1", "1"]);
+});
 test("anti-clobber: print_settings_id suffixed; inherits_group dropped as a foreign key (preserve)", async () => {
   const f = file3mf({ "Metadata/project_settings.config": project({ print_settings_id: "0.20 Foo", inherits_group: ["a", "b"] }), "3D/3dmodel.model": model() });
   const r = await cleanThreeMF(f, "u1", { mode: "preserve" });
