@@ -98,6 +98,9 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "/docs": ["./docs/API.md"],
     "/docs/api.md": ["./docs/API.md"],
+    // The share card renders at request time and reads its fonts the same untraceable way
+    // (src/lib/og-card.tsx). Without this the preview served a 500 for every locale's card.
+    "/[locale]/opengraph-image": ["./src/assets/og-fonts/*.ttf"],
   },
   /**
    * `/api/*` is proxied to MakerRun, not served and not redirected.
