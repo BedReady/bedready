@@ -1,3 +1,4 @@
+import AppJsonLd from "@/components/AppJsonLd";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -60,6 +61,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
 
   return (
     <main className="page-read py-12">
+      <AppJsonLd locale={locale} namespace="extension" path="/extension" kind="extension" />
       <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
       <p className="mt-3 text-fg-muted">{t("intro")}</p>
 

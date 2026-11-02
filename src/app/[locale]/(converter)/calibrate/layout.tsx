@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
+import AppJsonLd from "@/components/AppJsonLd";
 
 export async function generateMetadata({
   params,
@@ -16,6 +17,12 @@ export async function generateMetadata({
   };
 }
 
-export default function CalibrateLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function CalibrateLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return (
+    <>
+      <AppJsonLd locale={locale} namespace="calibrate" path="/calibrate" />
+      {children}
+    </>
+  );
 }
