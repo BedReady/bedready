@@ -15,7 +15,7 @@ declare const browser: any;
 declare const chrome: any;
 const api: any = typeof browser !== "undefined" ? browser : chrome;
 
-const HOSTS = /makerworld\.com|printables\.com|thingiverse\.com/;
+const HOSTS = /makerworld\.com(\.cn)?|printables\.com|thingiverse\.com/;
 
 // In-page toast — the universal feedback channel (works on any OS, no notification permission needed).
 // The background worker messages us on intercept start/done/fail; we render it right on the page in a
@@ -219,7 +219,7 @@ function scan(): void {
   document
     .querySelectorAll<HTMLAnchorElement>('a[href$=".3mf" i], a[href*=".3mf?" i], a[download$=".3mf" i]')
     .forEach(injectButton);
-  if (/(^|\.)makerworld\.com$/i.test(location.hostname)) injectMakerWorldButton();
+  if (/(^|\.)makerworld\.com(\.cn)?$/i.test(location.hostname)) injectMakerWorldButton();
 }
 
 if (HOSTS.test(location.host)) {

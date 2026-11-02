@@ -130,6 +130,21 @@ targetSel.addEventListener("change", () => void update({ target: targetSel.value
 nozzleSel.addEventListener("change", () => void update({ nozzle: Number(nozzleSel.value) }));
 autoBox.addEventListener("change", () => void update({ autoConvert: autoBox.checked }));
 keepBox.addEventListener("change", () => void update({ keepOriginal: keepBox.checked }));
+// makerworld.com.cn is opt-in (background.ts explains why): the switch IS the permission, so it reads
+// the browser's grant rather than a stored setting, and asking happens on the click itself, which is
+// the user gesture the permission prompt requires. A refusal, or a Firefox before 128, leaves it off.
+const cnBox = document.getElementById("cn") as HTMLInputElement;
+const CN_ORIGINS = ["https://makerworld.com.cn/*", "https://*.bblmw.cn/*"];
+void api?.permissions?.contains?.({ origins: CN_ORIGINS }).then((on: boolean) => { cnBox.checked = on; }).catch(() => {});
+cnBox.addEventListener("change", async () => {
+  try {
+    cnBox.checked = cnBox.checked
+      ? await api.permissions.request({ origins: CN_ORIGINS })
+      : !(await api.permissions.remove({ origins: CN_ORIGINS }));
+  } catch {
+    cnBox.checked = false;
+  }
+});
 // No downloads API (Safari) → interception cannot run, so its switches would promise nothing.
 prefs.hidden = !api?.downloads;
 reflect();

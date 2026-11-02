@@ -1428,6 +1428,7 @@
     "onDownload": "عند التنزيل",
     "autoConvert": "حوّل تنزيلات ‎.3mf من MakerWorld وPrintables وThingiverse تلقائيًا",
     "keepOriginal": "احتفظ بالملف الأصلي المُنزَّل أيضًا",
+    "cnToggle": "العمل أيضًا على makerworld.com.cn",
     "drop": "أفلِت ملف ‎.3mf هنا، أو انقر للاختيار",
     "editColors": "عدّل الألوان على bedready.io ←",
     "footer": "معاينة كاملة ومحرّر الألوان:",
