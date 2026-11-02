@@ -8,7 +8,7 @@
 // redirects and Firefox — for those, open the background console (Chrome: chrome://extensions →
 // "service worker"; Firefox: about:debugging → Inspect) and read the [BedReady] logs.
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
-import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor } from "./settings";
+import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, type Settings } from "./settings";
 import { stash, take, editorUrl, bytesToBase64 } from "./handoff";
 import { t } from "./i18n";
 
@@ -28,6 +28,7 @@ const SITE_RE = /(^|\.)(makerworld\.com|printables\.com|thingiverse\.com)$/i;
 // (files/media.printables.com) and Thingiverse (cdn.thingiverse.com) file hosts are subdomains of the
 // site domains, so SITE_RE already covers those. Keep in sync with host_permissions (bblmw.com is there).
 const CDN_RE = /(^|\.)bblmw\.com$/i;
+const MAKERWORLD_RE = /(^|\.)makerworld\.com$/i;
 const is3mf = (s: string) => /\.3mf(\?|$)/i.test(s || "");
 const host = (u: string) => { try { return new URL(u).hostname; } catch { return ""; } };
 
@@ -96,7 +97,6 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
   // Read on every event, never cached in a variable: a service worker is torn down between downloads.
   const settings = await loadSettings();
   if (!settings.autoConvert) return; // the popup's "Convert downloads automatically" switch is off
-  const who = shortName(settings);
 
   const key = url.split("?")[0]; // ignore expiring query params
   if (inFlight.has(key)) {
@@ -104,15 +104,31 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     return;
   }
   inFlight.add(key);
-  setBadge("…", "#f97316"); // instant feedback: we caught the download and are working on it
-  toast("working", t("toastWorking", { file: base, printer: who }));
-  notify(t("notifyWorkingTitle"), t("notifyWorking", { file: base, printer: who }));
-  console.log("[BedReady] intercepting .3mf:", url, "(from", from + ")");
   try {
     // NB: we do NOT cancel the user's original download yet. We convert first and only cancel it on
     // success (right before saving the converted file) — so if anything fails, the user still gets their
     // real .3mf instead of nothing. (If the original finishes before we do, the cancel is a harmless
     // no-op and the user simply keeps both files.)
+    console.log("[BedReady] intercepting .3mf:", url, "(from", from + ")");
+    await convertRemote(url, base, settings, async () => {
+      if (!settings.keepOriginal) await api.downloads.cancel(item.id).catch(() => {});
+    });
+  } finally {
+    inFlight.delete(key);
+  }
+});
+
+/**
+ * Fetch a model file, convert it for the chosen printer and save the result, with the badge, toast and
+ * notification along the way. Shared by download interception and the in-page MakerWorld button.
+ * `beforeSave` runs only once the conversion has succeeded (interception cancels the original there).
+ */
+async function convertRemote(url: string, base: string, settings: Settings, beforeSave?: () => Promise<void>): Promise<void> {
+  const who = shortName(settings);
+  setBadge("…", "#f97316"); // instant feedback: we caught the file and are working on it
+  toast("working", t("toastWorking", { file: base, printer: who }));
+  notify(t("notifyWorkingTitle"), t("notifyWorking", { file: base, printer: who }));
+  try {
     // SW fetch bypasses CORS for hosts in host_permissions — if this blocks, the download host (often a
     // CDN like *.bblmw.com / files.printables.com) isn't covered; the logged URL says which to add.
     // No credentials: these are public presigned URLs (auth is in the query string), and sending
@@ -133,9 +149,9 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
       console.log("[BedReady] already for target, left alone:", base, info.printer);
       return;
     }
-    // Interception has no UI to ask, so default to keeping every colour: pass fullSpectrum, which the
-    // engine applies ONLY to painted files with >4 colours (dithered 2-/3-filament mixes of the 4 heads)
-    // and ignores otherwise. So ≤4-colour and unpainted files convert exactly as before.
+    // No UI to ask, so default to keeping every colour: pass fullSpectrum, which the engine applies
+    // ONLY to painted files with >4 colours (dithered 2-/3-filament mixes of the 4 heads) and ignores
+    // otherwise. So ≤4-colour and unpainted files convert exactly as before.
     const out = await cleanThreeMF(file, settings.target, quickOpts(settings));
     const outBytes = new Uint8Array(await out.blob.arrayBuffer());
     // A data: URL holds the output ~1.33× as base64; guard very large outputs rather than risk a failed/
@@ -147,7 +163,7 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
       return;
     }
     // Success — now replace the original with the converted file.
-    if (!settings.keepOriginal) await api.downloads.cancel(item.id).catch(() => {});
+    await beforeSave?.();
     const outName = name.replace(/\.3mf$/i, "") + suffixOf(settings.target);
     await api.downloads.download({ url: bytesToDataUrl(outBytes), filename: outName, saveAs: false });
     const fsMixes = out.diff?.fullSpectrumMixes ?? 0;
@@ -157,14 +173,35 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     notify(t("notifyDoneTitle"), t("notifyDone", { out: outName, printer: who }) + colorNote);
     console.log("[BedReady] converted →", outName);
   } catch (e) {
-    // We never cancelled the original, so the user still has their real .3mf — just point to the popup.
-    console.error("[BedReady] interception failed (original download left intact):", e);
+    // The original was never cancelled, so the user still has their real .3mf — point to the popup.
+    console.error("[BedReady] conversion failed (original left intact):", e);
     setBadge("!", "#dc2626", 8000);
     toast("error", t("toastFailed", { file: base }));
     notify(t("notifyFailedTitle"), t("toastFailed", { file: base }));
-  } finally {
-    inFlight.delete(key);
   }
+}
+
+// ---------- the in-page MakerWorld button (content.ts) ----------
+// The content script asks MakerWorld for the signed file link (that call needs the user's MakerWorld
+// session, so it runs in the page) and hands the link here: the bytes live on Bambu's CDN, which only
+// the extension's host permission can fetch without CORS. Only a MakerWorld tab may ask, and only for
+// a CDN or MakerWorld URL, so a message can never point this at some other host.
+api?.runtime?.onMessage?.addListener((msg: { type?: string; url?: string; name?: string }, sender: { tab?: { url?: string } }) => {
+  if (msg?.type !== "bedready-convert-url" || typeof msg.url !== "string") return;
+  if (!MAKERWORLD_RE.test(host(sender?.tab?.url || ""))) return;
+  const h = host(msg.url);
+  if (!(CDN_RE.test(h) || MAKERWORLD_RE.test(h)) || !msg.url.startsWith("https://")) return;
+  const base = (typeof msg.name === "string" && msg.name.trim() ? msg.name.trim() : "model.3mf").replace(/[\\/:*?"<>|]/g, "_");
+  const key = msg.url.split("?")[0];
+  if (inFlight.has(key)) return;
+  inFlight.add(key);
+  void (async () => {
+    try {
+      await convertRemote(msg.url!, base, await loadSettings());
+    } finally {
+      inFlight.delete(key);
+    }
+  })();
 });
 
 // ---------- the editor handoff (handoff.ts) ----------

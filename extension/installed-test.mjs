@@ -73,6 +73,53 @@ async function run({ target, keep = false, file }) {
   }
 }
 
+// The in-page MakerWorld button: a faked model page (MakerWorld's real markup hook, span.primaryButton),
+// its f3mf endpoint answering with a signed CDN link, and the CDN serving the file. The page asks the
+// endpoint; the service worker fetches the CDN bytes. `signedIn: false` answers 403 like the real site.
+async function runMakerWorldButton({ file, signedIn = true }) {
+  const DL = mkdtempSync(join(tmpdir(), "br-mw-"));
+  const browser = await puppeteer.launch({
+    executablePath: CHROME, headless: true, pipe: true,
+    ignoreDefaultArgs: ["--disable-extensions"], args: ["--enable-unsafe-extension-debugging", "--no-first-run"],
+  });
+  const seen = [];
+  try {
+    const b = await browser.target().createCDPSession();
+    const { id } = await b.send("Extensions.loadUnpacked", { path: EXT });
+    const swt = await browser.waitForTarget((t) => t.type() === "service_worker" && t.url().includes(id));
+    await b.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: DL });
+    const html = `<!doctype html><html><body><div class="panel"><div class="row"><div class="btn"><span class="primaryButton"><div><span>Open in Bambu Studio</span></div></span><span>▾</span></div></div></div></body></html>`;
+    const body = readFileSync(file).toString("base64");
+    const answer = (s) => s.on("Fetch.requestPaused", (e) => {
+      const u = e.request.url;
+      seen.push(u);
+      const r = u.includes("/f3mf")
+        ? signedIn
+          ? { code: 200, type: "application/json", body: Buffer.from(JSON.stringify({ name: "Benchy.3mf", url: "https://public-cdn.bblmw.com/makerworld/model/Benchy.3mf?sig=x" })).toString("base64") }
+          : { code: 403, type: "application/json", body: Buffer.from('{"code":1,"error":"Please log in to download models."}').toString("base64") }
+        : u.includes("bblmw.com")
+          ? { code: 200, type: "application/octet-stream", body }
+          : { code: 200, type: "text/html", body: Buffer.from(html).toString("base64") };
+      s.send("Fetch.fulfillRequest", { requestId: e.requestId, responseCode: r.code, body: r.body, responseHeaders: [{ name: "Content-Type", value: r.type }] }).catch(() => {});
+    });
+    const sw = await swt.createCDPSession();
+    const patterns = [{ urlPattern: "https://makerworld.com/*" }, { urlPattern: "https://public-cdn.bblmw.com/*" }];
+    for (const s of [b, sw]) { answer(s); await s.send("Fetch.enable", { patterns }); }
+    const page = await browser.newPage();
+    await page.goto("https://makerworld.com/en/models/1092486-benchy#profileId-42", { waitUntil: "domcontentloaded" });
+    const btn = await page.waitForSelector("button[data-bedready-mw]", { timeout: 15000 }).catch(() => null);
+    await sleep(500);
+    const label = btn ? await btn.evaluate((e) => e.textContent) : "";
+    if (btn) await btn.click();
+    await sleep(signedIn ? 10000 : 2000);
+    const toast = await page.evaluate(() => document.getElementById("bedready-toast")?.shadowRoot?.textContent || "");
+    const files = readdirSync(DL).filter((f) => !f.endsWith(".crdownload"));
+    return { button: !!btn, label, toast, seen, files: files.map((f) => ({ f, printer: printerOf(readFileSync(join(DL, f))) })) };
+  } finally {
+    await browser.close();
+  }
+}
+
 let failed = 0;
 const check = (ok, what) => { console.log(`${ok ? "✓" : "✗"} ${what}`); if (!ok) failed++; };
 
@@ -88,4 +135,10 @@ if (conv) {
   const again = await run({ target: "u1", file: join(u1.DL, conv.f) });
   check(again.logs.some((l) => /already for target/.test(l)) && again.files.length === 1, "a file already set up for the U1 is left as downloaded");
 }
+const mw = await runMakerWorldButton({ file: SRC });
+check(mw.button && mw.label === "Download for U1", `MakerWorld page: "Download for U1" appears under Open in Bambu Studio (${mw.label})`);
+check(mw.seen.some((u) => u.includes("/api/v1/design-service/instance/42/f3mf")), "MakerWorld page: it asks for the profile picked in the URL (#profileId-42)");
+check(mw.files.some((x) => x.printer.startsWith("Snapmaker U1")), `MakerWorld page: the file is converted and saved (${JSON.stringify(mw.files)})`);
+const out = await runMakerWorldButton({ file: SRC, signedIn: false });
+check(out.files.length === 0 && /Sign in to MakerWorld/.test(out.toast), `MakerWorld page, signed out: says to sign in, saves nothing (${out.toast})`);
 process.exit(failed ? 1 : 0);

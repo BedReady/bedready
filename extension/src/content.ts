@@ -73,9 +73,11 @@ try {
 // same target and a change in the popup relabels them without a reload.
 let settings: Settings = { ...DEFAULTS };
 const label = () => `→ ${shortName(settings)}`;
+// The MakerWorld page button is full width, where a bare arrow reads as nothing; it says what it does.
+const mwLabel = () => t("mwButton", { printer: shortName(settings) });
 function relabel(): void {
   document.querySelectorAll<HTMLButtonElement>("button[data-bedready]").forEach((b) => {
-    if (b.dataset.state === "idle") b.textContent = label();
+    if (b.dataset.state === "idle") b.textContent = b.dataset.bedreadyMw ? mwLabel() : label();
   });
 }
 
@@ -129,6 +131,87 @@ function injectButton(anchor: HTMLAnchorElement): void {
   anchor.insertAdjacentElement("afterend", btn);
 }
 
+// ── MakerWorld model pages ──────────────────────────────────────────────────────────────────────
+// MakerWorld has no plain .3mf link: its "Download" asks /api/v1/design-service/instance/<id>/f3mf for
+// a signed CDN URL. The button sits under the green "Open in Bambu Studio" button (a span.primaryButton,
+// whose label names Bambu Studio in every language) and asks that same endpoint for the profile picked
+// on the page, which the URL carries as #profileId-<instance id>. That call needs the user's MakerWorld
+// session, so it runs here; the CDN bytes are fetched and converted by the background worker.
+// Checked on makerworld.com 2026-11-02; signed out the endpoint answers 403 "Please log in…".
+const MW_PAGE = /^\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?models\/(\d+)/i;
+
+/** The print profile (instance) id picked on a MakerWorld model page, or null. */
+function makerWorldInstanceId(): string | null {
+  const fromHash = location.hash.match(/profileId-(\d+)/)?.[1];
+  if (fromHash) return fromHash;
+  // No hash: the model's default profile, from the page data, but only while that data still describes
+  // the model in the URL (MakerWorld navigates client-side, and __NEXT_DATA__ is the first page's).
+  try {
+    const design = JSON.parse(document.getElementById("__NEXT_DATA__")?.textContent || "{}")?.props?.pageProps?.design;
+    if (design && String(design.id) === location.pathname.match(MW_PAGE)?.[1] && design.defaultInstanceId) return String(design.defaultInstanceId);
+  } catch { /* no page data */ }
+  return null;
+}
+
+async function convertMakerWorld(btn: HTMLButtonElement): Promise<void> {
+  const id = makerWorldInstanceId();
+  if (!id) throw new Error("no print profile on this page");
+  const res = await fetch(`/api/v1/design-service/instance/${id}/f3mf?type=download`, { credentials: "include" });
+  const json = (await res.json().catch(() => ({}))) as { url?: string; downloadUrl?: string; name?: string; error?: string };
+  if (res.status === 401 || res.status === 403) {
+    showToast("error", t("mwSignIn"));
+    btn.dataset.state = "idle";
+    btn.textContent = mwLabel();
+    return;
+  }
+  const url = json.url || json.downloadUrl;
+  if (!res.ok || !url) throw new Error(`MakerWorld answered ${res.status}`);
+  // The background worker shows progress in the toast and saves the file.
+  await api.runtime.sendMessage({ type: "bedready-convert-url", url, name: json.name || `makerworld-${id}.3mf` });
+  btn.dataset.state = "idle";
+  btn.textContent = mwLabel();
+}
+
+function injectMakerWorldButton(): void {
+  if (!MW_PAGE.test(location.pathname)) return;
+  // The page renders the green button twice and hides one at zero size (measured 2026-11-02), so only a
+  // visible one counts. Its row: the green button and its dropdown arrow share one wrapper, and ours goes
+  // under that wrapper. Checked per row, so a layout switch that shows the other copy gets a button too.
+  const primary = Array.from(document.querySelectorAll<HTMLElement>("span.primaryButton")).find(
+    (e) => /Bambu Studio/i.test(e.textContent || "") && e.getBoundingClientRect().width > 0,
+  );
+  const row = primary?.parentElement?.parentElement;
+  if (!row || (row.nextElementSibling as HTMLElement | null)?.dataset?.bedreadyMw) return;
+  const btn = document.createElement("button");
+  btn.dataset.bedready = "1";
+  btn.dataset.bedreadyMw = "1";
+  btn.dataset.state = "idle";
+  btn.type = "button";
+  btn.textContent = mwLabel();
+  btn.title = t("buttonTitle");
+  // Same violet as the link button, full width like MakerWorld's own, so it reads as a second action.
+  Object.assign(btn.style, {
+    display: "block", width: "100%", marginTop: "8px", padding: "10px 14px", fontSize: "14px", lineHeight: "1.4",
+    fontWeight: "600", borderRadius: "8px", border: "0", background: "#7c3aed", color: "#fff", cursor: "pointer",
+  });
+  btn.addEventListener("mouseenter", () => { btn.style.background = "#6d28d9"; });
+  btn.addEventListener("mouseleave", () => { btn.style.background = "#7c3aed"; });
+  btn.addEventListener("click", async () => {
+    if (btn.dataset.state === "busy") return;
+    btn.dataset.state = "busy";
+    btn.textContent = t("buttonBusy");
+    try {
+      await convertMakerWorld(btn);
+    } catch (err) {
+      console.error("[BedReady]", err);
+      btn.dataset.state = "idle";
+      btn.textContent = mwLabel();
+      showToast("error", t("mwFailed"));
+    }
+  });
+  row.insertAdjacentElement("afterend", btn);
+}
+
 function scan(): void {
   // Case-insensitive, and also catch links that name a .3mf via the download attribute (their href is
   // often a signed/blob URL with no .3mf in it). Interception (background.ts) is still the primary,
@@ -136,6 +219,7 @@ function scan(): void {
   document
     .querySelectorAll<HTMLAnchorElement>('a[href$=".3mf" i], a[href*=".3mf?" i], a[download$=".3mf" i]')
     .forEach(injectButton);
+  if (/(^|\.)makerworld\.com$/i.test(location.hostname)) injectMakerWorldButton();
 }
 
 if (HOSTS.test(location.host)) {
