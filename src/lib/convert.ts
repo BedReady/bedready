@@ -3,6 +3,7 @@
 import { zipSync, strToU8, strFromU8 } from "fflate";
 import { U1, MACHINES, configFamily, type Machine, type Flavour } from "./targets";
 import { applyU1FilamentPreset, u1FilamentPreset } from "./u1-filament-presets";
+import { applyHighFlow, type HighFlowSlot } from "./u1-high-flow";
 
 // A .3mf is an untrusted zip. Guard against decompression bombs / oversized input BEFORE inflating it
 // into memory: cap the compressed input, and (via the filter, which sees each entry's uncompressed size
@@ -637,6 +638,7 @@ export type DiffReport = {
   foreignNative: boolean; // foreign producer (Prusa/Creality/…) rewritten so Orca loads it as native
   fullSpectrumMixes: number; // count of Full Spectrum mixed-filament definitions written (0 = off)
   nozzleFit: { key: string; from: string; to: string }[]; // extrusion widths / layer heights refitted to the target nozzle
+  highFlow: HighFlowSlot[] | null; // per slot, the High Flow preset it was given (null when High Flow is off)
   untestedProfile: boolean; // target profile is derived, not a real export anyone has printed from
   keptAllColours: number; // >4 pass-through: filaments written out untouched (0 = not this mode)
   filamentBrand: FilamentBrand | null; // relabelled the filament presets (null = kept the author's)
@@ -1535,6 +1537,9 @@ export type CleanOpts = {
   // preset Orca resolves each slot to, and some model repositories require Generic or vendor presets
   // rather than another printer's brand. Defaults to keeping the author's.
   filamentBrand?: FilamentBrand;
+  // U1 at 0.4 mm only: add Snapmaker's High Flow values beside the standard ones, for each slot whose
+  // material has a Snapmaker High Flow preset (see u1-high-flow.ts). Ignored for any other target.
+  highFlow?: boolean;
 };
 
 export type CleanResult = {
@@ -2215,6 +2220,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
           foreignNative: false,
           fullSpectrumMixes: mixDefs.length,
           nozzleFit: [],
+          highFlow: null,
           untestedProfile: machine.testedProfile === false,
           keptAllColours: keptAll ? colorsTotal : 0,
           filamentBrand: brand === "source" ? null : brand,
@@ -2292,8 +2298,18 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   // The VLH guard (prime tower off, tree→normal supports) applies only when the file has variable layers
   // AND the caller didn't opt to keep the tower. The VLH profile itself is preserved regardless.
   const guardVlh = hasVLH && !opts?.keepPrimeTowerVlh;
+  // High Flow goes on last, after the U1 clamps: its speeds sit above the standard ceilings on purpose.
+  const highFlow = !!opts?.highFlow && target === "u1" && machine.id === U1.id;
+  const finishConfig = (cfg: string): string => {
+    const mixed = withMixes(cfg);
+    if (!highFlow) return mixed;
+    const o = JSON.parse(mixed) as Record<string, unknown>;
+    const slots = applyHighFlow(o);
+    if (diff) diff.highFlow = slots;
+    return JSON.stringify(o);
+  };
   const makeU1Config = () =>
-    withMixes(
+    finishConfig(
       fsKeptOld && srcCfg
         ? buildFullSpectrumConfig(srcCfg, fsKeptOld, colorsTotal, useColours, diff ?? undefined, guardVlh, machine, brand)
         : canPreserve
@@ -2371,7 +2387,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
 
   if (target === "u1" && !hadProject) {
     // No source profile to preserve → always the bundled stamp.
-    out["Metadata/project_settings.config"] = strToU8(withMixes(buildU1Config(useColours, useTypes, guardVlh, diff ?? undefined, machine, brand)));
+    out["Metadata/project_settings.config"] = strToU8(finishConfig(buildU1Config(useColours, useTypes, guardVlh, diff ?? undefined, machine, brand)));
   }
 
   // Painted band-swap: painted files have no custom_gcode_per_layer.xml, so add the synthesized one with

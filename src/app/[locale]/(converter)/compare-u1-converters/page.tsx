@@ -99,7 +99,7 @@ const ROWS: Row[] = [
   },
   {
     label: "U1 nozzles",
-    bedready: "0.4 tested; 0.2, 0.6 and 0.8 derived from it, and labeled as derived",
+    bedready: "0.4 tested; 0.2, 0.6 and 0.8 derived from it, and labeled as derived; High Flow on 0.4, from Snapmaker's own presets",
     u1c: "0.4 only",
     bl2u1: "0.20 mm Standard profile; nozzle not stated",
     forge: "0.4",
@@ -241,8 +241,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
             <strong className="text-fg">High Flow</strong> hot end on 0.4, and has a{" "}
             <strong className="text-fg">command-line tool</strong> that converts in batches or watches a
             folder. Only my 0.4 profile is a real export from a machine that has printed; the others are
-            derived. If you print with another nozzle or a High Flow hot end, or want conversion in a
-            script, use it. It also reads Creality, Anycubic, ELEGOO and Flashforge projects, and keeps
+            derived. If you print with another nozzle, or want conversion in a script, use it. It also reads Creality, Anycubic, ELEGOO and Flashforge projects, and keeps
             every filament slot for you to map in Orca yourself.
           </li>
           <li>

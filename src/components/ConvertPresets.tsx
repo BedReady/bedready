@@ -38,6 +38,7 @@ export type ConvertSettings = {
   keepAllColours?: boolean;
   // Likewise — an older preset has no brand and loads as "source", which is what it did at the time.
   filamentBrand?: "source" | "generic" | "snapmaker";
+  highFlow?: boolean;
 };
 
 type Preset = { name: string; settings: ConvertSettings };
