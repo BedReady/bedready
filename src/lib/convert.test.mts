@@ -1236,3 +1236,14 @@ test("a palette past MAX_COLORS is refused by analysis and by a non-U1 retarget,
   await assert.rejects(analyzeThreeMF(f()), /200 filament colours/);
   await assert.rejects(cleanThreeMF(f(), "bambu-x1c"), /200 filament colours/);
 });
+
+test("retarget: a slot colour edited without reordering reaches the output (was dropped: reduced=false)", async () => {
+  const f = file3mf({
+    "Metadata/project_settings.config": project({ filament_colour: ["#FF0000", "#00FF00"], filament_type: ["PLA", "PLA"] }),
+    "3D/3dmodel.model": model(),
+  });
+  const r = await cleanThreeMF(f, "bambu-x1c", { slots: ["#FF0000", "#0000FF"], assign: [0, 1] });
+  const c = await cfgOf(r.blob);
+  assert.deepEqual(c.filament_colour, ["#FF0000", "#0000FF"]);
+  assert.equal(r.reduced, false);
+});
