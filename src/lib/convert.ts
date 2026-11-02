@@ -915,6 +915,84 @@ function applyU1Safety(out: Record<string, unknown>, u1: Record<string, unknown>
   if (diff) diff.antiClobber = clobber;
 }
 
+// ── SNAPMAKER ORCA 2.4 FLOW VARIANTS ────────────────────────────────────────────────────────────
+// 2.4 added the High Flow hot end by storing a filament's standard AND high-flow values side by side:
+// `filament_flow_step_size` says how many entries each filament owns and `filament_flow_support` names
+// each entry, so a 4-slot SnapSpeed file carries filament_max_volumetric_speed ["20","40"] ×4, eight
+// entries. Every reader here indexes those keys by slot, which took slot 1's value from slot 0's
+// HIGH-FLOW entry (40 mm³/s and pressure advance on, for a standard hot end). Measured 2026-11-02 on a
+// real 2.4.0 export (linea_duo.3mf, preserve mode). A process preset does the same per key under
+// `process_flow_support`. Converted files are standard flow, so each list collapses to its standard
+// entry, the way Snapmaker Orca itself falls back when a variant is not declared (PrintConfig.cpp
+// get_config_idx, v2.4.1). Key lists: filament_flow_variant_options / process_flow_variant_options.
+const FILAMENT_FLOW_VARIANT_KEYS = [
+  "filament_flow_ratio", "enable_pressure_advance", "pressure_advance", "nozzle_temperature_initial_layer",
+  "nozzle_temperature", "filament_max_volumetric_speed", "fan_min_speed", "fan_max_speed",
+  "additional_cooling_fan_speed", "filament_retraction_length", "filament_retraction_speed",
+  "filament_deretraction_speed", "filament_z_hop_types", "filament_wipe_distance",
+  "filament_retract_length_toolchange", "filament_multitool_ramming", "filament_multitool_ramming_volume",
+  "filament_multitool_ramming_flow", "filament_minimal_purge_on_wipe_tower",
+];
+const PROCESS_FLOW_VARIANT_KEYS = [
+  "outer_wall_speed", "inner_wall_speed", "sparse_infill_speed", "internal_solid_infill_speed",
+  "top_surface_speed", "gap_infill_speed", "bridge_speed", "internal_bridge_speed", "ironing_speed",
+  "small_perimeter_speed", "small_perimeter_threshold", "support_speed", "support_interface_speed",
+  "initial_layer_speed", "initial_layer_infill_speed", "initial_layer_travel_speed", "travel_speed",
+  "slow_down_layers", "overhang_1_4_speed", "overhang_2_4_speed", "overhang_3_4_speed", "overhang_4_4_speed",
+  "enable_overhang_speed", "slowdown_for_curled_perimeters", "default_acceleration",
+  "outer_wall_acceleration", "inner_wall_acceleration", "top_surface_acceleration",
+  "initial_layer_acceleration", "bridge_acceleration", "travel_acceleration", "sparse_infill_acceleration",
+  "internal_solid_infill_acceleration", "accel_to_decel_enable", "accel_to_decel_factor", "default_jerk",
+  "outer_wall_jerk", "inner_wall_jerk", "infill_jerk", "top_surface_jerk", "initial_layer_jerk",
+  "travel_jerk", "default_junction_deviation", "max_volumetric_extrusion_rate_slope",
+  "max_volumetric_extrusion_rate_slope_segment_length", "extrusion_rate_smoothing_external_perimeter_only",
+];
+const STANDARD_FLOW = "standard";
+
+/** Collapse a source config's flow-variant lists to their standard entries, in place. Returns `o`. */
+export function collapseFlowVariants(o: Record<string, unknown>): Record<string, unknown> {
+  const steps = Array.isArray(o.filament_flow_step_size) ? (o.filament_flow_step_size as unknown[]) : [];
+  const sizes = steps.map((s) => Math.max(1, parseInt(String(s), 10) || 1));
+  if (sizes.some((n) => n > 1)) {
+    const total = sizes.reduce((a, b) => a + b, 0);
+    const support = Array.isArray(o.filament_flow_support) ? (o.filament_flow_support as unknown[]).map(String) : [];
+    // Per filament, the index of its standard entry: the first one when standard is not declared.
+    const picks: number[] = [];
+    let start = 0;
+    for (const n of sizes) {
+      const at = support.slice(start, start + n).indexOf(STANDARD_FLOW);
+      picks.push(start + Math.max(0, at));
+      start += n;
+    }
+    for (const k of FILAMENT_FLOW_VARIANT_KEYS) {
+      const v = o[k];
+      if (Array.isArray(v) && v.length === total) o[k] = picks.map((i) => v[i]);
+    }
+    o.filament_flow_step_size = sizes.map(() => "1");
+    o.filament_flow_support = sizes.map(() => STANDARD_FLOW);
+  }
+  const proc = Array.isArray(o.process_flow_support) ? (o.process_flow_support as unknown[]).map(String) : [];
+  if (proc.length > 1) {
+    const at = Math.max(0, proc.indexOf(STANDARD_FLOW));
+    for (const k of PROCESS_FLOW_VARIANT_KEYS) {
+      const v = o[k];
+      if (Array.isArray(v) && v.length === proc.length) o[k] = [v[at]];
+    }
+    o.process_flow_support = [STANDARD_FLOW];
+  }
+  // What the file was sliced FOR. The values above are now standard, so the file must say so.
+  for (const k of ["filament_volume_type", "nozzle_volume_type"]) {
+    const v = o[k];
+    if (Array.isArray(v)) o[k] = v.map(() => STANDARD_FLOW);
+  }
+  return o;
+}
+
+/** A source project_settings.config, parsed and collapsed to standard flow. Throws on bad JSON. */
+function parseProjectConfig(data: Uint8Array): Record<string, unknown> {
+  return collapseFlowVariants(JSON.parse(strFromU8(data)) as Record<string, unknown>);
+}
+
 // ── A COMPACT CONFIG NAMES ITS MATERIAL ONLY IN THE PRESET ──────────────────────────────────────
 // Bambu Studio often saves a project_settings.config holding only the keys that differ from the
 // system preset: no filament_type, no temperatures, just filament_settings_id "Bambu PLA Basic @BBL A1".
@@ -1108,7 +1186,7 @@ export async function analyzeThreeMF(file: File): Promise<Analysis> {
     if (base === "layer_config_ranges.xml" || base === "layer_heights_profile.txt") variableLayers = true;
     if (base === "project_settings.config") {
       try {
-        const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
+        const o = parseProjectConfig(data);
         colors = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
         types = sourceFilamentTypes(o);
       } catch {
@@ -1359,7 +1437,7 @@ export async function detectProfile(file: File): Promise<ProfileInfo> {
       if (base === "project_settings.config") {
         hasProfile = true;
         try {
-          const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
+          const o = parseProjectConfig(data);
           printer =
             (o.printer_model as string) ||
             (o.printer_settings_id as string) ||
@@ -1549,7 +1627,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
   for (const [path, data] of Object.entries(entries)) {
     if ((path.split("/").pop() ?? "").toLowerCase() === "project_settings.config") {
       try {
-        const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
+        const o = parseProjectConfig(data);
         srcColours = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
         srcTypes = sourceFilamentTypes(o);
       } catch {
@@ -1646,7 +1724,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
       // Bambu/Orca JSON: rewrite printer identity + (optionally) the reduced palette.
       let o: Record<string, unknown>;
       try {
-        o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
+        o = parseProjectConfig(data);
       } catch {
         out[path] = data;
         continue;
@@ -1784,7 +1862,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
     if (base === "layer_config_ranges.xml" || base === "layer_heights_profile.txt") hasVLH = true;
     if (base === "project_settings.config") {
       try {
-        const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
+        const o = parseProjectConfig(data);
         srcCfg = o;
         srcColours = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
         srcTypes = sourceFilamentTypes(o);
@@ -2526,7 +2604,7 @@ export async function extractPrintSettings(file: File): Promise<ProfileSettings 
   if (!cfgEntry) return null;
   let cfg: Record<string, unknown>;
   try {
-    cfg = JSON.parse(strFromU8(cfgEntry[1]));
+    cfg = parseProjectConfig(cfgEntry[1]);
   } catch {
     return null;
   }
