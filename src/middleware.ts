@@ -85,7 +85,8 @@ export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // First, and before the intl middleware can touch the path — see `isRouteHandler`.
-  if (isRouteHandler(pathname) || isShareImage(pathname)) return NextResponse.next();
+  if (isRouteHandler(pathname)) return NextResponse.next();
+  if (isShareImage(pathname)) return NextResponse.next();
 
   const target = frontDoorPath(pathname);
   if (target) {
