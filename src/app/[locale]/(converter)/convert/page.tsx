@@ -100,6 +100,13 @@ const HEAVY_PLATE = 120 * 1024 * 1024;
 export default function ConvertPage() {
   const t = useTranslations("convert");
   const format = useFormatter();
+  // Which toolheads the file was sliced High Flow for. The U1 refuses a file whose flow type doesn't match
+  // the hot end on that toolhead, so the report names them (slot i is toolhead i + 1).
+  const highFlowLine = (slots: { slot: number; preset: string | null }[]): string => {
+    const heads = slots.filter((s) => s.preset).map((s) => format.number(s.slot + 1));
+    if (!heads.length) return t("diffHighFlowNone");
+    return t("diffHighFlow", { count: heads.length, heads: format.list(heads, { type: "conjunction" }) });
+  };
   const [file, setFile] = useState<File | null>(null);
   // A picked plain .stl (geometry only). Kept in a distinct branch from the .3mf state machine — an STL
   // has no colours/profile, so it doesn't run analyze/convert; it just offers a one-click wrap-to-3MF.
@@ -173,6 +180,7 @@ export default function ConvertPage() {
   const [keepAllColours, setKeepAllColours] = useState(false);
   // Which library preset each slot is NAMED after. Naming only — no print setting changes.
   const [filamentBrand, setFilamentBrand] = useState<FilamentBrand>("source");
+  const [highFlow, setHighFlow] = useState(false);
   const [swapPlan, setSwapPlan] = useState<{ label: string }[]>([]);
   // Painted, vertically colour-banded files: keep all colours EXACTLY via a few manual filament swaps
   // (auto-inserted M600 pauses) instead of Full Spectrum mixing. Mutually exclusive with Full Spectrum.
@@ -254,7 +262,7 @@ export default function ConvertPage() {
   // palette/slot state, so applying one is always safe. The targetId is validated on apply in case a
   // hand-edited localStorage carries an unknown value.
   const presetSettings: ConvertSettings = {
-    targetId, profileMode, fullSpectrum, customFS, customBases, subdivide, swapPauses, bandSwap, keepVlhTower, mixedLayerHeight, keepAllColours, filamentBrand,
+    targetId, profileMode, fullSpectrum, customFS, customBases, subdivide, swapPauses, bandSwap, keepVlhTower, mixedLayerHeight, keepAllColours, filamentBrand, highFlow,
   };
   const applyPreset = (s: ConvertSettings) => {
     // Coerce every field — a hand-edited/corrupt localStorage preset must not inject a bad value
@@ -267,6 +275,7 @@ export default function ConvertPage() {
     setSubdivide(!!s.subdivide);
     setSwapPauses(!!s.swapPauses);
     setKeepAllColours(!!s.keepAllColours);
+    setHighFlow(!!s.highFlow);
     setFilamentBrand(s.filamentBrand === "generic" || s.filamentBrand === "snapmaker" ? s.filamentBrand : "source");
     setBandSwap(!!s.bandSwap);
     setKeepVlhTower(!!s.keepVlhTower);
@@ -365,6 +374,7 @@ export default function ConvertPage() {
       if (diff.filamentBrand) lines.push(t("diffFilamentBrand", { brand: t(diff.filamentBrand === "snapmaker" ? "brandSnapmaker" : "brandGeneric") }));
       if (diff.nozzleFit.length > 0) lines.push(t("diffNozzleFit", { count: diff.nozzleFit.length }));
       if (diff.untestedProfile) lines.push(t("diffUntestedProfile"));
+      if (diff.highFlow) lines.push(highFlowLine(diff.highFlow));
       if (diff.antiClobber) lines.push(t("diffAntiClobber"));
     }
     if (removedCount > 0) lines.push(t("diffStripped", { count: removedCount }));
@@ -810,7 +820,7 @@ export default function ConvertPage() {
       // Painted files only use the manual mapping when the preview loaded; otherwise
       // cleanThreeMF auto-reduces by painted area.
       const useManual = analysis && (analysis.encoding !== "painted" || mesh);
-      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, colorMix: colorMix && !!targetMachine?.prusaColorMix, loadedSlots };
+      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, highFlow: highFlow && target === "u1" && nozzle === U1_TESTED_NOZZLE, colorMix: colorMix && !!targetMachine?.prusaColorMix, loadedSlots };
       const res = await cleanThreeMFAsync(file, target, opts);
       setSwapPlan(res.swaps ?? []);
       setDiff(res.diff);
@@ -834,6 +844,7 @@ export default function ConvertPage() {
         bandSwap,
         swapPauses,
         keepAllColours,
+        highFlow: highFlow && target === "u1" && nozzle === U1_TESTED_NOZZLE,
       });
       bumpConvertCount();
       setStatus("done");
@@ -2315,6 +2326,22 @@ export default function ConvertPage() {
                   {t("nozzleDerivedNote", { nozzle: nozzle, tested: U1_TESTED_NOZZLE })}
                 </p>
               )}
+              {/* High Flow exists only at 0.4 mm. The values are Snapmaker's own presets (u1-high-flow.ts);
+                  the printer refuses a file whose flow type doesn't match the hot end, hence the result line. */}
+              {nozzle === U1_TESTED_NOZZLE && (
+                <label className="mt-3 flex cursor-pointer items-start gap-2 text-sm text-fg-muted">
+                  <input
+                    type="checkbox"
+                    checked={highFlow}
+                    onChange={(e) => setHighFlow(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 accent-violet-500"
+                  />
+                  <span>
+                    <span className="font-medium text-fg">{t("highFlowLabel")}</span>
+                    <span className="mt-1 block text-xs text-fg-subtle">{t("highFlowDesc")}</span>
+                  </span>
+                </label>
+              )}
 
               {/* Filament preset NAMES. Nothing here changes how the file prints — it changes which
                   library preset Orca resolves each slot to, which is what a model repository checks. */}
@@ -2637,6 +2664,7 @@ export default function ConvertPage() {
             {diff.filamentBrand && <li>{t("diffFilamentBrand", { brand: t(diff.filamentBrand === "snapmaker" ? "brandSnapmaker" : "brandGeneric") })}</li>}
             {diff.nozzleFit.length > 0 && <li>{t("diffNozzleFit", { count: diff.nozzleFit.length })}</li>}
             {diff.untestedProfile && <li>{t("diffUntestedProfile")}</li>}
+            {diff.highFlow && <li>{highFlowLine(diff.highFlow)}</li>}
             {diff.antiClobber && <li>{t("diffAntiClobber")}</li>}
             {removedCount > 0 && <li>{t("diffStripped", { count: removedCount })}</li>}
           </ul>
