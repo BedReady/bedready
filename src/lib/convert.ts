@@ -1592,6 +1592,10 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     });
   }
   const reduced = !!map && (colorsTotal > slots || !map.every((a, i) => a === i));
+  // Colours edited in the UI without moving any slot. `reduced` stays false (nothing to reindex), and
+  // these used to be dropped on the floor: the file came out in its original colours.
+  const recoloured =
+    !reduced && manual && useColours.slice(0, colorsTotal).some((c, i) => c !== normalizeHex(srcColours[i] ?? ""));
 
   if (toPrusa) {
     const colours = (map ? useColours : srcColours).map(normalizeHex);
@@ -1668,6 +1672,8 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
         }
         o.filament_colour = useColours.slice();
         o.filament_type = useTypes.slice();
+      } else if (recoloured) {
+        o.filament_colour = srcColours.map((c, i) => useColours[i] ?? normalizeHex(c));
       }
       out[path] = strToU8(JSON.stringify(o));
       continue;
@@ -1681,6 +1687,10 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
       const { x, y, z } = machine.bed;
       text = text.replace(/^(;?\s*bed_shape\s*=).*$/im, `$1 0x0,${x}x0,${x}x${y},0x${y}`);
       text = text.replace(/^(;?\s*max_print_height\s*=).*$/im, `$1 ${z}`);
+      if (recoloured) {
+        const list = srcColours.map((c, i) => useColours[i] ?? normalizeHex(c)).join(";");
+        text = text.replace(/^(;?\s*(?:extruder|filament)_colour\s*=).*$/gim, `$1 ${list}`);
+      }
       out[path] = strToU8(text);
       continue;
     }
