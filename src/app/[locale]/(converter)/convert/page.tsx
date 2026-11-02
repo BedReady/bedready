@@ -49,6 +49,7 @@ const bumpConvertCount = () => {
   }
 };
 import { mixRgb } from "@/lib/filament-mixer";
+import { mixerHref } from "@/lib/mixer-link";
 
 const hexToRgbArr = (h: string): [number, number, number] => {
   const s = h.replace("#", "").padEnd(6, "0");
@@ -1931,7 +1932,8 @@ export default function ConvertPage() {
                   </div>
                   <div className="mt-2 flex items-center gap-3">
                     <button onClick={() => setCustomBases(["#29ABE2", "#ED1E79", "#FCEE21", "#111111"])} className="rounded-lg border border-line px-2.5 py-1 text-xs text-fg-muted hover:bg-surface-3">{t("resetToCmyk")}</button>
-                    <Link href="/mixer" className="text-xs text-violet-300 hover:underline">{t("previewGamut")}</Link>
+                    {/* Opens the mixer with these four loaded (mixer-link.ts); a half-typed colour opens the default set. */}
+                    <Link href={mixerHref(customBases)} className="text-xs text-violet-300 hover:underline">{t("previewGamut")}</Link>
                   </div>
 
                   {/* Per-colour recipe: the converter's best 2-filament match, editable. */}

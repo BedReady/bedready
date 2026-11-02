@@ -1489,6 +1489,8 @@
     "colorLabel": "Couleur du filament {n}",
     "nameLabel": "Nom du filament {n}",
     "reset": "Revenir au CMJN",
+    "copyLink": "Copier le lien vers ces couleurs",
+    "linkCopied": "Lien copié",
     "copied": "copié !",
     "swatchTitle": "{recipe} · {hex} (cliquer pour copier)",
     "pure": "100 % {name}",

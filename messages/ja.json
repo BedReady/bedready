@@ -1489,6 +1489,8 @@
     "colorLabel": "フィラメント {n} の色",
     "nameLabel": "フィラメント {n} の名前",
     "reset": "CMYK に戻す",
+    "copyLink": "この色の組み合わせのリンクをコピー",
+    "linkCopied": "リンクをコピーしました",
     "copied": "コピーしました",
     "swatchTitle": "{recipe} · {hex}（クリックでコピー）",
     "pure": "{name} 100%",

@@ -1489,6 +1489,8 @@
     "colorLabel": "耗材 {n} 的颜色",
     "nameLabel": "耗材 {n} 的名称",
     "reset": "恢复为 CMYK",
+    "copyLink": "复制这组颜色的链接",
+    "linkCopied": "链接已复制",
     "copied": "已复制！",
     "swatchTitle": "{recipe} · {hex}（点击复制）",
     "pure": "100% {name}",

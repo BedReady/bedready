@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { mixRgb } from "@/lib/filament-mixer";
+import { mixerQuery, parseMixerQuery } from "@/lib/mixer-link";
 
 // "What can my 4 filaments mix?" — a Full Spectrum gamut preview. Enter your 4 loaded filaments
 // (defaults to CMYK) and see every 2-filament blend, with the recipe on hover. Uses the same pigment
@@ -49,8 +50,28 @@ export default function MixerPage() {
   const defaults = (): Base[] => CMYK.map((c) => ({ label: t(c.key), hex: c.hex }));
   const [bases, setBases] = useState<Base[]>(defaults);
 
-  const setBase = (i: number, patch: Partial<Base>) =>
+  // The URL carries the four filaments (mixer-link.ts), so a set can be shared or opened from the
+  // converter. Read once on arrival; written back with replaceState as they change, but only once the
+  // visitor has changed something or came by a link, so a plain visit keeps a plain /mixer.
+  const linked = useRef(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  useEffect(() => {
+    const fromUrl = parseMixerQuery(window.location.search);
+    if (!fromUrl) return;
+    linked.current = true;
+    // An unnamed slot is named by its colour: the default "Magenta" on a white slot would be wrong.
+    setBases(fromUrl.map((f) => ({ hex: f.hex, label: f.label ?? f.hex })));
+  }, []);
+  useEffect(() => {
+    if (!linked.current) return;
+    window.history.replaceState(window.history.state, "", window.location.pathname + mixerQuery(bases));
+  }, [bases]);
+  const shareUrl = () => window.location.origin + window.location.pathname + mixerQuery(bases);
+
+  const setBase = (i: number, patch: Partial<Base>) => {
+    linked.current = true;
     setBases((b) => b.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+  };
 
   // Every unordered pair of the 4 filaments, blended across the ratio steps.
   const rows = useMemo(() => {
@@ -96,7 +117,30 @@ export default function MixerPage() {
         ))}
       </div>
       <div className="mt-2 flex gap-2">
-        <button type="button" onClick={() => setBases(defaults())} className="rounded-lg border border-line px-3 py-1 text-xs text-fg-muted hover:bg-surface-3">{t("reset")}</button>
+        <button
+          type="button"
+          onClick={() => {
+            linked.current = false;
+            setBases(defaults());
+            window.history.replaceState(window.history.state, "", window.location.pathname);
+          }}
+          className="rounded-lg border border-line px-3 py-1 text-xs text-fg-muted hover:bg-surface-3"
+        >
+          {t("reset")}
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(shareUrl());
+              setLinkCopied(true);
+              setTimeout(() => setLinkCopied(false), 1500);
+            } catch { /* clipboard refused: the address bar already holds the link once anything changed */ }
+          }}
+          className="rounded-lg border border-line px-3 py-1 text-xs text-fg-muted hover:bg-surface-3"
+        >
+          <span aria-live="polite">{linkCopied ? t("linkCopied") : t("copyLink")}</span>
+        </button>
       </div>
 
       {/* Blends */}

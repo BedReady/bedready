@@ -1489,6 +1489,8 @@
     "colorLabel": "Filament {n} color",
     "nameLabel": "Filament {n} name",
     "reset": "Reset to CMYK",
+    "copyLink": "Copy link to these colors",
+    "linkCopied": "Link copied",
     "copied": "copied!",
     "swatchTitle": "{recipe} · {hex} (click to copy)",
     "pure": "100% {name}",

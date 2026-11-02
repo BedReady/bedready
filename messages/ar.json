@@ -1489,6 +1489,8 @@
     "colorLabel": "لون الخيط {n}",
     "nameLabel": "اسم الخيط {n}",
     "reset": "العودة إلى CMYK",
+    "copyLink": "نسخ رابط هذه الألوان",
+    "linkCopied": "تم نسخ الرابط",
     "copied": "تم النسخ!",
     "swatchTitle": "{recipe} · {hex} (انقر للنسخ)",
     "pure": "‎100% {name}",
