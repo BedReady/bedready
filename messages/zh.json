@@ -1185,7 +1185,9 @@
     "title": "BedReady — Snapmaker U1 的 3MF 转换器",
     "description": "在浏览器中将 Bambu Studio、PrusaSlicer、Orca 和 MakerWorld 的 3MF 文件转换为 Snapmaker U1 可用格式，保留颜色、涂色和打印设置。免费、无需账号、不上传任何内容。",
     "ogTitle": "BedReady — 让任何 3MF 都能在 Snapmaker U1 上打印",
-    "ogDescription": "在浏览器中转换 Bambu、Prusa、Orca 和 MakerWorld 文件，保留颜色和涂色。免费、无需账号、不上传任何内容。"
+    "ogDescription": "在浏览器中转换 Bambu、Prusa、Orca 和 MakerWorld 文件，保留颜色和涂色。免费、无需账号、不上传任何内容。",
+    "ogCardKicker": "适用于 Snapmaker U1",
+    "ogCardTagline": "Bambu、Prusa、Orca 和 MakerWorld 的 3MF 文件，在浏览器中完成转换。"
   },
   "age": {
     "title": "确认您的年龄",

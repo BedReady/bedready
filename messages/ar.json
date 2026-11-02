@@ -1185,7 +1185,9 @@
     "title": "BedReady — محوّل ملفات 3MF لطابعة Snapmaker U1",
     "description": "حوّل ملفات 3MF من Bambu Studio وPrusaSlicer وOrca وMakerWorld لطابعة Snapmaker U1 داخل متصفحك، مع الحفاظ على الألوان والتلوين وإعدادات الطباعة. مجاني، بلا حساب، ولا يُرفع أي شيء.",
     "ogTitle": "BedReady — اجعل أي ملف 3MF جاهزًا لطابعة Snapmaker U1",
-    "ogDescription": "ملفات Bambu وPrusa وOrca وMakerWorld تُحوَّل داخل متصفحك مع الحفاظ على الألوان والتلوين. مجاني، بلا حساب، ولا يُرفع أي شيء."
+    "ogDescription": "ملفات Bambu وPrusa وOrca وMakerWorld تُحوَّل داخل متصفحك مع الحفاظ على الألوان والتلوين. مجاني، بلا حساب، ولا يُرفع أي شيء.",
+    "ogCardKicker": "لطابعة Snapmaker U1",
+    "ogCardTagline": "ملفات 3MF من Bambu وPrusa وOrca وMakerWorld، تُحوَّل في متصفحك."
   },
   "age": {
     "title": "أكّد عمرك",

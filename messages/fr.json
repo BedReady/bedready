@@ -1185,7 +1185,9 @@
     "title": "BedReady — convertisseur 3MF pour la Snapmaker U1",
     "description": "Convertissez les fichiers 3MF de Bambu Studio, PrusaSlicer, Orca et MakerWorld pour la Snapmaker U1 dans votre navigateur, en conservant couleurs, peinture et réglages d’impression. Gratuit, sans compte, rien n’est envoyé.",
     "ogTitle": "BedReady — tout fichier 3MF prêt pour la Snapmaker U1",
-    "ogDescription": "Fichiers Bambu, Prusa, Orca et MakerWorld convertis dans votre navigateur, couleurs et peinture conservées. Gratuit, sans compte, rien n’est envoyé."
+    "ogDescription": "Fichiers Bambu, Prusa, Orca et MakerWorld convertis dans votre navigateur, couleurs et peinture conservées. Gratuit, sans compte, rien n’est envoyé.",
+    "ogCardKicker": "pour Snapmaker U1",
+    "ogCardTagline": "Fichiers 3MF Bambu, Prusa, Orca et MakerWorld, convertis dans votre navigateur."
   },
   "age": {
     "title": "Confirmer votre âge",
