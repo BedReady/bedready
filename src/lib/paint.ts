@@ -16,6 +16,8 @@ export function boundedUnzip(
   buf: Uint8Array,
   maxTotal: number,
   maxEntry: (name: string) => number = () => Infinity,
+  /** Entries to inflate; the rest are skipped without decompressing. */
+  keep: (name: string) => boolean = () => true,
 ): { out: Record<string, Uint8Array>; inflated: number; overflow: boolean; entryOverflow: { name: string; size: number } | null } {
   const out: Record<string, Uint8Array> = {};
   let inflated = 0;
@@ -23,7 +25,7 @@ export function boundedUnzip(
   let entryOverflow: { name: string; size: number } | null = null;
   let failure: Error | null = null;
   const uz = new Unzip((file) => {
-    if (overflow || entryOverflow || failure) return;
+    if (overflow || entryOverflow || failure || !keep(file.name)) return;
     const limit = maxEntry(file.name);
     const chunks: Uint8Array[] = [];
     let size = 0;
