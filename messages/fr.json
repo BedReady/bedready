@@ -18,7 +18,11 @@
     "source": "Code source sur GitHub",
     "sourceHint": "Lire le code sur GitHub — la promesse « rien n'est envoyé », vérifiable",
     "mixer": "Mélangeur de couleurs",
-    "calibrate": "Calibration du filament"
+    "calibrate": "Calibration du filament",
+    "themeToLight": "Passer au thème clair",
+    "themeToDark": "Passer au thème sombre",
+    "themeLight": "Mode clair",
+    "themeDark": "Mode sombre"
   },
   "footer": {
     "tagline": "agnostique par conception.",
@@ -298,7 +302,6 @@
     "shareText": "Convertisseur gratuit dans le navigateur qui rend les fichiers .3mf multicolores imprimables sur la Snapmaker U1 — couleurs intactes, rien n’est téléversé.",
     "copyLink": "Copier le lien",
     "convertAnother": "Convertir un autre fichier",
-    "dropAria": "Choisissez ou déposez un fichier .3mf ou .stl à convertir",
     "fsTip": "Astuce : la couleur mélangée est créée en alternant deux filaments, donc ses transitions suintent légèrement. Choisissez comme couleur mélangée la moins visible et la plus plane ; évitez le mélange sur les grandes surfaces courbes (p. ex. les lunettes) pour un résultat plus net.",
     "previewNoteVeryLarge": "Modèle très volumineux ({count} M de triangles) — aperçu indisponible, mais la conversion fonctionne toujours sur le modèle complet.",
     "previewNoteSampled": "Modèle volumineux ({count} M de triangles) — l'aperçu affiche un échantillon représentatif pour rester rapide. La conversion utilise le modèle complet.",
@@ -387,7 +390,26 @@
     "previewHeaderTarget": "{count, plural, one {# couleur} other {# couleurs}} → {slots} emplacements {name}",
     "spoolsFarColorMix": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici. ColorMix peut les mélanger à partir de ce qui est chargé.",
     "spoolsFarPlain": "{far, plural, one {# couleur n'a} other {# couleurs n'ont}} pas de bobine proche ici : elles sont imprimées avec la plus proche.",
-    "noWebGL": "Ce navigateur ne peut pas afficher l'aperçu 3D (WebGL est désactivé ou indisponible). Tout le reste fonctionne : votre fichier est converti et téléchargé normalement."
+    "noWebGL": "Ce navigateur ne peut pas afficher l'aperçu 3D (WebGL est désactivé ou indisponible). Tout le reste fonctionne : votre fichier est converti et téléchargé normalement.",
+    "metaTitle": "Convertisseur 3MF → U1 gratuit — BedReady",
+    "metaDescription": "Votre fichier ne quitte jamais votre navigateur : aucun envoi, aucun serveur. Convertissez n’importe quel .3mf en fichier propre pour la Snapmaker U1 : profils Bambu/Prusa/Creality étrangers supprimés, vrai profil U1 appliqué, couleurs peintes conservées. Gratuit.",
+    "slotColorLabel": "Sélecteur de couleur de l’emplacement {n}",
+    "slotHexLabel": "Code hex de l’emplacement {n}",
+    "mix3": "3 voies",
+    "mix3Hint": "Mélange de 3 filaments : plus proche que n’importe quel mélange de 2",
+    "mixEdit2": "éditer en 2 voies",
+    "mixEdit2Hint": "Éditer plutôt comme un mélange de 2 filaments",
+    "mixOff": "≈ loin",
+    "mixOffHint": "Même un mélange de 3 n’atteint pas bien cette couleur : essayez un autre filament de base.",
+    "mixAuto": "auto",
+    "mixAutoHint": "Revenir à l’association automatique",
+    "mixTarget": "cible {hex}",
+    "mixResult": "résultat {hex}",
+    "slotOverrideHint": "Le filament que vous chargerez vraiment ici : changez-le s’il ne correspond pas à la couleur du modèle",
+    "mixFirst": "Premier filament",
+    "mixSecond": "Second filament",
+    "mixShare": "Part du second filament",
+    "dropTitleTouch": "Touchez pour choisir un fichier .3mf ou .stl"
   },
   "help": {
     "title": "Aide & FAQ",
@@ -663,7 +685,9 @@
     "safariNote": "Les extensions Safari sont livrées sous forme d'application : installez-la, puis activez-la dans Safari via Réglages → Extensions.",
     "installManually": "Ou installer manuellement (avancé)",
     "chromeStoreOnly": "Sur le Chrome Web Store.",
-    "popupCaption": "La fenêtre de l'extension — choisissez une fois votre imprimante et votre buse, et les téléchargements arrivent prêts à trancher. Ou déposez un .3mf, sans quitter la page."
+    "popupCaption": "La fenêtre de l'extension — choisissez une fois votre imprimante et votre buse, et les téléchargements arrivent prêts à trancher. Ou déposez un .3mf, sans quitter la page.",
+    "metaTitle": "Extension de navigateur — BedReady",
+    "metaDescription": "Convertissez les téléchargements .3mf de MakerWorld, Bambu, Printables et Thingiverse pour la Snapmaker U1 ou votre propre imprimante, directement depuis la page de téléchargement, dans Chrome, Edge, Firefox et Safari. Gratuit, dans votre navigateur."
   },
   "upload": {
     "loading": "Chargement…",
@@ -1117,13 +1141,17 @@
           "library": "Bibliothèque de profils vérifiés pour imprimer sur une U1"
         }
       }
-    }
+    },
+    "metaTitle": "Fonctionnalités du convertisseur — BedReady",
+    "metaDescription": "Tout ce que fait le convertisseur BedReady : multicolore sur les 4 emplacements de la U1, mélange Full Spectrum, pauses de changement de bobine, profil sûr pour la U1, aperçu en direct, séparation des pièces, STL ↔ 3MF et conversion vers d’autres imprimantes (Bambu/Prusa/Creality) ou un 3MF générique propre. Gratuit, dans votre navigateur."
   },
   "stickers": {
     "title": "Stickers d'impression 3D gratuits",
     "intro": "Des designs de stickers sur le thème maker, libres d'utilisation. Téléchargez les SVG et imprimez-les, découpez-les sur un traceur, ou utilisez-les comme vous voulez.",
     "download": "Télécharger le SVG",
-    "note": "SVG — s'adapte à toute taille sans perte de qualité. Pour des stickers physiques, imprimez sur papier autocollant ou envoyez à un traceur. Usage personnel/non commercial — merci de ne pas les revendre."
+    "note": "SVG — s'adapte à toute taille sans perte de qualité. Pour des stickers physiques, imprimez sur papier autocollant ou envoyez à un traceur. Usage personnel/non commercial — merci de ne pas les revendre.",
+    "metaTitle": "Autocollants gratuits sur l’impression 3D — BedReady",
+    "metaDescription": "Des designs d’autocollants gratuits sur le thème de l’impression 3D (SVG) : bobine de filament, plateau, buse, Full Spectrum et plus. Téléchargez-les et imprimez-les ou découpez-les vous-même."
   },
   "editor": {
     "bold": "Gras",
@@ -1338,7 +1366,9 @@
     "how2": "Photographiez-la de face sous une lumière douce et indirecte. Évitez les reflets et les lampes colorées — c’est la couleur qu’on mesure.",
     "how3": "Relevez la couleur au centre de chaque plage, plus le fond nu et la plage la plus épaisse.",
     "how4": "Ces relevés donnent le TD. La reprise automatique n’existe pas encore — envoyez la photo, je l’ajuste à la main en attendant.",
-    "beta": "Expérimental. La carte et le calcul sont testés ; ce qui ne l’est pas, c’est une vraie impression — c’est précisément l’objet."
+    "beta": "Expérimental. La carte et le calcul sont testés ; ce qui ne l’est pas, c’est une vraie impression — c’est précisément l’objet.",
+    "metaTitle": "Carte de calibration de filament — mesurer la TD pour les reliefs photographiques",
+    "metaDescription": "Générez une carte de calibration imprimable pour la Snapmaker U1 qui mesure la distance de transmission (TD) d’un filament, la constante dont dépend l’impression de reliefs photographiques. Imprimez-la, photographiez-la et obtenez une vraie valeur plutôt qu’une estimation. Gratuit, dans votre navigateur."
   },
   "buy": {
     "heading": "À vendre",
@@ -1436,5 +1466,23 @@
     "notifyDone": "{out} enregistré dans Téléchargements — prêt à trancher pour votre {printer}.",
     "toastFailed": "Impossible de convertir {file}. Votre .3mf d'origine a été téléchargé — convertissez-le depuis la fenêtre de l'extension.",
     "notifyFailedTitle": "BedReady — échec de la conversion"
+  },
+  "mixer": {
+    "metaTitle": "Mélangeur de couleurs Full Spectrum — BedReady",
+    "metaDescription": "Prévisualisez les couleurs que vous pouvez mélanger avec vos 4 filaments chargés sur la Snapmaker U1 : la gamme Full Spectrum avant d’imprimer. Gratuit, dans votre navigateur.",
+    "title": "Mélangeur de couleurs Full Spectrum",
+    "intro": "Découvrez les couleurs que vos 4 filaments chargés peuvent produire sur la Snapmaker U1. Choisissez vos filaments ci-dessous (CMJN par défaut) : chaque mélange est calculé avec le même mélangeur de pigments que le convertisseur. Survolez un échantillon pour voir sa recette ; cliquez pour copier le code hex.",
+    "cyan": "Cyan",
+    "magenta": "Magenta",
+    "yellow": "Jaune",
+    "black": "Noir",
+    "colorLabel": "Couleur du filament {n}",
+    "nameLabel": "Nom du filament {n}",
+    "reset": "Revenir au CMJN",
+    "copied": "copié !",
+    "swatchTitle": "{recipe} · {hex} (cliquer pour copier)",
+    "pure": "100 % {name}",
+    "blend": "{pa} % {a} + {pb} % {b}",
+    "note": "Ce sont des mélanges de 2 filaments (la U1 alterne deux couleurs par zone mélangée). Les impressions réelles varient un peu selon la marque du filament et l’éclairage : prenez-le comme un guide fiable, pas une correspondance exacte."
   }
 }

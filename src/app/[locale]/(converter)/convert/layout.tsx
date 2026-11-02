@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -7,10 +8,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "convert" });
   return {
-    title: "Free 3MF → U1 converter — BedReady",
-    description:
-      "Your file never leaves your browser — no upload, no server. Convert any .3mf to a clean Snapmaker U1 file: strips foreign Bambu/Prusa/Creality profiles, stamps the real U1 profile, preserves painted colors. Free.",
+    title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: alternates("/convert", locale),
   };
 }

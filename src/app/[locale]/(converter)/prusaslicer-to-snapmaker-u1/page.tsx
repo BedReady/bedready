@@ -2,20 +2,15 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
-import { alternates } from "@/lib/seo";
+import { canonicalOnly } from "@/lib/seo";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Convert PrusaSlicer .3mf to the Snapmaker U1 — BedReady",
     description:
       "Convert a PrusaSlicer / MMU .3mf to print on the Snapmaker U1 — painted colors, supports and seams translated, the real U1 profile applied. Free, in your browser, nothing uploaded.",
-    alternates: alternates("/prusaslicer-to-snapmaker-u1", locale),
+    alternates: canonicalOnly("/prusaslicer-to-snapmaker-u1"),
   };
 }
 

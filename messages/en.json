@@ -18,7 +18,11 @@
     "source": "Source on GitHub",
     "sourceHint": "Read the source on GitHub — the no-upload claim, checkable",
     "mixer": "Color mixer",
-    "calibrate": "Filament calibration"
+    "calibrate": "Filament calibration",
+    "themeToLight": "Switch to light theme",
+    "themeToDark": "Switch to dark theme",
+    "themeLight": "Light mode",
+    "themeDark": "Dark mode"
   },
   "footer": {
     "tagline": "agnostic by design.",
@@ -298,7 +302,6 @@
     "shareText": "Free in-browser converter that makes multicolor .3mf files print correctly on the Snapmaker U1 — colors intact, nothing uploaded.",
     "copyLink": "Copy link",
     "convertAnother": "Convert another file",
-    "dropAria": "Choose or drop a .3mf or .stl file to convert",
     "fsTip": "Tip: the mixed color is built by alternating two filaments, so its color transitions ooze slightly. Make your least-visible, flattest color the mixed one — keep mixing off large curved features (e.g. goggles) for the cleanest result.",
     "previewNoteVeryLarge": "Very large model ({count}M triangles) — preview unavailable, but conversion still works on the full model.",
     "previewNoteSampled": "Large model ({count}M triangles) — preview shows a representative sample to stay fast. Conversion uses the full model.",
@@ -387,7 +390,26 @@
     "previewHeaderTarget": "{count, plural, one {# color} other {# colors}} → {slots} {name} slots",
     "spoolsFarColorMix": "{far, plural, one {# color has} other {# colors have}} no close spool among these. ColorMix can blend {far, plural, one {it} other {them}} from what's loaded.",
     "spoolsFarPlain": "{far, plural, one {# color has} other {# colors have}} no close spool among these, so {far, plural, one {it prints} other {they print}} from the nearest one.",
-    "noWebGL": "This browser can't show the 3D preview (WebGL is turned off or unavailable). Everything else still works — your file converts and downloads as normal."
+    "noWebGL": "This browser can't show the 3D preview (WebGL is turned off or unavailable). Everything else still works — your file converts and downloads as normal.",
+    "metaTitle": "Free 3MF → U1 converter — BedReady",
+    "metaDescription": "Your file never leaves your browser — no upload, no server. Convert any .3mf to a clean Snapmaker U1 file: strips foreign Bambu/Prusa/Creality profiles, stamps the real U1 profile, preserves painted colors. Free.",
+    "slotColorLabel": "Slot {n} color picker",
+    "slotHexLabel": "Slot {n} hex code",
+    "mix3": "3-way",
+    "mix3Hint": "3-filament blend — a closer match than any 2",
+    "mixEdit2": "edit 2-way",
+    "mixEdit2Hint": "Edit as a 2-filament mix instead",
+    "mixOff": "≈ off",
+    "mixOffHint": "Even a 3-way mix can't reach this well — try a different base filament.",
+    "mixAuto": "auto",
+    "mixAutoHint": "Back to auto-match",
+    "mixTarget": "target {hex}",
+    "mixResult": "result {hex}",
+    "slotOverrideHint": "The filament you'll actually load here — override if it isn't the model's color",
+    "mixFirst": "First filament",
+    "mixSecond": "Second filament",
+    "mixShare": "Share of the second filament",
+    "dropTitleTouch": "Tap to choose a .3mf or .stl file"
   },
   "help": {
     "title": "Help & FAQ",
@@ -663,7 +685,9 @@
     ],
     "installManually": "Or install manually (advanced)",
     "chromeStoreOnly": "On the Chrome Web Store.",
-    "popupCaption": "The extension's popup — choose your printer and nozzle once, and downloads arrive ready to slice. Or drop a .3mf in, without leaving the page you are on."
+    "popupCaption": "The extension's popup — choose your printer and nozzle once, and downloads arrive ready to slice. Or drop a .3mf in, without leaving the page you are on.",
+    "metaTitle": "Browser extension — BedReady",
+    "metaDescription": "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser."
   },
   "upload": {
     "loading": "Loading…",
@@ -1117,13 +1141,17 @@
           "library": "Library of files with profiles verified to print on a U1"
         }
       }
-    }
+    },
+    "metaTitle": "Converter features — BedReady",
+    "metaDescription": "Everything the BedReady converter does: multicolor on the U1's 4 slots, Full Spectrum mixing, spool-swap pauses, U1-safe profile, live preview, multi-part split, STL ↔ 3MF, and retargeting to other printers (Bambu/Prusa/Creality) or a clean generic 3MF. Free, in your browser."
   },
   "stickers": {
     "title": "Free 3D-printing stickers",
     "intro": "Maker-themed sticker designs, free to use. Download the SVGs and print them, cut them on a vinyl cutter, or use them however you like.",
     "download": "Download SVG",
-    "note": "SVG — scales to any size with no quality loss. For physical stickers, print on sticker paper or send to a cutter. Personal/non-commercial use — please don't resell them."
+    "note": "SVG — scales to any size with no quality loss. For physical stickers, print on sticker paper or send to a cutter. Personal/non-commercial use — please don't resell them.",
+    "metaTitle": "Free 3D-printing stickers — BedReady",
+    "metaDescription": "Free 3D-printing-themed sticker designs (SVG) — filament spool, build plate, nozzle, Full Spectrum and more. Download and print or cut your own."
   },
   "editor": {
     "bold": "Bold",
@@ -1338,7 +1366,9 @@
     "how2": "Photograph it straight on under even, indirect light. Avoid glare and colored lamps — the measurement is the color, so the light matters.",
     "how3": "Note the color at the center of each pad, plus the bare backing and the thickest pad.",
     "how4": "Those readings give TD. Feeding them back in automatically is not built yet — send the photo and I will fit it by hand until it is.",
-    "beta": "Experimental. The card and the maths are tested; what has not been tested is a real print, which is exactly what this is for."
+    "beta": "Experimental. The card and the maths are tested; what has not been tested is a real print, which is exactly what this is for.",
+    "metaTitle": "Filament calibration card — measure TD for photographic relief prints",
+    "metaDescription": "Generate a printable calibration card for the Snapmaker U1 that measures a filament's transmission distance (TD) — the constant photographic relief printing depends on. Print it, photograph it, and get a real number instead of an estimate. Free, runs in your browser."
   },
   "buy": {
     "heading": "For sale",
@@ -1436,5 +1466,23 @@
     "notifyDone": "{out} saved to Downloads — ready to slice for your {printer}.",
     "toastFailed": "Couldn't convert {file}. Your original .3mf downloaded — convert it via the popup.",
     "notifyFailedTitle": "BedReady — conversion failed"
+  },
+  "mixer": {
+    "metaTitle": "Full Spectrum color mixer — BedReady",
+    "metaDescription": "Preview the colors you can mix from your 4 loaded filaments on the Snapmaker U1 — see the Full Spectrum gamut before you print. Free, in your browser.",
+    "title": "Full Spectrum color mixer",
+    "intro": "See what colors your 4 loaded filaments can make on the Snapmaker U1. Set your filaments below (defaults to CMYK) — every blend is computed with the same pigment mixer the converter uses. Hover a swatch for its recipe; click to copy the hex.",
+    "cyan": "Cyan",
+    "magenta": "Magenta",
+    "yellow": "Yellow",
+    "black": "Black",
+    "colorLabel": "Filament {n} color",
+    "nameLabel": "Filament {n} name",
+    "reset": "Reset to CMYK",
+    "copied": "copied!",
+    "swatchTitle": "{recipe} · {hex} (click to copy)",
+    "pure": "100% {name}",
+    "blend": "{pa}% {a} + {pb}% {b}",
+    "note": "These are 2-filament blends (the U1 dithers two colors per mixed region). Real prints vary a little with filament brand and lighting — treat this as a close guide, not an exact match."
   }
 }

@@ -2,8 +2,10 @@
 // Light/dark switch. The actual class is set pre-paint by the inline script in the root layout (no flash);
 // this just flips it on click and persists the choice. Reads the current state from <html> on mount.
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ThemeToggle() {
+  const t = useTranslations("nav");
   const [dark, setDark] = useState(true);
 
   useEffect(() => {
@@ -23,9 +25,10 @@ export default function ThemeToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggle}
-      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      title={dark ? "Light mode" : "Dark mode"}
+      aria-label={dark ? t("themeToLight") : t("themeToDark")}
+      title={dark ? t("themeLight") : t("themeDark")}
       className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line text-fg-muted transition hover:bg-surface-2 hover:text-fg"
     >
       {dark ? (

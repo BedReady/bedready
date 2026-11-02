@@ -18,7 +18,11 @@
     "source": "GitHub 源码",
     "sourceHint": "在 GitHub 上阅读源码 —— “不上传”这句话，你可以自己核实",
     "mixer": "混色器",
-    "calibrate": "耗材校准"
+    "calibrate": "耗材校准",
+    "themeToLight": "切换到浅色主题",
+    "themeToDark": "切换到深色主题",
+    "themeLight": "浅色模式",
+    "themeDark": "深色模式"
   },
   "footer": {
     "tagline": "天生不绑定品牌。",
@@ -298,7 +302,6 @@
     "shareText": "免费的浏览器内转换器，让多色 .3mf 文件在 Snapmaker U1 上正确打印——颜色完整，无需上传。",
     "copyLink": "复制链接",
     "convertAnother": "转换另一个文件",
-    "dropAria": "选择或拖入要转换的 .3mf 或 .stl 文件",
     "fsTip": "提示：混合色是通过交替两种耗材生成的，因此其颜色过渡处会有少量渗料。请把最不显眼、最平整的颜色设为混合色——避免在大面积曲面（如护目镜）上混色，效果最干净。",
     "previewNoteVeryLarge": "模型非常大（{count}M 个三角形）——无法生成预览，但仍可对完整模型进行转换。",
     "previewNoteSampled": "大型模型（{count}M 个三角形）——为保持流畅，预览仅显示有代表性的采样。转换使用完整模型。",
@@ -387,7 +390,26 @@
     "previewHeaderTarget": "{count} 种颜色 → {slots} 个 {name} 槽位",
     "spoolsFarColorMix": "有 {far} 种颜色在这里没有相近的耗材。ColorMix 可以用已装载的耗材混出它们。",
     "spoolsFarPlain": "有 {far} 种颜色在这里没有相近的耗材，将使用最接近的耗材打印。",
-    "noWebGL": "此浏览器无法显示 3D 预览（WebGL 已关闭或不可用）。其他功能均正常——文件照常转换和下载。"
+    "noWebGL": "此浏览器无法显示 3D 预览（WebGL 已关闭或不可用）。其他功能均正常——文件照常转换和下载。",
+    "metaTitle": "免费 3MF → U1 转换器 — BedReady",
+    "metaDescription": "文件始终不离开你的浏览器——不上传，不经服务器。将任何 .3mf 转换为干净的 Snapmaker U1 文件：移除其他品牌的 Bambu/Prusa/Creality 配置，写入真正的 U1 配置，保留涂色颜色。免费。",
+    "slotColorLabel": "槽位 {n} 取色器",
+    "slotHexLabel": "槽位 {n} 十六进制色值",
+    "mix3": "三色",
+    "mix3Hint": "3 种耗材混色——比任何两种组合都更接近",
+    "mixEdit2": "改为双色编辑",
+    "mixEdit2Hint": "改为按 2 种耗材的混色编辑",
+    "mixOff": "≈ 偏差",
+    "mixOffHint": "即使三色混合也难以接近此颜色——请尝试其他基础耗材。",
+    "mixAuto": "自动",
+    "mixAutoHint": "恢复自动匹配",
+    "mixTarget": "目标 {hex}",
+    "mixResult": "结果 {hex}",
+    "slotOverrideHint": "你在此槽位实际装载的耗材——如果不是模型的颜色请修改",
+    "mixFirst": "第一种耗材",
+    "mixSecond": "第二种耗材",
+    "mixShare": "第二种耗材的比例",
+    "dropTitleTouch": "轻点以选择 .3mf 或 .stl 文件"
   },
   "help": {
     "title": "帮助与常见问题",
@@ -663,7 +685,9 @@
     "safariNote": "Safari 扩展以应用形式分发——安装后在 Safari 的“设置 → 扩展”中启用。",
     "installManually": "或手动安装（进阶）",
     "chromeStoreOnly": "在 Chrome 应用商店。",
-    "popupCaption": "扩展的弹窗 —— 只需选一次打印机和喷嘴，下载的文件就能直接切片。也可以把 .3mf 拖进去，不用离开当前页面。"
+    "popupCaption": "扩展的弹窗 —— 只需选一次打印机和喷嘴，下载的文件就能直接切片。也可以把 .3mf 拖进去，不用离开当前页面。",
+    "metaTitle": "浏览器扩展 — BedReady",
+    "metaDescription": "直接在下载页面将 MakerWorld、Bambu、Printables 和 Thingiverse 的 .3mf 下载转换为 Snapmaker U1 或你自己的打印机可用的文件，支持 Chrome、Edge、Firefox 和 Safari。免费，在浏览器中运行。"
   },
   "upload": {
     "loading": "加载中…",
@@ -1117,13 +1141,17 @@
           "library": "配有经 U1 实测可打印配置的素材库"
         }
       }
-    }
+    },
+    "metaTitle": "转换器功能 — BedReady",
+    "metaDescription": "BedReady 转换器的全部功能：在 U1 的 4 个槽位上多色打印、Full Spectrum 混色、换料暂停、U1 安全配置、实时预览、多部件拆分、STL ↔ 3MF，以及转换为其他打印机（Bambu/Prusa/Creality）或干净的通用 3MF。免费，在浏览器中运行。"
   },
   "stickers": {
     "title": "免费 3D 打印贴纸",
     "intro": "创客主题的贴纸设计，免费使用。下载 SVG 后可打印、用刻字机裁切，或随你使用。",
     "download": "下载 SVG",
-    "note": "SVG — 可任意缩放且不损失质量。制作实体贴纸时，请打印在贴纸纸上或发送到刻字机。仅限个人/非商业用途 — 请勿转售。"
+    "note": "SVG — 可任意缩放且不损失质量。制作实体贴纸时，请打印在贴纸纸上或发送到刻字机。仅限个人/非商业用途 — 请勿转售。",
+    "metaTitle": "免费 3D 打印贴纸 — BedReady",
+    "metaDescription": "免费的 3D 打印主题贴纸设计（SVG）：耗材卷、打印平台、喷嘴、Full Spectrum 等。下载后自行打印或切割。"
   },
   "editor": {
     "bold": "加粗",
@@ -1338,7 +1366,9 @@
     "how2": "在均匀的间接光下正面拍照。避免反光和有色灯——测的就是颜色。",
     "how3": "记录每块中心的颜色，以及裸露底色和最厚的一块。",
     "how4": "这些读数即可得出 TD。自动回填尚未做——把照片发来，在那之前我手工拟合。",
-    "beta": "实验性功能。卡片与算法已测试；未测试的是真实打印，而这正是它的用途。"
+    "beta": "实验性功能。卡片与算法已测试；未测试的是真实打印，而这正是它的用途。",
+    "metaTitle": "耗材校准卡 — 为照片浮雕打印测量 TD",
+    "metaDescription": "为 Snapmaker U1 生成可打印的校准卡，测量耗材的透光距离（TD）——照片浮雕打印所依赖的常数。打印、拍照，即可得到真实数值而非估算。免费，在浏览器中运行。"
   },
   "buy": {
     "heading": "出售中",
@@ -1436,5 +1466,23 @@
     "notifyDone": "{out} 已保存到“下载”——可直接为你的 {printer} 切片。",
     "toastFailed": "无法转换 {file}。原始 .3mf 已下载——请通过弹窗转换。",
     "notifyFailedTitle": "BedReady——转换失败"
+  },
+  "mixer": {
+    "metaTitle": "Full Spectrum 混色器 — BedReady",
+    "metaDescription": "预览 Snapmaker U1 上已装载的 4 种耗材能混出的颜色，在打印前看到 Full Spectrum 色域。免费，在浏览器中运行。",
+    "title": "Full Spectrum 混色器",
+    "intro": "查看你在 Snapmaker U1 上装载的 4 种耗材能混出哪些颜色。在下方设置你的耗材（默认为 CMYK）——每种混色都使用与转换器相同的颜料混色算法计算。将鼠标悬停在色块上可查看配方；点击即可复制十六进制色值。",
+    "cyan": "青色",
+    "magenta": "品红",
+    "yellow": "黄色",
+    "black": "黑色",
+    "colorLabel": "耗材 {n} 的颜色",
+    "nameLabel": "耗材 {n} 的名称",
+    "reset": "恢复为 CMYK",
+    "copied": "已复制！",
+    "swatchTitle": "{recipe} · {hex}（点击复制）",
+    "pure": "100% {name}",
+    "blend": "{pa}% {a} + {pb}% {b}",
+    "note": "这些是 2 种耗材的混色（U1 在每个混色区域交替打印两种颜色）。实际打印效果会因耗材品牌和光线略有差异——请把它当作接近的参考，而非精确匹配。"
   }
 }

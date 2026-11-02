@@ -2,20 +2,15 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
-import { alternates } from "@/lib/seo";
+import { canonicalOnly } from "@/lib/seo";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Multicolor 3D Printer Comparison — Snapmaker U1 vs Bambu vs Prusa vs Creality — BedReady",
     description:
       "How the Snapmaker U1, Bambu X1C (AMS), Prusa MK4+MMU3 and Creality K2 Plus compare for multicolor printing — slots, method, purge waste, software — and how to move .3mf files between them.",
-    alternates: alternates("/compare-multicolor-printers", locale),
+    alternates: canonicalOnly("/compare-multicolor-printers"),
   };
 }
 
