@@ -298,3 +298,42 @@ function resolveString(node: unknown, path: string): string | undefined {
   }
   return typeof cur === "string" ? cur : undefined;
 }
+
+// ── 3. A KEY THAT EXISTS IS NOT A KEY THAT WAS TRANSLATED ───────────────────────────────────────
+// Parity passes when a new string is pasted into all seven files in English, and every recent change
+// added its strings to seven files by hand. So: no non-English value may be identical to the English
+// one when it reads as an English phrase (two lowercase words in a row). Brand names, units, paths
+// and placeholders ("you@email.com", %APPDATA%\…) are not prose and pass. An identical value that is genuinely right in that
+// language is listed here by name, with the reason.
+const SAME_AS_ENGLISH_ON_PURPOSE: Record<string, string> = {
+  "fr:convert.mixSecond": "« Second filament » is the French too",
+};
+const flatValues = (node: unknown, prefix = "", out = new Map<string, string>()): Map<string, string> => {
+  if (node && typeof node === "object") {
+    for (const [k, v] of Object.entries(node)) flatValues(v, prefix ? `${prefix}.${k}` : k, out);
+  } else if (typeof node === "string") out.set(prefix, node);
+  return out;
+};
+const ENGLISH_PHRASE = /\b[a-z]{3,}\s+[a-z]{3,}\b/;
+
+test("no locale ships a string still in English", () => {
+  const en = flatValues(JSON.parse(readFileSync("messages/en.json", "utf8")));
+  const leftovers: string[] = [];
+  for (const loc of LOCALES.filter((l) => l !== "en")) {
+    for (const [key, value] of flatValues(JSON.parse(readFileSync(`messages/${loc}.json`, "utf8")))) {
+      const id = `${loc}:${key}`;
+      if (en.get(key) === value && ENGLISH_PHRASE.test(value.replace(/\{[^}]*\}/g, "")) && !(id in SAME_AS_ENGLISH_ON_PURPOSE)) {
+        leftovers.push(`${id} = ${JSON.stringify(value).slice(0, 80)}`);
+      }
+    }
+  }
+  assert.deepEqual(leftovers, [], `untranslated strings:\n${leftovers.join("\n")}`);
+});
+
+test("the untranslated-string rule fires on an English paste, and not on a brand name", () => {
+  assert.ok(ENGLISH_PHRASE.test("Convert this file in your browser"));
+  assert.ok(!ENGLISH_PHRASE.test("Snapmaker U1"));
+  assert.ok(!ENGLISH_PHRASE.test("MakerWorld"));
+  assert.ok(!ENGLISH_PHRASE.test("you@email.com"));
+  assert.ok(!ENGLISH_PHRASE.test("%APPDATA%\\Snapmaker_Orca\\user\\default\\filament"));
+});
