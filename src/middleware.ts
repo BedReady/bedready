@@ -71,11 +71,22 @@ function isRouteHandler(pathname: string): boolean {
   return pathname.startsWith("/api/") || pathname === "/api" || pathname.startsWith("/auth/");
 }
 
+/**
+ * A share-card image route. Next writes its URL with the locale segment, `/en/…/opengraph-image`
+ * included, and the intl middleware 307s `/en/…` to the unprefixed path. Every English page's
+ * og:image was a redirect, which some link-preview crawlers do not follow. The route exists at
+ * the prefixed path, so serve it there.
+ */
+function isShareImage(pathname: string): boolean {
+  return /\/(opengraph|twitter)-image(-\w+)?$/.test(pathname);
+}
+
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // First, and before the intl middleware can touch the path — see `isRouteHandler`.
   if (isRouteHandler(pathname)) return NextResponse.next();
+  if (isShareImage(pathname)) return NextResponse.next();
 
   const target = frontDoorPath(pathname);
   if (target) {

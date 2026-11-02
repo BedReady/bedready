@@ -54,7 +54,9 @@ export async function siteMetadata(locale: string, brand: SiteBrand): Promise<Me
     openGraph: {
       title: t("ogTitle"),
       description: t("ogDescription"),
-      url: brand.origin,
+      // No `url`: this is inherited by every page that sets no openGraph of its own, and the origin
+      // here told crawlers each of those pages WAS the home page. Without og:url they use the page's
+      // own address (and its canonical).
       siteName: brand.name,
       type: "website",
     },

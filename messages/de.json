@@ -1150,10 +1150,10 @@
     "home": "Zur Startseite"
   },
   "meta": {
-    "title": "BedReady — 3D-Druckdateien, bereit für jedes Bett",
-    "description": "3D-Druckdateien mit echten Slicer-Profilen. Unser Server öffnet jede Datei und bestätigt, dass sie ein echtes, druckfertiges Profil für den genannten Drucker enthält — Snapmaker, Bambu, Prusa, Creality und mehr. Keine Markenbindung.",
-    "ogTitle": "BedReady — bereit für jedes Bett",
-    "ogDescription": "3D-Druckdateien mit vom Server geprüften Slicer-Profilen, für den jeweils genannten Drucker. Keine Markenbindung."
+    "title": "BedReady — 3MF-Konverter für den Snapmaker U1",
+    "description": "Wandle 3MF-Dateien aus Bambu Studio, PrusaSlicer, Orca und MakerWorld im Browser für den Snapmaker U1 um – Farben, Bemalung und Druckeinstellungen bleiben erhalten. Kostenlos, ohne Konto, ohne Upload.",
+    "ogTitle": "BedReady — jede 3MF bereit für den Snapmaker U1",
+    "ogDescription": "Bambu-, Prusa-, Orca- und MakerWorld-Dateien im Browser umgewandelt, Farben und Bemalung bleiben erhalten. Kostenlos, ohne Konto, ohne Upload."
   },
   "age": {
     "title": "Alter bestätigen",

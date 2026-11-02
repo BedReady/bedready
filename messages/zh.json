@@ -1150,10 +1150,10 @@
     "home": "返回首页"
   },
   "meta": {
-    "title": "BedReady — 适配任意热床的 3D 打印文件",
-    "description": "带有真实切片配置的 3D 打印文件。我们的服务器会打开每个文件，确认它含有针对所标注打印机的真实、可直接打印的配置 —— Snapmaker、Bambu、Prusa、Creality 等。不绑定任何品牌。",
-    "ogTitle": "BedReady — 适配任何热床",
-    "ogDescription": "带有经服务器检查的切片配置的 3D 打印文件，适配其所标注的打印机。不绑定任何品牌。"
+    "title": "BedReady — Snapmaker U1 的 3MF 转换器",
+    "description": "在浏览器中将 Bambu Studio、PrusaSlicer、Orca 和 MakerWorld 的 3MF 文件转换为 Snapmaker U1 可用格式，保留颜色、涂色和打印设置。免费、无需账号、不上传任何内容。",
+    "ogTitle": "BedReady — 让任何 3MF 都能在 Snapmaker U1 上打印",
+    "ogDescription": "在浏览器中转换 Bambu、Prusa、Orca 和 MakerWorld 文件，保留颜色和涂色。免费、无需账号、不上传任何内容。"
   },
   "age": {
     "title": "确认您的年龄",

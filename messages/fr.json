@@ -1150,10 +1150,10 @@
     "home": "Accueil"
   },
   "meta": {
-    "title": "BedReady — fichiers d’impression 3D, prêts pour n’importe quel plateau",
-    "description": "Des fichiers d’impression 3D avec de vrais profils de tranchage. Notre serveur ouvre chacun d’eux et confirme qu’il contient un profil réel et prêt à imprimer pour l’imprimante qu’il nomme — Snapmaker, Bambu, Prusa, Creality et d’autres. Aucun verrouillage de marque.",
-    "ogTitle": "BedReady — prêt pour tout plateau",
-    "ogDescription": "Des fichiers d’impression 3D avec des profils de tranchage vérifiés par notre serveur, pour l’imprimante qu’ils nomment. Aucun verrouillage de marque."
+    "title": "BedReady — convertisseur 3MF pour la Snapmaker U1",
+    "description": "Convertissez les fichiers 3MF de Bambu Studio, PrusaSlicer, Orca et MakerWorld pour la Snapmaker U1 dans votre navigateur, en conservant couleurs, peinture et réglages d’impression. Gratuit, sans compte, rien n’est envoyé.",
+    "ogTitle": "BedReady — tout fichier 3MF prêt pour la Snapmaker U1",
+    "ogDescription": "Fichiers Bambu, Prusa, Orca et MakerWorld convertis dans votre navigateur, couleurs et peinture conservées. Gratuit, sans compte, rien n’est envoyé."
   },
   "age": {
     "title": "Confirmer votre âge",
