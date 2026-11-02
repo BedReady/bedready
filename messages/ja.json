@@ -1150,10 +1150,10 @@
     "home": "ホームへ"
   },
   "meta": {
-    "title": "BedReady — どのベッドでも使える3Dプリントファイル",
-    "description": "本物のスライサープロファイルを備えた3Dプリントファイル。サーバーが各ファイルを開き、記載されたプリンター向けの実際に印刷可能なプロファイルであることを確認します（Snapmaker、Bambu、Prusa、Creality ほか）。ブランドに縛られません。",
-    "ogTitle": "BedReady — どんなベッドにも",
-    "ogDescription": "サーバーが検査したスライサープロファイル付きの3Dプリントファイル。記載されたプリンター向け。ブランドに縛られません。"
+    "title": "BedReady — Snapmaker U1 向け 3MF コンバーター",
+    "description": "Bambu Studio・PrusaSlicer・Orca・MakerWorld の 3MF ファイルを、色・ペイント・印刷設定を保ったままブラウザ上で Snapmaker U1 用に変換。無料・アカウント不要・アップロードなし。",
+    "ogTitle": "BedReady — どんな 3MF も Snapmaker U1 対応に",
+    "ogDescription": "Bambu・Prusa・Orca・MakerWorld のファイルをブラウザ上で変換。色とペイントはそのまま。無料・アカウント不要・アップロードなし。"
   },
   "age": {
     "title": "年齢の確認",

@@ -1150,10 +1150,10 @@
     "home": "Ir al inicio"
   },
   "meta": {
-    "title": "BedReady — archivos de impresión 3D, listos para cualquier cama",
-    "description": "Archivos de impresión 3D con perfiles de laminado reales. Nuestro servidor abre cada uno y confirma que lleva un perfil real y listo para imprimir para la impresora que indica: Snapmaker, Bambu, Prusa, Creality y más. Sin ataduras de marca.",
-    "ogTitle": "BedReady — listo para cualquier cama",
-    "ogDescription": "Archivos de impresión 3D con perfiles de laminado comprobados por nuestro servidor, para la impresora que indican. Sin ataduras de marca."
+    "title": "BedReady — conversor de 3MF para la Snapmaker U1",
+    "description": "Convierte archivos 3MF de Bambu Studio, PrusaSlicer, Orca y MakerWorld para la Snapmaker U1 en tu navegador, conservando colores, pintura y ajustes de impresión. Gratis, sin cuenta y sin subir nada.",
+    "ogTitle": "BedReady — cualquier 3MF lista para la Snapmaker U1",
+    "ogDescription": "Archivos de Bambu, Prusa, Orca y MakerWorld convertidos en tu navegador, con colores y pintura intactos. Gratis, sin cuenta y sin subir nada."
   },
   "age": {
     "title": "Confirma tu edad",
