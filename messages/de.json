@@ -1489,6 +1489,8 @@
     "colorLabel": "Farbe von Filament {n}",
     "nameLabel": "Name von Filament {n}",
     "reset": "Auf CMYK zurücksetzen",
+    "copyLink": "Link zu diesen Farben kopieren",
+    "linkCopied": "Link kopiert",
     "copied": "kopiert!",
     "swatchTitle": "{recipe} · {hex} (klicken zum Kopieren)",
     "pure": "100 % {name}",
