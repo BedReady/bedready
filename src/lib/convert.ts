@@ -2,7 +2,7 @@
 // The three-dependent helpers (modelSizeMM, threeMFToSTL) live in ./convert-mesh.
 import { unzipSync, zipSync, strToU8, strFromU8 } from "fflate";
 import { U1, MACHINES, configFamily, type Machine, type Flavour } from "./targets";
-import { applyU1FilamentPreset } from "./u1-filament-presets";
+import { applyU1FilamentPreset, u1FilamentPreset } from "./u1-filament-presets";
 
 // A .3mf is an untrusted zip. Guard against decompression bombs / oversized input BEFORE inflating it
 // into memory: cap the compressed input, and (via the filter, which sees each entry's uncompressed size
@@ -883,6 +883,52 @@ function applyU1Safety(out: Record<string, unknown>, u1: Record<string, unknown>
   if (diff) diff.antiClobber = clobber;
 }
 
+// ── A COMPACT CONFIG NAMES ITS MATERIAL ONLY IN THE PRESET ──────────────────────────────────────
+// Bambu Studio often saves a project_settings.config holding only the keys that differ from the
+// system preset: no filament_type, no temperatures, just filament_settings_id "Bambu PLA Basic @BBL A1".
+// Every missing key then fell through to the U1 reference, which is Snapmaker's Generic ABS, and a PLA
+// keychain from MakerWorld converted to ABS at 270 °C nozzle / 90 °C bed under a preset still named
+// "Bambu PLA Basic" (measured 2026-11-01 on Keychain+S.3mf, both modes). The material is read back
+// from the preset name, and the keys the source left out take that material's U1 preset.
+
+/** Material tokens, most specific first, so "PETG-CF" wins over "PETG" and "PCTG" over "PC". */
+const PRESET_MATERIALS = ["PETG-CF", "PETG-GF", "PLA-CF", "PA-CF", "PCTG", "PETG", "PLA", "ABS", "ASA", "TPU", "PVA", "BVOH", "HIPS", "PET", "PC", "PA"];
+
+/** The material a preset NAME declares ("Bambu PLA Basic @BBL A1" → "PLA"), or undefined. */
+export function materialFromPresetName(name: unknown): string | undefined {
+  if (typeof name !== "string") return undefined;
+  const n = name.toUpperCase();
+  return PRESET_MATERIALS.find((m) => new RegExp(`(^|[^A-Z0-9])${m.replace("-", "\\-")}([^A-Z0-9]|$)`).test(n));
+}
+
+/** filament_type per filament, read back from filament_settings_id wherever the config left it out. */
+export function sourceFilamentTypes(o: Record<string, unknown>): string[] {
+  const types = Array.isArray(o.filament_type) ? (o.filament_type as unknown[]) : [];
+  const ids = Array.isArray(o.filament_settings_id) ? (o.filament_settings_id as unknown[]) : [];
+  const n = Math.max(types.length, types.length ? 0 : ids.length);
+  return Array.from({ length: n }, (_, i) => {
+    const t = types[i];
+    return typeof t === "string" && t.trim() ? t : materialFromPresetName(ids[i]) ?? "";
+  }).map((t, i, all) => t || all.find(Boolean) || "");
+}
+
+/**
+ * Give each slot its material's U1 preset for every per-slot key the SOURCE did not carry. The declared
+ * nozzle range is left alone: in preserve mode it describes the U1 hardware and is the temperature-clamp
+ * ceiling, and a material's narrower range would cap a creator's deliberate 275 °C (see convert.test).
+ */
+const PRESET_FILL_SKIP = new Set(["nozzle_temperature_range_high", "nozzle_temperature_range_low"]);
+function fillMissingFromPreset(out: Record<string, unknown>, src: Record<string, unknown>, machine: Machine): void {
+  if (!isU1Reference(machine)) return;
+  const types = (out.filament_type as string[] | undefined) ?? [];
+  types.forEach((t, slot) => {
+    for (const [k, v] of Object.entries(u1FilamentPreset(t) ?? {})) {
+      const arr = out[k];
+      if (!(k in src) && !PRESET_FILL_SKIP.has(k) && Array.isArray(arr) && slot < arr.length) arr[slot] = v;
+    }
+  });
+}
+
 /**
  * Identity-swap builder ("preserve" mode): keep the creator's process settings (layer height,
  * walls, infill, speeds, temps…) from the source, but take hardware identity (printer/nozzle/
@@ -922,7 +968,10 @@ function buildPreservedConfig(
 
   // Lock in the chosen 4 slot colours/types (already reduced to <=4 by the caller).
   const baseId = (Array.isArray(u1.filament_settings_id) ? (u1.filament_settings_id[0] as string) : "") || "Generic PLA";
-  const prevType = out.filament_type as string[] | undefined;
+  // The source's own types, mapped to slots. NOT out.filament_type: when the source has none, that is the
+  // reference's ABS, which is how a PLA file became ABS.
+  const srcTypesAll = sourceFilamentTypes(src);
+  const prevType = srcTypesAll.length ? mapTo4(srcTypesAll, assign, ["PLA", "PLA", "PLA", "PLA"]) as string[] : undefined;
   const prevSid = out.filament_settings_id as string[] | undefined;
   out.filament_colour = [0, 1, 2, 3].map((s) => normalizeHex(colors[s] ?? "#FFFFFF"));
   out.filament_type = [0, 1, 2, 3].map((s) => types[s] ?? prevType?.[s] ?? "PLA");
@@ -930,6 +979,7 @@ function buildPreservedConfig(
     const t = (out.filament_type as string[])[s];
     return filamentPresetId(t, brand, prevSid?.[s] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${t}`));
   });
+  fillMissingFromPreset(out, src, machine);
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
@@ -968,14 +1018,15 @@ function buildFullSpectrumConfig(
     }
   }
   const srcColours = (src.filament_colour as string[]) ?? [];
-  const srcTypes = (src.filament_type as string[]) ?? [];
+  const srcTypes = sourceFilamentTypes(src);
   const baseId = (Array.isArray(u1.filament_settings_id) ? (u1.filament_settings_id[0] as string) : "") || "Generic PLA";
   const srcSid = Array.isArray(src.filament_settings_id) ? (src.filament_settings_id as string[]) : [];
   out.filament_colour = keptOld.map((i, k) => normalizeHex(keptHex?.[k] || srcColours[i] || "#FFFFFF"));
-  out.filament_type = keptOld.map((i) => srcTypes[i] ?? "PLA");
+  out.filament_type = keptOld.map((i) => srcTypes[i] || "PLA");
   out.filament_settings_id = keptOld.map((i) =>
-    filamentPresetId(srcTypes[i] ?? "PLA", brand, srcSid[i] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${srcTypes[i] ?? "PLA"}`)),
+    filamentPresetId(srcTypes[i] || "PLA", brand, srcSid[i] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${srcTypes[i] || "PLA"}`)),
   );
+  fillMissingFromPreset(out, src, machine);
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
@@ -1027,7 +1078,7 @@ export async function analyzeThreeMF(file: File): Promise<Analysis> {
       try {
         const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
         colors = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
-        types = (Array.isArray(o.filament_type) ? o.filament_type : []) as string[];
+        types = sourceFilamentTypes(o);
       } catch {
         /* ignore */
       }
@@ -1467,7 +1518,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
       try {
         const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
         srcColours = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
-        srcTypes = (Array.isArray(o.filament_type) ? o.filament_type : []) as string[];
+        srcTypes = sourceFilamentTypes(o);
       } catch {
         /* ignore malformed config */
       }
@@ -1692,7 +1743,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
         const o = JSON.parse(strFromU8(data)) as Record<string, unknown>;
         srcCfg = o;
         srcColours = (Array.isArray(o.filament_colour) ? o.filament_colour : []) as string[];
-        srcTypes = (Array.isArray(o.filament_type) ? o.filament_type : []) as string[];
+        srcTypes = sourceFilamentTypes(o);
       } catch {
         /* ignore */
       }

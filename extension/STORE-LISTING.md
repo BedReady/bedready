@@ -4,8 +4,10 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- In this repo: **0.6.1** — pending upload: renamed to "BedReady — 3MF Converter" (it converts for
-  several printers, not just the U1); no code or permission changes.
+- In this repo: **0.6.2** — pending upload: a PLA file saved with Bambu's compact settings (no
+  filament_type, material only in the preset name) converted to ABS at 270 °C; it now keeps its
+  material and that material's U1 temperatures. No permission changes.
+- **0.6.1** (rename to "BedReady — 3MF Converter"): live on Firefox 2026-11-01, in review on Chrome.
 - Published version: **0.6.0** (live on Chrome and Firefox 2026-10-31): the extension in the site's 7
   languages. Before that, **0.5.0** (live 2026-10-29) · 0.5.0 was the first upload since 0.2.0 (0.3.0 and 0.4.0
   were never uploaded, so 0.5.0 carries all three). 0.4.0 added the `storage` permission and 0.5.0
