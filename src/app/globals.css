@@ -451,6 +451,12 @@ body {
   width: min(64rem, 100vw - 3rem);
   margin-inline: calc((100% - min(64rem, 100vw - 3rem)) / 2);
 }
+/* The converter comparison: seven tools side by side need ~84rem before any column wraps to one word
+   a line. Same centring, larger cap; on anything narrower it still scrolls inside itself. */
+.page-breakout.page-breakout-wide {
+  width: min(84rem, 100vw - 3rem);
+  margin-inline: calc((100% - min(84rem, 100vw - 3rem)) / 2);
+}
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────
    The tile a design card shows when it has no cover image. The HUE comes from the design id, set
