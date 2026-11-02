@@ -1232,7 +1232,9 @@ export default function ConvertPage() {
       <div
         role="button"
         tabIndex={0}
-        aria-label={t("dropAria")}
+        // No aria-label: it overrode the visible text, so after a pick a screen reader still heard
+        // "Choose or drop a file" while the box showed the file's name. The name now comes from the
+        // content, which also follows the touch/desktop wording below.
         onDragOver={(e) => {
           e.preventDefault();
           setDragOver(true);
@@ -1262,8 +1264,17 @@ export default function ConvertPage() {
           </svg>
         </span>
         <div>
-          <p className="font-medium text-fg">{file ? file.name : stlFile ? stlFile.name : t("dropTitle")}</p>
-          <p className="mt-1 text-sm text-fg-muted">{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
+          <p className="font-medium text-fg">
+            {file ? file.name : stlFile ? stlFile.name : (
+              <>
+                {/* Nobody drags a file on a phone: say "tap" there. */}
+                <span className="sm:hidden">{t("dropTitleTouch")}</span>
+                <span className="hidden sm:inline">{t("dropTitle")}</span>
+              </>
+            )}
+          </p>
+          {/* dropSub ("or click to choose one") repeats the touch heading, so it is desktop-only. */}
+          <p className={`mt-1 text-sm text-fg-muted ${file || stlFile ? "" : "hidden sm:block"}`}>{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
           {!file && !stlFile && (
             <p className="mt-1 text-xs text-fg-subtle">{t("dropHint")}</p>
           )}
@@ -1886,10 +1897,10 @@ export default function ConvertPage() {
                           type="color"
                           value={/^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#000000"}
                           onChange={(e) => setCustomBases((b) => b.map((x, j) => (j === i ? e.target.value.toUpperCase() : x)))}
-                          aria-label={`Slot ${i + 1} color picker`}
+                          aria-label={t("slotColorLabel", { n: i + 1 })}
                           className="h-8 w-8 shrink-0 cursor-pointer rounded border border-line bg-transparent"
                         />
-                        <span className="text-xs text-fg-subtle">Slot {i + 1}</span>
+                        <span className="text-xs text-fg-subtle">{t("slot", { n: i + 1 })}</span>
                         <input
                           type="text"
                           value={hex}
@@ -1900,7 +1911,7 @@ export default function ConvertPage() {
                           }}
                           spellCheck={false}
                           maxLength={7}
-                          aria-label={`Slot ${i + 1} hex code`}
+                          aria-label={t("slotHexLabel", { n: i + 1 })}
                           className="w-24 rounded border border-line bg-surface-2 px-2 py-1 font-mono text-xs text-fg"
                           placeholder="#RRGGBB"
                         />
@@ -1928,30 +1939,30 @@ export default function ConvertPage() {
                           const a = r.ids[0], b = r.ids[1] ?? r.ids[0], pctB = r.weights[1] ?? 0;
                           return (
                             <li key={s} className="flex flex-wrap items-center gap-2 text-xs text-fg-muted">
-                              <span className="h-5 w-5 rounded border border-line" style={{ background: mesh.palette[i] }} title={`target ${mesh.palette[i]}`} />
+                              <span className="h-5 w-5 rounded border border-line" style={{ background: mesh.palette[i] }} title={t("mixTarget", { hex: mesh.palette[i] })} />
                               <span className="text-fg-subtle">→</span>
                               {three ? (
                                 <>
                                   <span className="text-fg-muted">{r.ids.map((id, k) => `S${id} ${r.weights[k]}%`).join(" + ")}</span>
-                                  <span className="rounded bg-sky-400/15 px-1 text-sky-200" title="3-filament blend — a closer match than any 2">3-way</span>
-                                  <button onClick={() => set({ a, b, mixBPercent: Math.round((100 * pctB) / ((r.weights[0] ?? 0) + pctB || 1)) })} className="text-fg-subtle hover:text-fg" title="Edit as a 2-filament mix instead">edit 2-way</button>
+                                  <span className="rounded bg-sky-400/15 px-1 text-sky-200" title={t("mix3Hint")}>{t("mix3")}</span>
+                                  <button onClick={() => set({ a, b, mixBPercent: Math.round((100 * pctB) / ((r.weights[0] ?? 0) + pctB || 1)) })} className="text-fg-subtle hover:text-fg" title={t("mixEdit2Hint")}>{t("mixEdit2")}</button>
                                 </>
                               ) : (
                                 <>
-                                  <select className={sel} value={a} onChange={(e) => set({ a: Number(e.target.value), b, mixBPercent: pctB })}>
+                                  <select aria-label={t("mixFirst")} className={sel} value={a} onChange={(e) => set({ a: Number(e.target.value), b, mixBPercent: pctB })}>
                                     {customBases.map((h, k) => <option key={k} value={k + 1} className="bg-surface">{k + 1}: {h}</option>)}
                                   </select>
                                   +
-                                  <select className={sel} value={b} onChange={(e) => set({ a, b: Number(e.target.value), mixBPercent: pctB })}>
+                                  <select aria-label={t("mixSecond")} className={sel} value={b} onChange={(e) => set({ a, b: Number(e.target.value), mixBPercent: pctB })}>
                                     {customBases.map((h, k) => <option key={k} value={k + 1} className="bg-surface">{k + 1}: {h}</option>)}
                                   </select>
-                                  <input type="range" min={0} max={100} value={pctB} onChange={(e) => set({ a, b, mixBPercent: Number(e.target.value) })} className="w-16 accent-violet-500" />
+                                  <input type="range" aria-label={t("mixShare")} min={0} max={100} value={pctB} onChange={(e) => set({ a, b, mixBPercent: Number(e.target.value) })} className="w-16 accent-violet-500" />
                                   <span className="w-8 tabular-nums">{pctB}%</span>
                                 </>
                               )}
-                              <span className="h-5 w-5 rounded border border-line" style={{ background: r.hex }} title={`result ${r.hex}`} />
-                              {!r.override && r.ids.length >= 2 && Math.round(r.deltaE) > 12 && <span className="rounded bg-amber-400/15 px-1 text-amber-200" title="Even a 3-way mix can't reach this well — try a different base filament.">≈ off</span>}
-                              {r.override && <button onClick={clearOv} className="text-fg-subtle hover:text-fg" title="Back to auto-match">auto</button>}
+                              <span className="h-5 w-5 rounded border border-line" style={{ background: r.hex }} title={t("mixResult", { hex: r.hex })} />
+                              {!r.override && r.ids.length >= 2 && Math.round(r.deltaE) > 12 && <span className="rounded bg-amber-400/15 px-1 text-amber-200" title={t("mixOffHint")}>{t("mixOff")}</span>}
+                              {r.override && <button onClick={clearOv} className="text-fg-subtle hover:text-fg" title={t("mixAutoHint")}>{t("mixAuto")}</button>}
                             </li>
                           );
                         })}
@@ -2108,7 +2119,7 @@ export default function ConvertPage() {
                                 spellCheck={false}
                                 maxLength={7}
                                 aria-label="Filament hex loaded on this head"
-                                title="The filament you'll actually load here — override if it isn't the model's color"
+                                title={t("slotOverrideHint")}
                                 className="w-[4.5rem] rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-xs text-fg"
                               />
                             </span>
@@ -2125,23 +2136,23 @@ export default function ConvertPage() {
                                   {three ? (
                                     <>
                                       <span className="text-fg-muted">{mm.ids.map((id, k) => `S${id} ${mm.weights[k]}%`).join(" + ")}</span>
-                                      <span className="rounded bg-sky-400/15 px-1 text-sky-200" title="3-filament blend — a closer match than any 2">3-way</span>
-                                      <button type="button" onClick={() => setMix({ a, b, mixBPercent: Math.round((100 * pctB) / ((mm.weights[0] ?? 0) + pctB || 1)) })} className="text-fg-subtle hover:text-fg" title="Edit as a 2-filament mix instead">edit 2-way</button>
+                                      <span className="rounded bg-sky-400/15 px-1 text-sky-200" title={t("mix3Hint")}>{t("mix3")}</span>
+                                      <button type="button" onClick={() => setMix({ a, b, mixBPercent: Math.round((100 * pctB) / ((mm.weights[0] ?? 0) + pctB || 1)) })} className="text-fg-subtle hover:text-fg" title={t("mixEdit2Hint")}>{t("mixEdit2")}</button>
                                     </>
                                   ) : (
                                     <>
-                                      <select className={sel} value={a} onChange={(e) => setMix({ a: Number(e.target.value), b, mixBPercent: pctB })}>
+                                      <select aria-label={t("mixFirst")} className={sel} value={a} onChange={(e) => setMix({ a: Number(e.target.value), b, mixBPercent: pctB })}>
                                         {physical.map((p, k) => (
                                           <option key={k} value={k + 1} className="bg-surface">{k + 1}: {physicalColors[k] ?? mesh.palette[p]}</option>
                                         ))}
                                       </select>
                                       +
-                                      <select className={sel} value={b} onChange={(e) => setMix({ a, b: Number(e.target.value), mixBPercent: pctB })}>
+                                      <select aria-label={t("mixSecond")} className={sel} value={b} onChange={(e) => setMix({ a, b: Number(e.target.value), mixBPercent: pctB })}>
                                         {physical.map((p, k) => (
                                           <option key={k} value={k + 1} className="bg-surface">{k + 1}: {physicalColors[k] ?? mesh.palette[p]}</option>
                                         ))}
                                       </select>
-                                      <input type="range" min={0} max={100} value={pctB} onChange={(e) => setMix({ a, b, mixBPercent: Number(e.target.value) })} className="w-14 accent-violet-500" />
+                                      <input type="range" aria-label={t("mixShare")} min={0} max={100} value={pctB} onChange={(e) => setMix({ a, b, mixBPercent: Number(e.target.value) })} className="w-14 accent-violet-500" />
                                       <span className="w-7 tabular-nums">{pctB}%</span>
                                     </>
                                   )}

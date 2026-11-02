@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { orcaBrands, orcaMaterials, orcaCombos } from "@/lib/orca-filaments";
 import { CONVERTER_ORIGIN, CONVERTER_ROUTES } from "@/lib/origin";
 import { GUIDES } from "@/lib/guides";
+import { ENGLISH_ONLY_ROUTES } from "@/lib/english-only";
 
 /**
  * The converter's sitemap.
@@ -44,22 +45,30 @@ function alts(path: string): MetadataRoute.Sitemap[number]["alternates"] {
   return { languages };
 }
 
-function entry(path: string, priority: number, changeFrequency: "weekly" | "monthly"): MetadataRoute.Sitemap[number] {
-  return { url: `${BASE}${path}`, changeFrequency, priority, alternates: alts(path) };
+/**
+ * `translated: false` for a page that is English at every prefix: no alternates, matching its
+ * canonicalOnly() metadata. The guides and filament pages were listed with seven hreflang
+ * alternates while the pages themselves canonicalised to English, and the two contradicted
+ * each other (Nov 2026 review).
+ */
+function entry(path: string, priority: number, changeFrequency: "weekly" | "monthly", translated = true): MetadataRoute.Sitemap[number] {
+  return { url: `${BASE}${path}`, changeFrequency, priority, ...(translated ? { alternates: alts(path) } : {}) };
 }
+
+const englishOnly = new Set<string>(ENGLISH_ONLY_ROUTES);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = CONVERTER_ROUTES.map((r) =>
-    entry(`/${r}`, PRIORITY[r] ?? 0.8, r === "orca-filaments" || r === "guides" ? "weekly" : "monthly"),
+    entry(`/${r}`, PRIORITY[r] ?? 0.8, r === "orca-filaments" || r === "guides" ? "weekly" : "monthly", !englishOnly.has(r)),
   );
 
-  const guidePages = GUIDES.map((g) => entry(`/guides/${g.slug}`, 0.7, "monthly"));
+  const guidePages = GUIDES.map((g) => entry(`/guides/${g.slug}`, 0.7, "monthly", false));
 
   // The filament pages are the long tail: brand, material, and every brand×material combination.
   const filaments = [
-    ...orcaBrands().map((b) => entry(`/orca-filaments/${b.slug}`, 0.6, "monthly")),
-    ...orcaMaterials().map((m) => entry(`/orca-filaments/${m.slug}`, 0.6, "monthly")),
-    ...orcaCombos().map((c) => entry(`/orca-filaments/${c.slug}`, 0.5, "monthly")),
+    ...orcaBrands().map((b) => entry(`/orca-filaments/${b.slug}`, 0.6, "monthly", false)),
+    ...orcaMaterials().map((m) => entry(`/orca-filaments/${m.slug}`, 0.6, "monthly", false)),
+    ...orcaCombos().map((c) => entry(`/orca-filaments/${c.slug}`, 0.5, "monthly", false)),
   ];
 
   return [...routes, ...guidePages, ...filaments];

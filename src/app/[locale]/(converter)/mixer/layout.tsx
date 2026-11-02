@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 
 // The mixer page is a client component and can't export metadata itself, so its title/description live
@@ -10,10 +11,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "mixer" });
   return {
-    title: "Full Spectrum color mixer — BedReady",
-    description:
-      "Preview the colors you can mix from your 4 loaded filaments on the Snapmaker U1 — see the Full Spectrum gamut before you print. Free, in your browser.",
+    title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: alternates("/mixer", locale),
   };
 }

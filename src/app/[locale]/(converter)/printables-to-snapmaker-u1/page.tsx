@@ -2,20 +2,15 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import Link from "@/components/SiteLink";
-import { alternates } from "@/lib/seo";
+import { canonicalOnly } from "@/lib/seo";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Print Printables models on the Snapmaker U1 — BedReady",
     description:
       "Convert a Printables .3mf project to print on the Snapmaker U1 — multicolor kept, the real U1 profile applied. Download the .3mf project, not just the STL. Free, in your browser.",
-    alternates: alternates("/printables-to-snapmaker-u1", locale),
+    alternates: canonicalOnly("/printables-to-snapmaker-u1"),
   };
 }
 

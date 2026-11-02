@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import Link from "@/components/SiteLink";
-import { alternates } from "@/lib/seo";
+import { canonicalOnly } from "@/lib/seo";
 import { SOURCE_REPO_URL } from "@/lib/links";
 
 // Honest comparison against the other Snapmaker U1 .3mf converters. Targets the searches a U1 owner
@@ -16,17 +16,12 @@ import { SOURCE_REPO_URL } from "@/lib/links";
 //   2. Date-stamp it. Competitors ship; a comparison is only true on a given day.
 //   3. Keep the "when to use them instead" section honest. A comparison nobody believes is worthless,
 //      and the fastest way to lose that is to pretend the alternatives have no advantages.
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Snapmaker U1 .3mf converters compared — u1convert, any2orca, U1 Forge, bl2u1, PaintPort",
     description:
       "An honest comparison of the tools that convert Bambu, Prusa, Orca and MakerWorld .3mf files for the Snapmaker U1, including the one Snapmaker's wiki links to: what each supports, what it costs, whether there's a limit, and whether your file is uploaded.",
-    alternates: alternates("/compare-u1-converters", locale),
+    alternates: canonicalOnly("/compare-u1-converters"),
   };
 }
 

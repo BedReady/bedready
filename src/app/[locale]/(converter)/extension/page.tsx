@@ -9,10 +9,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "extension" });
   return {
-    title: "Browser extension — BedReady",
-    description:
-      "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser.",
+    title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: alternates("/extension", locale),
   };
 }

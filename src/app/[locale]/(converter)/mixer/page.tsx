@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { mixRgb } from "@/lib/filament-mixer";
 
 // "What can my 4 filaments mix?" — a Full Spectrum gamut preview. Enter your 4 loaded filaments
@@ -8,12 +9,12 @@ import { mixRgb } from "@/lib/filament-mixer";
 // mixer the converter uses, so the swatches match what the U1 actually prints.
 
 type Base = { label: string; hex: string };
-const DEFAULT_CMYK: Base[] = [
-  { label: "Cyan", hex: "#29ABE2" },
-  { label: "Magenta", hex: "#ED1E79" },
-  { label: "Yellow", hex: "#FCEE21" },
-  { label: "Black", hex: "#111111" },
-];
+const CMYK = [
+  { key: "cyan", hex: "#29ABE2" },
+  { key: "magenta", hex: "#ED1E79" },
+  { key: "yellow", hex: "#FCEE21" },
+  { key: "black", hex: "#111111" },
+] as const;
 
 const RATIOS = [15, 30, 45, 60, 75, 90]; // % of the second filament
 const toRgb = (h: string): [number, number, number] => {
@@ -23,25 +24,30 @@ const toRgb = (h: string): [number, number, number] => {
 const toHex = (r: [number, number, number]) => "#" + r.map((v) => Math.round(v).toString(16).padStart(2, "0").toUpperCase()).join("");
 
 function Swatch({ hex, recipe }: { hex: string; recipe: string }) {
+  const t = useTranslations("mixer");
   const [copied, setCopied] = useState(false);
   return (
     <button
+      type="button"
       onClick={async () => {
         try { await navigator.clipboard.writeText(hex); setCopied(true); setTimeout(() => setCopied(false), 900); } catch {}
       }}
-      title={`${recipe} · ${hex} (click to copy)`}
+      title={t("swatchTitle", { recipe, hex })}
+      aria-label={t("swatchTitle", { recipe, hex })}
       className="group relative h-12 w-full rounded-lg ring-1 ring-inset ring-line"
       style={{ background: hex }}
     >
       <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate rounded-b-md bg-black/50 px-1 text-xs leading-5 text-white opacity-0 transition group-hover:opacity-100">
-        {copied ? "copied!" : hex}
+        {copied ? t("copied") : hex}
       </span>
     </button>
   );
 }
 
 export default function MixerPage() {
-  const [bases, setBases] = useState<Base[]>(DEFAULT_CMYK);
+  const t = useTranslations("mixer");
+  const defaults = (): Base[] => CMYK.map((c) => ({ label: t(c.key), hex: c.hex }));
+  const [bases, setBases] = useState<Base[]>(defaults);
 
   const setBase = (i: number, patch: Partial<Base>) =>
     setBases((b) => b.map((x, j) => (j === i ? { ...x, ...patch } : x)));
@@ -54,21 +60,17 @@ export default function MixerPage() {
         const a = bases[i], b = bases[j];
         const steps = RATIOS.map((pct) => {
           const hex = toHex(mixRgb(toRgb(a.hex), toRgb(b.hex), pct / 100));
-          return { hex, recipe: `${100 - pct}% ${a.label} + ${pct}% ${b.label}` };
+          return { hex, recipe: t("blend", { pa: 100 - pct, a: a.label, pb: pct, b: b.label }) };
         });
         out.push({ a, b, steps });
       }
     return out;
-  }, [bases]);
+  }, [bases, t]);
 
   return (
     <main className="page-read py-10">
-      <h1 className="text-3xl font-semibold tracking-tight text-fg">Full Spectrum color mixer</h1>
-      <p className="mt-2 max-w-2xl text-fg-muted">
-        See what colors your 4 loaded filaments can make on the Snapmaker U1. Set your filaments below
-        (defaults to CMYK) — every blend is computed with the same pigment mixer the converter uses.
-        Hover a swatch for its recipe; click to copy the hex.
-      </p>
+      <h1 className="text-3xl font-semibold tracking-tight text-fg">{t("title")}</h1>
+      <p className="mt-2 max-w-2xl text-fg-muted">{t("intro")}</p>
 
       {/* Base filaments */}
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -77,11 +79,13 @@ export default function MixerPage() {
             <div className="flex items-center gap-2">
               <input
                 type="color"
+                aria-label={t("colorLabel", { n: i + 1 })}
                 value={b.hex}
                 onChange={(e) => setBase(i, { hex: e.target.value.toUpperCase() })}
                 className="h-8 w-8 shrink-0 cursor-pointer rounded border border-line bg-transparent"
               />
               <input
+                aria-label={t("nameLabel", { n: i + 1 })}
                 value={b.label}
                 onChange={(e) => setBase(i, { label: e.target.value })}
                 className="min-w-0 flex-1 rounded border border-line bg-surface px-2 py-1 text-sm text-fg"
@@ -92,7 +96,7 @@ export default function MixerPage() {
         ))}
       </div>
       <div className="mt-2 flex gap-2">
-        <button onClick={() => setBases(DEFAULT_CMYK)} className="rounded-lg border border-line px-3 py-1 text-xs text-fg-muted hover:bg-surface-3">Reset to CMYK</button>
+        <button type="button" onClick={() => setBases(defaults())} className="rounded-lg border border-line px-3 py-1 text-xs text-fg-muted hover:bg-surface-3">{t("reset")}</button>
       </div>
 
       {/* Blends */}
@@ -104,18 +108,15 @@ export default function MixerPage() {
               {r.a.label} <span className="text-fg-subtle">↔</span> {r.b.label}
             </p>
             <div className="grid grid-cols-8 gap-1.5">
-              <Swatch hex={r.a.hex} recipe={`100% ${r.a.label}`} />
+              <Swatch hex={r.a.hex} recipe={t("pure", { name: r.a.label })} />
               {r.steps.map((s, k) => <Swatch key={k} hex={s.hex} recipe={s.recipe} />)}
-              <Swatch hex={r.b.hex} recipe={`100% ${r.b.label}`} />
+              <Swatch hex={r.b.hex} recipe={t("pure", { name: r.b.label })} />
             </div>
           </div>
         ))}
       </div>
 
-      <p className="mt-8 text-xs text-fg-subtle">
-        These are 2-filament blends (the U1 dithers two colors per mixed region). Real prints vary a
-        little with filament brand and lighting — treat this as a close guide, not an exact match.
-      </p>
+      <p className="mt-8 text-xs text-fg-subtle">{t("note")}</p>
     </main>
   );
 }

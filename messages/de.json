@@ -18,7 +18,11 @@
     "source": "Quellcode auf GitHub",
     "sourceHint": "Quellcode auf GitHub lesen — die Zusage „nichts wird hochgeladen“, überprüfbar",
     "mixer": "Farbmischer",
-    "calibrate": "Filament-Kalibrierung"
+    "calibrate": "Filament-Kalibrierung",
+    "themeToLight": "Zum hellen Design wechseln",
+    "themeToDark": "Zum dunklen Design wechseln",
+    "themeLight": "Heller Modus",
+    "themeDark": "Dunkler Modus"
   },
   "footer": {
     "tagline": "geräteunabhängig gedacht.",
@@ -298,7 +302,6 @@
     "shareText": "Kostenloser Browser-Konverter, der mehrfarbige .3mf-Dateien korrekt auf dem Snapmaker U1 druckbar macht – Farben erhalten, nichts wird hochgeladen.",
     "copyLink": "Link kopieren",
     "convertAnother": "Weitere Datei konvertieren",
-    "dropAria": "Wähle oder lege eine .3mf- oder .stl-Datei zum Konvertieren ab",
     "fsTip": "Tipp: Die Mischfarbe entsteht durch Abwechseln zweier Filamente, daher „bluten“ ihre Farbübergänge leicht. Wähle deine am wenigsten sichtbare, flachste Farbe als Mischfarbe – halte das Mischen von großen gewölbten Flächen (z. B. Brille) fern, für das sauberste Ergebnis.",
     "previewNoteVeryLarge": "Sehr großes Modell ({count} Mio. Dreiecke) – Vorschau nicht verfügbar, die Konvertierung funktioniert aber weiterhin am vollständigen Modell.",
     "previewNoteSampled": "Großes Modell ({count} Mio. Dreiecke) – die Vorschau zeigt einen repräsentativen Ausschnitt, um schnell zu bleiben. Die Konvertierung nutzt das vollständige Modell.",
@@ -387,7 +390,26 @@
     "previewHeaderTarget": "{count, plural, one {# Farbe} other {# Farben}} → {slots} {name}-Slots",
     "spoolsFarColorMix": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule. ColorMix kann sie aus den geladenen mischen.",
     "spoolsFarPlain": "Für {far, plural, one {# Farbe} other {# Farben}} gibt es hier keine ähnliche Spule; gedruckt wird mit der nächstliegenden.",
-    "noWebGL": "Dieser Browser kann die 3D-Vorschau nicht anzeigen (WebGL ist deaktiviert oder nicht verfügbar). Alles andere funktioniert weiter – deine Datei wird wie gewohnt konvertiert und heruntergeladen."
+    "noWebGL": "Dieser Browser kann die 3D-Vorschau nicht anzeigen (WebGL ist deaktiviert oder nicht verfügbar). Alles andere funktioniert weiter – deine Datei wird wie gewohnt konvertiert und heruntergeladen.",
+    "metaTitle": "Kostenloser 3MF → U1 Konverter — BedReady",
+    "metaDescription": "Deine Datei verlässt nie deinen Browser – kein Upload, kein Server. Wandle jede .3mf in eine saubere Snapmaker-U1-Datei um: fremde Bambu-/Prusa-/Creality-Profile werden entfernt, das echte U1-Profil wird gesetzt, bemalte Farben bleiben erhalten. Kostenlos.",
+    "slotColorLabel": "Farbwähler für Slot {n}",
+    "slotHexLabel": "Hex-Code für Slot {n}",
+    "mix3": "3-fach",
+    "mix3Hint": "Mischung aus 3 Filamenten – näher dran als jede Zweiermischung",
+    "mixEdit2": "als 2-fach bearbeiten",
+    "mixEdit2Hint": "Stattdessen als Mischung aus 2 Filamenten bearbeiten",
+    "mixOff": "≈ daneben",
+    "mixOffHint": "Selbst eine 3-fach-Mischung trifft das nicht gut – probier ein anderes Basisfilament.",
+    "mixAuto": "auto",
+    "mixAutoHint": "Zurück zur automatischen Zuordnung",
+    "mixTarget": "Ziel {hex}",
+    "mixResult": "Ergebnis {hex}",
+    "slotOverrideHint": "Das Filament, das du hier tatsächlich einlegst – ändere es, wenn es nicht die Farbe des Modells ist",
+    "mixFirst": "Erstes Filament",
+    "mixSecond": "Zweites Filament",
+    "mixShare": "Anteil des zweiten Filaments",
+    "dropTitleTouch": "Tippen, um eine .3mf- oder .stl-Datei auszuwählen"
   },
   "help": {
     "title": "Hilfe & FAQ",
@@ -663,7 +685,9 @@
     "safariNote": "Safari-Erweiterungen werden als App ausgeliefert — installiere sie und aktiviere sie dann in Safari unter Einstellungen → Erweiterungen.",
     "installManually": "Oder manuell installieren (fortgeschritten)",
     "chromeStoreOnly": "Im Chrome Web Store.",
-    "popupCaption": "Das Popup der Erweiterung — Drucker und Düse einmal wählen, und Downloads kommen druckfertig an. Oder eine .3mf hineinziehen, ohne die Seite zu verlassen."
+    "popupCaption": "Das Popup der Erweiterung — Drucker und Düse einmal wählen, und Downloads kommen druckfertig an. Oder eine .3mf hineinziehen, ohne die Seite zu verlassen.",
+    "metaTitle": "Browser-Erweiterung — BedReady",
+    "metaDescription": "Wandle .3mf-Downloads von MakerWorld, Bambu, Printables und Thingiverse direkt auf der Download-Seite für den Snapmaker U1 oder deinen eigenen Drucker um – in Chrome, Edge, Firefox und Safari. Kostenlos, im Browser."
   },
   "upload": {
     "loading": "Lädt…",
@@ -1117,13 +1141,17 @@
           "library": "Bibliothek mit Profilen, die auf einem U1 verifiziert drucken"
         }
       }
-    }
+    },
+    "metaTitle": "Funktionen des Konverters — BedReady",
+    "metaDescription": "Alles, was der BedReady-Konverter kann: Mehrfarbdruck auf den 4 Slots des U1, Full-Spectrum-Mischung, Pausen zum Spulenwechsel, U1-sicheres Profil, Live-Vorschau, Aufteilen mehrteiliger Modelle, STL ↔ 3MF und Umstellen auf andere Drucker (Bambu/Prusa/Creality) oder eine saubere generische 3MF. Kostenlos, im Browser."
   },
   "stickers": {
     "title": "Kostenlose 3D-Druck-Sticker",
     "intro": "Maker-Sticker-Designs, kostenlos nutzbar. Lade die SVGs herunter und drucke sie, schneide sie mit einem Plotter oder nutze sie, wie du möchtest.",
     "download": "SVG herunterladen",
-    "note": "SVG — beliebig skalierbar ohne Qualitätsverlust. Für echte Sticker auf Aufkleberpapier drucken oder an einen Plotter senden. Private/nicht-kommerzielle Nutzung — bitte nicht weiterverkaufen."
+    "note": "SVG — beliebig skalierbar ohne Qualitätsverlust. Für echte Sticker auf Aufkleberpapier drucken oder an einen Plotter senden. Private/nicht-kommerzielle Nutzung — bitte nicht weiterverkaufen.",
+    "metaTitle": "Kostenlose 3D-Druck-Sticker — BedReady",
+    "metaDescription": "Kostenlose Sticker-Designs rund um den 3D-Druck (SVG) – Filamentspule, Druckplatte, Düse, Full Spectrum und mehr. Herunterladen und selbst drucken oder plotten."
   },
   "editor": {
     "bold": "Fett",
@@ -1338,7 +1366,9 @@
     "how2": "Frontal bei gleichmäßigem, indirektem Licht fotografieren. Kein Glanz, keine farbigen Lampen — gemessen wird die Farbe.",
     "how3": "Die Farbe in der Mitte jedes Feldes notieren, dazu den blanken Hintergrund und das dickste Feld.",
     "how4": "Daraus ergibt sich TD. Die automatische Rückführung gibt es noch nicht — schicken Sie das Foto, bis dahin passe ich es von Hand an.",
-    "beta": "Experimentell. Karte und Rechnung sind getestet; ungetestet ist ein echter Druck — genau dafür ist sie da."
+    "beta": "Experimentell. Karte und Rechnung sind getestet; ungetestet ist ein echter Druck — genau dafür ist sie da.",
+    "metaTitle": "Filament-Kalibrierkarte — TD für fotografische Reliefdrucke messen",
+    "metaDescription": "Erzeuge eine druckbare Kalibrierkarte für den Snapmaker U1, die die Transmissionsdistanz (TD) eines Filaments misst – die Konstante, von der fotografischer Reliefdruck abhängt. Drucken, fotografieren und einen echten Wert statt einer Schätzung erhalten. Kostenlos, im Browser."
   },
   "buy": {
     "heading": "Zu verkaufen",
@@ -1436,5 +1466,23 @@
     "notifyDone": "{out} in Downloads gespeichert — bereit zum Slicen für deinen {printer}.",
     "toastFailed": "{file} konnte nicht umgewandelt werden. Deine ursprüngliche .3mf wurde heruntergeladen — wandle sie über das Popup um.",
     "notifyFailedTitle": "BedReady — Umwandlung fehlgeschlagen"
+  },
+  "mixer": {
+    "metaTitle": "Full-Spectrum-Farbmischer — BedReady",
+    "metaDescription": "Sieh dir an, welche Farben du aus deinen 4 geladenen Filamenten am Snapmaker U1 mischen kannst – den Full-Spectrum-Farbraum, bevor du druckst. Kostenlos, im Browser.",
+    "title": "Full-Spectrum-Farbmischer",
+    "intro": "Sieh dir an, welche Farben deine 4 geladenen Filamente am Snapmaker U1 ergeben. Lege unten deine Filamente fest (Standard: CMYK) – jede Mischung wird mit demselben Pigmentmischer berechnet, den auch der Konverter nutzt. Fahre über ein Farbfeld für das Rezept; klicke, um den Hex-Wert zu kopieren.",
+    "cyan": "Cyan",
+    "magenta": "Magenta",
+    "yellow": "Gelb",
+    "black": "Schwarz",
+    "colorLabel": "Farbe von Filament {n}",
+    "nameLabel": "Name von Filament {n}",
+    "reset": "Auf CMYK zurücksetzen",
+    "copied": "kopiert!",
+    "swatchTitle": "{recipe} · {hex} (klicken zum Kopieren)",
+    "pure": "100 % {name}",
+    "blend": "{pa} % {a} + {pb} % {b}",
+    "note": "Das sind Mischungen aus 2 Filamenten (der U1 dithert zwei Farben pro gemischtem Bereich). Echte Drucke weichen je nach Filamentmarke und Licht etwas ab – nimm das als gute Orientierung, nicht als exakten Treffer."
   }
 }
