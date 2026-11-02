@@ -1216,3 +1216,23 @@ for (const mode of ["preserve", "stamp"] as const) {
     if (mode === "preserve") assert.deepEqual((c.hot_plate_temp as string[]).slice(0, 2), ["60", "70"]);
   });
 }
+
+test("bestPhysicalSet: a 40-colour palette resolves quickly (was ~O(N⁵): 30 colours took 32 s)", () => {
+  const palette = Array.from({ length: 40 }, (_, i) => {
+    const v = (i * 2654435761) >>> 0; // spread hues deterministically
+    return "#" + (v & 0xffffff).toString(16).padStart(6, "0");
+  });
+  const t0 = performance.now();
+  const phys = bestPhysicalSet(palette, palette.map((_, i) => 40 - i));
+  const ms = performance.now() - t0;
+  assert.equal(phys.length, 4);
+  assert.equal(new Set(phys).size, 4);
+  assert.ok(ms < 2000, `took ${Math.round(ms)} ms`);
+});
+
+test("a palette past MAX_COLORS is refused by analysis and by a non-U1 retarget, not ground through", async () => {
+  const many = Array.from({ length: 200 }, (_, i) => "#" + i.toString(16).padStart(6, "0"));
+  const f = () => file3mf({ "Metadata/project_settings.config": project({ filament_colour: many }), "3D/3dmodel.model": model(`<x paint_color="4"/>`) });
+  await assert.rejects(analyzeThreeMF(f()), /200 filament colours/);
+  await assert.rejects(cleanThreeMF(f(), "bambu-x1c"), /200 filament colours/);
+});

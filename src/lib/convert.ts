@@ -1,6 +1,6 @@
 // Conversion core — intentionally free of `three` so it bundles small for the browser extension.
 // The three-dependent helpers (modelSizeMM, threeMFToSTL) live in ./convert-mesh.
-import { unzipSync, zipSync, strToU8, strFromU8 } from "fflate";
+import { zipSync, strToU8, strFromU8 } from "fflate";
 import { U1, MACHINES, configFamily, type Machine, type Flavour } from "./targets";
 import { applyU1FilamentPreset, u1FilamentPreset } from "./u1-filament-presets";
 
@@ -62,7 +62,16 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
   // one entry passes the V8 string ceiling below) inflation of that entry is terminated, so the work
   // is bounded by MAX_ZIP_INFLATED of real output whatever the headers say. Checked byte-identical to
   // unzipSync across 553 real .3mf files before it shipped.
-  const { out, inflated, overflow, entryOverflow } = boundedUnzip(buf, MAX_ZIP_INFLATED, (name) => (TEXT_ENTRY.test(name) ? MAX_TEXT_ENTRY : Infinity));
+  return boundedUnzipOrThrow(buf);
+}
+
+/**
+ * The inflation half of safeUnzip, without the compressed-size cap: for plates.ts, which reads the
+ * layout of an archive safeUnzip has already refused for its size. `keep` picks the entries to
+ * inflate; the inflated-size caps hold for those whatever the zip headers claim.
+ */
+export function boundedUnzipOrThrow(buf: Uint8Array, keep?: (name: string) => boolean): Record<string, Uint8Array> {
+  const { out, inflated, overflow, entryOverflow } = boundedUnzip(buf, MAX_ZIP_INFLATED, (name) => (TEXT_ENTRY.test(name) ? MAX_TEXT_ENTRY : Infinity), keep);
   if (overflow) {
     throw new ThreeMFError("expands_too_large", Math.round(inflated / MB), Math.round(MAX_ZIP_INFLATED / MB));
   }
@@ -89,6 +98,12 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
 // search are ~O(N⁴) in the colour count, which comes straight from the file). No real file has anywhere
 // near this many spools; a larger count means a malformed/hostile file.
 const MAX_COLORS = 64;
+const tooManyColours = (n: number) => new Error(`This .3mf declares ${n} filament colours — too many to process (looks malformed).`);
+// bestPhysicalSet's exhaustive drop is ~O(N⁵) (N rounds × N candidates × bestMix's O(N³) triples):
+// 30 colours took 32 s on the main thread. Above this many survivors, drop by nearest-neighbour ΔE
+// first (O(N²) a round) and leave the expensive mix test for the last few. Real palettes rarely
+// exceed it, so their result is unchanged.
+const EXHAUSTIVE_DROP_MAX = 8;
 import { boundedUnzip, remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
 import { toPrusaProject, planColorMix, type PrusaBlend } from "./prusa-project";
 import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
@@ -309,6 +324,23 @@ export function bestPhysicalSet(hexes: string[], usage: number[] = [], pinned: n
   if (all.length <= 4) return all.sort((a, b) => (usage[b] ?? 0) - (usage[a] ?? 0));
   const pin = new Set(pinned.filter((i) => i >= 0 && i < hexes.length));
   const keep = new Set<number>(all);
+  const labs = hexes.map((h) => rgbToLab(hexToRgb(normalizeHex(h))));
+  while (keep.size > EXHAUSTIVE_DROP_MAX) {
+    // Cheap pass: the colour closest to another survivor is the one a mix fakes best.
+    const idxs = [...keep].filter((c) => !pin.has(c));
+    if (!idxs.length) break;
+    const near = new Map<number, number>();
+    for (const c of idxs) {
+      let d = Infinity;
+      for (const x of keep) if (x !== c) d = Math.min(d, deltaE(labs[c], labs[x]));
+      near.set(c, d);
+    }
+    const minD = Math.min(...idxs.map((c) => near.get(c)!));
+    const dropI = idxs
+      .filter((c) => near.get(c)! <= minD + 1.5)
+      .sort((a, b) => (usage[a] ?? 0) - (usage[b] ?? 0))[0];
+    keep.delete(dropI);
+  }
   while (keep.size > 4) {
     const idxs = [...keep].filter((c) => !pin.has(c));
     if (!idxs.length) break; // >4 pinned colours: nothing left we're allowed to drop
@@ -1113,6 +1145,7 @@ export async function analyzeThreeMF(file: File): Promise<Analysis> {
     colors = colors.slice(0, maxSlot);
     types = types.slice(0, maxSlot);
   }
+  if (colors.length > MAX_COLORS) throw tooManyColours(colors.length);
   let encoding: Encoding = "simple";
   if (colors.length > 4) encoding = painted ? "painted" : maxSlot > 4 ? "object" : "by-layer";
 
@@ -1532,6 +1565,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     }
   }
   const colorsTotal = srcColours.length;
+  if (colorsTotal > MAX_COLORS) throw tooManyColours(colorsTotal);
   const slots = Math.max(1, machine.toolheads);
 
   // Colour → slot map. Manual assignment from the UI wins; otherwise reduce only when the source has more
@@ -1797,7 +1831,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   const fsRecipes = fsPalette ? recipesFromFullSpectrum(entries) : null; // author's exact mix recipes
 
   const colorsTotal = srcColours.length;
-  if (colorsTotal > MAX_COLORS) throw new Error(`This .3mf declares ${colorsTotal} filament colours — too many to process (looks malformed).`);
+  if (colorsTotal > MAX_COLORS) throw tooManyColours(colorsTotal);
   const over4 = colorsTotal > 4;
   const objectAssigned = !painted && maxSlot > 4;
   // A by-layer (height) multicolour file with >4 colours can keep them all via M600 spool swaps.

@@ -19,6 +19,7 @@
 //                               those two silently mismaps plates — it made half of them measure 0 MB
 //                               on my first pass at this.
 import { unzipSync, zipSync, strFromU8, strToU8 } from "fflate";
+import { boundedUnzipOrThrow } from "./convert";
 
 export type PlateInfo = {
   /** 1-based plater_id from model_settings.config. */
@@ -70,11 +71,12 @@ function objectParts(rootXml: string): Map<number, string> {
  * List the plates in a .3mf without inflating its geometry.
  *
  * Deliberately does NOT go through safeUnzip: that inflates everything and would reject the very
- * files this exists to rescue. Nothing here decompresses a geometry part, so there's no zip-bomb
- * exposure — the cost is bounded by the metadata entries, which are kilobytes.
+ * files this exists to rescue. Only the metadata entries are inflated, and through the same bounded
+ * inflater: they are kilobytes in a real file, but their size is whatever the file says, so a
+ * hostile one gets the zip-bomb caps rather than unzipSync.
  */
 export function peekPlates(bytes: Uint8Array): PlateInfo[] {
-  const meta = unzipSync(bytes, { filter: (f) => META_ENTRY.test(f.name) });
+  const meta = boundedUnzipOrThrow(bytes, (name) => META_ENTRY.test(name));
   const settings = meta[MODEL_SETTINGS];
   const root = meta[ROOT];
   if (!settings || !root) return [];
@@ -281,9 +283,7 @@ export function extractPlate(bytes: Uint8Array, plateIndex: number): Uint8Array 
   if (!plate.paths.length) throw new Error(`plate ${plateIndex} has no geometry`);
 
   const wanted = new Set(plate.paths);
-  const entries = unzipSync(bytes, {
-    filter: (f) => META_ENTRY.test(f.name) || wanted.has(f.name),
-  });
+  const entries = boundedUnzipOrThrow(bytes, (name) => META_ENTRY.test(name) || wanted.has(name));
 
   const keepIds = new Set(plate.objectIds);
   const out: Record<string, Uint8Array> = {};
