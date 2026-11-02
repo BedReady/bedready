@@ -146,9 +146,9 @@ export function originFor(path: string): string {
  * library does not serve redirects to their 404, which is what happens today for everything.
  */
 export const LIBRARY_ROUTES = [
-  "account", "admin", "age", "app", "app-link", "changelog", "collections", "designs", "feedback",
-  "following", "help", "licenses", "login", "makers", "notifications", "privacy", "saves", "terms",
-  "upload", "verified",
+  "account", "admin", "age", "app", "app-link", "changelog", "collections", "designs", "downloads",
+  "feedback", "following", "for-makers", "help", "licenses", "login", "makers", "missing",
+  "notifications", "privacy", "saves", "terms", "upload", "verified",
 ] as const;
 
 /** A storefront is `/@handle` — a rewrite, not a directory, so it can never be enumerated. */
