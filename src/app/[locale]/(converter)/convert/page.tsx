@@ -136,6 +136,29 @@ export default function ConvertPage() {
   // every blended region costs a tool change per layer).
   const [colorMix, setColorMix] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  // ── THE RESULT WAS RENDERED WHERE NOBODY WAS LOOKING ──────────────────────────────────────────
+  // The done screen sits below the settings and the output buttons, and the page stayed where the
+  // click was. Measured 2026-11-02 in a production build: on a 390×844 phone the success line began at
+  // 762 px, its first line all that showed, and the file card with "Download again" was off screen;
+  // on a 1280×800 desktop it began at 605 px. Focus stayed on <body>. So when a conversion finishes,
+  // the result scrolls to the top of the view and the file card takes focus, so a keyboard user lands
+  // on the file. The success line is already a live region, so it is not the focus target (it would
+  // be read twice). `preventScroll` because the scroll is already under way; where scrollIntoView
+  // returns no promise (Firefox, Safari) focus simply moves at once, which preventScroll makes harmless.
+  const doneRef = useRef<HTMLDivElement>(null);
+  const fileCardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status !== "done") return;
+    const el = doneRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let current = true;
+    void (async () => {
+      await (el.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" }) as unknown as Promise<void> | undefined);
+      if (current) fileCardRef.current?.focus({ preventScroll: true });
+    })();
+    return () => { current = false; };
+  }, [status]);
 
   // ── The denominator for the done screen ───────────────────────────────────────────────────────
   //
@@ -2590,13 +2613,13 @@ export default function ConvertPage() {
           screen puts the thing it does not expect anybody to read. It is the artefact that makes the
           conversion checkable, so it sits with the file it describes. */}
       {status === "done" && (
-        <div role="status" aria-live="polite" className="notice notice-ok mt-6">
+        <div ref={doneRef} role="status" aria-live="polite" className="notice notice-ok mt-6">
           <NoticeIcon level="ok" />
           <span>{message}</span>
         </div>
       )}
       {status === "done" && result && (
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-5 py-4">
+        <div ref={fileCardRef} tabIndex={-1} className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-5 py-4">
           <div className="min-w-0">
             <p className="eyebrow">{t("yourFile")}</p>
             <p className="mt-1 truncate font-medium text-fg" dir="ltr">{result.name}</p>
