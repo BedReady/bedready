@@ -4,8 +4,11 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- In this repo: **0.6.3** — pending upload: a file with a very large colour palette is refused
-  instead of freezing the converter (picking 4 heads from 30 colours took 32 s). No permission changes.
+- In this repo: **0.6.3** — pending upload: a "Download for U1" button on MakerWorld model pages,
+  under "Open in Bambu Studio", for the print profile picked on the page; Snapmaker Orca 2.4 files
+  with High Flow values no longer shift one slot's values onto the next; the High Flow hot end
+  option; a file with a very large colour palette is refused instead of freezing the converter
+  (picking 4 heads from 30 colours took 32 s). No permission changes.
 - **0.6.2** (submitted to Chrome and Firefox 2026-11-02, in review): a PLA file saved with Bambu's
   compact settings (no filament_type, material only in the preset name) converted to ABS at 270 °C;
   it now keeps its material and that material's U1 temperatures.
@@ -75,6 +78,7 @@ download page. Most converters stop at swapping the profile and mapping colors. 
 • Mix from your own filaments (CMYK or any 4), with color matching tuned to what the U1 really prints
 • Detects height-banded models and tells you the exact filament-swap heights
 • Fixes the spool-swap pauses and the prime tower (the #1 cause of failed multicolor prints)
+• On MakerWorld, a "Download for U1" button right under "Open in Bambu Studio"
 
 It runs ENTIRELY in your browser — your file is never uploaded to a server. Free, no account.
 
