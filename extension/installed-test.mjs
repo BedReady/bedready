@@ -12,7 +12,7 @@
 // extension's save "download.3mf", so files are checked by CONTENT (the printer they declare). Without
 // that override the save is named correctly (`Benchy.u1.3mf`), measured 2026-10-29.
 import puppeteer from "puppeteer-core";
-import { readFileSync, readdirSync, mkdtempSync } from "node:fs";
+import { readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -76,7 +76,18 @@ async function run({ target, keep = false, file }) {
 // The in-page MakerWorld button: a faked model page (MakerWorld's real markup hook, span.primaryButton),
 // its f3mf endpoint answering with a signed CDN link, and the CDN serving the file. The page asks the
 // endpoint; the service worker fetches the CDN bytes. `signedIn: false` answers 403 like the real site.
-async function runMakerWorldButton({ file, signedIn = true }) {
+// makerworld.com.cn is opt-in through a permission prompt, which a headless browser cannot answer. This
+// copy is the extension as it stands once the user has said yes: the optional origins already granted.
+function grantedCnCopy() {
+  const dir = mkdtempSync(join(tmpdir(), "br-ext-cn-"));
+  cpSync(EXT, dir, { recursive: true, filter: (p) => !p.includes("store-screenshots") });
+  const m = JSON.parse(readFileSync(join(EXT, "manifest.json"), "utf8"));
+  m.host_permissions = [...m.host_permissions, ...m.optional_host_permissions];
+  writeFileSync(join(dir, "manifest.json"), JSON.stringify(m));
+  return dir;
+}
+
+async function runMakerWorldButton({ file, signedIn = true, site = "makerworld.com", ext = EXT }) {
   const DL = mkdtempSync(join(tmpdir(), "br-mw-"));
   const browser = await puppeteer.launch({
     executablePath: CHROME, headless: true, pipe: true,
@@ -85,9 +96,10 @@ async function runMakerWorldButton({ file, signedIn = true }) {
   const seen = [];
   try {
     const b = await browser.target().createCDPSession();
-    const { id } = await b.send("Extensions.loadUnpacked", { path: EXT });
+    const { id } = await b.send("Extensions.loadUnpacked", { path: ext });
     const swt = await browser.waitForTarget((t) => t.type() === "service_worker" && t.url().includes(id));
     await b.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: DL });
+    const cdn = site.endsWith(".cn") ? "public-cdn.bblmw.cn" : "public-cdn.bblmw.com";
     const html = `<!doctype html><html><body><div class="panel"><div class="row"><div class="btn"><span class="primaryButton"><div><span>Open in Bambu Studio</span></div></span><span>▾</span></div></div></div></body></html>`;
     const body = readFileSync(file).toString("base64");
     const answer = (s) => s.on("Fetch.requestPaused", (e) => {
@@ -95,18 +107,19 @@ async function runMakerWorldButton({ file, signedIn = true }) {
       seen.push(u);
       const r = u.includes("/f3mf")
         ? signedIn
-          ? { code: 200, type: "application/json", body: Buffer.from(JSON.stringify({ name: "Benchy.3mf", url: "https://public-cdn.bblmw.com/makerworld/model/Benchy.3mf?sig=x" })).toString("base64") }
+          ? { code: 200, type: "application/json", body: Buffer.from(JSON.stringify({ name: "Benchy.3mf", url: `https://${cdn}/makerworld/model/Benchy.3mf?sig=x` })).toString("base64") }
           : { code: 403, type: "application/json", body: Buffer.from('{"code":1,"error":"Please log in to download models."}').toString("base64") }
-        : u.includes("bblmw.com")
+        : u.includes("bblmw.")
           ? { code: 200, type: "application/octet-stream", body }
           : { code: 200, type: "text/html", body: Buffer.from(html).toString("base64") };
       s.send("Fetch.fulfillRequest", { requestId: e.requestId, responseCode: r.code, body: r.body, responseHeaders: [{ name: "Content-Type", value: r.type }] }).catch(() => {});
     });
     const sw = await swt.createCDPSession();
-    const patterns = [{ urlPattern: "https://makerworld.com/*" }, { urlPattern: "https://public-cdn.bblmw.com/*" }];
+    const patterns = [{ urlPattern: `https://${site}/*` }, { urlPattern: `https://${cdn}/*` }];
     for (const s of [b, sw]) { answer(s); await s.send("Fetch.enable", { patterns }); }
     const page = await browser.newPage();
-    await page.goto("https://makerworld.com/en/models/1092486-benchy#profileId-42", { waitUntil: "domcontentloaded" });
+    await sleep(1000); // a registered (not manifest) content script is set up by the worker at start
+    await page.goto(`https://${site}/en/models/1092486-benchy#profileId-42`, { waitUntil: "domcontentloaded" });
     const btn = await page.waitForSelector("button[data-bedready-mw]", { timeout: 15000 }).catch(() => null);
     await sleep(500);
     const label = btn ? await btn.evaluate((e) => e.textContent) : "";
@@ -141,4 +154,8 @@ check(mw.seen.some((u) => u.includes("/api/v1/design-service/instance/42/f3mf"))
 check(mw.files.some((x) => x.printer.startsWith("Snapmaker U1")), `MakerWorld page: the file is converted and saved (${JSON.stringify(mw.files)})`);
 const out = await runMakerWorldButton({ file: SRC, signedIn: false });
 check(out.files.length === 0 && /Sign in to MakerWorld/.test(out.toast), `MakerWorld page, signed out: says to sign in, saves nothing (${out.toast})`);
+const cnOff = await runMakerWorldButton({ file: SRC, site: "makerworld.com.cn" });
+check(!cnOff.button, "makerworld.com.cn, not opted in: no button (the site is opt-in)");
+const cnOn = await runMakerWorldButton({ file: SRC, site: "makerworld.com.cn", ext: grantedCnCopy() });
+check(cnOn.button && cnOn.files.some((x) => x.printer.startsWith("Snapmaker U1")), `makerworld.com.cn, opted in: the button converts from the .cn CDN (${JSON.stringify(cnOn.files)})`);
 process.exit(failed ? 1 : 0);

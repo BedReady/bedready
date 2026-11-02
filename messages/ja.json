@@ -1428,6 +1428,7 @@
     "onDownload": "ダウンロード時",
     "autoConvert": "MakerWorld・Printables・Thingiverse からの .3mf ダウンロードを自動で変換",
     "keepOriginal": "元のダウンロードも残す",
+    "cnToggle": "makerworld.com.cn でも使う",
     "drop": ".3mf をここにドロップ、またはクリックして選択",
     "editColors": "bedready.io で色を編集 →",
     "footer": "フルプレビューと色エディター：",

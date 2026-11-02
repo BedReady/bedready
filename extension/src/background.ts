@@ -19,7 +19,7 @@ declare const chrome: any;
 const api: any = typeof browser !== "undefined" ? browser : chrome;
 
 const MAX_OUTPUT_BYTES = 80 * 1024 * 1024; // cap the converted output we inline as a base64 data: URL
-const SITE_RE = /(^|\.)(makerworld\.com|printables\.com|thingiverse\.com)$/i;
+const SITE_RE = /(^|\.)(makerworld\.com(\.cn)?|printables\.com|thingiverse\.com)$/i;
 // Hosts that actually serve the .3mf *bytes* for the sites above. The download often lands via a
 // cross-origin redirect to a CDN, and depending on the site's Referrer-Policy the referrer can be
 // dropped — leaving only the CDN host to go on. MakerWorld files come from *.bblmw.com (Bambu's
@@ -27,8 +27,8 @@ const SITE_RE = /(^|\.)(makerworld\.com|printables\.com|thingiverse\.com)$/i;
 // a SITE_RE domain, so without this a referrer-less MakerWorld download is silently skipped. Printables
 // (files/media.printables.com) and Thingiverse (cdn.thingiverse.com) file hosts are subdomains of the
 // site domains, so SITE_RE already covers those. Keep in sync with host_permissions (bblmw.com is there).
-const CDN_RE = /(^|\.)bblmw\.com$/i;
-const MAKERWORLD_RE = /(^|\.)makerworld\.com$/i;
+const CDN_RE = /(^|\.)bblmw\.(com|cn)$/i;
+const MAKERWORLD_RE = /(^|\.)makerworld\.com(\.cn)?$/i;
 const is3mf = (s: string) => /\.3mf(\?|$)/i.test(s || "");
 const host = (u: string) => { try { return new URL(u).hostname; } catch { return ""; } };
 
@@ -235,3 +235,28 @@ api?.runtime?.onMessageExternal?.addListener(
     return true; // answering asynchronously
   },
 );
+
+// ---------- makerworld.com.cn, opt-in (popup.ts) ----------
+// Adding a site to the REQUIRED host permissions disables the extension for everyone who has it until
+// they approve the new site (Chrome's rule for a permission warning added in an update). So the Chinese
+// MakerWorld and its CDN are optional: the popup asks for them, and the content script is registered
+// here only while they are granted. Run on every start, not just install: idempotent, and Firefox does
+// not keep a registration across browser restarts the way Chrome does.
+const CN_ORIGINS = ["https://makerworld.com.cn/*", "https://*.bblmw.cn/*"];
+const CN_SCRIPT = "bedready-makerworld-cn";
+async function syncCnScript(): Promise<void> {
+  try {
+    const granted = await api.permissions.contains({ origins: CN_ORIGINS });
+    const registered = (await api.scripting.getRegisteredContentScripts({ ids: [CN_SCRIPT] })).length > 0;
+    if (granted && !registered) {
+      await api.scripting.registerContentScripts([{ id: CN_SCRIPT, matches: ["https://makerworld.com.cn/*"], js: ["dist/content.js"], runAt: "document_idle" }]);
+    } else if (!granted && registered) {
+      await api.scripting.unregisterContentScripts({ ids: [CN_SCRIPT] });
+    }
+  } catch (e) {
+    console.log("[BedReady] makerworld.com.cn script not synced:", e);
+  }
+}
+void syncCnScript();
+api?.permissions?.onAdded?.addListener?.(() => void syncCnScript());
+api?.permissions?.onRemoved?.addListener?.(() => void syncCnScript());

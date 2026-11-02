@@ -8,7 +8,8 @@
   "permissions": [
     "downloads",
     "notifications",
-    "storage"
+    "storage",
+    "scripting"
   ],
   "icons": {
     "16": "icon16.png",
@@ -24,6 +25,10 @@
     "https://*.printables.com/*",
     "https://www.thingiverse.com/*",
     "https://*.thingiverse.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://makerworld.com.cn/*",
+    "https://*.bblmw.cn/*"
   ],
   "action": {
     "default_popup": "popup.html",

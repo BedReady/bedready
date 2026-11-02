@@ -1428,6 +1428,7 @@
     "onDownload": "On download",
     "autoConvert": "Convert .3mf downloads from MakerWorld, Printables and Thingiverse automatically",
     "keepOriginal": "Keep the original download as well",
+    "cnToggle": "Also work on makerworld.com.cn",
     "drop": "Drop a .3mf here, or click to choose",
     "editColors": "Edit colors on bedready.io →",
     "footer": "Full preview & color editor:",

@@ -1428,6 +1428,7 @@
     "onDownload": "下载时",
     "autoConvert": "自动转换来自 MakerWorld、Printables 和 Thingiverse 的 .3mf 下载",
     "keepOriginal": "同时保留原始下载文件",
+    "cnToggle": "同时在 makerworld.com.cn 上使用",
     "drop": "把 .3mf 拖到这里，或点击选择",
     "editColors": "在 bedready.io 上编辑颜色 →",
     "footer": "完整预览和颜色编辑器：",

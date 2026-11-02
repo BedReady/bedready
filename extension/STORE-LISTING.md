@@ -8,7 +8,11 @@ shipping an update.
   under "Open in Bambu Studio", for the print profile picked on the page; Snapmaker Orca 2.4 files
   with High Flow values no longer shift one slot's values onto the next; the High Flow hot end
   option; a file with a very large colour palette is refused instead of freezing the converter
-  (picking 4 heads from 30 colours took 32 s). No permission changes.
+  (picking 4 heads from 30 colours took 32 s); an opt-in "Also work on makerworld.com.cn" switch.
+  **Permission changes:** adds `scripting` (no install warning in Chrome) and two OPTIONAL hosts,
+  makerworld.com.cn and *.bblmw.cn, asked for only when the user turns that switch on. Nothing is
+  added to the required hosts, so existing users are not disabled pending approval. Chrome's
+  Privacy tab will ask for a justification for `scripting` (text below).
 - **0.6.2** (submitted to Chrome and Firefox 2026-11-02, in review): a PLA file saved with Bambu's
   compact settings (no filament_type, material only in the preset name) converted to ABS at 270 °C;
   it now keeps its material and that material's U1 temperatures.
@@ -119,6 +123,11 @@ Convert .3mf 3D-print files downloaded from model sites so they print correctly 
 - *(not a permission, but reviewers ask)* **externally_connectable: https://bedready.io** — lets the
   BedReady converter page, and only it, ask for the one file the user just chose to "Edit colours on
   bedready.io". The file goes from the extension to that tab inside the browser; nothing is uploaded.
+- **scripting** — registers the in-page converter on makerworld.com.cn, and only after the user turns
+  on "Also work on makerworld.com.cn" in the popup and grants that site. It runs the extension's own
+  bundled content script; no remote code, and nothing on any other site.
+- **optional host permissions (makerworld.com.cn, bblmw.cn)** — requested only from that popup switch;
+  the Chinese MakerWorld site and its file CDN, used exactly as makerworld.com/bblmw.com are below.
 - **host permissions (makerworld.com, bblmw.com, printables.com, thingiverse.com)** — the content
   script only runs on these model sites to detect .3mf downloads and offer in-page conversion. The
   extension does nothing on any other site.

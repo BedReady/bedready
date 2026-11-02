@@ -47,3 +47,12 @@ Everything runs locally in the browser: it reads a `.3mf` the user downloads fro
 MakerWorld/Printables/Thingiverse, rewrites the slicer profile and colour assignments so the file prints
 on a Snapmaker U1, and saves the result. **No servers, no network calls with user data, no telemetry,
 no data collection** — matching the `data_collection_permissions: ["none"]` declaration.
+
+On a MakerWorld model page the "Download for U1" button asks MakerWorld's own download endpoint
+(`/api/v1/design-service/instance/<id>/f3mf`, the same one MakerWorld's Download button calls, with the
+user's existing MakerWorld session) for the signed file link, then converts that file locally.
+
+`scripting` and the optional hosts `makerworld.com.cn` / `*.bblmw.cn` exist only for the popup switch
+"Also work on makerworld.com.cn". The hosts are requested when the user turns it on; while they are
+granted, `background.ts` registers the bundled `dist/content.js` on makerworld.com.cn
+(`scripting.registerContentScripts`) and removes it when they are revoked. No remote code.
