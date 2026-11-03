@@ -1371,6 +1371,7 @@
     "hfAutomatic": "Prints automatically on the U1’s four heads.",
     "hfReload": "Needs a mid-print filament reload.",
     "hfFilaments": "Load these, bottom first:",
+    "hfPreview": "Simulated look of the printed relief, front-lit. The real print depends on your filaments and light.",
     "hfLooseMatch": "That’s a loose match — this image needs colors four filaments can’t reach. Expect the print to read as an interpretation rather than a copy."
   },
   "libraryTabs": {
