@@ -29,7 +29,7 @@
  *
  * What stays here is `generateStaticParams`, which is about locales and belongs to neither site.
  */
-import { Archivo, IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from "next/font/google";
+import { Encode_Sans, IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import AcquisitionCapture from "@/components/AcquisitionCapture";
@@ -51,13 +51,14 @@ import "../globals.css";
 
    Latin subset only, with the stack falling through to system faces: Plex has no Arabic or CJK
    coverage, and `ar` / `ja` / `zh` are 3 of the 7 locales — per-glyph fallback handles them. */
-const archivo = Archivo({
-  // Nov 2026 redesign: Plex Sans gave way to Archivo, for its width axis — headings are set in the
-  // expanded cut (globals.css, "Type: one family, two widths"). One variable file covers every
-  // weight and width the site uses.
+const encodeSans = Encode_Sans({
+  // Nov 2026 redesign: Plex Sans gave way to Encode Sans, for its width axis — headings are set in
+  // the expanded cut (globals.css, "Type: one family, two widths"). One variable file covers every
+  // weight and width the site uses, and Figma carries the same family as static "Expanded" styles,
+  // so the design file and the site are set in the same type.
   subsets: ["latin"],
   axes: ["wdth"],
-  variable: "--font-archivo",
+  variable: "--font-encode",
   display: "swap",
 });
 // Arabic is a whole locale, so it gets a designed face rather than the per-glyph system fallback.
@@ -96,7 +97,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={dirOf(locale)}
-      className={`${archivo.variable} ${plexArabic.variable} ${plexMono.variable}`}
+      className={`${encodeSans.variable} ${plexArabic.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>

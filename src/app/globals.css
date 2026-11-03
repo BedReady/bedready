@@ -4,7 +4,11 @@
    ones here were `text-violet-… hover:underline`, an underline only after you find it. Links styled
    as buttons or chips keep their own look. Same rule as makerrun's globals.css. */
 p a:not([class*="btn"]):not([class*="rounded"]),
-li > p a:not([class*="btn"]) {
+li > p a:not([class*="btn"]),
+/* Since the Nov 2026 redesign the accent is ink, the same colour as the text around it, so an
+   accent-coloured link is told apart by its underline alone — wherever it sits, not only in a <p>
+   (the /compare-u1-converters source list put them straight in an <li>). */
+a[class*="text-violet-"]:not([class*="btn"]):not([class*="rounded"]) {
   text-decoration-line: underline;
   text-underline-offset: 2px;
 }
@@ -71,7 +75,7 @@ li > p a:not([class*="btn"]) {
 @theme inline {
   /* Set by next/font in the locale layout. The fallbacks matter: Plex has no Arabic or CJK, and
      ar/ja/zh are 3 of the 7 locales, so those scripts fall through per-glyph to the system face. */
-  --font-sans: var(--font-archivo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-encode), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
 
   --color-app: var(--bg);
@@ -472,23 +476,39 @@ body {
    symmetrically about the same centre rather than to move the whole page. The measure stays where
    the eye checks alignment; only the grid grows. */
 .page-read {
-  max-width: 48rem; /* 3xl — ~75 characters of body copy at 16px */
+  /* Nov 2026 (build-plate redesign): the measure is now a GRID, not a column. The container is
+     70rem of content (1120px), shared by the header, the footer and every page, so the logo, the
+     headline and the footer's first column still share one left edge — the rule above holds. What
+     changed is that body copy no longer sits in a centred 720px strip with 200px of nothing either
+     side of it on a desktop: it keeps the same 45rem measure, but hangs from that shared left edge,
+     and the right side of the grid is free for the things that need it (the converter's plate,
+     tables, the before/after figure). */
+  max-width: 73rem;
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
+/* Prose and ordinary blocks keep the reading measure: ~75 characters of body copy at 16px. Scoped
+   to <main>, because the header and footer use the same container and lay out across all of it. */
+main.page-read > * {
+  max-width: 45rem;
+}
+/* A block that is meant to span the whole grid: the converter's hero, its plate, a wide row. */
+main.page-read > .measure-full,
+main.page-read > .page-breakout {
+  max-width: none;
+}
 .page-breakout {
-  /* Equal negative margins on both sides, not left:50% + translateX(-50%): that pair centres only in
-     LTR. In RTL `left` still pulls from the left edge, so /ar card grids sat 176px off-screen with the
-     first column clipped (2026-11-01 audit). Percentage margins resolve against the column's width in
-     either direction. */
-  width: min(64rem, 100vw - 3rem);
-  margin-inline: calc((100% - min(64rem, 100vw - 3rem)) / 2);
+  /* Spans the grid from the shared start edge. It used to widen symmetrically about a centred
+     column; the column now starts where the grid starts, so "wider" only ever grows toward the
+     inline end — right in LTR, left in RTL, with no direction-specific maths. */
+  width: min(70rem, 100vw - 3rem);
+  max-width: none;
 }
 /* The converter comparison: seven tools side by side need ~84rem before any column wraps to one word
-   a line. Same centring, larger cap; on anything narrower it still scrolls inside itself. */
+   a line. It may run past the grid's end edge on a wide screen; on anything narrower it scrolls
+   inside itself. */
 .page-breakout.page-breakout-wide {
   width: min(84rem, 100vw - 3rem);
-  margin-inline: calc((100% - min(84rem, 100vw - 3rem)) / 2);
 }
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────
@@ -546,9 +566,9 @@ body {
 }
 
 /* ── Type: one family, two widths ──────────────────────────────────────────────────────────────
-   Archivo, a grotesque with a width axis. Body copy is the normal width; headings open out to the
-   expanded cut, which is what makes the voice — wide, flat-footed, a little industrial, like the
-   lettering moulded into a machine. `font-size-adjust` keeps a fallback face (Arabic, CJK, or Archivo
+   Encode Sans, a grotesque with a width axis. Body copy is the normal width; headings open out to
+   the expanded cut, which is what makes the voice — wide, flat-footed, a little industrial, like the
+   lettering moulded into a machine. `font-size-adjust` keeps a fallback face (Arabic, CJK, or Encode Sans
    still loading) at the same x-height, so the swap does not reflow the page. */
 html {
   color-scheme: light;

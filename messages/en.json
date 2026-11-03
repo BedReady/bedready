@@ -365,7 +365,7 @@
     "warnLayoutTooBig": "These parts are arranged across {x}×{y} mm — wider than the Snapmaker U1’s {maxXY}×{maxXY} mm bed. Each one fits on its own; rearrange them in your slicer.",
     "photoCtaTitle": "No file? Turn a photo into a U1 print",
     "photoCtaBody": "Drop in a photo, logo or piece of art and get a flat multicolor plate — coasters, signs, keychains — ready for the U1.",
-    "photoCtaOpen": "Open →",
+    "photoCtaOpen": "Open",
     "customFsDesc": "Reproduce this model’s colors as blends of your 4 loaded filaments — at any color count. Set your filaments below (defaults to CMYK); each painted color becomes its closest mix.",
     "customFsSetLabel": "Set the 4 filaments you have loaded — pick a color or paste an exact hex:",
     "blendTip": "<lead>For clean blends:</lead> Full Spectrum fakes colors by stacking ultra-thin layers, so <b>translucent</b> filaments (light diffuses across layers) blend far better than opaque ones, which tend to show fine stripes — most on flat top surfaces and shallow slopes. Keep the mix layer height ≤ 0.1 mm and the effect stays invisible at arm’s length.",

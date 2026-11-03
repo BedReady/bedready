@@ -60,8 +60,8 @@ export default function ConverterHeader() {
           {/* One flex item, pinned LTR — same reasoning as SiteHeader: the wordmark must not be
               split by the link's `gap-2`, and a Latin brand name keeps Latin order in the RTL
               locale. */}
-          <span dir="ltr">
-            Bed<span className="brand-text">Ready</span>
+          <span dir="ltr" className="font-bold" style={{ fontStretch: "125%" }}>
+            BedReady
           </span>
         </Link>
         <nav className="flex items-center gap-4 text-sm text-fg-muted sm:gap-5">

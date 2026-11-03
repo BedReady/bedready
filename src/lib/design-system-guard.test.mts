@@ -276,16 +276,16 @@ test("the spelling guard would fire, and does not fire on the codebase's own voi
   assert.ok(!BRITISH.test("Live colored 3D preview"));
   // And the block-comment tracker. The line that trips a naive per-line filter is the CONTINUATION
   // of a `{/* … */}` block, which starts with an ordinary word — convert/page.tsx has one reading
-  // "mono ordinal now rather than a filled violet disc: violet is the action colour on this page",
-  // and a per-line filter reports it as British copy.
+  // "colours, which is the whole conversion in one line: four filaments, in order", and a per-line
+  // filter reports it as British copy.
   const page = "src/app/[locale]/(converter)/convert/page.tsx";
   const raw = readFileSync(page, "utf8").split("\n");
   assert.ok(
-    raw.some((l) => /mono ordinal now rather than a filled violet disc/.test(l)),
+    raw.some((l) => /^\s*colours, which is the whole conversion in one line/.test(l)),
     "the fixture line this asserts against has been edited away — pick another block comment",
   );
   assert.deepEqual(
-    codeLines(page).filter(([, l]) => /mono ordinal now rather than/.test(l)),
+    codeLines(page).filter(([, l]) => /colours, which is the whole conversion/.test(l)),
     [],
     "codeLines returned the middle of a block comment",
   );

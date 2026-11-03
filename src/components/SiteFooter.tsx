@@ -34,7 +34,7 @@ import { SOURCE_REPO_URL, REDDIT_URL, SPONSOR_URL, KHAYT_URL } from "@/lib/links
 export default function SiteFooter() {
   const t = useTranslations("footer");
   return (
-    <footer className="border-t border-line">
+    <footer className="border-t border-line bg-surface-2">
       <div className="page-read py-10 text-sm text-fg-subtle">
         {/* The two sites, named and related, before any link that leaves this one. */}
         <div className="flex flex-col gap-3 border-b border-line pb-8 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
