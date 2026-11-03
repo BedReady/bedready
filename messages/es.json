@@ -1371,6 +1371,7 @@
     "hfAutomatic": "Se imprime automáticamente en los cuatro cabezales del U1.",
     "hfReload": "Requiere recargar filamento a mitad de impresión.",
     "hfFilaments": "Carga estos, el de abajo primero:",
+    "hfPreview": "Simulación del relieve impreso con luz frontal. La impresión real depende de tus filamentos y de la luz.",
     "hfLooseMatch": "La coincidencia es aproximada: esta imagen necesita colores que cuatro filamentos no alcanzan. La impresión será una interpretación más que una copia."
   },
   "libraryTabs": {

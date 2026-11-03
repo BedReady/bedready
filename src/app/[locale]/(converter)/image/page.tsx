@@ -55,6 +55,15 @@ function panelToMeshData(panel: PanelMesh, baseState = 1): MeshData {
 type Status = "idle" | "ready" | "working" | "done" | "error";
 
 
+// The relief solver's simulated colours (RGBA, one pixel per cell) as an image URL for the page.
+function previewUrl(px: Uint8ClampedArray, w: number, h: number): string | null {
+  if (!w || !h || px.length < w * h * 4) return null;
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  c.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(px), w, h), 0, 0);
+  return c.toDataURL("image/png");
+}
+
 // Draw an image file onto a canvas downsampled so the LONGEST side is `grid` px, and read its RGBA.
 async function pixelsFromFile(file: File, grid: number): Promise<{ px: Uint8ClampedArray; w: number; h: number }> {
   const url = URL.createObjectURL(file);
@@ -102,7 +111,7 @@ export default function ImagePage() {
   // "Colors used", which comes from the flat-panel quantiser. Downloading a file containing four
   // colours the page never displayed is a good way to lose someone's trust in the output.
   const [hfQuality, setHfQuality] = useState<
-    { deltaE: number; colors: number; automatic: boolean; filaments: string[] } | null
+    { deltaE: number; colors: number; automatic: boolean; filaments: string[]; preview: string | null } | null
   >(null);
   const rawPixels = useRef<{ px: Uint8ClampedArray; w: number; h: number } | null>(null);
   const fileRef = useRef<File | null>(null); // re-read at print resolution for the relief
@@ -204,6 +213,7 @@ export default function ImagePage() {
         colors: r.plan.colorCount,
         automatic: r.plan.automatic,
         filaments: r.filaments.map((f) => f.hex),
+        preview: previewUrl(r.solve.preview, r.solve.width, r.solve.height),
       });
       download(new Blob([r.bytes as BlobPart], { type: "model/3mf" }), `${base}.hueforge.u1.3mf`);
       setStatus("done");
@@ -374,6 +384,15 @@ export default function ImagePage() {
                   </span>
                 ))}
               </p>
+              {/* The engine's own composite of the stack it just wrote — the only picture of the relief
+                  on the page, since the 3D preview above shows the flat plate. */}
+              {hfQuality.preview && (
+                <figure className="mt-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={hfQuality.preview} alt={t("hfPreview")} className="max-h-[360px] w-auto rounded-lg border border-line [image-rendering:pixelated]" />
+                  <figcaption className="mt-1.5 text-fg-subtle">{t("hfPreview")}</figcaption>
+                </figure>
+              )}
               {/* Above ~10 a colour difference is plainly visible, so say so rather than printing a
                   number whose scale nobody knows. */}
               {hfQuality.deltaE > 10 && <p className="mt-2 text-amber-300">{t("hfLooseMatch")}</p>}

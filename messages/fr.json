@@ -1371,6 +1371,7 @@
     "hfAutomatic": "S’imprime automatiquement sur les quatre têtes de l’U1.",
     "hfReload": "Nécessite un rechargement de filament en cours d’impression.",
     "hfFilaments": "Charge ceux-ci, le premier en bas :",
+    "hfPreview": "Aperçu simulé du relief imprimé, éclairé de face. Le vrai résultat dépend de vos filaments et de la lumière.",
     "hfLooseMatch": "La correspondance est approximative : cette image demande des couleurs que quatre filaments ne peuvent pas atteindre. L’impression sera une interprétation plutôt qu’une copie."
   },
   "libraryTabs": {
