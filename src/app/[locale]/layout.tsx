@@ -29,7 +29,7 @@
  *
  * What stays here is `generateStaticParams`, which is about locales and belongs to neither site.
  */
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Encode_Sans, IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import AcquisitionCapture from "@/components/AcquisitionCapture";
@@ -51,11 +51,24 @@ import "../globals.css";
 
    Latin subset only, with the stack falling through to system faces: Plex has no Arabic or CJK
    coverage, and `ar` / `ja` / `zh` are 3 of the 7 locales — per-glyph fallback handles them. */
-const plexSans = IBM_Plex_Sans({
+const encodeSans = Encode_Sans({
+  // Nov 2026 redesign: Plex Sans gave way to Encode Sans, for its width axis — headings are set in
+  // the expanded cut (globals.css, "Type: one family, two widths"). One variable file covers every
+  // weight and width the site uses, and Figma carries the same family as static "Expanded" styles,
+  // so the design file and the site are set in the same type.
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-sans",
+  axes: ["wdth"],
+  variable: "--font-encode",
   display: "swap",
+});
+// Arabic is a whole locale, so it gets a designed face rather than the per-glyph system fallback.
+// Not preloaded: only /ar pages draw from it, and the browser fetches it when they do.
+const plexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-arabic",
+  display: "swap",
+  preload: false,
 });
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -84,7 +97,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={dirOf(locale)}
-      className={`${plexSans.variable} ${plexMono.variable}`}
+      className={`${encodeSans.variable} ${plexArabic.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -101,7 +114,7 @@ export default async function RootLayout({
           {/* Skip link: first focusable element, jumps a keyboard/AT user past the header nav to content. */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-violet-600 focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-violet-600 focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-accent"
           >
             Skip to content
           </a>

@@ -4,7 +4,11 @@
    ones here were `text-violet-… hover:underline`, an underline only after you find it. Links styled
    as buttons or chips keep their own look. Same rule as makerrun's globals.css. */
 p a:not([class*="btn"]):not([class*="rounded"]),
-li > p a:not([class*="btn"]) {
+li > p a:not([class*="btn"]),
+/* Since the Nov 2026 redesign the accent is ink, the same colour as the text around it, so an
+   accent-coloured link is told apart by its underline alone — wherever it sits, not only in a <p>
+   (the /compare-u1-converters source list put them straight in an <li>). */
+a[class*="text-violet-"]:not([class*="btn"]):not([class*="rounded"]) {
   text-decoration-line: underline;
   text-underline-offset: 2px;
 }
@@ -15,29 +19,45 @@ li > p a:not([class*="btn"]) {
 /* Semantic design tokens — components use these (bg-app, bg-surface, text-fg, …) so a single
    token flip switches the whole site between light and dark. LIGHT is the default (:root). */
 :root {
-  --bg: #ffffff;
-  --surface: #f8fafc; /* slate-50 */
-  --surface-2: #f1f5f9; /* slate-100 */
-  --surface-3: #e2e8f0; /* slate-200 */
-  --border: #e2e8f0; /* slate-200 */
-  --fg: #0f172a; /* slate-900 */
-  --fg-muted: #334155; /* slate-700 — readable secondary text on white (was slate-600, a touch faint) */
-  --fg-subtle: #475569; /* slate-600 — see note */
+  /* ── THE BUILD PLATE (Nov 2026 redesign) ─────────────────────────────────────────────────────
+     The site was slate and violet: a palette any SaaS page could wear. It now takes its materials
+     from the machine. The page is the U1's pale aluminium; the one dark object is the textured PEI
+     plate the file lands on (`.plate`); and the only saturated colour is filament — the four toolhead
+     slots, the swatches, the mixer. The interface itself is ink on aluminium, so a coloured thing on
+     this site is always a colour you will print. */
+  --bg: #f3f4f1; /* aluminium */
+  --surface: #fafaf8;
+  --surface-2: #e9eae6; /* a recessed well: cards sit INTO the page, like panels on the printer */
+  --surface-3: #dcded8;
+  --border: #d3d5ce;
+  --fg: #16171a; /* ink */
+  --fg-muted: #393b40;
+  --fg-subtle: #53565c; /* 6.6:1 on --surface-2, 7.4:1 on --bg */
+
+  /* The one interactive colour: ink in light, paper in dark. */
+  --accent: #16171a;
+  --accent-hover: #34363b;
+  --on-accent: #f7f7f4;
+  --accent-text: #16171a;
+  --accent-tint: #5b5d63;
 }
-/* --fg-subtle note: this was slate-500, chosen because it clears AA *on white* (4.76:1). But subtle
-   text mostly isn't on white — it's on `--surface-2` cards, where slate-500 measured 4.34:1 and
-   failed. The token was validated against the one background it is least often used on. slate-600
-   gives 6.92:1 on the card and 7.58:1 on white, and still sits a clear step below `--fg-muted`
-   (slate-700, 9.45:1 on the card), so the three-level text hierarchy survives. */
 .dark {
-  --bg: #070a12;
-  --surface: #0f172a; /* slate-900 */
-  --surface-2: #1e293b; /* slate-800 */
-  --surface-3: #334155; /* slate-700 */
-  --border: rgba(255, 255, 255, 0.1);
-  --fg: #e2e8f0; /* slate-200 */
-  --fg-muted: #cbd5e1; /* slate-300 — was slate-400; see note */
-  --fg-subtle: #94a3b8; /* slate-400 — was slate-500; see note */
+  /* A warm graphite, deliberately LIGHTER than the plate (#1d1b17), so in dark mode the plate still
+     reads as the one dark object — recessed into the page rather than lost in it. */
+  --bg: #24231f;
+  --surface: #2b2a25;
+  --surface-2: #33322c;
+  --surface-3: #43413a;
+  --border: rgba(255, 244, 220, 0.11);
+  --fg: #eeece6;
+  --fg-muted: #d2cec5;
+  --fg-subtle: #b3afa5; /* 5.9:1 on --surface-2, 4.7:1 on --surface-3 */
+
+  --accent: #eeece6;
+  --accent-hover: #ffffff;
+  --on-accent: #1d1b17;
+  --accent-text: #eeece6;
+  --accent-tint: #d2cec5;
 }
 /* Dark had the mirror image of the light-mode bug fixed above, and it was the worse of the two,
    because dark is what most visitors see. Measured on the rendered page: `--fg-subtle` at slate-500
@@ -55,7 +75,7 @@ li > p a:not([class*="btn"]) {
 @theme inline {
   /* Set by next/font in the locale layout. The fallbacks matter: Plex has no Arabic or CJK, and
      ar/ja/zh are 3 of the 7 locales, so those scripts fall through per-glyph to the system face. */
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-encode), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
 
   --color-app: var(--bg);
@@ -66,6 +86,21 @@ li > p a:not([class*="btn"]) {
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-fg-subtle: var(--fg-subtle);
+  --color-on-accent: var(--on-accent);
+
+  /* Violet WAS the accent, in 200+ utilities across the site. Rather than rewrite every one, the
+     ramp now points at the accent, so `text-violet-300`, `border-violet-400`, `bg-violet-600` and
+     their tints all become ink (light) or paper (dark). A solid `bg-violet-600` carries
+     `text-on-accent`, never `text-white`, because in dark mode that fill is paper. */
+  --color-violet-50: color-mix(in srgb, var(--accent) 6%, transparent);
+  --color-violet-100: var(--accent-text);
+  --color-violet-200: var(--accent-text);
+  --color-violet-300: var(--accent-text);
+  --color-violet-400: var(--accent-tint);
+  --color-violet-500: var(--accent);
+  --color-violet-600: var(--accent);
+  --color-violet-700: var(--accent-hover);
+  --color-violet-800: var(--accent-hover);
 }
 
 /* ── Spectrum brand ────────────────────────────────────────────────────────────
@@ -99,39 +134,39 @@ li > p a:not([class*="btn"]) {
    clears 4.5:1 at rest AND on hover (7.08:1 / 5.55:1). cyan-700 was the binding constraint — it
    reached only 4.43:1 on hover, which is when a user is actively aiming at the button. */
 :root {
-  --brand-1: #7c3aed; /* violet */
-  --brand-2: #06b6d4; /* cyan */
-  --brand-3: #84cc16; /* lime */
-  --brand-sweep: linear-gradient(100deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
-
-  --brand-sweep-deep: linear-gradient(100deg, #6d28d9, #155e75 55%, #3f6212);
-  --brand-sweep-bright: linear-gradient(100deg, #a78bfa, #22d3ee 55%, #a3e635);
-
-  /* .brand-text is the one that flips with the theme. */
-  --brand-sweep-text: var(--brand-sweep-deep);
+  /* The four toolhead slots, T1–T4: cyan, magenta, yellow and black, the set the mixer defaults to.
+     Decoration and filament only — never under text. (They replace the violet → cyan → lime sweep,
+     which had to be split three ways to carry text at all.) */
+  --slot-1: #00a3d9;
+  --slot-2: #e6007e;
+  --slot-3: #ffd200;
+  --slot-4: #26262a;
+  --brand-1: var(--accent); /* focus ring */
 }
-.dark {
-  --brand-sweep-text: var(--brand-sweep-bright);
-}
-/* A filled surface that carries white text. */
+/* A filled control that carries text. */
 .brand-gradient {
-  background-image: var(--brand-sweep-deep);
+  background-color: var(--accent);
+  color: var(--on-accent);
 }
-/* Decorative fills with no text on them keep the vivid identity. */
-.brand-gradient-vivid {
-  background-image: var(--brand-sweep);
-}
-.brand-text {
-  background-image: var(--brand-sweep-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-/* A thin spectrum rule — the motif, e.g. under the hero or as a divider. */
+.brand-gradient-vivid,
 .brand-rule {
-  height: 3px;
-  border-radius: 999px;
-  background-image: var(--brand-sweep);
+  background-image: linear-gradient(90deg,
+    var(--slot-1) 0 25%, var(--slot-2) 25% 50%, var(--slot-3) 50% 75%, var(--slot-4) 75%);
+}
+.dark .brand-gradient-vivid,
+.dark .brand-rule {
+  --slot-4: #f4f2ec;
+}
+/* The wordmark's second half. It was gradient-clipped text; now it is the word set in the expanded
+   width, which is the type doing the job the colour did. */
+.brand-text {
+  color: inherit;
+  font-stretch: 125%;
+}
+/* The motif: four filament stripes, one per toolhead. */
+.brand-rule {
+  height: 4px;
+  border-radius: 2px;
 }
 
 /* LIGHT-MODE accent-text fix: the light accent shades (…-50 → …-400) were tuned for dark
@@ -219,7 +254,7 @@ html:not(.dark) .text-purple-400,
 html:not(.dark) .text-violet-100,
 html:not(.dark) .text-violet-200,
 html:not(.dark) .text-violet-300,
-html:not(.dark) .text-violet-400 { color: #6d28d9; } /* violet-700 */
+html:not(.dark) .text-violet-400 { color: var(--accent-text); }
 
 html {
   scroll-behavior: smooth;
@@ -275,13 +310,13 @@ body {
   justify-content: center;
   gap: 0.5rem;
   border-radius: 0.5rem;
-  background-color: #7c3aed; /* violet-600 */
-  color: #fff;
+  background-color: var(--accent);
+  color: var(--on-accent);
   font-weight: 500;
   transition: background-color 0.15s ease;
 }
 .btn-primary:hover {
-  background-color: #6d28d9; /* violet-700 */
+  background-color: var(--accent-hover);
 }
 .btn-secondary {
   display: inline-flex;
@@ -351,11 +386,13 @@ body {
    readable text on the page also the most repeated. Uppercase removes the ascender/descender cues a
    reader uses at small sizes, and 0.18em then removes the word shape as well; the two compound.
    12px at 0.14em is still unmistakably a label and stops being a squint. */
+/* Nov 2026: no longer mono, uppercase or tracked. A tracked caps label above every section is the
+   commonest tell of a templated page, and here it also cost legibility (see above). The label is now
+   the body face, semi-expanded and semibold: still clearly a label, read as words. */
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+  font-size: 13px;
+  font-weight: 600;
+  font-stretch: 112%;
   color: var(--fg-subtle);
 }
 
@@ -439,23 +476,39 @@ body {
    symmetrically about the same centre rather than to move the whole page. The measure stays where
    the eye checks alignment; only the grid grows. */
 .page-read {
-  max-width: 48rem; /* 3xl — ~75 characters of body copy at 16px */
+  /* Nov 2026 (build-plate redesign): the measure is now a GRID, not a column. The container is
+     70rem of content (1120px), shared by the header, the footer and every page, so the logo, the
+     headline and the footer's first column still share one left edge — the rule above holds. What
+     changed is that body copy no longer sits in a centred 720px strip with 200px of nothing either
+     side of it on a desktop: it keeps the same 45rem measure, but hangs from that shared left edge,
+     and the right side of the grid is free for the things that need it (the converter's plate,
+     tables, the before/after figure). */
+  max-width: 73rem;
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
+/* Prose and ordinary blocks keep the reading measure: ~75 characters of body copy at 16px. Scoped
+   to <main>, because the header and footer use the same container and lay out across all of it. */
+main.page-read > * {
+  max-width: 45rem;
+}
+/* A block that is meant to span the whole grid: the converter's hero, its plate, a wide row. */
+main.page-read > .measure-full,
+main.page-read > .page-breakout {
+  max-width: none;
+}
 .page-breakout {
-  /* Equal negative margins on both sides, not left:50% + translateX(-50%): that pair centres only in
-     LTR. In RTL `left` still pulls from the left edge, so /ar card grids sat 176px off-screen with the
-     first column clipped (2026-11-01 audit). Percentage margins resolve against the column's width in
-     either direction. */
-  width: min(64rem, 100vw - 3rem);
-  margin-inline: calc((100% - min(64rem, 100vw - 3rem)) / 2);
+  /* Spans the grid from the shared start edge. It used to widen symmetrically about a centred
+     column; the column now starts where the grid starts, so "wider" only ever grows toward the
+     inline end — right in LTR, left in RTL, with no direction-specific maths. */
+  width: min(70rem, 100vw - 3rem);
+  max-width: none;
 }
 /* The converter comparison: seven tools side by side need ~84rem before any column wraps to one word
-   a line. Same centring, larger cap; on anything narrower it still scrolls inside itself. */
+   a line. It may run past the grid's end edge on a wide screen; on anything narrower it scrolls
+   inside itself. */
 .page-breakout.page-breakout-wide {
   width: min(84rem, 100vw - 3rem);
-  margin-inline: calc((100% - min(84rem, 100vw - 3rem)) / 2);
 }
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────
@@ -510,4 +563,134 @@ body {
 .app-glow { animation: app-glow-pulse 7s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
   .app-glow { animation: none; }
+}
+
+/* ── Type: one family, two widths ──────────────────────────────────────────────────────────────
+   Encode Sans, a grotesque with a width axis. Body copy is the normal width; headings open out to
+   the expanded cut, which is what makes the voice — wide, flat-footed, a little industrial, like the
+   lettering moulded into a machine. `font-size-adjust` keeps a fallback face (Arabic, CJK, or Encode Sans
+   still loading) at the same x-height, so the swap does not reflow the page. */
+html {
+  color-scheme: light;
+  accent-color: var(--accent);
+}
+html.dark {
+  color-scheme: dark;
+}
+body {
+  font-size-adjust: from-font;
+}
+h1,
+h2,
+h3 {
+  font-stretch: 112%;
+  letter-spacing: -0.01em;
+}
+h1 {
+  font-stretch: 125%;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+::selection {
+  background-color: color-mix(in srgb, var(--slot-3) 70%, transparent);
+  color: #16171a;
+}
+
+/* ── The plate ────────────────────────────────────────────────────────────────────────────────
+   The drop zone is drawn as the U1's build plate: the one dark object on the page in either theme,
+   because a real plate is dark in either theme. Its texture is PEI powder-coat — fine brass speckle
+   over near-black — made from two offset dot fields rather than an image, so it is sharp at any
+   density and costs no request. The four toolheads park along its top edge (`.plate-head`); when a
+   file is dragged over, they lower toward the plate (`.plate[data-over]`). That is the page's one
+   moving part, and it only moves because you did something. */
+.plate {
+  --plate: #1d1b17;
+  --slot-4: #f4f2ec; /* black filament on a black plate reads as nothing */
+  position: relative;
+  isolation: isolate;
+  border-radius: 1.25rem;
+  background-color: var(--plate);
+  background-image:
+    radial-gradient(rgba(214, 178, 110, 0.16) 0.6px, transparent 0.9px),
+    radial-gradient(rgba(214, 178, 110, 0.09) 0.6px, transparent 0.9px);
+  background-size: 7px 7px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 236, 200, 0.08),
+    inset 0 -40px 80px -40px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.5),
+    0 24px 48px -28px rgba(22, 23, 26, 0.55);
+  color: #eeece6;
+  transition: box-shadow 0.2s ease;
+}
+.dark .plate {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 236, 200, 0.1),
+    inset 0 -40px 80px -40px rgba(0, 0, 0, 0.6),
+    0 24px 48px -28px rgba(0, 0, 0, 0.8);
+}
+.plate:hover,
+.plate[data-over] {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 236, 200, 0.22),
+    inset 0 -40px 80px -40px rgba(0, 0, 0, 0.6),
+    0 24px 48px -28px rgba(22, 23, 26, 0.55);
+}
+.plate:focus-visible {
+  outline: 3px solid var(--slot-3);
+  outline-offset: 3px;
+  border-radius: 1.25rem;
+}
+.plate-heads {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.75rem, 4vw, 2.25rem);
+}
+.plate-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1.2);
+}
+.plate-head-body {
+  position: relative;
+  width: 3rem;
+  height: 1.875rem;
+  border-radius: 0.5rem 0.5rem 0.3rem 0.3rem;
+  background: linear-gradient(#45423b, #2a2824);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+/* The loaded filament, seen as a band across the head: the colour has to read from across a room,
+   and the nozzle tip alone was a 10px triangle. */
+.plate-head-body::after {
+  content: "";
+  position: absolute;
+  inset: 0.5rem 0.5rem auto;
+  height: 0.3125rem;
+  border-radius: 999px;
+  background-color: var(--head);
+}
+.plate-head-tip {
+  width: 0.875rem;
+  height: 0.75rem;
+  margin-top: -0.375rem;
+  clip-path: polygon(0 0, 100% 0, 68% 100%, 32% 100%);
+  background-color: var(--head);
+}
+.plate-head-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-stretch: 112%;
+  color: rgba(238, 236, 230, 0.6);
+}
+.plate[data-over] .plate-head {
+  transform: translateY(0.75rem);
+}
+.plate[data-over] .plate-head:nth-child(2) { transition-delay: 40ms; }
+.plate[data-over] .plate-head:nth-child(3) { transition-delay: 80ms; }
+.plate[data-over] .plate-head:nth-child(4) { transition-delay: 120ms; }
+@media (prefers-reduced-motion: reduce) {
+  .plate-head { transition: none; }
+  .plate[data-over] .plate-head { transform: none; }
 }

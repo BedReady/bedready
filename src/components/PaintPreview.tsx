@@ -65,7 +65,9 @@ export default function PaintPreview({
     const height = 380;
 
     const scene = new THREE.Scene();
-    const bgTex = gradientTexture("#48566b", "#0b0f1a");
+    // Warm graphite down to the PEI plate's near-black (globals.css `.plate`), not the old slate blue:
+    // a blue cast behind the model tinted every filament colour judged against it.
+    const bgTex = gradientTexture("#5c5851", "#161511");
     scene.background = bgTex;
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100000);
     // Some browsers have WebGL off or blocklisted (seen on Windows Chrome/Edge and Android). three throws

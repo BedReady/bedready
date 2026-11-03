@@ -37,6 +37,7 @@ import ConvertPresets, { type ConvertSettings } from "@/components/ConvertPreset
 import { SOURCE_REPO_URL } from "@/lib/links";
 import NoticeIcon from "@/components/NoticeIcon";
 import BeforeAfter from "@/components/BeforeAfter";
+import PlateHeads, { PlateCorners } from "@/components/PlateHeads";
 
 // Fire-and-forget global "converter used" counter. Goes through our own rate-limited route rather
 // than calling the RPC directly, so `bump_counter` can be locked down to the service role — the
@@ -1242,28 +1243,29 @@ export default function ConvertPage() {
           So the argument now sits BELOW the thing it is arguing for, and disappears entirely once a
           file is picked: after that the page is a tool, and the marketing above it is 750px the
           visitor has already read and already acted on, in front of every subsequent adjustment. */}
-      {!busy && <ConvertCount className="mb-3 font-mono text-xs text-fg-muted" />}
-      <h1
-        className={
-          busy
-            ? "text-lg font-semibold tracking-tight text-fg"
-            : "text-3xl font-semibold tracking-tight text-fg sm:text-4xl"
-        }
-      >
-        {t("title")}
-      </h1>
-      {!busy && <p className="mt-3 text-base leading-relaxed text-fg-muted">{t("intro")}</p>}
-      {/* The claim, shown. See BeforeAfter for why it is drawn rather than photographed.
-          Above the drop zone from `sm` up, below it on a phone: there it pushed the page's one action
-          off the first screen (the drop text sat at 750px on a 664px iPhone 13 viewport, 826px on an
-          iPhone SE's 568px — 2026-09-26 UI review). Two mounts, one ever displayed; `hidden` is
-          display:none, so assistive tech meets the figure once as well. */}
-      {!busy && (
-        <div className="hidden sm:block">
-          <BeforeAfter />
-        </div>
-      )}
-
+      {!busy && <ConvertCount className="mb-4 text-sm font-medium tabular-nums text-fg-subtle" />}
+      {/* Headline and lede side by side on a desktop, the lede hanging from the headline's baseline
+          (Figma: "Converter — Desktop", Hero). Stacked below `lg`. */}
+      <div className={busy ? "" : "measure-full lg:flex lg:items-end lg:justify-between lg:gap-12"}>
+        <h1
+          className={
+            busy
+              ? "text-lg font-semibold text-fg"
+              : "text-4xl font-bold leading-[1.02] text-fg sm:text-6xl lg:text-[5.5rem]"
+          }
+        >
+          {t("title")}
+        </h1>
+        {!busy && (
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-fg-muted lg:mt-0 lg:max-w-[24rem] lg:shrink-0 lg:pb-2">
+            {t("intro")}
+          </p>
+        )}
+      </div>
+      {/* The claim, shown (see BeforeAfter) — now BELOW the plate at every width. It used to sit
+          above it from `sm` up; once the drop zone became the build plate, the plate is the picture
+          the hero needed, and the figure in front of it only pushed it under the fold (its top edge
+          was at 690px on a 1440×900 desktop). */}
       <div
         role="button"
         tabIndex={0}
@@ -1287,19 +1289,14 @@ export default function ConvertPage() {
             inputRef.current?.click();
           }
         }}
-        className={`mt-6 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition focus:outline-none focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-400/40 ${
-          dragOver ? "border-violet-400 bg-violet-400/10" : "border-line hover:border-violet-400/50 hover:bg-surface-2"
-        }`}
+        // The build plate (globals.css `.plate`). Dark in both themes, because the object is.
+        data-over={dragOver || undefined}
+        className={`plate flex cursor-pointer flex-col items-center text-center ${busy ? "mt-8 gap-3 px-6 pb-6 pt-5" : "measure-full mt-10 gap-6 px-6 pb-12 pt-6 sm:mt-12 sm:gap-12 sm:pb-24 sm:pt-7"}`}
       >
-        <span className={`flex h-14 w-14 items-center justify-center rounded-full transition ${dragOver || file || stlFile ? "brand-gradient text-white" : "bg-surface-3 text-fg-muted"}`}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
-            <path d="M12 16V4" />
-            <path d="M8 8l4-4 4 4" />
-            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-          </svg>
-        </span>
-        <div>
-          <p className="font-medium text-fg">
+        {!busy && <PlateCorners />}
+        <PlateHeads />
+        <div className={busy ? "" : "mt-2 sm:mt-6"}>
+          <p className={`font-semibold text-[#eeece6] ${busy ? "text-base" : "text-xl sm:text-2xl"}`} style={{ fontStretch: "112%" }}>
             {file ? file.name : stlFile ? stlFile.name : (
               <>
                 {/* Nobody drags a file on a phone: say "tap" there. */}
@@ -1309,54 +1306,23 @@ export default function ConvertPage() {
             )}
           </p>
           {/* dropSub ("or click to choose one") repeats the touch heading, so it is desktop-only. */}
-          <p className={`mt-1 text-sm text-fg-muted ${file || stlFile ? "" : "hidden sm:block"}`}>{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
+          <p className={`mt-1.5 text-sm text-[#d2cec5] ${file || stlFile ? "" : "hidden sm:block"}`}>{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
           {!file && !stlFile && (
-            <p className="mt-1 text-xs text-fg-subtle">{t("dropHint")}</p>
+            <p className="mt-4 text-xs text-[#a9a59b]">{t("dropHint")}</p>
           )}
         </div>
         <input ref={inputRef} type="file" accept=".3mf,.stl" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
       </div>
 
-      {!busy && (
-        <div className="sm:hidden">
-          <BeforeAfter />
-        </div>
-      )}
-
-      {/* ── THE REASSURANCE, NOW BELOW THE ACTION ────────────────────────────────────────────────
-          Same blocks, same words, after the drop zone instead of in front of it. */}
+      {/* ── THE REASSURANCE, BELOW THE ACTION ───────────────────────────────────────────────────
+          Same words as before, laid out on the full grid (Figma: "Converter — Desktop"): the sources
+          it reads, the three-step sequence under a filament stripe, the privacy claim beside the
+          before/after figure, then the other ways in as ruled rows. All of it disappears once a file
+          is picked — after that the page is a tool. */}
       {!busy && (
         <>
-          <div className="mt-8 border-t border-line pt-4">
-            <p className="eyebrow">{t("privacyBadge")}</p>
-            <p className="mt-1.5 text-base leading-relaxed text-fg-muted">{t("privacyDetail")}</p>
-            {/* The evidence for the sentence above it. `COMPETITIVE-2026-08.md` §3.1 ranks "say
-                'nothing is uploaded' louder" as the highest-ratio item in that document;
-                `SPLIT-DECISION-2026-08.md` calls open source "the loudest available version of that,
-                because it is the only one a sceptic can verify". The repository went public and this
-                page never said so — while /compare-u1-converters linked four competitors' repos.
-
-                It also states the claim in the form the README states it, rather than the stronger
-                form this block used alone: there IS a server fallback, it is a button, and saying so
-                here costs nothing and is the difference between a claim and a checkable one. */}
-            <p className="mt-2 text-base leading-relaxed text-fg-subtle">
-              {t.rich("privacySource", {
-                link: (c) => (
-                  <a
-                    href={SOURCE_REPO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium text-violet-300 hover:underline"
-                  >
-                    {c}
-                  </a>
-                ),
-              })}
-            </p>
-          </div>
-
           {/* Supported sources — trust strip. Brand names, not translated. */}
-          <div className="mt-5 flex flex-wrap items-center gap-2">
+          <div className="measure-full mt-5 flex flex-wrap items-center gap-2">
             <span className="eyebrow">{t("worksWithLabel")}</span>
             {["MakerWorld", "Bambu Studio", "PrusaSlicer", "OrcaSlicer", "Creality Print"].map((n) => (
               <span key={n} className="rounded-full border border-line px-2.5 py-0.5 text-xs text-fg-muted">
@@ -1365,21 +1331,51 @@ export default function ConvertPage() {
             ))}
           </div>
 
-          {/* Columns under a rule, matching the homepage's three-up — not three bordered boxes.
-              The numbering stays because this genuinely IS a sequence (drop → convert → open), which
-              is the only case where numbered markers carry information rather than decorate. It is a
-              mono ordinal now rather than a filled violet disc: violet is the action colour on this
-              page and the step numbers are not actions. */}
-          <ol className="mt-8 grid gap-8 border-t border-line pt-6 sm:grid-cols-3">
-            {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
-              <li key={i}>
-                <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
-                <p className="mt-2 text-base leading-relaxed text-fg-muted">{step}</p>
-              </li>
-            ))}
-          </ol>
+          {/* A real sequence (drop → convert → open), so numbered — under a stripe of the four slot
+              colours, which is the whole conversion in one line: four filaments, in order. */}
+          <section className="measure-full mt-20 sm:mt-28">
+            <div className="brand-rule" aria-hidden />
+            <ol className="mt-7 grid gap-8 sm:grid-cols-3 sm:gap-12">
+              {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
+                <li key={i} className="flex gap-4 sm:block">
+                  <span className="block text-2xl font-bold tabular-nums text-fg sm:text-3xl" style={{ fontStretch: "125%" }}>
+                    {i + 1}
+                  </span>
+                  <p className="text-base leading-relaxed text-fg-muted sm:mt-3 sm:text-lg">{step}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
 
-          <div className="mt-8 space-y-2 border-t border-line pt-4 text-base leading-relaxed text-fg-subtle">
+          <section className="measure-full mt-20 grid items-center gap-10 sm:mt-28 lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-16">
+            <div>
+              <h2 className="text-3xl font-bold leading-[1.06] text-fg sm:text-5xl">{t("privacyBadge")}</h2>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-fg-muted sm:text-lg">{t("privacyDetail")}</p>
+              {/* The evidence for the sentence above it. `COMPETITIVE-2026-08.md` §3.1 ranks "say
+                  'nothing is uploaded' louder" as the highest-ratio item in that document;
+                  `SPLIT-DECISION-2026-08.md` calls open source "the loudest available version of that,
+                  because it is the only one a sceptic can verify". It states the claim in the form the
+                  README states it: there IS a server fallback, it is a button, and saying so here is
+                  the difference between a claim and a checkable one. */}
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-fg-subtle">
+                {t.rich("privacySource", {
+                  link: (c) => (
+                    <a
+                      href={SOURCE_REPO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-violet-300 hover:underline"
+                    >
+                      {c}
+                    </a>
+                  ),
+                })}
+              </p>
+            </div>
+            <BeforeAfter />
+          </section>
+
+          <div className="mt-12 space-y-2 text-base leading-relaxed text-fg-subtle">
             <p>{t("livePreview")}</p>
             <p>{t("targetsNote")}</p>
             <p>
@@ -1393,58 +1389,54 @@ export default function ConvertPage() {
         </>
       )}
 
-      {/* Batch convert — many .3mf → U1 at once, back as a ZIP. Idle only; single-file flow is untouched. */}
+      {/* The other ways in, as ruled rows rather than two tinted cards. Idle only; the single-file
+          flow is untouched. */}
       {status === "idle" && !file && !stlFile && (
-        <section className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="measure-full mt-16 border-b border-line sm:mt-20">
+          <section className="grid items-center gap-3 border-t border-line py-6 sm:grid-cols-[18rem_minmax(0,1fr)_auto] sm:gap-10">
+            <h2 className="text-lg font-semibold text-fg">{t("batchTitle")}</h2>
             <div>
-              <h2 className="text-sm font-semibold text-fg">{t("batchTitle")}</h2>
-              <p className="mt-1 max-w-md text-sm text-fg-muted">{t("batchDesc")}</p>
+              <p className="max-w-xl text-sm leading-relaxed text-fg-muted">{t("batchDesc")}</p>
+              <p className="mt-1.5 text-xs text-fg-subtle">{t("batchNote")}</p>
+              {batchState === "working" && (
+                <div className="mt-3">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                    <div className="h-full bg-violet-600 transition-all" style={{ width: `${Math.round(batchProgress * 100)}%` }} />
+                  </div>
+                  <p className="mt-2 text-xs text-fg-muted">{batchMsg}</p>
+                </div>
+              )}
+              {batchState === "done" && <p className="mt-3 text-xs font-medium text-green-300">{batchMsg}</p>}
+              {batchState === "error" && <p role="alert" className="mt-3 text-xs font-medium text-red-300">{batchMsg}</p>}
             </div>
             <button
               onClick={() => batchRef.current?.click()}
               disabled={batchState === "working"}
-              className="btn-secondary btn-md shrink-0"
+              className="btn-secondary btn-md shrink-0 justify-self-start sm:justify-self-end"
             >
               {batchState === "working" ? t("batchConverting") : t("batchChoose")}
             </button>
-          </div>
-          <input
-            ref={batchRef}
-            type="file"
-            accept=".3mf"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              const fs = e.target.files ? Array.from(e.target.files) : [];
-              e.target.value = ""; // allow re-picking the same set
-              if (fs.length) batchConvert(fs);
-            }}
-          />
-          {batchState === "working" && (
-            <div className="mt-3">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-                <div className="h-full bg-violet-600 transition-all" style={{ width: `${Math.round(batchProgress * 100)}%` }} />
-              </div>
-              <p className="mt-2 text-xs text-fg-muted">{batchMsg}</p>
-            </div>
-          )}
-          {batchState === "done" && <p className="mt-3 text-xs font-medium text-green-300">{batchMsg}</p>}
-          {batchState === "error" && <p role="alert" className="mt-3 text-xs font-medium text-red-300">{batchMsg}</p>}
-          <p className="mt-3 text-xs text-fg-subtle">{t("batchNote")}</p>
-        </section>
-      )}
-      {status === "idle" && !file && !stlFile && (
-        <Link
-          href="/image"
-          className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 p-5 transition hover:bg-surface-3"
-        >
-          <div>
-            <h2 className="text-sm font-semibold text-fg">{t("photoCtaTitle")}</h2>
-            <p className="mt-1 max-w-md text-sm text-fg-muted">{t("photoCtaBody")}</p>
-          </div>
-          <span className="shrink-0 text-sm font-semibold text-violet-300">{t("photoCtaOpen")}</span>
-        </Link>
+            <input
+              ref={batchRef}
+              type="file"
+              accept=".3mf"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                const fs = e.target.files ? Array.from(e.target.files) : [];
+                e.target.value = ""; // allow re-picking the same set
+                if (fs.length) batchConvert(fs);
+              }}
+            />
+          </section>
+          <section className="grid items-center gap-3 border-t border-line py-6 sm:grid-cols-[18rem_minmax(0,1fr)_auto] sm:gap-10">
+            <h2 className="text-lg font-semibold text-fg">{t("photoCtaTitle")}</h2>
+            <p className="max-w-xl text-sm leading-relaxed text-fg-muted">{t("photoCtaBody")}</p>
+            <Link href="/image" className="btn-secondary btn-md shrink-0 justify-self-start sm:justify-self-end">
+              {t("photoCtaOpen")}
+            </Link>
+          </section>
+        </div>
       )}
 
       {stlFile && (
@@ -2306,14 +2298,14 @@ export default function ConvertPage() {
             <button
               type="button"
               onClick={() => setProfileMode("preserve")}
-              className={`rounded-lg px-3 py-1.5 ${profileMode === "preserve" ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+              className={`rounded-lg px-3 py-1.5 ${profileMode === "preserve" ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
             >
               {t("keepSettings")}
             </button>
             <button
               type="button"
               onClick={() => setProfileMode("stamp")}
-              className={`rounded-lg px-3 py-1.5 ${profileMode === "stamp" ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+              className={`rounded-lg px-3 py-1.5 ${profileMode === "stamp" ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
             >
               {t("useTested")}
             </button>
@@ -2335,11 +2327,11 @@ export default function ConvertPage() {
                     key={n}
                     type="button"
                     onClick={() => setNozzle(n)}
-                    className={`rounded-lg px-3 py-1.5 ${nozzle === n ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+                    className={`rounded-lg px-3 py-1.5 ${nozzle === n ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
                   >
                     {format.number(n)} {t("nozzleUnit")}
                     {n === U1_TESTED_NOZZLE && (
-                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-white/80" : "text-fg-subtle"}`}>
+                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-on-accent/80" : "text-fg-subtle"}`}>
                         {t("nozzleTested")}
                       </span>
                     )}
@@ -2377,7 +2369,7 @@ export default function ConvertPage() {
                     key={b}
                     type="button"
                     onClick={() => setFilamentBrand(b)}
-                    className={`rounded-lg px-3 py-1.5 ${filamentBrand === b ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+                    className={`rounded-lg px-3 py-1.5 ${filamentBrand === b ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
                   >
                     {t(b === "source" ? "brandSource" : b === "generic" ? "brandGeneric" : "brandSnapmaker")}
                   </button>

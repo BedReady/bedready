@@ -365,7 +365,7 @@
     "warnLayoutTooBig": "Diese Teile sind über {x}×{y} mm verteilt — breiter als das {maxXY}×{maxXY} mm große Druckbett des Snapmaker U1. Einzeln passt jedes Teil; ordne sie in deinem Slicer neu an.",
     "photoCtaTitle": "Keine Datei? Mach aus einem Foto einen U1-Druck",
     "photoCtaBody": "Lade ein Foto, Logo oder Kunstwerk hoch und erhalte eine flache Mehrfarbplatte — Untersetzer, Schilder, Schlüsselanhänger — fertig für den U1.",
-    "photoCtaOpen": "Öffnen →",
+    "photoCtaOpen": "Öffnen",
     "customFsDesc": "Gib die Farben dieses Modells als Mischungen deiner 4 geladenen Filamente wieder — bei beliebiger Farbanzahl. Lege unten deine Filamente fest (Standard: CMYK); jede gemalte Farbe wird zu ihrer nächstliegenden Mischung.",
     "customFsSetLabel": "Lege die 4 geladenen Filamente fest — Farbe wählen oder exakten Hex-Wert einfügen:",
     "blendTip": "<lead>Für saubere Mischungen:</lead> Full Spectrum täuscht Farben durch das Stapeln hauchdünner Schichten vor. <b>Transluzente</b> Filamente (das Licht streut über die Schichten) mischen sich deshalb weit besser als opake, die feine Streifen zeigen — vor allem auf flachen Oberseiten und flachen Schrägen. Halte die Mischschichthöhe bei ≤ 0,1 mm, dann bleibt der Effekt auf Armlänge unsichtbar.",

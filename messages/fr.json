@@ -365,7 +365,7 @@
     "warnLayoutTooBig": "Ces pièces s’étendent sur {x}×{y} mm — plus que le plateau de {maxXY}×{maxXY} mm du Snapmaker U1. Chacune tient séparément ; réorganise-les dans ton trancheur.",
     "photoCtaTitle": "Pas de fichier ? Transforme une photo en impression U1",
     "photoCtaBody": "Dépose une photo, un logo ou une illustration et obtiens une plaque multicolore plate — sous-verres, panneaux, porte-clés — prête pour l’U1.",
-    "photoCtaOpen": "Ouvrir →",
+    "photoCtaOpen": "Ouvrir",
     "customFsDesc": "Reproduis les couleurs de ce modèle comme des mélanges de tes 4 filaments chargés — quel que soit le nombre de couleurs. Définis tes filaments ci-dessous (CMJN par défaut) ; chaque couleur peinte devient son mélange le plus proche.",
     "customFsSetLabel": "Indique les 4 filaments que tu as chargés — choisis une couleur ou colle un hex exact :",
     "blendTip": "<lead>Pour des mélanges nets :</lead> Full Spectrum simule les couleurs en empilant des couches ultrafines ; les filaments <b>translucides</b> (la lumière se diffuse entre les couches) se mélangent donc bien mieux que les opaques, qui tendent à laisser de fines rayures — surtout sur les surfaces supérieures planes et les pentes douces. Garde la hauteur de couche de mélange à ≤ 0,1 mm et l’effet reste invisible à bout de bras.",
