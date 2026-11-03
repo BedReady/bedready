@@ -1352,7 +1352,6 @@
     "nColors": "{count} 色",
     "labelSize": "尺寸（mm，最长边）",
     "labelThickness": "厚度（mm）",
-    "labelDither": "抖动（混合颜色让照片更平滑——纯色标志和平面图请关闭）",
     "labelRelief": "3D 浮雕——按亮度抬升表面（把平板变成有纹理的作品）",
     "labelReliefDepth": "浮雕深度：{value} mm",
     "downloadU1": "下载 U1 文件（.3mf）",

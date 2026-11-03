@@ -1352,7 +1352,6 @@
     "nColors": "{count, plural, one {# color} other {# colors}}",
     "labelSize": "Size (mm, longest side)",
     "labelThickness": "Thickness (mm)",
-    "labelDither": "Dither (blends colors for smoother photos — turn off for flat logos & solid-color art)",
     "labelRelief": "3D relief — raise the surface by brightness (turns a flat plate into textured art)",
     "labelReliefDepth": "Relief depth: {value} mm",
     "downloadU1": "Download U1 file (.3mf)",

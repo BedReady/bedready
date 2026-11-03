@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { unzipSync, strFromU8 } from "fflate";
-import { quantize, buildPanelMesh, buildImage3MF, imageTo3MF } from "./image-model.ts";
+import { quantize, despeckle, buildPanelMesh, buildImage3MF, imageTo3MF } from "./image-model.ts";
 import { extractMeshFromBuffer } from "./paint.ts";
 
 // Build a 4x4 RGBA image: rows 0-1 red (8px), row 2 green (4px), row 3 blue (4px) → 3 clear colours.
@@ -115,4 +115,33 @@ test("relief mode: brightness raises the top surface, watertight + round-trips",
   const mesh = extractMeshFromBuffer(bytes);
   assert.equal(mesh.palette.length, 2);
   assert.ok(mesh.positions.length > 0);
+});
+
+test("despeckle: a lone cell takes its surroundings' colour; a two-cell line survives", () => {
+  const w = 7, h = 7;
+  const indices = new Uint8Array(w * h);
+  indices[1 * w + 1] = 1; // lone speck
+  indices[4 * w + 2] = 2; indices[4 * w + 3] = 2; indices[4 * w + 4] = 2; // a short line
+  const q = despeckle({ palette: ["#000000", "#FF0000", "#00FF00"], indices, width: w, height: h });
+  assert.equal(q.indices[1 * w + 1], 0);
+  assert.equal(q.indices[4 * w + 3], 2);
+  assert.equal(q.indices[4 * w + 2], 2);
+});
+
+test("panel mesh faces point outward: the signed volume is the plate's real volume", () => {
+  // Top faces were wound clockwise (the Y flip reversed them), so they pointed down: the volume came
+  // out short and the 3D preview, which draws front faces only, showed an empty plate.
+  const q = { palette: ["#FF0000", "#00FF00"], indices: new Uint8Array([0, 1, 1, 0, 1, 0]), width: 3, height: 2 };
+  const signedVolume = (P: Float32Array) => {
+    let v = 0;
+    for (let o = 0; o < P.length; o += 9) {
+      const [ax, ay, az, bx, by, bz, cx, cy, cz] = P.subarray(o, o + 9);
+      v += (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6;
+    }
+    return v;
+  };
+  const flat = buildPanelMesh(q, { widthMM: 30, thicknessMM: 2.4 });
+  assert.ok(Math.abs(signedVolume(flat.positions) - 30 * 20 * 2.4) < 1e-3);
+  const relief = buildPanelMesh(q, { widthMM: 30, thicknessMM: 2.4, reliefMM: 1, luma: new Float32Array(6).fill(0.5) });
+  assert.ok(signedVolume(relief.positions) > 30 * 20 * 2.4);
 });

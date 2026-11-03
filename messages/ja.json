@@ -1352,7 +1352,6 @@
     "nColors": "{count} 色",
     "labelSize": "サイズ（mm・長辺）",
     "labelThickness": "厚さ（mm）",
-    "labelDither": "ディザリング（色を混ぜて写真をなめらかに — フラットなロゴや単色アートではオフに）",
     "labelRelief": "3D レリーフ — 明るさに応じて表面を隆起（平板を立体的な作品に）",
     "labelReliefDepth": "レリーフの深さ：{value} mm",
     "downloadU1": "U1 ファイルをダウンロード（.3mf）",

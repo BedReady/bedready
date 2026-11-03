@@ -1352,7 +1352,6 @@
     "nColors": "{count, plural, one {# couleur} other {# couleurs}}",
     "labelSize": "Taille (mm, plus grand côté)",
     "labelThickness": "Épaisseur (mm)",
-    "labelDither": "Tramage (mélange les couleurs pour des photos plus douces — à désactiver pour les logos plats et les aplats)",
     "labelRelief": "Relief 3D — élève la surface selon la luminosité (transforme une plaque plate en œuvre texturée)",
     "labelReliefDepth": "Profondeur du relief : {value} mm",
     "downloadU1": "Télécharger le fichier U1 (.3mf)",
