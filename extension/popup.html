@@ -5,98 +5,117 @@
     <!--
       The extension's own surface, in the website's identity.
 
-      ── WHY THIS WAS REDRAWN ────────────────────────────────────────────────────────────────────
-      It was navy #0f172a with an orange #f97316 accent and no theme support, while bedready.io is
-      slate-and-white (or #070a12 in dark) with a violet → cyan → lime spectrum and violet-600 as the
-      one action colour. Someone installing from /extension met a different product. The 2026-08-22
-      design review found the same split on the site — a defined identity that almost nothing used —
-      and this is the last surface still outside it.
+      ── THE BUILD PLATE (Nov 2026) ────────────────────────────────────────────────────────────────
+      bedready.io was redesigned around the U1's build plate (globals.css, "THE BUILD PLATE", and the
+      Figma file "BedReady — Build Plate redesign"): aluminium and ink for the interface, the dark PEI
+      plate as the drop zone with the four toolheads parked over it, and filament as the only colour.
+      This popup had been redrawn once already to match the site's violet era; it follows again so that
+      someone installing from /extension still meets one product.
 
       The tokens below are copied from `src/app/globals.css` rather than imported: an extension page
       has no access to the site's stylesheet, so the only options are duplicate-with-a-note or drift.
       If those tokens change, this file is the second place to change them.
 
-      The typeface is deliberately NOT matched. The site sets IBM Plex Sans with
-      `ui-sans-serif, system-ui` as its fallback, and bundling ~100KB of woff2 into an extension to
-      win one weight is a bad trade — so this uses the site's own fallback stack, which is a match by
-      the site's own definition rather than a compromise.
+      The typeface is deliberately NOT bundled: ~100KB of woff2 to win one family is a bad trade in a
+      320px popup. It uses the system face, with headings widened by `font-stretch` where the system
+      face has a width axis (San Francisco does), and plain where it doesn't.
     -->
     <style>
       :root {
-        --bg: #ffffff;
-        --surface-2: #f1f5f9;
-        --line: #e2e8f0;
-        --fg: #0f172a;
-        --fg-muted: #334155;
-        --fg-subtle: #475569;
-        --action: #7c3aed;        /* violet-600 — "this is the thing to do" */
-        --action-hover: #6d28d9;  /* violet-700 */
+        --bg: #f3f4f1;          /* aluminium */
+        --surface-2: #e9eae6;
+        --line: #d3d5ce;
+        --fg: #16171a;          /* ink */
+        --fg-muted: #393b40;
+        --fg-subtle: #53565c;
+        --action: #16171a;      /* the one interactive colour: ink in light, paper in dark */
+        --action-hover: #34363b;
+        --on-action: #f7f7f4;
+        --plate: #1d1b17;       /* the PEI plate — dark in both themes */
+        --slot-1: #00a3d9; --slot-2: #e6007e; --slot-3: #ffd200; --slot-4: #f4f2ec;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #070a12;
-          --surface-2: #1e293b;
-          --line: rgba(255, 255, 255, 0.1);
-          --fg: #e2e8f0;
-          --fg-muted: #cbd5e1;
-          --fg-subtle: #94a3b8;
-          --action: #8b5cf6;      /* violet-500 — the 600 is too dark on #070a12 */
-          --action-hover: #a78bfa;
+          --bg: #24231f;        /* warm graphite, lighter than the plate */
+          --surface-2: #33322c;
+          --line: rgba(255, 244, 220, 0.11);
+          --fg: #eeece6;
+          --fg-muted: #d2cec5;
+          --fg-subtle: #b3afa5;
+          --action: #eeece6;
+          --action-hover: #ffffff;
+          --on-action: #1d1b17;
         }
       }
       body {
-        width: 320px; margin: 0; padding: 16px; background: var(--bg); color: var(--fg);
+        width: 320px; margin: 0; padding: 14px 16px 16px; background: var(--bg); color: var(--fg);
         font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
       }
-      /* The wordmark's spectrum sweep, in the one place a 320px popup can carry it. */
-      .rule { height: 3px; border-radius: 999px; background-image: linear-gradient(100deg, #7c3aed, #06b6d4 55%, #84cc16); }
-      h1 { font-size: 15px; margin: 12px 0 4px; color: var(--fg); letter-spacing: -0.01em; }
+      .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; font-stretch: 125%; letter-spacing: -0.01em; }
+      .brand svg { flex: none; }
+      h1 { font-size: 17px; line-height: 1.2; margin: 14px 0 4px; color: var(--fg); font-weight: 700; font-stretch: 125%; letter-spacing: -0.02em; }
       p.sub { margin: 0 0 12px; color: var(--fg-subtle); font-size: 12px; }
+      /* The drop zone is the build plate: brass-speckled PEI, the four toolheads parked on its top
+         edge, lowering while a file is held over it — the same object as on bedready.io/convert. */
       label.drop {
-        display: block; padding: 18px; text-align: center; border: 2px dashed var(--line);
-        border-radius: 8px; cursor: pointer; color: var(--fg-muted); background: var(--surface-2);
-        transition: border-color .15s, background .15s, color .15s;
+        position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px;
+        padding: 12px 14px 18px; text-align: center; border-radius: 14px; cursor: pointer;
+        color: #eeece6; font-weight: 600; font-stretch: 112%;
+        background-color: var(--plate);
+        background-image: radial-gradient(rgba(214, 178, 110, 0.16) 0.6px, transparent 0.9px), radial-gradient(rgba(214, 178, 110, 0.09) 0.6px, transparent 0.9px);
+        background-size: 7px 7px, 11px 11px; background-position: 0 0, 3px 5px;
+        box-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.08), 0 14px 28px -18px rgba(22, 23, 26, 0.6);
+        transition: box-shadow .15s;
       }
-      label.drop:hover { border-color: var(--action); color: var(--fg); }
-      label.drop.dragging { border-color: var(--action); background: color-mix(in srgb, var(--action) 10%, var(--surface-2)); color: var(--fg); }
-      input[type="file"] { display: none; }
+      label.drop:hover, label.drop.dragging { box-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.24), 0 14px 28px -18px rgba(22, 23, 26, 0.6); }
+      .heads { display: flex; gap: 14px; direction: ltr; }
+      .head { display: flex; flex-direction: column; align-items: center; transition: transform .3s cubic-bezier(.3,.7,.2,1.2); }
+      .head b { position: relative; width: 30px; height: 19px; border-radius: 5px 5px 3px 3px; background: linear-gradient(#45423b, #2a2824); box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
+      .head b::after { content: ""; position: absolute; inset: 5px 5px auto; height: 3px; border-radius: 2px; background: var(--c); }
+      .head i { width: 9px; height: 7px; margin-top: -2px; clip-path: polygon(0 0, 100% 0, 68% 100%, 32% 100%); background: var(--c); }
+      .head:nth-child(1) { --c: var(--slot-1); } .head:nth-child(2) { --c: var(--slot-2); }
+      .head:nth-child(3) { --c: var(--slot-3); } .head:nth-child(4) { --c: var(--slot-4); }
+      label.drop.dragging .head { transform: translateY(6px); }
+      input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+      label.drop:focus-within { outline: 3px solid var(--slot-3); outline-offset: 3px; }
       #status { margin-top: 12px; white-space: pre-wrap; font-size: 12px; color: var(--fg-muted); }
-      a { color: var(--action); font-weight: 500; }
-      a:hover { color: var(--action-hover); }
-      :where(a, label, input):focus-visible { outline: 2px solid var(--action); outline-offset: 2px; border-radius: 4px; }
-      @media (prefers-reduced-motion: reduce) { label.drop { transition: none; } }
+      a { color: var(--fg); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+      a:hover { color: var(--fg-muted); }
+      :where(a, label, input, select, button, summary):focus-visible { outline: 2px solid var(--action); outline-offset: 2px; border-radius: 4px; }
+      @media (prefers-reduced-motion: reduce) { label.drop, .head { transition: none; } label.drop.dragging .head { transform: none; } }
       :root { color-scheme: light dark; accent-color: var(--action); }
       /* `hidden` loses to any author `display` rule (.field is a grid) — make it win, for every element. */
       [hidden] { display: none !important; }
       /* Settings: which printer, and what happens on a download. Native controls on purpose — a
          <select> and checkboxes keep keyboard, screen-reader and OS behaviour with no script. */
-      .field { display: grid; gap: 4px; margin: 0 0 10px; font-size: 12px; color: var(--fg-muted); }
+      .field { display: grid; gap: 4px; margin: 0 0 10px; font-size: 12px; font-weight: 600; color: var(--fg-muted); }
       .field select {
-        font: inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line);
-        border-radius: 8px; padding: 6px 8px;
+        font: 400 13px/1.4 inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line);
+        border-radius: 9px; padding: 7px 9px;
       }
-      .field select:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
-      .note { margin: 4px 0 0; font-size: 11px; color: var(--fg-subtle); }
+      .note { margin: 4px 0 0; font-size: 11px; font-weight: 400; color: var(--fg-subtle); }
       .toggle { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 6px; font-size: 12px; color: var(--fg-muted); cursor: pointer; }
       .toggle input { margin: 2px 0 0; flex: none; }
-      .toggle input:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
-      details.prefs { margin: 0 0 12px; }
-      details.prefs summary { cursor: pointer; font-size: 12px; color: var(--fg-subtle); margin-bottom: 6px; }
+      details.prefs { margin: 0 0 14px; }
+      details.prefs summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--fg-subtle); margin-bottom: 6px; }
       /* The Full Spectrum choice and its button, in the same tokens as everything else. */
       .choice { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
       .choice p { margin: 0 0 8px; font-size: 12px; color: var(--fg-muted); }
       .btn {
-        margin-top: 10px; width: 100%; padding: 8px; border: 0; border-radius: 8px; background: var(--action);
-        color: #fff; font: 600 13px/1.4 inherit; cursor: pointer;
+        margin-top: 10px; width: 100%; padding: 9px; border: 0; border-radius: 10px; background: var(--action);
+        color: var(--on-action); font: 600 13px/1.4 inherit; cursor: pointer;
       }
       .btn:hover { background: var(--action-hover); }
-      .btn:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
-      .btn.ghost { background: transparent; color: var(--action); border: 1px solid var(--line); }
-      .btn.ghost:hover { background: var(--surface-2); color: var(--action-hover); }
+      .btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+      .btn.ghost:hover { background: var(--surface-2); }
+      .foot { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
     </style>
   </head>
   <body>
-    <div class="rule"></div>
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#1d1b17"/><path d="M6.5 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#00a3d9"/><path d="M11.75 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#e6007e"/><path d="M17 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#ffd200"/><path d="M22.25 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#f4f2ec"/><rect x="5" y="22" width="22" height="3" rx="1.5" fill="#c9a86a"/></svg>
+      <span dir="ltr">BedReady</span>
+    </div>
     <h1 id="title">3MF → Snapmaker U1</h1>
     <p class="sub" data-i18n="subtitle">100% in your browser — nothing is uploaded.</p>
     <label class="field" data-i18n="convertFor">Convert for
@@ -112,14 +131,20 @@
       <label class="toggle"><input type="checkbox" switch id="keep" /> <span data-i18n="keepOriginal">Keep the original download as well</span></label>
       <label class="toggle"><input type="checkbox" switch id="cn" /> <span data-i18n="cnToggle">Also work on makerworld.com.cn</span></label>
     </details>
-    <label class="drop" id="drop" data-i18n="drop">
-      Drop a .3mf here, or click to choose
+    <label class="drop" id="drop">
+      <span class="heads" aria-hidden="true">
+        <span class="head"><b></b><i></i></span>
+        <span class="head"><b></b><i></i></span>
+        <span class="head"><b></b><i></i></span>
+        <span class="head"><b></b><i></i></span>
+      </span>
+      <span data-i18n="drop">Drop a .3mf here, or click to choose</span>
       <input id="file" type="file" accept=".3mf" />
     </label>
     <div id="opts"></div>
     <div id="status"></div>
     <button type="button" class="btn ghost" id="edit" data-i18n="editColors" hidden>Edit colours on bedready.io →</button>
-    <p class="sub" style="margin-top: 12px"><span data-i18n="footer">Full preview &amp; color editor:</span> <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
+    <p class="sub foot"><span data-i18n="footer">Full preview &amp; color editor:</span> <a id="site" href="https://bedready.io/convert" target="_blank">bedready.io/convert</a></p>
     <script src="dist/popup.js"></script>
   </body>
 </html>

@@ -30,9 +30,9 @@ function showToast(state: "working" | "done" | "error", text: string, action?: "
   }
   let root = (hostEl as unknown as { _r?: ShadowRoot })._r;
   if (!root) root = (hostEl as unknown as { _r?: ShadowRoot })._r = hostEl.attachShadow({ mode: "open" });
-  // Site tokens, not the extension's old orange: violet-600 is the action colour everywhere on
-  // bedready.io, and emerald/red are what `.notice-ok` / a failure use there.
-  const c = { working: "#7c3aed", done: "#059669", error: "#dc2626" }[state];
+  // Site tokens (Nov 2026 "build plate"): the toast is the dark plate with its brass edge while it
+  // works, emerald/red for done and failed — legible on the dark plate whatever the host page is.
+  const c = { working: "#c9a86a", done: "#34d399", error: "#f87171" }[state];
   // Drawn, not emoji. `⏳` and `⚠️` render as a different typeface on every OS — and this toast
   // appears on somebody else's page, which makes it the least controlled surface the product has.
   const icon = {
@@ -42,14 +42,14 @@ function showToast(state: "working" | "done" | "error", text: string, action?: "
   }[state];
   // Static chrome only via innerHTML (icon/colour are from fixed internal maps). The dynamic `text`
   // (derived from a third-party download filename) is set via textContent so markup can't be injected.
-  root.innerHTML = `<div dir="${dir}" style="position:fixed;top:16px;right:16px;z-index:2147483647;font:13px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;border:1px solid ${c};border-left:4px solid ${c};border-radius:10px;padding:10px 14px;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.4)"><b style="color:${c};display:inline-flex;align-items:center;gap:6px">${icon}BedReady</b><div class="bd-msg" style="margin-top:3px;color:#e2e8f0"></div></div>`;
+  root.innerHTML = `<div dir="${dir}" style="position:fixed;top:16px;right:16px;z-index:2147483647;font:13px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif;background:#1d1b17;color:#f4f2ec;border:1px solid ${c};border-left:4px solid ${c};border-radius:10px;padding:10px 14px;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.4)"><b style="color:${c};display:inline-flex;align-items:center;gap:6px">${icon}BedReady</b><div class="bd-msg" style="margin-top:3px;color:#d2cec5"></div></div>`;
   const msgEl = root.querySelector(".bd-msg");
   if (msgEl) msgEl.textContent = text;
   if (action === "edit") {
     // The one-click result used the defaults; this opens the full editor with the original file.
     const b = document.createElement("button");
     b.textContent = t("editColors");
-    b.setAttribute("style", "margin-top:8px;padding:4px 10px;border:0;border-radius:8px;background:#7c3aed;color:#fff;font:500 12px/1.4 inherit;cursor:pointer");
+    b.setAttribute("style", "margin-top:8px;padding:4px 10px;border:0;border-radius:8px;background:#f4f2ec;color:#1d1b17;font:600 12px/1.4 inherit;cursor:pointer");
     b.addEventListener("click", () => {
       api.runtime.sendMessage({ type: "bedready-open-editor" }).catch?.(() => {});
       hostEl?.remove();
@@ -103,17 +103,17 @@ function injectButton(anchor: HTMLAnchorElement): void {
   btn.dataset.state = "idle";
   btn.textContent = label();
   btn.title = t("buttonTitle");
-  // SOLID violet, not a tint. The old button was `#f97316` text on a 10% orange wash, which assumes
-  // a light host page: on a dark one it was orange-on-near-black at roughly 3:1. A filled
-  // violet-600 with white text is 5.70:1 against its own fill and therefore legible on ANY
-  // background, which is the only guarantee available when the page belongs to somebody else.
+  // SOLID, not a tint: the page belongs to somebody else, so the button has to carry its own
+  // contrast. It is the site's build plate (#1d1b17) with paper text, 16:1 against its own fill, and a
+  // brass edge so it still has a visible boundary on a dark host page, where a dark fill alone would
+  // disappear. (It was violet-600 until the Nov 2026 redesign made filament the site's only colour.)
   Object.assign(btn.style, {
     marginLeft: "8px", padding: "3px 10px", fontSize: "12px", lineHeight: "1.4",
-    fontWeight: "500", borderRadius: "8px", border: "0", background: "#7c3aed",
-    color: "#fff", cursor: "pointer", verticalAlign: "middle",
+    fontWeight: "600", borderRadius: "8px", border: "1px solid #c9a86a", background: "#1d1b17",
+    color: "#f4f2ec", cursor: "pointer", verticalAlign: "middle",
   });
-  btn.addEventListener("mouseenter", () => { btn.style.background = "#6d28d9"; });
-  btn.addEventListener("mouseleave", () => { btn.style.background = "#7c3aed"; });
+  btn.addEventListener("mouseenter", () => { btn.style.background = "#34322c"; });
+  btn.addEventListener("mouseleave", () => { btn.style.background = "#1d1b17"; });
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -189,13 +189,13 @@ function injectMakerWorldButton(): void {
   btn.type = "button";
   btn.textContent = mwLabel();
   btn.title = t("buttonTitle");
-  // Same violet as the link button, full width like MakerWorld's own, so it reads as a second action.
+  // Same plate-and-brass as the link button, full width like MakerWorld's own, so it reads as a second action.
   Object.assign(btn.style, {
     display: "block", width: "100%", marginTop: "8px", padding: "10px 14px", fontSize: "14px", lineHeight: "1.4",
-    fontWeight: "600", borderRadius: "8px", border: "0", background: "#7c3aed", color: "#fff", cursor: "pointer",
+    fontWeight: "600", borderRadius: "8px", border: "1px solid #c9a86a", background: "#1d1b17", color: "#f4f2ec", cursor: "pointer",
   });
-  btn.addEventListener("mouseenter", () => { btn.style.background = "#6d28d9"; });
-  btn.addEventListener("mouseleave", () => { btn.style.background = "#7c3aed"; });
+  btn.addEventListener("mouseenter", () => { btn.style.background = "#34322c"; });
+  btn.addEventListener("mouseleave", () => { btn.style.background = "#1d1b17"; });
   btn.addEventListener("click", async () => {
     if (btn.dataset.state === "busy") return;
     btn.dataset.state = "busy";
