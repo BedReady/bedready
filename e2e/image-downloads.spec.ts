@@ -113,7 +113,10 @@ test.describe("relief", () => {
     // A gap is a height with no head assigned; an overlap is two heads claiming the same layer.
     // Either one still slices and still prints — just with the colours in the wrong places.
     for (let i = 1; i < bands.length; i++) expect(bands[i].z0).toBeCloseTo(bands[i - 1].z1, 4);
-    expect(bands.map((b) => b.head)).toEqual(bands.map((_, i) => String(i + 1)));
+    // The optimised engine (#78) may come back to a filament higher up — heads 1,2,3,1,4,3 is a legal
+    // plan — so each band must name a loaded head (1–4) and differ from the band below it.
+    for (const b of bands) expect(["1", "2", "3", "4"]).toContain(b.head);
+    for (let i = 1; i < bands.length; i++) expect(bands[i].head).not.toBe(bands[i - 1].head);
   });
 
   test("reports a loose colour match in words, not just a number", async ({ page }) => {
