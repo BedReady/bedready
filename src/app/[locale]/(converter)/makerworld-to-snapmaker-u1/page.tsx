@@ -38,7 +38,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
 
   return (
-    <main className="page-read py-12">
+    <main lang="en" dir="ltr" className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Print MakerWorld &amp; Bambu files on the Snapmaker U1
       </h1>

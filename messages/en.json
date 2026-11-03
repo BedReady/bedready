@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "Converter features — BedReady",
-    "metaDescription": "Everything the BedReady converter does: multicolor on the U1's 4 slots, Full Spectrum mixing, spool-swap pauses, U1-safe profile, live preview, multi-part split, STL ↔ 3MF, and retargeting to other printers (Bambu/Prusa/Creality) or a clean generic 3MF. Free, in your browser."
+    "metaDescription": "Everything the BedReady converter does: multicolor on the U1's 4 slots, Full Spectrum mixing, spool-swap pauses, U1-safe profile, live preview, multi-part split, STL ↔ 3MF, and retargeting to other printers (Bambu/Prusa/Creality) or a clean generic 3MF. Free, in your browser.",
+    "compare": {
+      "title": "How it compares",
+      "intro": "Most .3mf→U1 converters swap the profile and map colors to the 4 slots. BedReady does that too — and keeps going.",
+      "capability": "Capability",
+      "typical": "Typical converter",
+      "note": "Comparison reflects common .3mf→U1 converters as of 2026; capabilities vary by tool.",
+      "rows": {
+        "profile": "Swap to the real Snapmaker U1 profile",
+        "slots": "Painted multicolor → the U1's 4 slots",
+        "settings": "Keeps the creator's print settings (layer height, walls, speeds)",
+        "moreColors": "More than 4 colors — Full Spectrum 2-/3-filament mixing",
+        "ownFilaments": "Mix from your own filaments (CMYK or any 4)",
+        "colorMix": "Reads PrusaSlicer / Orca ColorMix mixed-filament files",
+        "retarget": "Retarget to other printers (Bambu/Prusa/Creality) or a clean generic 3MF",
+        "stl": "STL → 3MF and 3MF → STL, both directions",
+        "colorMatch": "Color match tuned to what the U1 actually prints",
+        "swapPauses": "Fixes spool-swap pauses",
+        "detail": "Keeps text, logos & fine painted detail",
+        "browser": "100% in your browser — nothing uploaded",
+        "library": "Library of files with profiles verified to print on a U1"
+      },
+      "marks": {
+        "rare": "rare",
+        "sometimes": "sometimes",
+        "someUpload": "some upload",
+        "yes": "Yes",
+        "no": "No",
+        "partly": "Partly"
+      }
+    }
   },
   "stickers": {
     "title": "Free 3D-printing stickers",

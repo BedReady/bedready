@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "コンバーターの機能 — BedReady",
-    "metaDescription": "BedReady コンバーターでできること：U1 の 4 スロットでのマルチカラー、Full Spectrum 混色、スプール交換の一時停止、U1 向けの安全なプロファイル、ライブプレビュー、マルチパーツ分割、STL ↔ 3MF、他のプリンター（Bambu/Prusa/Creality）向けへの変換やクリーンな汎用 3MF。無料、ブラウザで動作。"
+    "metaDescription": "BedReady コンバーターでできること：U1 の 4 スロットでのマルチカラー、Full Spectrum 混色、スプール交換の一時停止、U1 向けの安全なプロファイル、ライブプレビュー、マルチパーツ分割、STL ↔ 3MF、他のプリンター（Bambu/Prusa/Creality）向けへの変換やクリーンな汎用 3MF。無料、ブラウザで動作。",
+    "compare": {
+      "title": "比較",
+      "intro": "多くの .3mf→U1 コンバーターは、プロファイルを差し替えて色を 4 つのスロットに割り当てるだけです。BedReady はそれに加えて、さらに多くのことができます。",
+      "capability": "機能",
+      "typical": "一般的なコンバーター",
+      "note": "2026 年時点の一般的な .3mf→U1 コンバーターとの比較です。機能はツールによって異なります。",
+      "rows": {
+        "profile": "本物の Snapmaker U1 プロファイルに置き換え",
+        "slots": "ペイントされたマルチカラー → U1 の 4 スロット",
+        "settings": "作者の印刷設定を保持(積層ピッチ、壁、速度)",
+        "moreColors": "4 色以上 — Full Spectrum による 2〜3 フィラメントの混色",
+        "ownFilaments": "手持ちのフィラメントで混色(CMYK または任意の 4 色)",
+        "colorMix": "PrusaSlicer / Orca ColorMix の混色フィラメントファイルを読み込み",
+        "retarget": "他のプリンター(Bambu/Prusa/Creality)向けや汎用のクリーンな 3MF に変換",
+        "stl": "STL → 3MF と 3MF → STL の双方向",
+        "colorMatch": "U1 の実際の印刷結果に合わせた色合わせ",
+        "swapPauses": "スプール交換による一時停止を修正",
+        "detail": "文字・ロゴ・細かいペイントを保持",
+        "browser": "100% ブラウザ内で処理 — アップロードなし",
+        "library": "U1 での印刷が確認済みのプロファイル付きファイルライブラリ"
+      },
+      "marks": {
+        "rare": "まれ",
+        "sometimes": "場合による",
+        "someUpload": "一部アップロード",
+        "yes": "対応",
+        "no": "非対応",
+        "partly": "一部対応"
+      }
+    }
   },
   "stickers": {
     "title": "無料の 3D プリント ステッカー",

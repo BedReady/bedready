@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "Fonctionnalités du convertisseur — BedReady",
-    "metaDescription": "Tout ce que fait le convertisseur BedReady : multicolore sur les 4 emplacements de la U1, mélange Full Spectrum, pauses de changement de bobine, profil sûr pour la U1, aperçu en direct, séparation des pièces, STL ↔ 3MF et conversion vers d’autres imprimantes (Bambu/Prusa/Creality) ou un 3MF générique propre. Gratuit, dans votre navigateur."
+    "metaDescription": "Tout ce que fait le convertisseur BedReady : multicolore sur les 4 emplacements de la U1, mélange Full Spectrum, pauses de changement de bobine, profil sûr pour la U1, aperçu en direct, séparation des pièces, STL ↔ 3MF et conversion vers d’autres imprimantes (Bambu/Prusa/Creality) ou un 3MF générique propre. Gratuit, dans votre navigateur.",
+    "compare": {
+      "title": "En comparaison",
+      "intro": "La plupart des convertisseurs .3mf→U1 remplacent le profil et répartissent les couleurs sur les 4 emplacements. BedReady le fait aussi — et va plus loin.",
+      "capability": "Fonction",
+      "typical": "Convertisseur type",
+      "note": "Comparaison avec les convertisseurs .3mf→U1 courants en 2026 ; les fonctions varient selon l'outil.",
+      "rows": {
+        "profile": "Passe au vrai profil Snapmaker U1",
+        "slots": "Multicolore peint → les 4 emplacements du U1",
+        "settings": "Conserve les réglages d'impression du créateur (hauteur de couche, parois, vitesses)",
+        "moreColors": "Plus de 4 couleurs — mélange Full Spectrum de 2 ou 3 filaments",
+        "ownFilaments": "Mélange à partir de vos propres filaments (CMJN ou 4 au choix)",
+        "colorMix": "Lit les fichiers à filaments mélangés de PrusaSlicer / Orca ColorMix",
+        "retarget": "Cible d'autres imprimantes (Bambu/Prusa/Creality) ou un 3MF générique propre",
+        "stl": "STL → 3MF et 3MF → STL, dans les deux sens",
+        "colorMatch": "Correspondance des couleurs calée sur ce que le U1 imprime vraiment",
+        "swapPauses": "Corrige les pauses de changement de bobine",
+        "detail": "Conserve le texte, les logos et les détails peints fins",
+        "browser": "100 % dans votre navigateur — rien n'est envoyé",
+        "library": "Bibliothèque de fichiers aux profils vérifiés sur un vrai U1"
+      },
+      "marks": {
+        "rare": "rare",
+        "sometimes": "parfois",
+        "someUpload": "envoi parfois",
+        "yes": "Oui",
+        "no": "Non",
+        "partly": "En partie"
+      }
+    }
   },
   "stickers": {
     "title": "Stickers d'impression 3D gratuits",
