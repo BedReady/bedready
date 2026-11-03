@@ -1352,7 +1352,6 @@
     "nColors": "{count, plural, one {# Farbe} other {# Farben}}",
     "labelSize": "Größe (mm, längste Seite)",
     "labelThickness": "Dicke (mm)",
-    "labelDither": "Dithering (mischt Farben für weichere Fotos — für flache Logos und einfarbige Grafiken ausschalten)",
     "labelRelief": "3D-Relief — Oberfläche nach Helligkeit anheben (macht aus der flachen Platte strukturierte Kunst)",
     "labelReliefDepth": "Relieftiefe: {value} mm",
     "downloadU1": "U1-Datei herunterladen (.3mf)",

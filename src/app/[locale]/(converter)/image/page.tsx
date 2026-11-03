@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { reliefGrid } from "@/lib/relief-grid";
 import dynamic from "next/dynamic";
-import { quantize, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh } from "@/lib/image-model";
+import { quantize, despeckle, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh } from "@/lib/image-model";
 import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { download } from "@/lib/convert";
 import type { MeshData } from "@/lib/paint";
@@ -88,8 +88,9 @@ export default function ImagePage() {
   const [colors, setColors] = useState(4);
   const [sizeMM, setSizeMM] = useState(100);
   const [thickness, setThickness] = useState(2.4);
-  const detail = 140; // grid px on the longest side (fixed for the MVP — keeps triangle count sane)
-  const [dither, setDither] = useState(true); // error-diffusion — much better on photos
+  // Grid px on the longest side: 250 is one cell per 0.4 mm nozzle line at the default 100 mm. It was
+  // 140, so every cell was 0.71 mm and a portrait came out as coarse blocks (Nov 2026).
+  const detail = 250;
   const [relief, setRelief] = useState(false); // raise the top by brightness → a 3D relief
   const [reliefDepth, setReliefDepth] = useState(2); // mm of relief above the base
   const [dragOver, setDragOver] = useState(false);
@@ -108,26 +109,33 @@ export default function ImagePage() {
   const lumaRef = useRef<Float32Array | null>(null); // per-cell brightness 0..1 for relief height
   const previewCanvas = useRef<HTMLCanvasElement | null>(null);
 
-  // Re-quantize the currently-loaded image at the current settings and paint the 2D preview.
-  const requantize = useCallback((k: number, d: boolean) => {
+  // Re-quantize the currently-loaded image at the current settings.
+  const requantize = useCallback((k: number) => {
     const raw = rawPixels.current;
     if (!raw) return;
-    const quant = quantize(raw.px, raw.w, raw.h, k, { dither: d });
-    setQ(quant);
+    // No dithering, and one despeckle pass. Dithering was on by default and fakes in-between tones
+    // with scattered single cells; at 0.4–0.7 mm a printed cell is a visible dot, so a portrait
+    // printed as noise. Flat tones plus despeckle keep the face and drop the stray specks.
+    setQ(despeckle(quantize(raw.px, raw.w, raw.h, k)));
+  }, []);
+
+  // Paint the 2D preview once the canvas exists. It used to be painted inside requantize, which runs
+  // before the first "ready" render mounts the canvas, so the first image never showed: the box stayed
+  // empty until the colour count changed.
+  useEffect(() => {
     const cv = previewCanvas.current;
-    if (cv) {
-      const scale = Math.max(1, Math.floor(360 / Math.max(quant.width, quant.height)));
-      cv.width = quant.width * scale;
-      cv.height = quant.height * scale;
-      const ctx = cv.getContext("2d")!;
-      for (let y = 0; y < quant.height; y++) {
-        for (let x = 0; x < quant.width; x++) {
-          ctx.fillStyle = quant.palette[quant.indices[y * quant.width + x]] ?? "#000000";
-          ctx.fillRect(x * scale, y * scale, scale, scale);
-        }
+    if (!q || !cv) return;
+    const scale = Math.max(2, Math.ceil(360 / Math.max(q.width, q.height))); // CSS caps it at 360px tall
+    cv.width = q.width * scale;
+    cv.height = q.height * scale;
+    const ctx = cv.getContext("2d")!;
+    for (let y = 0; y < q.height; y++) {
+      for (let x = 0; x < q.width; x++) {
+        ctx.fillStyle = q.palette[q.indices[y * q.width + x]] ?? "#000000";
+        ctx.fillRect(x * scale, y * scale, scale, scale);
       }
     }
-  }, []);
+  }, [q]);
 
   const onFile = useCallback(async (file: File | undefined) => {
     if (!file) return;
@@ -141,16 +149,15 @@ export default function ImagePage() {
       const luma = new Float32Array(raw.w * raw.h);
       for (let i = 0; i < luma.length; i++) luma[i] = (0.2126 * raw.px[i * 4] + 0.7152 * raw.px[i * 4 + 1] + 0.0722 * raw.px[i * 4 + 2]) / 255;
       lumaRef.current = luma;
-      requantize(colors, dither);
+      requantize(colors);
       setStatus("ready"); setMessage("");
     } catch {
       // The decoder's own message ("image-decode-failed") is internal — always show the translated one.
       setStatus("error"); setMessage(t("errRead"));
     }
-  }, [detail, colors, dither, requantize, t]);
+  }, [detail, colors, requantize, t]);
 
-  function setColorsAndPreview(k: number) { setColors(k); requantize(k, dither); }
-  function setDitherAndPreview(d: boolean) { setDither(d); requantize(colors, d); }
+  function setColorsAndPreview(k: number) { setColors(k); requantize(k); }
 
   // Build the 3D preview mesh when the colors or relief change (a fixed preview size keeps three.js from
   // rebuilding on every size/thickness tweak — those don't change how it looks, only the output scale).
@@ -319,10 +326,6 @@ export default function ImagePage() {
             <label className="text-xs text-fg-muted">
               {t("labelThickness")}
               <input type="number" min={1} max={10} step={0.2} value={thickness} onChange={(e) => setThickness(Math.max(1, Math.min(10, Number(e.target.value) || 2.4)))} className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg" />
-            </label>
-            <label className="flex items-center gap-2 text-xs text-fg-muted sm:col-span-3">
-              <input type="checkbox" checked={dither} onChange={(e) => setDitherAndPreview(e.target.checked)} className="h-4 w-4 rounded border-line" />
-              {t("labelDither")}
             </label>
             <label className="flex items-center gap-2 text-xs text-fg-muted sm:col-span-3">
               <input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} className="h-4 w-4 rounded border-line" />

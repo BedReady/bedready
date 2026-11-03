@@ -1352,7 +1352,6 @@
     "nColors": "{count, plural, one {# color} other {# colores}}",
     "labelSize": "Tamaño (mm, lado más largo)",
     "labelThickness": "Grosor (mm)",
-    "labelDither": "Tramado (mezcla colores para fotos más suaves; desactívalo para logos planos y arte de color sólido)",
     "labelRelief": "Relieve 3D: eleva la superficie según el brillo (convierte una placa plana en arte texturizado)",
     "labelReliefDepth": "Profundidad del relieve: {value} mm",
     "downloadU1": "Descargar archivo U1 (.3mf)",

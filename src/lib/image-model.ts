@@ -154,6 +154,41 @@ export function quantize(
   return { palette, indices, width, height };
 }
 
+/**
+ * Replace isolated specks with their neighbourhood's colour, in one pass. A cell that shares its
+ * colour with none of its 8 neighbours takes the most common colour around it. At print size a cell
+ * is a 0.4 mm dot, so a lone cell reads as noise, not detail. Anything with a same-coloured
+ * neighbour survives, including one-cell-wide lines and their ends: a stricter rule (at most one
+ * same-coloured neighbour) shortened every thin line by a cell at each end. Transparent cells
+ * (index 0, the base) are treated like any other colour.
+ */
+export function despeckle(q: Quantized): Quantized {
+  const { width: w, height: h, indices } = q;
+  const out = new Uint8Array(indices);
+  const k = q.palette.length;
+  const count = new Int32Array(k);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      count.fill(0);
+      for (let dy = -1; dy <= 1; dy++) {
+        const yy = y + dy;
+        if (yy < 0 || yy >= h) continue;
+        for (let dx = -1; dx <= 1; dx++) {
+          const xx = x + dx;
+          if (xx < 0 || xx >= w) continue;
+          count[indices[yy * w + xx]]++;
+        }
+      }
+      const me = indices[y * w + x];
+      if (count[me] > 1) continue;
+      let best = me;
+      for (let p = 0; p < k; p++) if (count[p] > count[best]) best = p;
+      out[y * w + x] = best;
+    }
+  }
+  return { ...q, indices: out };
+}
+
 // ---------- geometry (flat painted panel) ----------
 
 export type PanelOpts = {
@@ -211,8 +246,9 @@ export function buildPanelMesh(q: Quantized, opts: PanelOpts = {}): PanelMesh {
         const slot = (indices[gy * w + gx] ?? 0) + 1;
         const x0 = vx(gx), x1 = vx(gx + 1), yA = vy(gy), yB = vy(gy + 1);
         const z00 = cornerZ(gx, gy), z10 = cornerZ(gx + 1, gy), z11 = cornerZ(gx + 1, gy + 1), z01 = cornerZ(gx, gy + 1);
-        tri(x0, yA, z00, x1, yA, z10, x1, yB, z11, slot);
-        tri(x0, yA, z00, x1, yB, z11, x0, yB, z01, slot);
+        // yB is BELOW yA (the Y flip), so this order is counter-clockwise from above: normal +Z.
+        tri(x0, yA, z00, x1, yB, z11, x1, yA, z10, slot);
+        tri(x0, yA, z00, x0, yB, z01, x1, yB, z11, slot);
       }
     }
     // Flat bottom over the full footprint.
@@ -241,14 +277,17 @@ export function buildPanelMesh(q: Quantized, opts: PanelOpts = {}): PanelMesh {
   }
 
   // Top surface: per cell, two triangles, wound CCW seen from +Z (outward normal +Z), painted with slot.
+  // They were wound clockwise until Nov 2026: y1 is below y0 (the Y flip), which reverses the order
+  // the comment intended, so every top face pointed down and the 3D preview (which draws front faces
+  // only) showed an empty dark plate.
   for (let gy = 0; gy < h; gy++) {
     for (let gx = 0; gx < w; gx++) {
       const slot = (indices[gy * w + gx] ?? 0) + 1; // 1-based filament slot
       const x0 = gx * cell, x1 = x0 + cell;
       // Flip Y so image-top maps to +Y-far → prints upright when viewed from above.
       const y0 = (h - gy) * cell, y1 = y0 - cell;
-      tri(x0, y0, T, x1, y0, T, x1, y1, T, slot);
-      tri(x0, y0, T, x1, y1, T, x0, y1, T, slot);
+      tri(x0, y0, T, x1, y1, T, x1, y0, T, slot);
+      tri(x0, y0, T, x0, y1, T, x1, y1, T, slot);
     }
   }
   // Bottom (z=0), CCW seen from -Z, unpainted.
