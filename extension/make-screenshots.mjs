@@ -3,8 +3,9 @@
 //
 // "Accurately depict" is the store's rule and it is load-bearing here: scene 2 used to show a button
 // labelled "✨ Make U1-ready", which no extension has ever put on a page. The real one says "→ U1",
-// in solid violet-600 (see extension/src/content.ts). The palette below is the site's, not the
-// pre-2026-08 navy-and-orange one the popup was redrawn away from.
+// on the dark build plate with a brass edge (see extension/src/content.ts). The palette below is the
+// site's since the Nov 2026 "build plate" redesign: the PEI plate as the ground, filament as the only
+// colour, brass for the edge.
 // Run: node extension/make-screenshots.mjs   → writes extension/store-screenshots/*.png
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
@@ -21,19 +22,20 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const base = `
   * { box-sizing: border-box; margin: 0; }
   body { width: 1280px; height: 800px; overflow: hidden; font-family: -apple-system, system-ui, sans-serif;
-    background: linear-gradient(135deg, #0b1120 0%, #131a2c 100%); color: #e2e8f0; }
+    background-color: #1d1b17; color: #eeece6;
+    background-image: radial-gradient(rgba(214,178,110,.16) 1px, transparent 1.4px), radial-gradient(rgba(214,178,110,.09) 1px, transparent 1.4px);
+    background-size: 9px 9px, 14px 14px; background-position: 0 0, 4px 6px; }
   .wrap { width: 1280px; height: 800px; padding: 72px 80px; display: flex; flex-direction: column; }
-  .brand { display: flex; align-items: center; gap: 12px; font-size: 30px; font-weight: 800; color: #fff; }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 30px; font-weight: 800; color: #fff; font-stretch: 125%; }
   /* one flex item, or the row gap opens a space inside the wordmark: "Bed Ready". */
   .wm { display: block; }
-  .dot { width: 14px; height: 14px; border-radius: 999px;
-    background-image: linear-gradient(100deg, #7c3aed, #06b6d4 55%, #84cc16); }
-  .accent { color: #8b5cf6; }  /* violet-500 — the 600 is too dark on this ground */
-  h1 { font-size: 60px; font-weight: 800; color: #fff; line-height: 1.07; letter-spacing: -0.02em; }
-  .sub { font-size: 28px; color: #94a3b8; margin-top: 18px; }
-  .pill { display: inline-flex; align-items: center; gap: 10px; background: rgba(139,92,246,.15);
-    color: #c4b5fd; font-size: 22px; font-weight: 600; padding: 10px 20px; border-radius: 999px; }
-  .card { background: #0f172a; border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
+  .dot { display: block; line-height: 0; }
+  .accent { color: inherit; }
+  h1 { font-size: 58px; font-weight: 800; color: #fff; line-height: 1.07; letter-spacing: -0.02em; font-stretch: 125%; }
+  .sub { font-size: 28px; color: #b3afa5; margin-top: 18px; }
+  .pill { display: inline-flex; align-items: center; gap: 10px; background: rgba(201,168,106,.15);
+    color: #e3cc9c; font-size: 22px; font-weight: 600; padding: 10px 20px; border-radius: 999px; }
+  .card { background: #24231f; border: 1px solid rgba(255,244,220,.12); border-radius: 20px;
     box-shadow: 0 30px 80px rgba(0,0,0,.5); }
 `;
 
@@ -44,10 +46,10 @@ const scene1 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
   .row { flex: 1; display: flex; align-items: center; gap: 64px; margin-top: 24px; }
   .popup { width: 440px; padding: 0; overflow: hidden; flex: none; }
   .popup img { display: block; width: 440px; }  /* the capture is 704 px wide (@2x), so 440 stays sharp */
-  ul { margin-top: 26px; padding: 0; list-style: none; font-size: 24px; color: #cbd5e1; }
+  ul { margin-top: 26px; padding: 0; list-style: none; font-size: 24px; color: #d2cec5; }
   li { margin-top: 12px; } li::before { content: "✓  "; color: #34d399; font-weight: 700; }
 </style></head><body><div class="wrap">
-  <div class="brand"><span class="dot"></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
+  <div class="brand"><span class="dot"><svg width="34" height="34" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="8" fill="#1d1b17" stroke="rgba(255,236,200,.25)"/><path d="M6.5 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#00a3d9"/><path d="M11.75 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#e6007e"/><path d="M17 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#ffd200"/><path d="M22.25 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#f4f2ec"/><rect x="5" y="22" width="22" height="3" rx="1.5" fill="#c9a86a"/></svg></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
   <div class="row">
     <div style="flex:1">
       <h1>Convert 3MF files<br>for your printer</h1>
@@ -68,16 +70,16 @@ const scene2 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
   .browser { flex: none; }
   .browser { width: 560px; }
   .bar { display: flex; gap: 8px; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
-  .bar i { width: 12px; height: 12px; border-radius: 999px; background: #334155; display: block; }
+  .bar i { width: 12px; height: 12px; border-radius: 999px; background: #43413a; display: block; }
   .body { padding: 26px; }
-  .thumb { height: 220px; border-radius: 14px; background: linear-gradient(135deg,#1e293b,#0b1120);
-    display: flex; align-items: center; justify-content: center; color: #475569; font-size: 18px; }
+  .thumb { height: 220px; border-radius: 14px; background: linear-gradient(135deg,#43413a,#24231f);
+    display: flex; align-items: center; justify-content: center; color: #b3afa5; font-size: 18px; }
   .dlrow { display: flex; gap: 12px; margin-top: 20px; }
   .btn { padding: 14px 20px; border-radius: 12px; font-size: 17px; font-weight: 600; }
   .ghost { background: rgba(255,255,255,.08); color: #cbd5e1; }
-  .u1 { background: #7c3aed; color: #fff; }  /* violet-600, solid — content.ts injectButton */
+  .u1 { background: #1d1b17; color: #f4f2ec; border: 1px solid #c9a86a; }  /* plate + brass — content.ts injectButton */
 </style></head><body><div class="wrap">
-  <div class="brand"><span class="dot"></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
+  <div class="brand"><span class="dot"><svg width="34" height="34" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="8" fill="#1d1b17" stroke="rgba(255,236,200,.25)"/><path d="M6.5 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#00a3d9"/><path d="M11.75 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#e6007e"/><path d="M17 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#ffd200"/><path d="M22.25 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#f4f2ec"/><rect x="5" y="22" width="22" height="3" rx="1.5" fill="#c9a86a"/></svg></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
   <div class="row">
     <div style="flex:1">
       <h1>A “→ U1” button,<br>right on the<br>download page</h1>
@@ -105,9 +107,9 @@ const scene3 = `<!doctype html><html><head><meta charset="utf-8"><style>${base}
   .tag { font-size: 17px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
   .bad { color: #f87171; } .good { color: #34d399; }
   .sw { display: flex; gap: 12px; margin-top: 22px; }
-  .note { margin-top: 22px; font-size: 17px; color: #94a3b8; }
+  .note { margin-top: 22px; font-size: 17px; color: #b3afa5; }
 </style></head><body><div class="wrap">
-  <div class="brand"><span class="dot"></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
+  <div class="brand"><span class="dot"><svg width="34" height="34" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="8" fill="#1d1b17" stroke="rgba(255,236,200,.25)"/><path d="M6.5 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#00a3d9"/><path d="M11.75 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#e6007e"/><path d="M17 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#ffd200"/><path d="M22.25 8h3.5v6.5l-1.75 2.25-1.75-2.25z" fill="#f4f2ec"/><rect x="5" y="22" width="22" height="3" rx="1.5" fill="#c9a86a"/></svg></span><span class="wm">Bed<span class="accent">Ready</span></span></div>
   <h1 style="margin-top:30px">Correct colors &amp; the real U1 profile</h1>
   <div class="row">
     <div class="card panel">

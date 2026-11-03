@@ -1216,7 +1216,7 @@ export default function ConvertPage() {
   };
 
   return (
-    <main className="page-read py-10">
+    <main className={`page-read py-10${mesh ? " tool-split" : ""}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -1631,7 +1631,9 @@ export default function ConvertPage() {
 
       {/* Live colored preview + (when >4 colors) per-color slot mapping */}
       {mesh && (
-        <section className="mt-6 rounded-lg border border-line bg-surface-2 p-5">
+        // `tool-aside`: from 80rem up the preview leaves the settings column and stays in view beside
+        // it (globals.css, "The tool split").
+        <section className="tool-aside mt-6 rounded-lg border border-line bg-surface-2 p-5">
           <h2 className="text-sm font-semibold text-fg">
             {usedCount > slotCount
               ? targetId !== "u1" && MACHINES[targetId]

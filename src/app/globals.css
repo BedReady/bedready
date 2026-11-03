@@ -497,6 +497,41 @@ main.page-read > .measure-full,
 main.page-read > .page-breakout {
   max-width: none;
 }
+/* ── The tool split ─────────────────────────────────────────────────────────────────────────────
+   Once a file is open, the converter is a column of settings and a 3D preview of what they do. On a
+   wide screen the preview used to sit in that column like any other block, so changing a nozzle or a
+   slot colour near the bottom of the page meant scrolling away from the model it changed — while the
+   right third of the grid stood empty. From 80rem the settings narrow to 40rem and the preview takes
+   that space, from the top of the page, and stays in view (sticky), scrolling inside itself if it is
+   taller than the window.
+
+   Every block goes in column 1 and the preview alone in column 2, spanning enough implicit rows to sit
+   beside all of them. Its place in the source order doesn't move, so keyboard and screen-reader order
+   are unchanged and the dozens of settings blocks need no wrapper. Columns follow the writing
+   direction, so in Arabic the preview is on the left. (A float was tried first: Chrome will not make a
+   floated element sticky.) */
+@media (min-width: 80rem) {
+  main.page-read.tool-split {
+    display: grid;
+    grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
+    column-gap: 3rem;
+    align-items: start;
+  }
+  main.page-read.tool-split > * {
+    grid-column: 1;
+    max-width: none;
+  }
+  main.page-read.tool-split > .tool-aside {
+    grid-column: 2;
+    grid-row: 1 / span 60;
+    position: sticky;
+    top: 1.5rem;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    margin-top: 0;
+  }
+}
+
 .page-breakout {
   /* Spans the grid from the shared start edge. It used to widen symmetrically about a centred
      column; the column now starts where the grid starts, so "wider" only ever grows toward the

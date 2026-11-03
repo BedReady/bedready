@@ -4,6 +4,10 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
+- **0.6.4** (in this repo; submit after 0.6.3 clears Chrome review): the new BedReady look — the popup,
+  icons, the in-page "→ U1" / "Download for U1" buttons and the progress toast follow the site's Nov 2026
+  "build plate" redesign (dark plate with a brass edge, filament as the only colour). No permission or
+  behaviour changes.
 - **0.6.3** (Firefox live 2026-11-03; Chrome submitted 2026-11-03, in review): a "Download for U1" button on MakerWorld model pages,
   under "Open in Bambu Studio", for the print profile picked on the page; Snapmaker Orca 2.4 files
   with High Flow values no longer shift one slot's values onto the next; the High Flow hot end
