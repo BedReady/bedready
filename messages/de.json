@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "Funktionen des Konverters — BedReady",
-    "metaDescription": "Alles, was der BedReady-Konverter kann: Mehrfarbdruck auf den 4 Slots des U1, Full-Spectrum-Mischung, Pausen zum Spulenwechsel, U1-sicheres Profil, Live-Vorschau, Aufteilen mehrteiliger Modelle, STL ↔ 3MF und Umstellen auf andere Drucker (Bambu/Prusa/Creality) oder eine saubere generische 3MF. Kostenlos, im Browser."
+    "metaDescription": "Alles, was der BedReady-Konverter kann: Mehrfarbdruck auf den 4 Slots des U1, Full-Spectrum-Mischung, Pausen zum Spulenwechsel, U1-sicheres Profil, Live-Vorschau, Aufteilen mehrteiliger Modelle, STL ↔ 3MF und Umstellen auf andere Drucker (Bambu/Prusa/Creality) oder eine saubere generische 3MF. Kostenlos, im Browser.",
+    "compare": {
+      "title": "Im Vergleich",
+      "intro": "Die meisten .3mf→U1-Konverter tauschen das Profil und verteilen die Farben auf die 4 Slots. BedReady macht das auch — und noch mehr.",
+      "capability": "Funktion",
+      "typical": "Typischer Konverter",
+      "note": "Vergleich mit gängigen .3mf→U1-Konvertern, Stand 2026; der Funktionsumfang variiert je nach Tool.",
+      "rows": {
+        "profile": "Wechsel auf das echte Snapmaker-U1-Profil",
+        "slots": "Bemalte Mehrfarbmodelle → die 4 Slots des U1",
+        "settings": "Behält die Druckeinstellungen des Erstellers (Schichthöhe, Wände, Geschwindigkeiten)",
+        "moreColors": "Mehr als 4 Farben — Full-Spectrum-Mischung aus 2 oder 3 Filamenten",
+        "ownFilaments": "Mischen aus deinen eigenen Filamenten (CMYK oder beliebige 4)",
+        "colorMix": "Liest Mischfilament-Dateien aus PrusaSlicer / Orca ColorMix",
+        "retarget": "Umstellen auf andere Drucker (Bambu/Prusa/Creality) oder ein sauberes generisches 3MF",
+        "stl": "STL → 3MF und 3MF → STL, in beide Richtungen",
+        "colorMatch": "Farbabgleich auf das abgestimmt, was der U1 wirklich druckt",
+        "swapPauses": "Behebt Pausen für Spulenwechsel",
+        "detail": "Erhält Text, Logos und feine bemalte Details",
+        "browser": "100 % im Browser — nichts wird hochgeladen",
+        "library": "Bibliothek mit Dateien, deren Profile auf einem U1 nachweislich drucken"
+      },
+      "marks": {
+        "rare": "selten",
+        "sometimes": "manchmal",
+        "someUpload": "teils Upload",
+        "yes": "Ja",
+        "no": "Nein",
+        "partly": "Teilweise"
+      }
+    }
   },
   "stickers": {
     "title": "Kostenlose 3D-Druck-Sticker",

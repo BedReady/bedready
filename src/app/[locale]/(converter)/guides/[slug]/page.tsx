@@ -47,7 +47,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   };
 
   return (
-    <main className="page-read py-12">
+    <main lang="en" dir="ltr" className="page-read py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(jsonLd) }} />
       <Link href="/guides" className="text-sm text-fg-muted hover:text-fg">← Guides</Link>
       <h1 className="mt-4 text-3xl font-semibold tracking-tight text-fg">{g.title}</h1>

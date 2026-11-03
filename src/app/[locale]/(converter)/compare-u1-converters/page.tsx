@@ -7,7 +7,8 @@ import { SOURCE_REPO_URL } from "@/lib/links";
 // Honest comparison against the other Snapmaker U1 .3mf converters. Targets the searches a U1 owner
 // actually makes ("bl2u1 alternative", "U1 Forge vs", "best U1 3mf converter").
 //
-// ENGLISH ONLY, deliberately — same as the source→U1 landing pages. Two reasons: the queries this
+// ENGLISH ONLY, deliberately — same as the source→U1 landing pages (all of which mark <main> lang="en"
+// dir="ltr", or under /ar the page direction flips their punctuation). Two reasons: the queries this
 // targets are English, and a comparison page makes factual claims about other people's products that
 // change without notice. Six stale translations of a competitor's pricing is worse than none.
 //
@@ -137,7 +138,7 @@ export default async function CompareConvertersPage({ params }: { params: Promis
   const cell = "px-3 py-2.5 align-top text-sm";
 
   return (
-    <main className="page-read py-12">
+    <main lang="en" dir="ltr" className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         Snapmaker U1 .3mf converters, <span className="brand-text">compared</span>
       </h1>

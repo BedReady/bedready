@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "Funciones del conversor — BedReady",
-    "metaDescription": "Todo lo que hace el conversor de BedReady: multicolor en las 4 ranuras de la U1, mezcla Full Spectrum, pausas para cambiar bobina, perfil seguro para la U1, vista previa en vivo, división de piezas, STL ↔ 3MF y conversión para otras impresoras (Bambu/Prusa/Creality) o un 3MF genérico limpio. Gratis, en tu navegador."
+    "metaDescription": "Todo lo que hace el conversor de BedReady: multicolor en las 4 ranuras de la U1, mezcla Full Spectrum, pausas para cambiar bobina, perfil seguro para la U1, vista previa en vivo, división de piezas, STL ↔ 3MF y conversión para otras impresoras (Bambu/Prusa/Creality) o un 3MF genérico limpio. Gratis, en tu navegador.",
+    "compare": {
+      "title": "Cómo se compara",
+      "intro": "La mayoría de los conversores de .3mf a U1 cambian el perfil y asignan los colores a las 4 ranuras. BedReady también lo hace, y va más allá.",
+      "capability": "Función",
+      "typical": "Conversor típico",
+      "note": "La comparación refleja los conversores de .3mf a U1 habituales en 2026; las funciones varían según la herramienta.",
+      "rows": {
+        "profile": "Cambia al perfil real de la Snapmaker U1",
+        "slots": "Multicolor pintado → las 4 ranuras de la U1",
+        "settings": "Conserva los ajustes de impresión del creador (altura de capa, paredes, velocidades)",
+        "moreColors": "Más de 4 colores: mezcla Full Spectrum de 2 o 3 filamentos",
+        "ownFilaments": "Mezcla con tus propios filamentos (CMYK o cualquier combinación de 4)",
+        "colorMix": "Lee archivos de filamento mezclado de PrusaSlicer / Orca ColorMix",
+        "retarget": "Reorienta a otras impresoras (Bambu/Prusa/Creality) o a un 3MF genérico limpio",
+        "stl": "STL → 3MF y 3MF → STL, en ambos sentidos",
+        "colorMatch": "Ajuste de color calibrado con lo que la U1 imprime de verdad",
+        "swapPauses": "Corrige las pausas por cambio de bobina",
+        "detail": "Conserva texto, logotipos y detalles pintados finos",
+        "browser": "100 % en tu navegador: no se sube nada",
+        "library": "Biblioteca de archivos con perfiles verificados en una U1"
+      },
+      "marks": {
+        "rare": "poco común",
+        "sometimes": "a veces",
+        "someUpload": "algunos suben",
+        "yes": "Sí",
+        "no": "No",
+        "partly": "En parte"
+      }
+    }
   },
   "stickers": {
     "title": "Pegatinas de impresión 3D gratis",

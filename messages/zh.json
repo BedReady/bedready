@@ -1147,7 +1147,37 @@
       }
     },
     "metaTitle": "转换器功能 — BedReady",
-    "metaDescription": "BedReady 转换器的全部功能：在 U1 的 4 个槽位上多色打印、Full Spectrum 混色、换料暂停、U1 安全配置、实时预览、多部件拆分、STL ↔ 3MF，以及转换为其他打印机（Bambu/Prusa/Creality）或干净的通用 3MF。免费，在浏览器中运行。"
+    "metaDescription": "BedReady 转换器的全部功能：在 U1 的 4 个槽位上多色打印、Full Spectrum 混色、换料暂停、U1 安全配置、实时预览、多部件拆分、STL ↔ 3MF，以及转换为其他打印机（Bambu/Prusa/Creality）或干净的通用 3MF。免费，在浏览器中运行。",
+    "compare": {
+      "title": "对比",
+      "intro": "大多数 .3mf→U1 转换器只会替换配置文件并把颜色分配到 4 个槽位。BedReady 也能做到——而且更进一步。",
+      "capability": "功能",
+      "typical": "常见转换器",
+      "note": "对比基于 2026 年常见的 .3mf→U1 转换器;各工具功能不尽相同。",
+      "rows": {
+        "profile": "换成真正的 Snapmaker U1 配置文件",
+        "slots": "涂色多色模型 → U1 的 4 个槽位",
+        "settings": "保留作者的打印设置(层高、墙、速度)",
+        "moreColors": "超过 4 种颜色——Full Spectrum 2/3 耗材混色",
+        "ownFilaments": "用你自己的耗材混色(CMYK 或任意 4 种)",
+        "colorMix": "读取 PrusaSlicer / Orca ColorMix 混色耗材文件",
+        "retarget": "转换到其他打印机(Bambu/Prusa/Creality)或干净的通用 3MF",
+        "stl": "STL → 3MF 与 3MF → STL,双向",
+        "colorMatch": "按 U1 实际打印效果校准的颜色匹配",
+        "swapPauses": "修复换料暂停",
+        "detail": "保留文字、标志和精细涂色细节",
+        "browser": "100% 在浏览器中完成——不上传任何内容",
+        "library": "附带经 U1 实测打印配置的文件库"
+      },
+      "marks": {
+        "rare": "少见",
+        "sometimes": "有时",
+        "someUpload": "部分上传",
+        "yes": "支持",
+        "no": "不支持",
+        "partly": "部分支持"
+      }
+    }
   },
   "stickers": {
     "title": "免费 3D 打印贴纸",

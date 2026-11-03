@@ -61,8 +61,8 @@ const GROUPS = [
  */
 type Support = true | false | "partial";
 
-function Mark({ value, note }: { value: Support; note?: string }) {
-  const label = value === true ? "Yes" : value === false ? "No" : "Partly";
+// `label` is what a screen reader hears for the symbol: the page's own "Yes" / "No" / "Partly".
+function Mark({ value, note, label }: { value: Support; note?: string; label: string }) {
   return (
     <span className="inline-flex flex-col items-center gap-0.5">
       <span
@@ -82,6 +82,26 @@ function Mark({ value, note }: { value: Support; note?: string }) {
     </span>
   );
 }
+
+const MARK: Record<string, "yes" | "no" | "partly"> = { true: "yes", false: "no", partial: "partly" };
+
+// The comparison rows; their wording is in messages under features.compare. It was hard-coded English,
+// which under /ar also ran right-to-left and flipped "100%" to the end of its line.
+const COMPARE: [string, Support, Support, ("rare" | "sometimes" | "someUpload")?][] = [
+  ["profile", true, true],
+  ["slots", true, true],
+  ["settings", true, "partial", "rare"],
+  ["moreColors", true, false],
+  ["ownFilaments", true, false],
+  ["colorMix", true, false],
+  ["retarget", true, false],
+  ["stl", true, "partial", "rare"],
+  ["colorMatch", true, false],
+  ["swapPauses", true, false],
+  ["detail", true, "partial", "sometimes"],
+  ["browser", true, "partial", "someUpload"],
+  ["library", true, false],
+];
 
 export default function FeaturesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
@@ -114,56 +134,35 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
       </div>
 
       {/* Honest, capability-based comparison — why BedReady is the most complete U1 converter. */}
-      <h2 className="mt-16 border-t border-line pt-10 text-xl font-semibold tracking-tight text-fg">How it compares</h2>
-      <p className="mt-2 max-w-2xl text-base text-fg-muted">
-        Most .3mf→U1 converters swap the profile and map colors to the 4 slots. BedReady does that too — and
-        keeps going.
-      </p>
+      <h2 className="mt-16 border-t border-line pt-10 text-xl font-semibold tracking-tight text-fg">{t("compare.title")}</h2>
+      <p className="mt-2 max-w-2xl text-base text-fg-muted">{t("compare.intro")}</p>
       <div className="page-breakout mt-4 overflow-x-auto rounded-lg border border-line">
         <table className="w-full min-w-[30rem] text-start text-sm">
           <thead>
             <tr className="border-b border-line">
-              <th className="eyebrow px-4 py-3 text-start">Capability</th>
+              <th className="eyebrow px-4 py-3 text-start">{t("compare.capability")}</th>
               {/* The column the page is arguing for is the one the eye should land on. It had no
                   anchor at all: same weight, same ground, same alignment as the one beside it. */}
               <th className="eyebrow bg-violet-400/10 px-4 py-3 text-center text-violet-300">BedReady</th>
-              <th className="eyebrow px-4 py-3 text-center">Typical converter</th>
+              <th className="eyebrow px-4 py-3 text-center">{t("compare.typical")}</th>
             </tr>
           </thead>
           <tbody className="text-fg-muted">
-            {(
-              [
-                ["Swap to the real Snapmaker U1 profile", true, true],
-                ["Painted multicolor → the U1's 4 slots", true, true],
-                ["Keeps the creator's print settings (layer height, walls, speeds)", true, "partial", "rare"],
-                ["More than 4 colors — Full Spectrum 2-/3-filament mixing", true, false],
-                ["Mix from your own filaments (CMYK or any 4)", true, false],
-                ["Reads PrusaSlicer / Orca ColorMix mixed-filament files", true, false],
-                ["Retarget to other printers (Bambu/Prusa/Creality) or a clean generic 3MF", true, false],
-                ["STL → 3MF and 3MF → STL, both directions", true, "partial", "rare"],
-                ["Color match tuned to what the U1 actually prints", true, false],
-                ["Fixes spool-swap pauses", true, false],
-                ["Keeps text, logos & fine painted detail", true, "partial", "sometimes"],
-                ["100% in your browser — nothing uploaded", true, "partial", "some upload"],
-                ["Library of files with profiles verified to print on a U1", true, false],
-              ] as [string, Support, Support, string?][]
-            ).map(([label, us, them, note], i) => (
-              <tr key={i} className="border-b border-line last:border-0">
-                <td className="px-4 py-2.5">{label}</td>
+            {COMPARE.map(([key, us, them, note]) => (
+              <tr key={key} className="border-b border-line last:border-0">
+                <td className="px-4 py-2.5">{t(`compare.rows.${key}`)}</td>
                 <td className="bg-violet-400/[0.06] px-4 py-2.5 text-center">
-                  <Mark value={us} />
+                  <Mark value={us} label={t(`compare.marks.${MARK[String(us)]}`)} />
                 </td>
                 <td className="px-4 py-2.5 text-center">
-                  <Mark value={them} note={note} />
+                  <Mark value={them} note={note && t(`compare.marks.${note}`)} label={t(`compare.marks.${MARK[String(them)]}`)} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="mt-2 text-xs text-fg-subtle">
-        Comparison reflects common .3mf→U1 converters as of 2026; capabilities vary by tool.
-      </p>
+      <p className="mt-2 text-xs text-fg-subtle">{t("compare.note")}</p>
 
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href="/convert" className="btn-primary btn-lg">

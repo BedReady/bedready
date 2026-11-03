@@ -541,9 +541,11 @@ main.page-read > .page-breakout {
 }
 /* The converter comparison: seven tools side by side need ~84rem before any column wraps to one word
    a line. It may run past the grid's end edge on a wide screen; on anything narrower it scrolls
-   inside itself. */
+   inside itself. Its cap is the room between the grid's start edge — the larger of the 1.5rem
+   gutter and the centring margin — and the far gutter: `100vw - 3rem` assumed a start at the
+   gutter, so at 1440px the table began at 160px and ran 64px off the page. */
 .page-breakout.page-breakout-wide {
-  width: min(84rem, 100vw - 3rem);
+  width: min(84rem, 100vw - 1.5rem - max(1.5rem, (100vw - 70rem) / 2));
 }
 
 /* ── Cover placeholder ─────────────────────────────────────────────────────────────────────────
