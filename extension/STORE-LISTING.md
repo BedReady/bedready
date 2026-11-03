@@ -4,7 +4,7 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- In this repo: **0.6.3** — pending upload: a "Download for U1" button on MakerWorld model pages,
+- **0.6.3** (Firefox live 2026-11-03; Chrome submitted 2026-11-03, in review): a "Download for U1" button on MakerWorld model pages,
   under "Open in Bambu Studio", for the print profile picked on the page; Snapmaker Orca 2.4 files
   with High Flow values no longer shift one slot's values onto the next; the High Flow hot end
   option; a file with a very large colour palette is refused instead of freezing the converter
@@ -13,7 +13,7 @@ shipping an update.
   makerworld.com.cn and *.bblmw.cn, asked for only when the user turns that switch on. Nothing is
   added to the required hosts, so existing users are not disabled pending approval. Chrome's
   Privacy tab will ask for a justification for `scripting` (text below).
-- **0.6.2** (submitted to Chrome and Firefox 2026-11-02, in review): a PLA file saved with Bambu's
+- **0.6.2** (live on Chrome and Firefox since 2026-11-02): a PLA file saved with Bambu's
   compact settings (no filament_type, material only in the preset name) converted to ABS at 270 °C;
   it now keeps its material and that material's U1 temperatures.
 - **0.6.1** (rename to "BedReady — 3MF Converter"): live on Firefox 2026-11-01, in review on Chrome.
