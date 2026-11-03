@@ -48,7 +48,11 @@ test("produces a U1 3MF whose swaps are height-range modifiers", () => {
   const e = unzipSync(r!.bytes);
   const xml = strFromU8(e["Metadata/layer_config_ranges.xml"]);
   const heads = [...xml.matchAll(/<option opt_key="extruder">(\d+)<\/option>/g)].map((m) => m[1]);
-  assert.deepEqual(heads, ["1", "2", "3"], "one head per band, in order");
+  // The optimised engine may return to a filament higher up (1, 3, 2, 3 is legal), so check what must
+  // hold: every range names one of the three loaded heads, and neighbouring ranges differ.
+  assert.ok(heads.length >= 2, "at least one swap");
+  assert.ok(heads.every((h) => ["1", "2", "3"].includes(h)), `heads ${heads} must be loaded slots`);
+  for (let i = 1; i < heads.length; i++) assert.notEqual(heads[i], heads[i - 1], "a range boundary is a swap");
   const cfg = JSON.parse(strFromU8(e["Metadata/project_settings.config"]));
   assert.equal(cfg.printer_model, "Snapmaker U1");
   assert.deepEqual(cfg.filament_colour.slice(0, 3), ["#101010", "#C21807", "#F5F5F5"]);

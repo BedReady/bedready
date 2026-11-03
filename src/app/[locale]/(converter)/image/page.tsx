@@ -194,7 +194,8 @@ export default function ImagePage() {
       const r = imageToHueForgeU1({ data: px.px, width: px.w, height: px.h }, {
         maxColors: colors,
         widthMm: sizeMM,
-        smooth: 1, // one despeckle round: raw solves sprout 1-pixel towers on busy photos
+        // No extra smoothing: the optimised solve clips lone towers itself, and smoothing on top
+        // blurs fine detail (the desktop app found crisp, smooth 0, clearly better).
         name: base,
       });
       if (!r) { setStatus("error"); setMessage(t("hfFailed")); return; }
