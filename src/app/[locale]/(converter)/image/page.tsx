@@ -8,6 +8,7 @@ import { quantize, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh
 import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { download } from "@/lib/convert";
 import type { MeshData } from "@/lib/paint";
+import PlateHeads from "@/components/PlateHeads";
 import NoticeIcon from "@/components/NoticeIcon";
 
 // three.js only loads once a preview mesh exists (matches the converter's on-demand PaintPreview).
@@ -237,8 +238,8 @@ export default function ImagePage() {
 
   return (
     <main className="page-read py-10">
-      <h1 className="text-3xl font-semibold tracking-tight text-fg">
-        {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-xs font-semibold uppercase tracking-wide text-violet-300">{t("beta")}</span>
+      <h1 className="text-3xl font-bold text-fg sm:text-4xl">
+        {t("heading")} <span className="ml-2 rounded bg-violet-400/15 px-1.5 py-0.5 align-middle text-xs font-semibold text-violet-300">{t("beta")}</span>
       </h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
         {t("intro", { colors })}
@@ -249,18 +250,13 @@ export default function ImagePage() {
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={(e) => { e.preventDefault(); setDragOver(false); onFile(e.dataTransfer.files?.[0]); }}
-        className={`mt-6 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition ${dragOver ? "border-violet-400 bg-violet-400/10" : "border-line hover:border-violet-400/50 hover:bg-surface-2"}`}
+        data-over={dragOver || undefined}
+        className="plate mt-8 flex cursor-pointer flex-col items-center gap-6 px-6 pb-10 pt-6 text-center focus-within:outline focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-[var(--slot-3)]"
       >
-        <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
-        <span className={`flex h-14 w-14 items-center justify-center rounded-full transition ${dragOver || fileName ? "brand-gradient text-white" : "bg-surface-3 text-fg-muted"}`}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
-            <path d="M12 16V4" />
-            <path d="M8 8l4-4 4 4" />
-            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-          </svg>
-        </span>
-        <span className="font-medium text-fg">{fileName || t("dropzone")}</span>
-        <span className="text-sm text-fg-subtle">{t("dropzoneHint")}</span>
+        <input type="file" accept="image/*" className="sr-only" onChange={(e) => onFile(e.target.files?.[0])} />
+        <PlateHeads />
+        <span className="mt-2 text-xl font-semibold text-[#eeece6]" style={{ fontStretch: "112%" }}>{fileName || t("dropzone")}</span>
+        <span className="-mt-4 text-sm text-[#d2cec5]">{t("dropzoneHint")}</span>
       </label>
 
       {message && (

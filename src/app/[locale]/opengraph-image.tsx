@@ -30,7 +30,10 @@ export default async function OpengraphImage({ params }: { params: Promise<{ loc
           flexDirection: "column",
           justifyContent: "center",
           alignItems: dir === "rtl" ? "flex-end" : "flex-start",
-          background: "linear-gradient(135deg, #0b1120 0%, #131a2c 100%)",
+          // The build plate (globals.css `.plate`): PEI near-black with brass speckle.
+          backgroundColor: "#1d1b17",
+          backgroundImage: "radial-gradient(rgba(214, 178, 110, 0.16) 1px, transparent 1.5px)",
+          backgroundSize: "9px 9px",
           padding: "80px",
           fontFamily: CARD_FONT_FAMILY,
         }}
@@ -43,27 +46,32 @@ export default async function OpengraphImage({ params }: { params: Promise<{ loc
             gap: "16px",
           }}
         >
-          <div style={{ width: 14, height: 14, borderRadius: 999, background: "#f97316" }} />
+          {/* T1–T4 in the slot colours, as on the site's plate and logo. */}
+          <div style={{ display: "flex", gap: 6 }}>
+            {["#00a3d9", "#e6007e", "#ffd200", "#f4f2ec"].map((c) => (
+              <div key={c} style={{ width: 10, height: 28, borderRadius: 3, background: c }} />
+            ))}
+          </div>
           <CardLine
             text={t("ogCardKicker")}
             dir={dir}
-            style={{ color: "#fdba74", fontSize: 30, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase" }}
+            style={{ color: "#d2cec5", fontSize: 30, fontWeight: 700 }}
           />
         </div>
 
         {/* The wordmark is the brand, the same in every language. */}
         <div style={{ display: "flex", color: "white", fontSize: 88, fontWeight: 800, marginTop: 28 }}>
-          Bed<span style={{ color: "#f97316" }}>Ready</span>
+          BedReady
         </div>
 
         <CardLine
           text={t("ogCardTagline")}
           dir={dir}
           // No `undefined` style values: satori trims every one and throws on them.
-          style={{ color: "#cbd5e1", fontSize: 40, marginTop: 12, maxWidth: 900 }}
+          style={{ color: "#eeece6", fontSize: 40, marginTop: 12, maxWidth: 900 }}
         />
 
-        <div style={{ color: "#64748b", fontSize: 28, marginTop: 40 }}>bedready.io</div>
+        <div style={{ color: "#c9a86a", fontSize: 28, marginTop: 40 }}>bedready.io</div>
       </div>
     ),
     { ...size, fonts: await cardFonts() },

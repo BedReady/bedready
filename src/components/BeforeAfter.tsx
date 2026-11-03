@@ -23,7 +23,7 @@ import { useTranslations } from "next-intl";
  */
 
 /** The U1's four heads, in the order the swatch row shows them. */
-const SLOTS = ["#7c3aed", "#06b6d4", "#84cc16", "#f59e0b"];
+const SLOTS = ["#00a3d9", "#e6007e", "#ffd200", "#26262a"]; // = --slot-1…4 in globals.css
 
 function Plate({ painted }: { painted: boolean }) {
   // The unpainted plate has to READ as grey geometry, not as an empty panel. `--surface-3` alone is

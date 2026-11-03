@@ -37,6 +37,7 @@ import ConvertPresets, { type ConvertSettings } from "@/components/ConvertPreset
 import { SOURCE_REPO_URL } from "@/lib/links";
 import NoticeIcon from "@/components/NoticeIcon";
 import BeforeAfter from "@/components/BeforeAfter";
+import PlateHeads from "@/components/PlateHeads";
 
 // Fire-and-forget global "converter used" counter. Goes through our own rate-limited route rather
 // than calling the RPC directly, so `bump_counter` can be locked down to the service role — the
@@ -1242,28 +1243,21 @@ export default function ConvertPage() {
           So the argument now sits BELOW the thing it is arguing for, and disappears entirely once a
           file is picked: after that the page is a tool, and the marketing above it is 750px the
           visitor has already read and already acted on, in front of every subsequent adjustment. */}
-      {!busy && <ConvertCount className="mb-3 font-mono text-xs text-fg-muted" />}
+      {!busy && <ConvertCount className="mb-4 text-sm font-medium tabular-nums text-fg-subtle" />}
       <h1
         className={
           busy
-            ? "text-lg font-semibold tracking-tight text-fg"
-            : "text-3xl font-semibold tracking-tight text-fg sm:text-4xl"
+            ? "text-lg font-semibold text-fg"
+            : "text-4xl font-bold leading-[1.02] text-fg sm:text-6xl"
         }
       >
         {t("title")}
       </h1>
-      {!busy && <p className="mt-3 text-base leading-relaxed text-fg-muted">{t("intro")}</p>}
-      {/* The claim, shown. See BeforeAfter for why it is drawn rather than photographed.
-          Above the drop zone from `sm` up, below it on a phone: there it pushed the page's one action
-          off the first screen (the drop text sat at 750px on a 664px iPhone 13 viewport, 826px on an
-          iPhone SE's 568px — 2026-09-26 UI review). Two mounts, one ever displayed; `hidden` is
-          display:none, so assistive tech meets the figure once as well. */}
-      {!busy && (
-        <div className="hidden sm:block">
-          <BeforeAfter />
-        </div>
-      )}
-
+      {!busy && <p className="mt-4 text-base leading-relaxed text-fg-muted">{t("intro")}</p>}
+      {/* The claim, shown (see BeforeAfter) — now BELOW the plate at every width. It used to sit
+          above it from `sm` up; once the drop zone became the build plate, the plate is the picture
+          the hero needed, and the figure in front of it only pushed it under the fold (its top edge
+          was at 690px on a 1440×900 desktop). */}
       <div
         role="button"
         tabIndex={0}
@@ -1287,19 +1281,13 @@ export default function ConvertPage() {
             inputRef.current?.click();
           }
         }}
-        className={`mt-6 flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition focus:outline-none focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-400/40 ${
-          dragOver ? "border-violet-400 bg-violet-400/10" : "border-line hover:border-violet-400/50 hover:bg-surface-2"
-        }`}
+        // The build plate (globals.css `.plate`). Dark in both themes, because the object is.
+        data-over={dragOver || undefined}
+        className={`plate mt-8 flex cursor-pointer flex-col items-center text-center ${busy ? "gap-3 px-6 pb-6 pt-5" : "gap-6 px-6 pb-10 pt-6 sm:pb-14"}`}
       >
-        <span className={`flex h-14 w-14 items-center justify-center rounded-full transition ${dragOver || file || stlFile ? "brand-gradient text-white" : "bg-surface-3 text-fg-muted"}`}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
-            <path d="M12 16V4" />
-            <path d="M8 8l4-4 4 4" />
-            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-          </svg>
-        </span>
-        <div>
-          <p className="font-medium text-fg">
+        <PlateHeads />
+        <div className={busy ? "" : "mt-2 sm:mt-6"}>
+          <p className={`font-semibold text-[#eeece6] ${busy ? "text-base" : "text-xl sm:text-2xl"}`} style={{ fontStretch: "112%" }}>
             {file ? file.name : stlFile ? stlFile.name : (
               <>
                 {/* Nobody drags a file on a phone: say "tap" there. */}
@@ -1309,19 +1297,15 @@ export default function ConvertPage() {
             )}
           </p>
           {/* dropSub ("or click to choose one") repeats the touch heading, so it is desktop-only. */}
-          <p className={`mt-1 text-sm text-fg-muted ${file || stlFile ? "" : "hidden sm:block"}`}>{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
+          <p className={`mt-1.5 text-sm text-[#d2cec5] ${file || stlFile ? "" : "hidden sm:block"}`}>{file ? t("dropReady") : stlFile ? t("stlReady") : t("dropSub")}</p>
           {!file && !stlFile && (
-            <p className="mt-1 text-xs text-fg-subtle">{t("dropHint")}</p>
+            <p className="mt-4 text-xs text-[#a9a59b]">{t("dropHint")}</p>
           )}
         </div>
         <input ref={inputRef} type="file" accept=".3mf,.stl" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
       </div>
 
-      {!busy && (
-        <div className="sm:hidden">
-          <BeforeAfter />
-        </div>
-      )}
+      {!busy && <BeforeAfter />}
 
       {/* ── THE REASSURANCE, NOW BELOW THE ACTION ────────────────────────────────────────────────
           Same blocks, same words, after the drop zone instead of in front of it. */}
@@ -1373,7 +1357,9 @@ export default function ConvertPage() {
           <ol className="mt-8 grid gap-8 border-t border-line pt-6 sm:grid-cols-3">
             {[t("howStep1"), t("howStep2"), t("howStep3")].map((step, i) => (
               <li key={i}>
-                <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
+                <span className="block text-3xl font-bold tabular-nums text-fg" style={{ fontStretch: "125%" }}>
+                  {i + 1}
+                </span>
                 <p className="mt-2 text-base leading-relaxed text-fg-muted">{step}</p>
               </li>
             ))}
@@ -2306,14 +2292,14 @@ export default function ConvertPage() {
             <button
               type="button"
               onClick={() => setProfileMode("preserve")}
-              className={`rounded-lg px-3 py-1.5 ${profileMode === "preserve" ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+              className={`rounded-lg px-3 py-1.5 ${profileMode === "preserve" ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
             >
               {t("keepSettings")}
             </button>
             <button
               type="button"
               onClick={() => setProfileMode("stamp")}
-              className={`rounded-lg px-3 py-1.5 ${profileMode === "stamp" ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+              className={`rounded-lg px-3 py-1.5 ${profileMode === "stamp" ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
             >
               {t("useTested")}
             </button>
@@ -2335,11 +2321,11 @@ export default function ConvertPage() {
                     key={n}
                     type="button"
                     onClick={() => setNozzle(n)}
-                    className={`rounded-lg px-3 py-1.5 ${nozzle === n ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+                    className={`rounded-lg px-3 py-1.5 ${nozzle === n ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
                   >
                     {format.number(n)} {t("nozzleUnit")}
                     {n === U1_TESTED_NOZZLE && (
-                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-white/80" : "text-fg-subtle"}`}>
+                      <span className={`ms-1.5 text-xs ${nozzle === n ? "text-on-accent/80" : "text-fg-subtle"}`}>
                         {t("nozzleTested")}
                       </span>
                     )}
@@ -2377,7 +2363,7 @@ export default function ConvertPage() {
                     key={b}
                     type="button"
                     onClick={() => setFilamentBrand(b)}
-                    className={`rounded-lg px-3 py-1.5 ${filamentBrand === b ? "bg-violet-600 text-white" : "text-fg-muted hover:text-fg"}`}
+                    className={`rounded-lg px-3 py-1.5 ${filamentBrand === b ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
                   >
                     {t(b === "source" ? "brandSource" : b === "generic" ? "brandGeneric" : "brandSnapmaker")}
                   </button>
