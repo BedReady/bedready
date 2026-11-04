@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { convertApi } from "@/lib/convert-api";
 
 // Live "N files converted" social proof. Renders nothing until the number is meaningful — weak
@@ -20,6 +20,7 @@ const MIN_TO_SHOW = 25;
 
 export default function ConvertCount({ className }: { className?: string }) {
   const t = useTranslations("convert");
+  const format = useFormatter();
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function ConvertCount({ className }: { className?: string }) {
   if (count == null || count < MIN_TO_SHOW) return null;
   return (
     <p className={className}>
-      <span className="font-semibold text-fg-muted">{count.toLocaleString()}</span> {t("convertedCount")}
+      <span className="font-semibold text-fg-muted">{format.number(count)}</span> {t("convertedCount")}
     </p>
   );
 }
