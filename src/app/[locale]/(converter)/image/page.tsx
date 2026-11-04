@@ -107,11 +107,13 @@ export default function ImagePage() {
   // surface HEIGHT varies per pixel and the filaments swap at global Z heights, so colour comes from
   // light transmitted through the stack. That's what gets photographic gradients out of four spools.
   const [hueforge, setHueforge] = useState(false);
+  // Relief in black, greys and white rather than the photo's own colours.
+  const [hfGray, setHfGray] = useState(false);
   // Includes the filaments, because relief mode picks its OWN — they are not the palette shown in
   // "Colors used", which comes from the flat-panel quantiser. Downloading a file containing four
   // colours the page never displayed is a good way to lose someone's trust in the output.
   const [hfQuality, setHfQuality] = useState<
-    { deltaE: number; colors: number; automatic: boolean; filaments: string[]; preview: string | null } | null
+    { deltaE: number; colors: number; automatic: boolean; filaments: { hex: string; name?: string | null }[]; preview: string | null; gray: boolean } | null
   >(null);
   const rawPixels = useRef<{ px: Uint8ClampedArray; w: number; h: number } | null>(null);
   const fileRef = useRef<File | null>(null); // re-read at print resolution for the relief
@@ -202,6 +204,7 @@ export default function ImagePage() {
       const { imageToHueForgeU1 } = await import("@/lib/hueforge-pipeline");
       const r = imageToHueForgeU1({ data: px.px, width: px.w, height: px.h }, {
         maxColors: colors,
+        grayscale: hfGray,
         widthMm: sizeMM,
         // No extra smoothing: the optimised solve clips lone towers itself, and smoothing on top
         // blurs fine detail (the desktop app found crisp, smooth 0, clearly better).
@@ -212,8 +215,9 @@ export default function ImagePage() {
         deltaE: r.meanDeltaE,
         colors: r.plan.colorCount,
         automatic: r.plan.automatic,
-        filaments: r.filaments.map((f) => f.hex),
+        filaments: r.filaments.map((f) => ({ hex: f.hex, name: f.name })),
         preview: previewUrl(r.solve.preview, r.solve.width, r.solve.height),
+        gray: hfGray,
       });
       download(new Blob([r.bytes as BlobPart], { type: "model/3mf" }), `${base}.hueforge.u1.3mf`);
       setStatus("done");
@@ -366,6 +370,20 @@ export default function ImagePage() {
               <span className="mt-1 block text-xs text-fg-subtle">{t("hfDesc")}</span>
             </span>
           </label>
+          {hueforge && (
+            <label className="mt-2 flex items-start gap-2 px-4 text-sm text-fg-muted">
+              <input
+                type="checkbox"
+                checked={hfGray}
+                onChange={(e) => { setHfGray(e.target.checked); setHfQuality(null); }}
+                className="mt-0.5 h-4 w-4 rounded border-line accent-violet-500"
+              />
+              <span>
+                <span className="font-medium text-fg">{t("hfGray")}</span>
+                <span className="mt-1 block text-xs text-fg-subtle">{t("hfGrayDesc")}</span>
+              </span>
+            </label>
+          )}
 
           {hfQuality && (
             <div className="mt-3 rounded-lg border border-line bg-surface-2 px-4 py-3 text-xs text-fg-muted">
@@ -377,10 +395,13 @@ export default function ImagePage() {
                   they have to be loaded in for the transmission maths to hold. */}
               <p className="mt-2 flex flex-wrap items-center gap-2" data-testid="relief-filaments">
                 <span>{t("hfFilaments")}</span>
-                {hfQuality.filaments.map((hex, i) => (
+                {/* The colour's name when the picker chose it (a colour you can ask a shop for), and
+                    the hex either way, since that is what goes in the slicer. */}
+                {hfQuality.filaments.map(({ hex, name }, i) => (
                   <span key={hex + i} className="inline-flex items-center gap-1">
                     <span className="h-4 w-4 rounded border border-line" style={{ background: hex }} aria-hidden />
-                    <span className="tabular-nums">{hex}</span>
+                    {name && t.has(`filamentNames.${name}`) && <span className="text-fg">{t(`filamentNames.${name}`)}</span>}
+                    <span dir="ltr" className="tabular-nums">{hex}</span>
                   </span>
                 ))}
               </p>
@@ -395,7 +416,9 @@ export default function ImagePage() {
               )}
               {/* Above ~10 a colour difference is plainly visible, so say so rather than printing a
                   number whose scale nobody knows. */}
-              {hfQuality.deltaE > 10 && <p className="mt-2 text-amber-300">{t("hfLooseMatch")}</p>}
+              {/* Not in black and white: that is scored against the colour photo, so it is always "loose",
+                  and the visitor chose it knowing the colours go. */}
+              {hfQuality.deltaE > 10 && !hfQuality.gray && <p className="mt-2 text-amber-300">{t("hfLooseMatch")}</p>}
             </div>
           )}
 
