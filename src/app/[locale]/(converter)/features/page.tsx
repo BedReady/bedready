@@ -3,6 +3,7 @@ import { use } from "react";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "@/components/SiteLink";
+import { PlateCorners } from "@/components/PlateHeads";
 import { alternates } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -61,6 +62,8 @@ const GROUPS = [
  */
 type Support = true | false | "partial";
 
+// Literal colours, not theme utilities: the table sits on the plate, dark in both themes, and light
+// mode darkens the emerald/amber utilities for white pages (globals.css), which sank them into it.
 // `label` is what a screen reader hears for the symbol: the page's own "Yes" / "No" / "Partly".
 function Mark({ value, note, label }: { value: Support; note?: string; label: string }) {
   return (
@@ -69,16 +72,16 @@ function Mark({ value, note, label }: { value: Support; note?: string; label: st
         aria-hidden
         className={
           value === true
-            ? "text-emerald-400"
+            ? "text-[#4ade80]"
             : value === "partial"
-              ? "text-amber-400"
-              : "text-fg-subtle"
+              ? "text-[#c9a86a]"
+              : "text-[#8f8a80]"
         }
       >
         {value === true ? "✓" : value === "partial" ? "◐" : "✗"}
       </span>
       <span className="sr-only">{label}</span>
-      {note && <span className="text-xs leading-none text-fg-subtle">{note}</span>}
+      {note && <span className="text-xs leading-none text-[#a9a49a]">{note}</span>}
     </span>
   );
 }
@@ -109,71 +112,76 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
   const t = useTranslations("features");
 
 
+  // The /extension grammar (Figma: Extension page — Desktop · Light): a hero, the four-filament rule,
+  // then ruled rows with the subject on the start edge. The seven groups were a two-column card-less
+  // grid whose last group had to span to avoid an orphan; as rows, seven is just seven. The comparison
+  // table stands on the plate, the site's stage for the thing that does the work — here, the argument.
   return (
     <main className="page-read py-12">
-      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{t("title")}</h1>
-      <p className="mt-3 max-w-2xl text-fg-muted">{t("intro")}</p>
+      <div className="measure-full">
+        <h1 className="max-w-[40rem] text-3xl font-semibold tracking-tight text-fg sm:text-5xl">{t("title")}</h1>
+        <p className="mt-5 max-w-[40rem] text-lg text-fg-muted">{t("intro")}</p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href="/convert" className="btn-primary btn-lg">
+            {t("ctaConvert")}
+          </Link>
+          <Link href="/verified" className="btn-secondary btn-lg">
+            {t("ctaBrowse")}
+            <span aria-hidden className="text-[0.85em] text-fg-subtle">↗</span>
+          </Link>
+        </div>
+      </div>
 
-      {/* The last group used to sit alone in the left column with an empty cell beside it — seven
-          groups in a two-column grid. It spans instead, which reads as a closing row rather than an
-          orphan. */}
-      <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
-        {GROUPS.map((g, gi) => {
-          const last = gi === GROUPS.length - 1 && GROUPS.length % 2 === 1;
-          return (
-            <div key={g.key} className={`border-t border-line pt-5 ${last ? "sm:col-span-2" : ""}`}>
-              <h2 className="text-sm font-semibold text-fg">{t(`groups.${g.key}.title`)}</h2>
-              <ul className={`mt-3 space-y-2 text-sm leading-relaxed text-fg-muted ${last ? "sm:columns-2 sm:gap-x-10" : ""}`}>
-                {g.items.map((k) => (
-                  <li key={k}>{t(`groups.${g.key}.items.${k}`)}</li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+      <div className="measure-full mt-16">
+        <div className="brand-rule" aria-hidden="true" />
+        {GROUPS.map((g) => (
+          <section key={g.key} className="grid gap-x-12 gap-y-3 border-b border-line py-7 sm:grid-cols-[13rem_minmax(0,1fr)]">
+            <h2 className="text-lg font-semibold text-fg" style={{ fontStretch: "112%" }}>{t(`groups.${g.key}.title`)}</h2>
+            <ul className="space-y-2 text-base leading-relaxed text-fg-muted lg:columns-2 lg:gap-x-10 [&>li]:break-inside-avoid">
+              {g.items.map((k) => (
+                <li key={k}>{t(`groups.${g.key}.items.${k}`)}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
 
       {/* Honest, capability-based comparison — why BedReady is the most complete U1 converter. */}
-      <h2 className="mt-16 border-t border-line pt-10 text-xl font-semibold tracking-tight text-fg">{t("compare.title")}</h2>
+      <h2 className="mt-16 text-2xl font-semibold tracking-tight text-fg" style={{ fontStretch: "112%" }}>{t("compare.title")}</h2>
       <p className="mt-2 max-w-2xl text-base text-fg-muted">{t("compare.intro")}</p>
-      <div className="page-breakout mt-4 overflow-x-auto rounded-lg border border-line">
-        <table className="w-full min-w-[30rem] text-start text-sm">
-          <thead>
-            <tr className="border-b border-line">
-              <th className="eyebrow px-4 py-3 text-start">{t("compare.capability")}</th>
-              {/* The column the page is arguing for is the one the eye should land on. It had no
-                  anchor at all: same weight, same ground, same alignment as the one beside it. */}
-              <th className="eyebrow bg-violet-400/10 px-4 py-3 text-center text-violet-300">BedReady</th>
-              <th className="eyebrow px-4 py-3 text-center">{t("compare.typical")}</th>
-            </tr>
-          </thead>
-          <tbody className="text-fg-muted">
-            {COMPARE.map(([key, us, them, note]) => (
-              <tr key={key} className="border-b border-line last:border-0">
-                <td className="px-4 py-2.5">{t(`compare.rows.${key}`)}</td>
-                <td className="bg-violet-400/[0.06] px-4 py-2.5 text-center">
-                  <Mark value={us} label={t(`compare.marks.${MARK[String(us)]}`)} />
-                </td>
-                <td className="px-4 py-2.5 text-center">
-                  <Mark value={them} note={note && t(`compare.marks.${note}`)} label={t(`compare.marks.${MARK[String(them)]}`)} />
-                </td>
+      {/* The plate is dark in both themes, so the table's colours are the plate's own (as on /convert's
+          drop zone), not the theme tokens, which would put dark-mode-light text on it in light mode. */}
+      <div className="page-breakout plate mt-6 px-3 py-8 sm:px-10 sm:py-10">
+        <PlateCorners />
+        <div className="relative overflow-x-auto">
+          <table className="w-full min-w-[30rem] text-start text-sm text-[#d2cec5]">
+            <thead>
+              <tr className="border-b border-white/15">
+                <th className="px-4 py-3 text-start text-xs font-semibold text-[#a9a49a]" style={{ fontStretch: "112%" }}>{t("compare.capability")}</th>
+                {/* The column the page is arguing for is the one the eye should land on: T3's yellow,
+                    the plate's one bright filament. */}
+                <th className="bg-[#ffd200]/10 px-4 py-3 text-center text-xs font-semibold text-[#ffd200]" style={{ fontStretch: "112%" }}>BedReady</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-[#a9a49a]" style={{ fontStretch: "112%" }}>{t("compare.typical")}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {COMPARE.map(([key, us, them, note]) => (
+                <tr key={key} className="border-b border-white/10 last:border-0">
+                  <td className="px-4 py-2.5">{t(`compare.rows.${key}`)}</td>
+                  <td className="bg-[#ffd200]/[0.06] px-4 py-2.5 text-center">
+                    <Mark value={us} label={t(`compare.marks.${MARK[String(us)]}`)} />
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    <Mark value={them} note={note && t(`compare.marks.${note}`)} label={t(`compare.marks.${MARK[String(them)]}`)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <p className="mt-2 text-xs text-fg-subtle">{t("compare.note")}</p>
-
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link href="/convert" className="btn-primary btn-lg">
-          {t("ctaConvert")}
-        </Link>
-        <Link href="/verified" className="btn-secondary btn-lg">
-          {t("ctaBrowse")}
-          <span aria-hidden className="text-[0.85em] text-fg-subtle">↗</span>
-        </Link>
-      </div>
-      <p className="mt-4 text-xs text-fg-subtle">{t("note")}</p>
+      <p className="mt-3 text-xs text-fg-subtle">{t("compare.note")}</p>
+      <p className="mt-10 text-sm text-fg-muted">{t("note")}</p>
     </main>
   );
 }
