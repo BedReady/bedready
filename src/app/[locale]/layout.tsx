@@ -70,11 +70,15 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
   preload: false,
 });
+// Not preloaded either: it sets a few number inputs deep in the converter and inline <code>, never
+// the first screen, and its three preloads (30 KB) competed with Encode Sans for the bandwidth the
+// hero text waits on (Lighthouse, Nov 2026: the hero paragraph was the LCP, 2.1 s of render delay).
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-plex-mono",
   display: "swap",
+  preload: false,
 });
 
 // Pre-render the static locales at build time.
