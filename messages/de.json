@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "Verwendete Farben — flache Platte",
     "hfFlatNote": "Die Relief-Datei verwendet eigene Filamente, unten aufgeführt.",
     "base": "Basis",
+    "nearestFilament": "ähnlich wie {name}",
     "preview3d": "3D-Vorschau (zum Drehen ziehen)",
     "preview3dRelief": "3D-Vorschau (zum Drehen ziehen — Reliefhöhe sichtbar)",
     "preview3dFlat": "3D-Vorschau — die flache Platte, nicht das Relief (zum Drehen ziehen)",

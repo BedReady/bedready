@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "Colors used — flat plate",
     "hfFlatNote": "The relief file uses its own filaments, listed below.",
     "base": "base",
+    "nearestFilament": "close to {name}",
     "preview3d": "3D preview (drag to rotate)",
     "preview3dRelief": "3D preview (drag to rotate — relief height shown)",
     "preview3dFlat": "3D preview — the flat plate, not the relief (drag to rotate)",
