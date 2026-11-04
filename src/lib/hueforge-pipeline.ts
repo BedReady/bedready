@@ -17,12 +17,15 @@ import {
 } from "./hueforge";
 import { hexToRgb } from "./color-mix";
 import { buildU1_3mf } from "./hueforge-3mf";
+import { pickFilaments } from "./hueforge-palette";
 
 export type HueForgeOptions = {
   /** Filaments bottom->top. Omitted: suggested from the image (and the maker's spools, if given). */
   filaments?: Filament[];
   owned?: OwnedFilament[] | null;
   maxColors?: number;
+  /** Suggest only black, greys and white. Ignored when `filaments` or `owned` is given. */
+  grayscale?: boolean;
   layerH?: number;
   baseLayers?: number;
   /** Plate width in mm; height follows the image's aspect. */
@@ -76,9 +79,14 @@ export function imageToHueForgeU1(img: ImageLike, opts: HueForgeOptions = {}): H
 
   const layerH = Number(opts.layerH) > 0 ? Number(opts.layerH) : DEFAULT_LAYER_H;
   const widthMm = Number(opts.widthMm) > 0 ? Number(opts.widthMm) : undefined;
+  const heads = Math.min(U1_HEADS, Math.max(2, opts.maxColors ?? U1_HEADS));
   const filaments = (opts.filaments?.length
     ? opts.filaments
-    : suggestFilaments(img, opts.owned ?? null, Math.min(U1_HEADS, Math.max(2, opts.maxColors ?? U1_HEADS))))
+    // From the maker's own spools: the engine's picker, which snaps to them. Otherwise the site's
+    // picker (hueforge-palette.ts): a dark, a light and the photo's distinct hues, as real colours.
+    : opts.owned?.length
+      ? suggestFilaments(img, opts.owned, heads)
+      : pickFilaments(img, heads, { grayscale: opts.grayscale }))
     .filter((f) => f && hexToRgb(f.hex));
   if (!filaments.length) return null;
 
