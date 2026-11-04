@@ -51,39 +51,43 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
 
   return (
     <main lang="en" dir="ltr" className="page-read py-12">
-      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
+      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-5xl">
         Multicolor 3D printer comparison
       </h1>
-      <p className="mt-4 text-lg text-fg-muted">
+      <p className="mt-5 text-lg text-fg-muted">
         The Snapmaker U1, Bambu Lab X1C, Prusa MK4 + MMU3 and Creality K2 Plus all print in color — but very
         differently. Here&apos;s an honest side-by-side on slots, method and waste, plus how to move a{" "}
         <code className="text-violet-300">.3mf</code> between them.
       </p>
 
       {/* Scrolls sideways on a phone; focusable so a keyboard can scroll it too (axe scrollable-region-focusable). */}
-      <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label="Printer comparison table">
-        <table className="w-full min-w-[640px] border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-line text-left">
-              <th className="py-2 pe-3 font-semibold text-fg-subtle"><span className="sr-only">Feature</span></th>
-              <th className="py-2 pe-3 font-semibold text-fg">Snapmaker U1</th>
-              <th className="py-2 pe-3 font-semibold text-fg">Bambu X1C</th>
-              <th className="py-2 pe-3 font-semibold text-fg">Prusa MK4+MMU3</th>
-              <th className="py-2 pe-3 font-semibold text-fg">Creality K2 Plus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ROWS.map((r) => (
-              <tr key={r.label} className="border-b border-line/60 align-top">
-                <td className="py-2.5 pe-3 font-medium text-fg-muted">{r.label}</td>
-                <td className="py-2.5 pe-3 text-fg">{r.u1}</td>
-                <td className="py-2.5 pe-3 text-fg-muted">{r.bambu}</td>
-                <td className="py-2.5 pe-3 text-fg-muted">{r.prusa}</td>
-                <td className="py-2.5 pe-3 text-fg-muted">{r.creality}</td>
+      {/* Build-plate redesign: the table stands on the plate, as on /features, with the U1 — the printer
+          the site is for — in T3's yellow. The plate is dark in both themes, so the colours are its own. */}
+      <div className="page-breakout plate mt-10 px-3 py-6 sm:px-8 sm:py-8">
+        <div className="relative overflow-x-auto" tabIndex={0} role="region" aria-label="Printer comparison table">
+          <table className="w-full min-w-[640px] border-collapse text-sm text-[#d2cec5]">
+            <thead>
+              <tr className="border-b border-white/15 text-left">
+                <th className="py-2 pe-3 ps-1 font-semibold text-[#a9a49a]"><span className="sr-only">Feature</span></th>
+                <th className="bg-[#ffd200]/10 px-3 py-2 font-semibold text-[#ffd200]">Snapmaker U1</th>
+                <th className="px-3 py-2 font-semibold text-[#a9a49a]">Bambu X1C</th>
+                <th className="px-3 py-2 font-semibold text-[#a9a49a]">Prusa MK4+MMU3</th>
+                <th className="px-3 py-2 font-semibold text-[#a9a49a]">Creality K2 Plus</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ROWS.map((r) => (
+                <tr key={r.label} className="border-b border-white/10 align-top last:border-0">
+                  <td className="py-2.5 pe-3 ps-1 font-medium text-[#a9a49a]">{r.label}</td>
+                  <td className="bg-[#ffd200]/[0.06] px-3 py-2.5 text-[#eeece6]">{r.u1}</td>
+                  <td className="px-3 py-2.5">{r.bambu}</td>
+                  <td className="px-3 py-2.5">{r.prusa}</td>
+                  <td className="px-3 py-2.5">{r.creality}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <p className="mt-3 text-xs text-fg-subtle">
         Independent comparison — rankings here are editorial and not for sale. {SPONSORSHIP_NOTE} Slots/features are the maker-facing basics;

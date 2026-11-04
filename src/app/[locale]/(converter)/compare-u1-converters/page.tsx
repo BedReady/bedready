@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import Link from "@/components/SiteLink";
+import PlateHeads from "@/components/PlateHeads";
 import { canonicalOnly } from "@/lib/seo";
 import { SOURCE_REPO_URL } from "@/lib/links";
 
@@ -139,10 +140,9 @@ export default async function CompareConvertersPage({ params }: { params: Promis
 
   return (
     <main lang="en" dir="ltr" className="page-read py-12">
-      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
-        Snapmaker U1 .3mf converters, <span className="brand-text">compared</span>
+      <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-5xl">
+        Snapmaker U1 .3mf converters, compared
       </h1>
-      <div className="brand-rule mt-4 w-28" aria-hidden />
       <p className="mt-5 max-w-2xl text-lg text-fg-muted">
         Several tools convert multicolor files for the Snapmaker U1. I build one of them, so treat this
         as informed rather than neutral: every claim below comes from the other tools&apos; own pages and
@@ -150,10 +150,14 @@ export default async function CompareConvertersPage({ params }: { params: Promis
       </p>
       <p className="mt-2 text-xs text-fg-subtle">Last checked: {UPDATED}. These tools ship changes; if something here is out of date, <Link href="/feedback" className={a}>tell me</Link> and I&apos;ll fix it.</p>
 
+      {/* Build-plate redesign: the four-filament rule opens the body, as on /features and /extension,
+          and the grey cards became ruled sections — a card says "aside", and these are the argument. */}
+      <div className="measure-full brand-rule mt-10" aria-hidden="true" />
+
       {/* Start with the one Snapmaker points people to. It used to be described here as Snapmaker's own;
           it is not, and the wiki says so in its credits. Get that right before grading anyone else. */}
-      <section className="mt-8 rounded-lg border border-line bg-surface-2 p-5">
-        <h2 className="font-semibold text-fg">First: the converter Snapmaker&apos;s wiki links to</h2>
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold text-fg" style={{ fontStretch: "112%" }}>First: the converter Snapmaker&apos;s wiki links to</h2>
         <p className="mt-2 text-base text-fg-muted">
           Snapmaker&apos;s{" "}
           <a href={WIKI_GUIDE} {...ext} className={a}>U1 3MF Converter guide</a>{" "}
@@ -233,8 +237,8 @@ export default async function CompareConvertersPage({ params }: { params: Promis
       </div>
 
       {/* Credibility depends on this section existing. */}
-      <section className="mt-10 rounded-lg border border-line bg-surface-2 p-5">
-        <h2 className="font-semibold text-fg">When to use one of the others instead</h2>
+      <section className="mt-12 border-t border-line pt-8">
+        <h2 className="text-lg font-semibold text-fg" style={{ fontStretch: "112%" }}>When to use one of the others instead</h2>
         <ul className="mt-3 space-y-2 text-sm text-fg-muted">
           <li>
             <a href={ANY2ORCA} {...ext} className="font-semibold text-fg hover:underline">any2orca</a> ships U1
@@ -305,17 +309,20 @@ export default async function CompareConvertersPage({ params }: { params: Promis
         </ul>
       </section>
 
-      <section className="mt-10 rounded-lg border border-line bg-surface-2 px-6 py-8 text-center">
-        <p className="font-medium text-fg">Try it on a file that&apos;s given you trouble</p>
-        <p className="mx-auto mt-1 max-w-lg text-base text-fg-muted">
+      {/* The one action the page leads to, on the plate — the site's stage for the converter. Dark in
+          both themes, so its colours are the plate's own rather than the theme tokens. */}
+      <section className="plate mt-12 px-6 pb-10 pt-6 text-center">
+        <PlateHeads />
+        <p className="mt-6 text-xl font-semibold text-[#eeece6]" style={{ fontStretch: "112%" }}>Try it on a file that&apos;s given you trouble</p>
+        <p className="mx-auto mt-2 max-w-lg text-base text-[#d2cec5]">
           Nothing uploads, there&apos;s no account, and you see the colors before you download. If it
           gets your file wrong, send it to me — that&apos;s the most useful thing anyone can do.
         </p>
-        <div className="mt-5 flex flex-wrap justify-center gap-3">
-          <Link href="/convert" className="btn-primary btn-md">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link href="/convert" className="rounded-lg bg-[#f4f2ec] px-5 py-2.5 text-sm font-semibold text-[#1d1b17] transition hover:bg-white">
             Open the converter
           </Link>
-          <Link href="/verified" className="rounded-lg border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition hover:bg-surface-3">
+          <Link href="/verified" className="rounded-lg border border-white/20 px-5 py-2.5 text-sm font-semibold text-[#eeece6] transition hover:bg-white/10">
             See files verified on a real U1
           </Link>
         </div>
