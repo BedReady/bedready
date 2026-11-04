@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "Couleurs utilisées — plaque plate",
     "hfFlatNote": "Le fichier relief utilise ses propres filaments, indiqués ci-dessous.",
     "base": "base",
+    "nearestFilament": "proche de {name}",
     "preview3d": "Aperçu 3D (faites glisser pour tourner)",
     "preview3dRelief": "Aperçu 3D (faites glisser pour tourner — relief affiché)",
     "preview3dFlat": "Aperçu 3D — la plaque plate, pas le relief (glissez pour tourner)",

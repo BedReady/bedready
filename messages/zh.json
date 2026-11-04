@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "使用的颜色 — 平面板",
     "hfFlatNote": "浮雕文件使用自己的耗材，列在下方。",
     "base": "底色",
+    "nearestFilament": "接近{name}",
     "preview3d": "3D 预览（拖动以旋转）",
     "preview3dRelief": "3D 预览（拖动以旋转——显示浮雕高度）",
     "preview3dFlat": "3D 预览 — 平面板，不是浮雕（拖动旋转）",

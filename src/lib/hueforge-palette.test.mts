@@ -73,3 +73,11 @@ test("an empty or fully transparent image picks nothing", () => {
   assert.deepEqual(pickFilaments({ data: new Uint8ClampedArray(0), width: 0, height: 0 }, 4), []);
   assert.deepEqual(pickFilaments({ data: new Uint8ClampedArray(16 * 4), width: 4, height: 4 }, 4), []);
 });
+
+test("nearestFilament names the closest listed colour", async () => {
+  const { nearestFilament } = await import("./filament-colors.ts");
+  assert.equal(nearestFilament("#000000"), "black");
+  assert.equal(nearestFilament("#FFFFFF"), "white");
+  assert.equal(nearestFilament("#C0201A"), "red");
+  assert.equal(nearestFilament("zzz"), null);
+});

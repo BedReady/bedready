@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "Colores usados — placa plana",
     "hfFlatNote": "El archivo de relieve usa sus propios filamentos, indicados abajo.",
     "base": "base",
+    "nearestFilament": "parecido a {name}",
     "preview3d": "Vista 3D (arrastra para girar)",
     "preview3dRelief": "Vista 3D (arrastra para girar: se muestra el relieve)",
     "preview3dFlat": "Vista 3D — la placa plana, no el relieve (arrastra para girar)",

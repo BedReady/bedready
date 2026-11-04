@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { reliefGrid } from "@/lib/relief-grid";
 import dynamic from "next/dynamic";
 import { quantize, despeckle, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh } from "@/lib/image-model";
+import { nearestFilament } from "@/lib/filament-colors";
 import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { download } from "@/lib/convert";
 import type { MeshData } from "@/lib/paint";
@@ -305,8 +306,12 @@ export default function ImagePage() {
             <div className="flex flex-col gap-2" data-testid="flat-palette">
               <p className="text-xs font-medium text-fg-muted">{hueforge ? t("colorsUsedFlat") : t("colorsUsed")}</p>
               {q.palette.map((hex, i) => (
-                <span key={i} className="inline-flex items-center gap-2 text-xs text-fg-muted">
-                  <span className="h-5 w-5 rounded border border-line" style={{ background: hex }} /> {hex}{i === 0 ? " · " + t("base") : ""}
+                <span key={i} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-fg-muted">
+                  <span className="h-5 w-5 rounded border border-line" style={{ background: hex }} />
+                  <span dir="ltr" className="tabular-nums">{hex}</span>
+                  {/* The nearest ordinary filament colour, so the swatch says what to load. */}
+                  {nearestFilament(hex) && <span className="text-fg-subtle">{t("nearestFilament", { name: t(`filamentNames.${nearestFilament(hex)}`) })}</span>}
+                  {i === 0 && <span>· {t("base")}</span>}
                 </span>
               ))}
               {hueforge && <p className="mt-1 max-w-[16rem] text-xs text-fg-subtle">{t("hfFlatNote")}</p>}

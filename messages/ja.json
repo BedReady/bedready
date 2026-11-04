@@ -1344,6 +1344,7 @@
     "colorsUsedFlat": "使用色 — フラットプレート",
     "hfFlatNote": "レリーフファイルは独自のフィラメントを使います（下に表示）。",
     "base": "ベース",
+    "nearestFilament": "{name}に近い",
     "preview3d": "3D プレビュー（ドラッグで回転）",
     "preview3dRelief": "3D プレビュー（ドラッグで回転 — レリーフの高さを表示）",
     "preview3dFlat": "3Dプレビュー — レリーフではなくフラットプレート（ドラッグで回転）",

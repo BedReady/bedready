@@ -24,41 +24,14 @@
 // hueforge.ts is a mechanical port of the desktop app and stays one; this file is the site's own.
 import * as KC from "./color-mix";
 import { defaultTd, suggestLayers, orderByOpacity, DEFAULT_LAYER_H } from "./hueforge";
+import { FILAMENTS } from "./filament-colors";
+
+export { FILAMENTS };
 
 type ImageLike = { data: Uint8ClampedArray | number[]; width: number; height: number };
 /** `name` is a key into the `image.filamentNames` messages (the page shows it translated). */
 export type PickedFilament = { hex: string; name: string; td: number; layers: number };
 
-/** Ordinary PLA colours, as approximate sRGB. Generic colour names (messages: image.filamentNames), not any brand's. */
-export const FILAMENTS: { key: string; hex: string; neutral?: true }[] = [
-  { key: "black", hex: "#161616", neutral: true },
-  { key: "charcoal", hex: "#3A3A3C", neutral: true },
-  { key: "darkGray", hex: "#5A5B5D", neutral: true },
-  { key: "gray", hex: "#8B8C8E", neutral: true },
-  { key: "lightGray", hex: "#BDBEC0", neutral: true },
-  { key: "white", hex: "#F4F4F2", neutral: true },
-  { key: "ivory", hex: "#EDE6D3" },
-  { key: "beige", hex: "#D9C4A2" },
-  { key: "peach", hex: "#D7A684" },
-  { key: "tan", hex: "#B08458" },
-  { key: "brown", hex: "#6E4527" },
-  { key: "darkBrown", hex: "#3F2819" },
-  { key: "red", hex: "#C8211B" },
-  { key: "crimson", hex: "#8E1B2A" },
-  { key: "orange", hex: "#F0701E" },
-  { key: "yellow", hex: "#F6D21C" },
-  { key: "gold", hex: "#C99B2E" },
-  { key: "olive", hex: "#6B7330" },
-  { key: "green", hex: "#2E8B3A" },
-  { key: "darkGreen", hex: "#1F4A2C" },
-  { key: "teal", hex: "#00808A" },
-  { key: "skyBlue", hex: "#5AB4E5" },
-  { key: "blue", hex: "#1F4FBF" },
-  { key: "navy", hex: "#1C2A4D" },
-  { key: "purple", hex: "#5B2C86" },
-  { key: "magenta", hex: "#C2185B" },
-  { key: "pink", hex: "#F29CC2" },
-];
 
 const OVER_CLUSTER = 12;
 const MIN_APART = 12; // ΔE2000 under which two picks are the same colour to the eye
