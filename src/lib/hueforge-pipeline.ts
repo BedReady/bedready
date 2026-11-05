@@ -26,6 +26,12 @@ export type HueForgeOptions = {
   maxColors?: number;
   /** Suggest only black, greys and white. Ignored when `filaments` or `owned` is given. */
   grayscale?: boolean;
+  /**
+   * The pixels the filament picker reads, when they should differ from the ones the relief is built
+   * from. The page passes the photo at one fixed grid here, so changing the print size changes the
+   * relief's resolution but not which filaments it asks for. Omitted: the picker reads `img`.
+   */
+  pickFrom?: ImageLike;
   layerH?: number;
   baseLayers?: number;
   /** Plate width in mm; height follows the image's aspect. */
@@ -85,8 +91,8 @@ export function imageToHueForgeU1(img: ImageLike, opts: HueForgeOptions = {}): H
     // From the maker's own spools: the engine's picker, which snaps to them. Otherwise the site's
     // picker (hueforge-palette.ts): a dark, a light and the photo's distinct hues, as real colours.
     : opts.owned?.length
-      ? suggestFilaments(img, opts.owned, heads)
-      : pickFilaments(img, heads, { grayscale: opts.grayscale }))
+      ? suggestFilaments(opts.pickFrom ?? img, opts.owned, heads)
+      : pickFilaments(opts.pickFrom ?? img, heads, { grayscale: opts.grayscale }))
     .filter((f) => f && hexToRgb(f.hex));
   if (!filaments.length) return null;
 

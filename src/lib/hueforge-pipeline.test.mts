@@ -104,3 +104,20 @@ test("black and white keeps a smooth gradient's tones instead of a few flat patc
   const darkHalf = new Set(row.slice(0, Math.floor(row.length / 2))).size;
   assert.ok(darkHalf >= 11, `the dark half has only ${darkHalf} tones`);
 });
+
+test("picks filaments from pickFrom when given, and builds the relief from the image", () => {
+  // A gray ramp to build, and a mostly red picture to pick from: the picks follow the picture.
+  const W = 40, H = 20, ramp = new Uint8ClampedArray(W * H * 4), red = new Uint8ClampedArray(W * H * 4);
+  for (let i = 0; i < W * H; i++) {
+    const v = Math.round(((i % W) / (W - 1)) * 255);
+    ramp.set([v, v, v, 255], i * 4);
+    red.set(i % W < 10 ? [10, 10, 10, 255] : i % W > 30 ? [245, 245, 245, 255] : [200, 30, 30, 255], i * 4);
+  }
+  const img = { data: ramp, width: W, height: H };
+  const own = imageToHueForgeU1(img)!;
+  const picked = imageToHueForgeU1(img, { pickFrom: { data: red, width: W, height: H } })!;
+  const isRed = (hex: string) => { const n = parseInt(hex.slice(1), 16); return (n >> 16) > 150 && ((n >> 8) & 255) < 90; };
+  assert.ok(!own.filaments.some((f) => isRed(f.hex)), "a gray ramp alone picks no red");
+  assert.ok(picked.filaments.some((f) => isRed(f.hex)), `pickFrom's red is picked: ${picked.filaments.map((f) => f.hex)}`);
+  assert.equal(picked.solve.width, W, "the relief is still built from the image");
+});
