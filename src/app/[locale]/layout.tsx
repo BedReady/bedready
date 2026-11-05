@@ -59,7 +59,10 @@ const encodeSans = Encode_Sans({
   subsets: ["latin"],
   axes: ["wdth"],
   variable: "--font-encode",
-  display: "swap",
+  // "optional", not "swap": the browser waits ~100 ms for the preloaded file and otherwise keeps the
+  // (metric-matched) fallback for this page view, so a slow first visit never repaints every heading
+  // when the font lands. The file is cached by the next page, which then draws in Encode Sans.
+  display: "optional",
 });
 // Arabic is a whole locale, so it gets a designed face rather than the per-glyph system fallback.
 // Not preloaded: only /ar pages draw from it, and the browser fetches it when they do.
