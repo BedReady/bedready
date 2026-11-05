@@ -87,3 +87,20 @@ test("an empty filament list means 'suggest for me', not 'none'", () => {
   assert.ok(r, "empty list should fall back to suggested filaments");
   assert.ok(r!.filaments.length >= 2);
 });
+
+test("black and white keeps a smooth gradient's tones instead of a few flat patches", () => {
+  // A dark-to-light ramp, the shading across a face. Too opaque a stack snapped its dark half to
+  // black and left a handful of steps (Nov 2026: a portrait came out as flat patches).
+  const W = 120, H = 30, data = new Uint8ClampedArray(W * H * 4);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const v = Math.round((x / (W - 1)) * 255), o = (y * W + x) * 4;
+    data[o] = data[o + 1] = data[o + 2] = v; data[o + 3] = 255;
+  }
+  const r = imageToHueForgeU1({ data, width: W, height: H }, { widthMm: 60, grayscale: true })!;
+  const row = Array.from({ length: r.solve.width }, (_, x) => r.solve.heights[Math.floor(r.solve.height / 2) * r.solve.width + x]);
+  // Measured on this ramp: 22 tones, 7 in the dark half before the fix; 32 and 14 after.
+  const steps = new Set(row).size;
+  assert.ok(steps >= 28, `only ${steps} tones across the ramp`);
+  const darkHalf = new Set(row.slice(0, Math.floor(row.length / 2))).size;
+  assert.ok(darkHalf >= 11, `the dark half has only ${darkHalf} tones`);
+});

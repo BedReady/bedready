@@ -90,9 +90,16 @@ export function imageToHueForgeU1(img: ImageLike, opts: HueForgeOptions = {}): H
     .filter((f) => f && hexToRgb(f.hex));
   if (!filaments.length) return null;
 
+  // Black and white reads its tones from layer depth alone, and the engine's front-lit default
+  // (tdScale 0.2) is too opaque for that: one layer of white over black jumped straight to a mid
+  // gray, the dark half of a face snapped to black, and the two grays were never used (Nov 2026,
+  // a portrait came out as flat patches). Half as opaque and 3.2 mm tall gives the shading back.
+  // Colour mode keeps the default: on the same test set this setting turned skin olive or yellow.
+  const gray = opts.grayscale && !opts.filaments?.length && !opts.owned?.length;
   const plan = planPainting(img, filaments, {
     layerH,
     widthMm,
+    ...(gray ? { tdScale: 0.5, heightMm: 3.2 } : {}),
     smooth: opts.smooth ?? 0,
     ...(opts.baseLayers != null ? { baseLayers: opts.baseLayers } : {}),
   });
