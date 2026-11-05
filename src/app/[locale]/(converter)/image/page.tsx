@@ -65,6 +65,9 @@ function previewUrl(px: Uint8ClampedArray, w: number, h: number): string | null 
   return c.toDataURL("image/png");
 }
 
+// The print width whose relief grid the filament picker always reads (the size field's default).
+const PICK_WIDTH_MM = 100;
+
 // Draw an image file onto a canvas downsampled so the LONGEST side is `grid` px, and read its RGBA.
 async function pixelsFromFile(file: File, grid: number): Promise<{ px: Uint8ClampedArray; w: number; h: number }> {
   const url = URL.createObjectURL(file);
@@ -199,6 +202,12 @@ export default function ImagePage() {
     setHfQuality(null);
     try {
       const px = await pixelsFromFile(file, reliefGrid(sizeMM, preview.w, preview.h, detail));
+      // The filaments are picked from the photo at the default 100 mm grid, whatever the print size.
+      // Picked from `px`, a portrait's skin flipped between tan and brown as the size changed, because
+      // the picker's clusters move with the pixel count (Nov 2026) — a maker resizing a print would be
+      // asked to load different spools for the same photo.
+      const pickGrid = reliefGrid(PICK_WIDTH_MM, preview.w, preview.h, detail);
+      const pickPx = pickGrid === Math.max(px.w, px.h) ? px : await pixelsFromFile(file, pickGrid);
       const base = fileName.replace(/\.[^.]+$/, "") || "image";
       // Loaded on demand: the relief engine plus the 572-key U1 settings template are dead weight
       // for everyone who only wants the flat panel.
@@ -207,6 +216,7 @@ export default function ImagePage() {
         maxColors: colors,
         grayscale: hfGray,
         widthMm: sizeMM,
+        pickFrom: { data: pickPx.px, width: pickPx.w, height: pickPx.h },
         // No extra smoothing: the optimised solve clips lone towers itself, and smoothing on top
         // blurs fine detail (the desktop app found crisp, smooth 0, clearly better).
         name: base,
