@@ -256,6 +256,8 @@
     "mlhNoteSame": "Die Mischung druckt in der normalen Schichthöhe des Modells.",
     "mlhNoteSet": "Slict nur die gemischten Bereiche in dieser Höhe neu — dort mehr, dünnere Schichten (längerer Druck).",
     "splitTitle": "In separate Dateien aufteilen",
+    "platesFitNote": "Insgesamt {count} Farben, aber keine der {plates} Platten braucht mehr als {slots} – es muss also nichts zusammengelegt werden. Erstelle eine Datei pro Platte, dann behält jede ihre eigenen Farben: Druck sie nacheinander und lade jeweils die Filamente der Platte.",
+    "platesFitButton": "Eine Datei pro Platte erstellen",
     "splitSub": "— jedes Teil mit eigenen Farben",
     "splitDesc": "Lädt eine .zip herunter, in der jedes Teil eine eigene Einzelplatten-.3mf ist, auf dem Bett zentriert und einzeln umgewandelt — sodass die 4 Slots jeder Datei nur die Farben dieses Teils enthalten. Drucke sie einzeln und wechsle das Filament zwischen den Teilen. Öffne jede in Snapmaker Orca.",
     "oneFilePer": "Eine Datei pro",

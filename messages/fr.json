@@ -256,6 +256,8 @@
     "mlhNoteSame": "Le mélange s'imprime à la hauteur de couche normale du modèle.",
     "mlhNoteSet": "Re-tranche uniquement les régions mélangées à cette hauteur — plus de couches, plus fines (impression plus longue).",
     "splitTitle": "Diviser en fichiers séparés",
+    "platesFitNote": "{count} couleurs au total, mais aucun des {plates} plateaux n’en utilise plus de {slots} : rien n’a besoin d’être fusionné. Convertissez un fichier par plateau et chacun garde ses couleurs : imprimez-les un par un, en chargeant les filaments de chaque plateau.",
+    "platesFitButton": "Convertir un fichier par plateau",
     "splitSub": "— chaque pièce avec ses propres couleurs",
     "splitDesc": "Télécharge un .zip où chaque pièce est son propre .3mf mono-plateau, centré sur le plateau et converti séparément — de sorte que les 4 emplacements de chaque fichier ne contiennent que les couleurs de cette pièce. Imprimez-les une à une en changeant le filament entre les pièces. Ouvrez chacune dans Snapmaker Orca.",
     "oneFilePer": "Un fichier par",

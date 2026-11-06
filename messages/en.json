@@ -256,6 +256,8 @@
     "mlhNoteSame": "Mix prints at the model's normal layer height.",
     "mlhNoteSet": "Re-slices just the mixed regions at this height — more, thinner layers there (longer print).",
     "splitTitle": "Split into separate files",
+    "platesFitNote": "{count} colors in all, but none of the {plates} plates uses more than {slots}, so nothing needs to merge. Convert one file per plate and each keeps its own colors: print them one at a time, loading each plate's filaments.",
+    "platesFitButton": "Convert one file per plate",
     "splitSub": "— each part with its own colors",
     "splitDesc": "Downloads a .zip where each part is its own single-plate .3mf, centered on the bed and converted on its own — so each file's 4 slots hold only that part's colors. Print them one at a time, swapping filament between parts. Open each in Snapmaker Orca.",
     "oneFilePer": "One file per",

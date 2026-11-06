@@ -256,6 +256,8 @@
     "mlhNoteSame": "La mezcla se imprime a la altura de capa normal del modelo.",
     "mlhNoteSet": "Vuelve a laminar solo las regiones mezcladas a esta altura — más capas y más finas allí (impresión más larga).",
     "splitTitle": "Dividir en archivos separados",
+    "platesFitNote": "{count} colores en total, pero ninguna de las {plates} placas usa más de {slots}, así que no hace falta fusionar nada. Convierte un archivo por placa y cada uno conserva sus colores: imprímelos uno a uno, cargando los filamentos de cada placa.",
+    "platesFitButton": "Convertir un archivo por placa",
     "splitSub": "— cada parte con sus propios colores",
     "splitDesc": "Descarga un .zip donde cada parte es su propio .3mf de una sola placa, centrado en la cama y convertido por separado — así las 4 ranuras de cada archivo contienen solo los colores de esa parte. Imprímelas de una en una, cambiando el filamento entre partes. Abre cada una en Snapmaker Orca.",
     "oneFilePer": "Un archivo por",

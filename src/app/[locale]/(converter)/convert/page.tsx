@@ -5,6 +5,7 @@ import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { nextPaint } from "@/lib/next-paint";
 import { peekPlates, extractPlate, type PlateInfo } from "@/lib/plates";
+import { platesFitSlots } from "@/lib/plate-colors";
 import { fitVerdict } from "@/lib/fit";
 import { track } from "@vercel/analytics";
 import { acquisitionProps } from "@/lib/acquisition";
@@ -925,7 +926,7 @@ export default function ConvertPage() {
   // ORIGINAL (removing the other parts' geometry), re-centered on the bed (multi-plate parts sit
   // off-bed on a global grid and the slicer rejects them), then converted on its own — so every
   // file gets its own reduced ≤4 palette (independent colors).
-  async function splitExport() {
+  async function splitExport(scope: "part" | "plate" = splitScope) {
     if (!file || !mesh) return;
     setStatus("working");
     setProgress(0);
@@ -936,7 +937,7 @@ export default function ConvertPage() {
 
       // Build groups of object ids (deduped — instances of one object stay together).
       let groups: { name: string; ids: number[] }[];
-      if (splitScope === "plate" && mesh.plates.length > 1) {
+      if (scope === "plate" && mesh.plates.length > 1) {
         groups = mesh.plates.map((pl, i) => ({
           name: `plate-${i + 1}`,
           ids: [...new Set(pl.partIndices.map((j) => mesh.parts[j].objectId))],
@@ -979,7 +980,7 @@ export default function ConvertPage() {
       }
       deliver(new Blob([zipFiles(out) as BlobPart]), `${base}.u1.parts.zip`);
       setMessage(t("splitDone", { count: out.length }));
-      track("convert_success", { ...acquisitionProps(), mode: "u1", profile: `split-${splitScope}`, colors: mesh.palette.length, reduced: true });
+      track("convert_success", { ...acquisitionProps(), mode: "u1", profile: `split-${scope}`, colors: mesh.palette.length, reduced: true });
       bumpConvertCount();
       setStatus("done");
     } catch (e) {
@@ -1118,8 +1119,17 @@ export default function ConvertPage() {
   const colorKey = JSON.stringify([slots, assign, fullSpectrum, physical, customFS, customBases, mixOverrides, bandSwap]);
   // These name the U1, its 4 slots, its bed or Full Spectrum; for another printer they were wrong.
   const U1_ONLY_WARNINGS = new Set(["warnMixedFilaments", "warnOverFourByLayer", "warnOverFourMerge", "warnTooBig", "warnLayoutTooBig"]);
+  // More colours than slots overall, but few enough on every plate: one file per plate keeps them all,
+  // so that is offered first and the "colours will merge" warnings, true only of a whole-file
+  // conversion, are dropped. U1 only, because the split export converts for the U1.
+  const platesFit = useMemo(
+    () => (targetId === "u1" && mesh && !mesh.skipped ? platesFitSlots(mesh, slotCount) : null),
+    [mesh, targetId, slotCount],
+  );
   const warnings = analysis
-    ? convertWarnings(analysis, mesh ? usedCount : undefined).filter((w) => targetId === "u1" || !U1_ONLY_WARNINGS.has(w.key))
+    ? convertWarnings(analysis, mesh ? usedCount : undefined)
+        .filter((w) => targetId === "u1" || !U1_ONLY_WARNINGS.has(w.key))
+        .filter((w) => !platesFit || (w.key !== "warnOverFourMerge" && w.key !== "warnOverFourByLayer"))
     : [];
   // Overhang advisory: recommend supports only when the geometry actually has steep unsupported faces.
   // The converter keeps the source file's own support setting (preserve mode) — this just tells the user
@@ -2278,6 +2288,23 @@ export default function ConvertPage() {
 
           `warnOverhangNo` is the only positive result the converter produces, so it takes the third
           style rather than being filed under "information". */}
+      {platesFit && (
+        <div className="notice notice-info mt-6">
+          <NoticeIcon level="info" />
+          <div>
+            <p>{t("platesFitNote", { plates: platesFit, slots: slotCount, count: usedCount })}</p>
+            <button
+              type="button"
+              onClick={() => { setSplitScope("plate"); splitExport("plate"); }}
+              disabled={status === "working" || meshLoading}
+              className="btn-primary btn-sm mt-2"
+            >
+              {t("platesFitButton")}
+            </button>
+          </div>
+        </div>
+      )}
+
       {warnings.length > 0 && (
         <div className="mt-6 space-y-2">
           {warnings.map((w, i) => {
@@ -2547,7 +2574,7 @@ export default function ConvertPage() {
           </div>
 
           <button
-            onClick={splitExport}
+            onClick={() => splitExport()}
             disabled={status === "working" || meshLoading}
             className="btn-secondary btn-md mt-4"
           >
