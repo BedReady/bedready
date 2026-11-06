@@ -220,7 +220,7 @@ export default function ConvertPage() {
   const [customFS, setCustomFS] = useState(false); // reproduce colors from a custom filament palette (CMYK)
   const [customBases, setCustomBases] = useState(["#29ABE2", "#ED1E79", "#FCEE21", "#111111"]); // default CMYK
   const [subdivide, setSubdivide] = useState(true); // Full Spectrum "Subdivide Mix Layer" — on by default
-  const [keepVlhTower, setKeepVlhTower] = useState(false); // variable layers: keep the prime tower (advanced)
+  const [keepVlhTower, setKeepVlhTower] = useState(false); // variable layers: keep the prime tower, drop the variable heights
   const [physical, setPhysical] = useState<number[]>([]); // palette indices loaded on the 4 physical heads
   const [physicalHex, setPhysicalHex] = useState<Record<number, string>>({}); // per-main hex override (real filament ≠ model colour)
   const [mixOverrides, setMixOverrides] = useState<Record<number, MixRecipe>>({}); // manual mix edits
@@ -392,6 +392,7 @@ export default function ConvertPage() {
       if (diff.sentinelFixed.length > 0) lines.push(t("diffSentinel", { count: diff.sentinelFixed.length }));
       if (diff.droppedForeignKeys > 0) lines.push(t("diffDropped", { count: diff.droppedForeignKeys }));
       if (diff.vlhGuard) lines.push(t("diffVlh"));
+      if (diff.vlhDropped) lines.push(t("diffVlhDropped"));
       if (diff.bedShift) lines.push(t("diffBedShift", { dx: diff.bedShift.dx, dy: diff.bedShift.dy }));
       if (diff.prusaPaint) lines.push(t("diffPrusaPaint"));
       if (diff.foreignNative) lines.push(t("diffForeignNative"));
@@ -846,7 +847,7 @@ export default function ConvertPage() {
       // Painted files only use the manual mapping when the preview loaded; otherwise
       // cleanThreeMF auto-reduces by painted area.
       const useManual = analysis && (analysis.encoding !== "painted" || mesh);
-      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, keepPrimeTowerVlh: keepVlhTower, ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, highFlow: highFlow && target === "u1" && nozzle === U1_TESTED_NOZZLE, colorMix: colorMix && !!targetMachine?.prusaColorMix, loadedSlots };
+      const opts = { ...(useManual ? { slots, assign } : {}), mode: profileMode, swapPauses, bandSwap, fullSpectrum: fullSpectrum || customFS, physical, physicalHex: physicalColors, mixes: mixOverrides, mixedLayerHeight, subdivide, vlhGuard: keepVlhTower ? ("keep-prime-tower" as const) : ("keep-layers" as const), ...(customFS ? { customPhysical: customBases } : {}), ...(target === "u1" && nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}), keepAllColours, filamentBrand, highFlow: highFlow && target === "u1" && nozzle === U1_TESTED_NOZZLE, colorMix: colorMix && !!targetMachine?.prusaColorMix, loadedSlots };
       const res = await cleanThreeMFAsync(file, target, opts);
       setSwapPlan(res.swaps ?? []);
       setDiff(res.diff);
@@ -2700,6 +2701,7 @@ export default function ConvertPage() {
             {diff.sentinelFixed.length > 0 && <li>{t("diffSentinel", { count: diff.sentinelFixed.length })}</li>}
             {diff.droppedForeignKeys > 0 && <li>{t("diffDropped", { count: diff.droppedForeignKeys })}</li>}
             {diff.vlhGuard && <li>{t("diffVlh")}</li>}
+            {diff.vlhDropped && <li>{t("diffVlhDropped")}</li>}
             {diff.bedShift && <li>{t("diffBedShift", { dx: diff.bedShift.dx, dy: diff.bedShift.dy })}</li>}
             {diff.prusaPaint && <li>{t("diffPrusaPaint")}</li>}
             {diff.foreignNative && <li>{t("diffForeignNative")}</li>}

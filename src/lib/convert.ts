@@ -633,6 +633,7 @@ export type DiffReport = {
   droppedForeignKeys: number; // foreign-only profile keys removed
   antiClobber: boolean; // inherits_group blanked / print_settings_id suffixed
   vlhGuard: boolean; // variable-layer-height present → prime tower off / tree→normal supports
+  vlhDropped: boolean; // vlhGuard "keep-prime-tower": the variable layer heights were removed instead
   bedShift: { dx: number; dy: number } | null; // model nudged off the U1's excluded bed border
   prusaPaint: boolean; // PrusaSlicer slic3rpe: paint attributes renamed to Orca's paint_* names
   foreignNative: boolean; // foreign producer (Prusa/Creality/…) rewritten so Orca loads it as native
@@ -838,6 +839,12 @@ function pinProcessKeys(out: Record<string, unknown>, keys: string[]): void {
   for (let i = 1; i < prev.length; i++) dss[i] = prev[i] ?? ""; // keep any per-filament diffs the source declared
   dss[0] = merged.join(";");
   out.different_settings_to_system = dss;
+}
+
+/** layer_config_ranges.xml without its per-range layer heights: each range keeps its other options
+ *  (the extruder a colour swap needs) and prints at the object's own layer height. */
+export function dropRangeLayerHeights(xml: string): string {
+  return xml.replace(/[ \t]*<option\s+opt_key="layer_height"\s*>[^<]*<\/option>[ \t]*\r?\n?/g, "");
 }
 
 function applyVlhGuard(out: Record<string, unknown>, diff?: DiffReport): void {
@@ -1527,6 +1534,13 @@ export type CleanOpts = {
   // Orca build slices VLH + a prime tower, or you'll fix supports yourself). The VLH profile itself is
   // preserved either way.
   keepPrimeTowerVlh?: boolean;
+  // What gives way when a file has variable layer height, since Orca slices a prime tower only when
+  // every object shares one layer height. "keep-layers" (default) is the guard above: tower off.
+  // "keep-prime-tower" keeps the creator's tower and supports and removes the variable heights
+  // instead (layer_heights_profile.txt, and the layer_height lines of layer_config_ranges.xml — the
+  // ranges themselves stay, because HueForge and by-height colour files use them for filament swaps).
+  // The same key as Khayt's lib/hueforge.js. Takes precedence over keepPrimeTowerVlh.
+  vlhGuard?: "keep-layers" | "keep-prime-tower";
   // Target printer to convert for. Defaults to the Snapmaker U1 (the only validated machine today).
   machine?: Machine;
   // >4 colours: write EVERY filament through untouched instead of merging to 4 / mixing / swap-pausing,
@@ -2215,6 +2229,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
           droppedForeignKeys: 0,
           antiClobber: false,
           vlhGuard: false,
+          vlhDropped: false,
           bedShift: null,
           prusaPaint,
           foreignNative: false,
@@ -2297,7 +2312,9 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   };
   // The VLH guard (prime tower off, tree→normal supports) applies only when the file has variable layers
   // AND the caller didn't opt to keep the tower. The VLH profile itself is preserved regardless.
-  const guardVlh = hasVLH && !opts?.keepPrimeTowerVlh;
+  const dropVlh = hasVLH && opts?.vlhGuard === "keep-prime-tower";
+  const guardVlh = hasVLH && !dropVlh && (opts?.vlhGuard === "keep-layers" || !opts?.keepPrimeTowerVlh);
+  if (dropVlh && diff) diff.vlhDropped = true;
   // High Flow goes on last, after the U1 clamps: its speeds sit above the standard ceilings on purpose.
   const highFlow = !!opts?.highFlow && target === "u1" && machine.id === U1.id;
   const finishConfig = (cfg: string): string => {
@@ -2351,6 +2368,15 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
 
     if (isStrippable(path)) {
       removed.push(path);
+      continue;
+    }
+
+    if (dropVlh && base === "layer_heights_profile.txt") {
+      removed.push(path);
+      continue;
+    }
+    if (dropVlh && base === "layer_config_ranges.xml") {
+      out[path] = strToU8(dropRangeLayerHeights(strFromU8(data)));
       continue;
     }
 

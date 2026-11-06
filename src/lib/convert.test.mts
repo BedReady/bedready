@@ -377,6 +377,47 @@ test("VLH guard: prime tower forced off + tree->normal when layer_config_ranges 
   assert.equal(c.support_type, "normal(auto)");
   assert.equal(r.diff?.vlhGuard, true);
 });
+test("vlhGuard keep-prime-tower: tower and tree supports kept, variable heights removed, swaps kept", async () => {
+  const ranges = `<?xml version="1.0" encoding="utf-8"?>
+<objects>
+ <object id="1">
+  <range min_z="0" max_z="0.64">
+   <option opt_key="extruder">1</option>
+   <option opt_key="layer_height">0.12</option>
+  </range>
+ </object>
+</objects>`;
+  const f = file3mf({
+    "Metadata/project_settings.config": project({ enable_prime_tower: "1", support_type: "tree(auto)" }),
+    "3D/3dmodel.model": model(),
+    "Metadata/layer_config_ranges.xml": ranges,
+    "Metadata/layer_heights_profile.txt": "object_id=1|0.0;0.2;0.2;0.1",
+  });
+  const r = await cleanThreeMF(f, "u1", { mode: "preserve", vlhGuard: "keep-prime-tower" });
+  const c = await cfgOf(r.blob);
+  assert.equal(c.enable_prime_tower, "1");
+  assert.equal(c.support_type, "tree(auto)");
+  assert.equal(r.diff?.vlhGuard, false);
+  assert.equal(r.diff?.vlhDropped, true);
+  const e = unzipSync(new Uint8Array(await r.blob.arrayBuffer()));
+  assert.ok(!Object.keys(e).some((p) => p.endsWith("layer_heights_profile.txt")), "adaptive profile removed");
+  const xml = strFromU8(e["Metadata/layer_config_ranges.xml"]);
+  assert.ok(!xml.includes('opt_key="layer_height"'), "range layer heights removed");
+  assert.ok(xml.includes('<option opt_key="extruder">1</option>'), "the range's filament swap stays");
+});
+
+test("vlhGuard keep-layers wins over the old keepPrimeTowerVlh flag", async () => {
+  const f = file3mf({
+    "Metadata/project_settings.config": project({ enable_prime_tower: "1" }),
+    "3D/3dmodel.model": model(),
+    "Metadata/layer_heights_profile.txt": "object_id=1|0.0;0.2",
+  });
+  const r = await cleanThreeMF(f, "u1", { mode: "preserve", vlhGuard: "keep-layers", keepPrimeTowerVlh: true });
+  assert.equal((await cfgOf(r.blob)).enable_prime_tower, "0");
+  const e = unzipSync(new Uint8Array(await r.blob.arrayBuffer()));
+  assert.ok(Object.keys(e).some((p) => p.endsWith("layer_heights_profile.txt")), "layers kept");
+});
+
 test("sliced-gcode reject: plate gcode + no mesh throws a clear error", async () => {
   const f = file3mf({
     "Metadata/project_settings.config": project(),
