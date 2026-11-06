@@ -1051,6 +1051,8 @@ export default function ConvertPage() {
         mode: profileMode,
         fullSpectrum: fullSpectrum ? "1" : "0",
         swapPauses: swapPauses ? "1" : "0",
+        // Sent only when ticked, so a server that predates the option sees the request it always did.
+        ...(keepVlhTower ? { vlhGuard: "keep-prime-tower" } : {}),
       });
       const res = await fetch(`${convertApi("/api/convert")}?${qs}`, { method: "POST", body: fd });
       if (!res.ok) {
