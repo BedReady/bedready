@@ -100,12 +100,16 @@ export function imageToHueForgeU1(img: ImageLike, opts: HueForgeOptions = {}): H
   // (tdScale 0.2) is too opaque for that: one layer of white over black jumped straight to a mid
   // gray, the dark half of a face snapped to black, and the two grays were never used (Nov 2026,
   // a portrait came out as flat patches). Half as opaque and 3.2 mm tall gives the shading back.
-  // Colour mode keeps the default: on the same test set this setting turned skin olive or yellow.
+  // Colour gets the same taller relief, a little less opacity than black and white (0.5 turned
+  // skin olive or yellow), and lightness-first matching (chromaWeight), so a face's shading
+  // isn't broken up by pixels jumping to a closer hue at the wrong depth. Judged by eye on five
+  // portraits: more mid-tones on every face, no new colour casts.
   const gray = opts.grayscale && !opts.filaments?.length && !opts.owned?.length;
   const plan = planPainting(img, filaments, {
     layerH,
     widthMm,
-    ...(gray ? { tdScale: 0.5, heightMm: 3.2 } : {}),
+    heightMm: 3.2,
+    ...(gray ? { tdScale: 0.5 } : { tdScale: 0.3, chromaWeight: 0.5 }),
     smooth: opts.smooth ?? 0,
     ...(opts.baseLayers != null ? { baseLayers: opts.baseLayers } : {}),
   });

@@ -62,7 +62,7 @@ export type Triangle = Vec3[];
 export type Mesh = { triangles: Triangle[]; sizeMm: { x: number; y: number; z: number }; triangleCount: number };
 /** One options bag shared across the engine; every field is optional with a documented default. */
 export type HueForgeOpts = {
-  anneal?: number; baseLayers?: number; cellMm?: number; denoise?: number; dither?: boolean | number;
+  anneal?: number; baseLayers?: number; cellMm?: number; chromaWeight?: number; denoise?: number; dither?: boolean | number;
   heightMm?: number; layerH?: number; monotonic?: boolean; passes?: number; reps?: number;
   seed?: number; smooth?: number; switchPenalty?: number; tdScale?: number; totalLayers?: number;
   widthMm?: number;
@@ -683,17 +683,20 @@ function quantizeTargets(img: ImageLike, maxSide?: number): Rep[] {
 
 // squared Euclidean Lab distance — cheap inner-loop metric for the search (ΔE00 is used
 // for the final preview/reporting where accuracy, not speed, matters).
-function labDist2(a: KC.Lab, b: KC.Lab): number { const dl = a.L - b.L, da = a.a - b.a, db = a.b - b.b; return dl * dl + da * da + db * db; }
+// `cw` < 1 matches lightness before hue: a stack's tones come from its depth, so a pixel that
+// lands on the right lightness reads as shading even when the hue is a little off, while a
+// closer hue at the wrong lightness reads as a blotch (see chromaWeight in planPainting).
+function labDist2(a: KC.Lab, b: KC.Lab, cw = 1): number { const dl = a.L - b.L, da = a.a - b.a, db = a.b - b.b; return dl * dl + cw * (da * da + db * db); }
 
 /** Weighted mean nearest-palette distance of the reps (only heights k ≥ baseLayers are
  *  printable). Uses squared-Lab by default; ΔE00 when exact:true. */
-function sequenceLoss(reps: Rep[], palette: PaletteEntry[], baseLayers: number, exact?: boolean): number {
+function sequenceLoss(reps: Rep[], palette: PaletteEntry[], baseLayers: number, exact?: boolean, cw = 1): number {
   let sum = 0, wsum = 0;
   for (let r = 0; r < reps.length; r++) {
     const rep = reps[r]; let best = Infinity;
     for (let j = 0; j < palette.length; j++) {
       if (palette[j].k < baseLayers) continue;
-      const d = exact ? KC.ciede2000(rep.lab, palette[j].lab) : labDist2(rep.lab, palette[j].lab);
+      const d = exact ? KC.ciede2000(rep.lab, palette[j].lab) : labDist2(rep.lab, palette[j].lab, cw);
       if (d < best) best = d;
     }
     if (best !== Infinity) { sum += (exact ? best : Math.sqrt(best)) * rep.w; wsum += rep.w; }
@@ -731,6 +734,7 @@ function optimizeSequence(reps: Rep[], filaments: Filament[], opts?: HueForgeOpt
   // just enough to prefer a clean plan when two are equal in colour fidelity.
   const switchPenalty = opts.switchPenalty != null ? Number(opts.switchPenalty) : 0.04;
   const tdScale = Number(opts.tdScale) > 0 ? Number(opts.tdScale) : 0.2;
+  const cw = Number(opts.chromaWeight) > 0 ? Number(opts.chromaWeight) : 1;
   const tds = filaments.map((f) => (Number(f.td) > 0 ? Number(f.td) : defaultTd(f.hex)));
   let baseIdx = 0; for (let i = 1; i < nFil; i++) if (tds[i] < tds[baseIdx]) baseIdx = i;
   if (nFil <= 1) { return { seq: new Array(totalLayers).fill(0), loss: 0, baseIdx: 0 }; }
@@ -743,7 +747,7 @@ function optimizeSequence(reps: Rep[], filaments: Filament[], opts?: HueForgeOpt
   if (opts.monotonic === true) {
     const order = filaments.map((f, i) => i).sort((a, b) => luminance(filaments[a].hex) - luminance(filaments[b].hex));
     const nSeg = order.length;
-    const mcost = (s: number[]) => sequenceLoss(reps, compositeSequence(filaments, s, layerH, tdScale), baseLayers, false);
+    const mcost = (s: number[]) => sequenceLoss(reps, compositeSequence(filaments, s, layerH, tdScale), baseLayers, false, cw);
     const build = (bp: number[]) => {
       const s = new Array(totalLayers);
       for (let k = 0; k < baseLayers; k++) s[k] = order[0];
@@ -772,7 +776,7 @@ function optimizeSequence(reps: Rep[], filaments: Filament[], opts?: HueForgeOpt
   }
 
   const switches = (s: number[]) => { let c = 0; for (let k = 1; k < s.length; k++) if (s[k] !== s[k - 1]) c++; return c; };
-  const cost = (s: number[]) => sequenceLoss(reps, compositeSequence(filaments, s, layerH, tdScale), baseLayers, false) + switchPenalty * switches(s);
+  const cost = (s: number[]) => sequenceLoss(reps, compositeSequence(filaments, s, layerH, tdScale), baseLayers, false, cw) + switchPenalty * switches(s);
 
   const seq = initSequence(filaments, totalLayers, baseLayers, baseIdx);
   let best = cost(seq);
@@ -833,6 +837,7 @@ function solveFromSequence(img: ImageLike, filaments: Filament[], seq: number[],
   const baseLayers = Math.max(1, Number(opts.baseLayers) | 0);
   const dither = opts.dither !== false;
   const tdScale = Number(opts.tdScale) > 0 ? Number(opts.tdScale) : 0.2;
+  const cw = Number(opts.chromaWeight) > 0 ? Number(opts.chromaWeight) : 1;
   const palette = compositeSequence(filaments, seq, layerH, tdScale).filter((p) => p.k >= baseLayers);
   const { data, width, height } = img;
   const n = width * height;
@@ -866,7 +871,7 @@ function solveFromSequence(img: ImageLike, filaments: Filament[], seq: number[],
       const tb = dither ? clamp255(data[o + 2] + errB![i]) : data[o + 2];
       const lab = KC.rgbToLab({ r: tr, g: tg, b: tb });
       let best = 0, bestD = Infinity;
-      for (let j = 0; j < palLab.length; j++) { const d = labDist2(lab, palLab[j]); if (d < bestD) { bestD = d; best = j; } }
+      for (let j = 0; j < palLab.length; j++) { const d = labDist2(lab, palLab[j], cw); if (d < bestD) { bestD = d; best = j; } }
       const k = palette[best].k;
       heights[i] = k; idxArr[i] = best; if (k < minK) minK = k; if (k > maxK) maxK = k;
       const rgb = palRgb[best]!;
@@ -1128,9 +1133,9 @@ function planPainting(img: ImageLike, filaments: Filament[], opts?: HueForgeOpts
     // sequence (each colour in one height band, ordered by lightness) so a smooth tone
     // maps to a smooth top colour. This is the single biggest print-cleanliness win.
     switchPenalty: opts.switchPenalty != null ? opts.switchPenalty : 1.0,
-    anneal: opts.anneal, seed: opts.seed, tdScale,
+    anneal: opts.anneal, seed: opts.seed, tdScale, chromaWeight: opts.chromaWeight,
   });
-  const solve = solveFromSequence(solveImg, fils, seq, { layerH, baseLayers, dither: opts.dither === true, tdScale, smooth: opts.smooth });
+  const solve = solveFromSequence(solveImg, fils, seq, { layerH, baseLayers, dither: opts.dither === true, tdScale, chromaWeight: opts.chromaWeight, smooth: opts.smooth });
   const bands = sequenceToBands(seq, fils, layerH);
   return {
     seq, bands, solve, filaments: fils, layerH, baseLayers, totalLayers, baseIdx,
