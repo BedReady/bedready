@@ -596,6 +596,22 @@ function isU1IdentityKey(k: string): boolean {
   return U1_IDENTITY_KEYS.has(k);
 }
 
+// The U1 has 4 heads AND 4 filament slots, so its reference profile's 4-long arrays are of two kinds.
+// These are per EXTRUDER (Orca's printer-preset extruder options): they stay one per head however
+// many filaments a file declares. Nozzle and extruder_offset keys are identity and excluded already.
+const PER_EXTRUDER_KEYS = new Set([
+  "extruder_colour", "deretraction_speed", "long_retractions_when_cut",
+  "max_layer_height", "min_layer_height", "retract_before_wipe", "retract_length_toolchange",
+  "retract_lift_above", "retract_lift_below", "retract_lift_enforce", "retract_restart_extra",
+  "retract_restart_extra_toolchange", "retract_when_changing_layer", "retraction_distances_when_cut",
+  "retraction_length", "retraction_minimum_travel", "retraction_speed", "travel_slope", "wipe",
+  "wipe_distance", "z_hop", "z_hop_types", "z_hop_when_prime",
+]);
+/** A per-FILAMENT key: one entry per filament in the reference's 4-slot shape, not identity, not per extruder. */
+function isPerFilamentKey(k: string, ref: unknown): boolean {
+  return Array.isArray(ref) && ref.length === 4 && !isU1IdentityKey(k) && !PER_EXTRUDER_KEYS.has(k);
+}
+
 /** Map a source per-filament array (length = source filament count) to exactly 4 U1 slots. `sources` from slotSources. */
 function mapTo4<T>(arr: T[], sources: number[], u1Arr: T[]): T[] {
   const out: T[] = [];
@@ -1193,6 +1209,23 @@ function buildFullSpectrumConfig(
       out[k] = keptOld.map((oldI) => v[oldI] ?? v[0]);
     }
   }
+  // Every OTHER per-filament array still has the reference's 4 entries: the keys a compact config
+  // leaves out, and any the source wrote at another length. Keep-all-colours with 6 filaments wrote 95
+  // of them 4 long (2026-11-07 review). Each slot takes the source's own value where it has one, else
+  // the reference's, which the material preset below then corrects for that slot's material.
+  // The declared nozzle range is identity (always the reference's) but still one entry per filament.
+  const refFilled: [string, number][] = []; // source keys whose slot came from the reference
+  for (const k of Object.keys(out)) {
+    const ref = u1[k], v = out[k];
+    const range = k.startsWith("nozzle_temperature_range") && Array.isArray(ref) && ref.length === 4;
+    if (!(isPerFilamentKey(k, ref) || range) || !Array.isArray(v) || v.length === keptOld.length) continue;
+    const sv = !range && Array.isArray(src[k]) ? (src[k] as unknown[]) : null;
+    out[k] = keptOld.map((oldI, j) => {
+      if (sv && oldI < sv.length) return sv[oldI];
+      if (sv) refFilled.push([k, j]);
+      return (ref as unknown[])[j] ?? (ref as unknown[])[0];
+    });
+  }
   const srcColours = (src.filament_colour as string[]) ?? [];
   const srcTypes = sourceFilamentTypes(src);
   const baseId = (Array.isArray(u1.filament_settings_id) ? (u1.filament_settings_id[0] as string) : "") || "Generic PLA";
@@ -1203,6 +1236,12 @@ function buildFullSpectrumConfig(
     filamentPresetId(srcTypes[i] || "PLA", brand, srcSid[i] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${srcTypes[i] || "PLA"}`)),
   );
   fillMissingFromPreset(out, src, machine);
+  if (isU1Reference(machine)) {
+    for (const [k, j] of refFilled) {
+      const v = u1FilamentPreset((out.filament_type as string[])[j])?.[k];
+      if (v !== undefined && !PRESET_FILL_SKIP.has(k)) (out[k] as unknown[])[j] = v;
+    }
+  }
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
