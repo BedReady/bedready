@@ -22,7 +22,8 @@
     "themeToLight": "Zum hellen Design wechseln",
     "themeToDark": "Zum dunklen Design wechseln",
     "themeLight": "Heller Modus",
-    "themeDark": "Dunkler Modus"
+    "themeDark": "Dunkler Modus",
+    "menu": "Menü"
   },
   "footer": {
     "tagline": "geräteunabhängig gedacht.",
@@ -356,8 +357,8 @@
     "mfAppliedReused": "{count} geladen — du besitzt aber weniger Spulen als Köpfe, daher {reused} doppelt. Füge mehr Filamente hinzu für eine bessere Mischung.",
     "mfDuplicate": "Du hast bereits ein Filament in dieser Farbe.",
     "mfFull": "Das ist das Maximum von {max} Filamenten — entferne zuerst eines.",
-    "privacyBadge": "Deine Datei verlässt diese Seite nie",
-    "privacyDetail": "Kein Upload, kein Server, nichts gespeichert — weder das Modell noch seine Einstellungen, nicht einmal der Dateiname. Die Konvertierung läuft auf deinem eigenen Rechner und ist damit sicher für gekaufte Modelle und Dateien ohne Weitergaberecht.",
+    "privacyBadge": "Deine Datei bleibt auf dieser Seite",
+    "privacyDetail": "Die Konvertierung läuft auf deinem eigenen Rechner: Modell, Einstellungen und Dateiname bleiben in deinem Browser, sicher also für gekaufte Modelle und Dateien ohne Weitergaberecht. Wir zählen Konvertierungen anonym und nutzen cookiefreie Statistiken; beide sehen die Datei nie. Hochgeladen wird eine Datei nur, wenn du es willst: über den optionalen Server-Konverter oder wenn du uns eine fehlgeschlagene Datei schickst.",
     "warnMixedFilaments": "Diese Datei mischt {families}-Filamente. Am Reinigungsturm des U1 können sie aneinander schlecht haften (z. B. haftet PLA nicht an PETG → „Spaghetti“). Stelle in Orca das Filament des Reinigungsturms auf dein Hauptmaterial statt auf „Default“.",
     "warnPaintedEdits": "Die Farben sind auf das Netz gemalt. Nutze nach dem Konvertieren in Orca nicht „In Objekte/Teile aufteilen“ oder das Schneidewerkzeug — dabei gehen die gemalten Farben verloren.",
     "warnOverFourByLayer": "{count, plural, one {# Farbe} other {# Farben}} — mehr als die 4 Slots des U1. Aktiviere unten die M600-Spulenwechselpausen, um alle {count} zu behalten; ohne sie werden die am wenigsten genutzten Farben mit ihrer nächstliegenden zusammengelegt.",
