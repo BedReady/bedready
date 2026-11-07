@@ -46,7 +46,7 @@ export default function ConvertCount({ className }: { className?: string }) {
   if (count == null || count < MIN_TO_SHOW) {
     return (
       <p className={className} aria-hidden="true">
-        {" "}
+        {"\u00a0"}
       </p>
     );
   }
