@@ -37,6 +37,7 @@ import { SOURCE_REPO_URL } from "@/lib/links";
 import NoticeIcon from "@/components/NoticeIcon";
 import BeforeAfter from "@/components/BeforeAfter";
 import PlateHeads, { PlateCorners } from "@/components/PlateHeads";
+import EgressPanel from "@/components/EgressPanel";
 
 // Fire-and-forget global "converter used" counter. Goes through our own rate-limited route rather
 // than calling the RPC directly, so `bump_counter` can be locked down to the service role — the
@@ -75,10 +76,11 @@ const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
   loading: () => <div className="mt-4 aspect-square w-full animate-pulse rounded-lg border border-line bg-surface-2" />,
 });
 import ShareBedReady from "@/components/ShareBedReady";
-import ContributeToLibrary from "@/components/ContributeToLibrary";
+import VerifiedProfileFinder from "@/components/VerifiedProfileFinder";
 import VerifiedForYourPrinter from "@/components/VerifiedForYourPrinter";
 import ConvertCapture from "@/components/ConvertCapture";
 import ExtensionDoneCard from "@/components/ExtensionDoneCard";
+import LoadSheetButton from "@/components/LoadSheetButton";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
 import { planColorMix } from "@/lib/prusa-project";
@@ -209,6 +211,13 @@ export default function ConvertPage() {
   const [keepAllColours, setKeepAllColours] = useState(false);
   // Arrived with ?ext= — the file came from the extension, so the done screen doesn't offer it.
   const [fromExtension, setFromExtension] = useState(false);
+  // The model page a file came from (`?src=`, set by the extension), for the done screen's
+  // verified-profile lookup. Validated where it is used (model-source.ts), never trusted here.
+  const [modelSource, setModelSource] = useState<string | null>(null);
+  useEffect(() => {
+    const src = new URLSearchParams(window.location.search).get("src");
+    if (src) setModelSource(src);
+  }, []);
   // Which library preset each slot is NAMED after. Naming only — no print setting changes.
   const [filamentBrand, setFilamentBrand] = useState<FilamentBrand>("source");
   const [highFlow, setHighFlow] = useState(false);
@@ -1462,6 +1471,8 @@ export default function ConvertPage() {
                   ),
                 })}
               </p>
+              {/* The claim above, checkable live: every request this page has sent, with its size. */}
+              <EgressPanel className="mt-6 max-w-xl" />
             </div>
             <BeforeAfter />
           </section>
@@ -2761,6 +2772,13 @@ export default function ConvertPage() {
             </svg>
             {t("downloadAgain")}
           </button>
+          {/* One page for beside the printer: which filament in which head, and when to swap. */}
+          <LoadSheetButton
+            blob={result.blob}
+            fileName={result.name}
+            printerName={MACHINES[targetId]?.name ?? "Snapmaker U1"}
+            swaps={swapPlan.map((s) => s.label)}
+          />
         </div>
       )}
       {status === "done" && file && (
@@ -2780,6 +2798,7 @@ export default function ConvertPage() {
           </p>
         )
       )}
+      {status === "done" && <EgressPanel className="mt-3" />}
       {status === "done" && diff && (
         <section className="mt-3 rounded-lg border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted">
           <h2 className="font-semibold text-fg">{t("whatChanged")}</h2>
@@ -2845,7 +2864,13 @@ export default function ConvertPage() {
       {/* The extension first among the asks: it is the one that brings a person back on their next
           download (ExtensionDoneCard says when it stays quiet). */}
       {status === "done" && <ExtensionDoneCard fromExtension={fromExtension} />}
-      {status === "done" && <ContributeToLibrary />}
+      {status === "done" && (
+        <VerifiedProfileFinder
+          initialSource={modelSource}
+          printerName={MACHINES[targetId]?.name ?? "Snapmaker U1"}
+          printerBrand={MACHINES[targetId]?.vendor ?? "Snapmaker"}
+        />
+      )}
       {status === "done" && (
         <VerifiedForYourPrinter printerModel={MACHINES[targetId]?.printerModel} printerName={MACHINES[targetId]?.name} />
       )}
@@ -2897,6 +2922,7 @@ export default function ConvertPage() {
               )}
             </div>
           )}
+          <EgressPanel className="mt-4" />
         </div>
       )}
     </main>

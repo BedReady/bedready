@@ -425,7 +425,27 @@
     "extCardTitle": "ダウンロードのたびに自動で変換",
     "extCardBody": "無料の BedReady 拡張機能は、MakerWorld・Printables・Thingiverse から .3mf をダウンロードした時点でブラウザー内で変換します。",
     "extCardCta": "{browser} に追加",
-    "extCardDismiss": "今はしない"
+    "extCardDismiss": "今はしない",
+    "loadSheetButton": "装填シートを印刷",
+    "loadSheetTitle": "装填シート",
+    "loadSheetPrinter": "プリンター",
+    "loadSheetHead": "ヘッド",
+    "loadSheetColor": "色",
+    "loadSheetMaterial": "素材",
+    "loadSheetPreset": "プリセット",
+    "loadSheetSwaps": "スプール交換",
+    "loadSheetFooter": "BedReady で作成 · bedready.io",
+    "vpTitle": "検証済みプロファイルを探す",
+    "vpBody": "MakerWorld・Printables・Thingiverse のモデルリンクを貼り付けてください。{printer} 向けにすでに検証されたプロファイルがあれば、ここに表示されます。",
+    "vpInputLabel": "モデルのリンク",
+    "vpFind": "検索",
+    "vpLooking": "検索中…",
+    "vpFound": "MakerRun で検証済み：",
+    "vpNone": "このモデルの検証済みプロファイルはまだありません。",
+    "vpRequest": "リクエストする",
+    "vpInvalid": "MakerWorld・Printables・Thingiverse のモデルリンクではありません。",
+    "vpUnavailable": "現在検索を利用できません。後でもう一度お試しください。",
+    "vpDesigner": "このモデルの作者です"
   },
   "help": {
     "title": "ヘルプ & FAQ",
@@ -1419,7 +1439,11 @@
       "pink": "ピンク"
     },
     "hfPreview": "正面から照らした印刷レリーフのシミュレーションです。実際の仕上がりはフィラメントと照明によって変わります。",
-    "hfLooseMatch": "一致はおおまかです。この画像には 4 本のフィラメントでは届かない色が含まれます。仕上がりは複製というより解釈になります。"
+    "hfLooseMatch": "一致はおおまかです。この画像には 4 本のフィラメントでは届かない色が含まれます。仕上がりは複製というより解釈になります。",
+    "copyRecipe": "設定リンクをコピー",
+    "recipeCopied": "リンクをコピーしました",
+    "recipeNote": "共有されるのはこの設定だけで、写真は含まれません。",
+    "recipeApplied": "共有リンクの設定を適用しました。写真はこのページから出ません。"
   },
   "libraryTabs": {
     "label": "ライブラリの表示",
@@ -1592,5 +1616,72 @@
   "sponsor": {
     "label": "スポンサー",
     "visit": "{name} を見る"
+  },
+  "egress": {
+    "title": "このページから送られたもの",
+    "fileBytes": "送信されたファイルのバイト数: {size}",
+    "intro": "このページを開いてから送られたすべてのリクエストを、送信と同時にブラウザー内で記録しています。{threshold} を超えるリクエストはファイルのバイトとして数えるので、もしファイルが送られればここに表示されます。",
+    "empty": "まだリクエストはありません。",
+    "sent": "{size} 送信",
+    "sizeUnknown": "サイズ不明",
+    "bytes": "{n} B",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "アドレスを表示",
+    "chosenTag": "あなたが選んだアップロード",
+    "unexpectedTag": "想定外のアップロード",
+    "chosenUpload": "あなたが選んだアップロードで {size} を送信しました: {what}。そのボタンを押したためです。",
+    "unexpectedUpload": "このページが把握していないリクエストで {size} が送られました。本来は起こらないはずです。下のアドレスを添えてお知らせください。",
+    "unknownNote": "あるリクエストはストリームを含んでおり、読み取らずにサイズを測れません。読み取るとリクエストが変わってしまうため、サイズ不明として表示しています。",
+    "howFootnote": "fetch、sendBeacon、XMLHttpRequest と、ブラウザーのダウンロード一覧を監視して記録しています。トークンが表示されないよう、クエリ文字列は省いています。ブラウザーの開発者ツール（Network タブ）でも同じリクエストを確認できます。",
+    "kind": {
+      "counter": {
+        "label": "匿名の変換カウンター",
+        "why": "公開している変換回数に 1 を加えます。ファイルもあなたに関する情報も含みません。"
+      },
+      "counterRead": {
+        "label": "変換回数の取得",
+        "why": "公開している変換回数を表示のために読み込みます。ダウンロードのみで、何も送りません。"
+      },
+      "analytics": {
+        "label": "Vercel アナリティクスのイベント",
+        "why": "Cookie を使わないアクセス解析です。どのページが表示され、どのボタンが使われたかだけで、ファイルは含みません。"
+      },
+      "sponsor": {
+        "label": "スポンサー情報の取得",
+        "why": "現在のスポンサーを問い合わせます。ダウンロードのみで、あなたやファイルに関する情報は送りません。"
+      },
+      "verified": {
+        "label": "検証済みデザインの取得",
+        "why": "選んだプリンター向けの検証済み MakerRun デザインを取得します。ダウンロードのみで、ファイルは送りません。"
+      },
+      "serverFallback": {
+        "label": "サーバーでの変換",
+        "why": "サーバーで変換するボタンを押したため、ファイルがアップロードされました。メモリ上で変換され、保存はされません。"
+      },
+      "report": {
+        "label": "失敗レポート",
+        "why": "変換ツールを直すために、このファイルを送るボタンを押しました。"
+      },
+      "waitlist": {
+        "label": "メール登録",
+        "why": "お知らせ欄に入力したメールアドレスです。"
+      },
+      "pageData": {
+        "label": "リンク先の先読み",
+        "why": "画面上のリンク先ページを先読みします。ダウンロードのみで、何も送りません。"
+      },
+      "pageCode": {
+        "label": "ページのコード",
+        "why": "必要に応じて読み込まれるこのページの一部（スクリプト、スタイル、フォント、3D プレビュー）です。ダウンロードのみです。"
+      },
+      "image": {
+        "label": "画像",
+        "why": "デザインのサムネイルなど、ページに表示される画像です。ダウンロードのみです。"
+      },
+      "other": {
+        "label": "その他のリクエスト",
+        "why": "このページが名前を把握していないリクエストです。調べられるようにアドレスを表示しています。"
+      }
+    }
   }
 }

@@ -149,6 +149,9 @@ export const LIBRARY_ROUTES = [
   "account", "admin", "age", "app", "app-link", "changelog", "collections", "designs", "downloads",
   "feedback", "following", "for-makers", "help", "licenses", "login", "makers", "missing",
   "notifications", "privacy", "saves", "terms", "upload", "verified",
+  // On its own line, not sorted in: origin.ts is drift-checked one-way against bedready.io's copy,
+  // so the line above must stay identical to theirs until they add "requests" too.
+  "requests",
 ] as const;
 
 /** A storefront is `/@handle` — a rewrite, not a directory, so it can never be enumerated. */

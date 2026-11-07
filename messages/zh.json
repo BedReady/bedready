@@ -425,7 +425,27 @@
     "extCardTitle": "每次下载自动转换",
     "extCardBody": "免费的 BedReady 扩展会在你从 MakerWorld、Printables 或 Thingiverse 下载 .3mf 时，直接在浏览器中完成转换。",
     "extCardCta": "添加到 {browser}",
-    "extCardDismiss": "暂不"
+    "extCardDismiss": "暂不",
+    "loadSheetButton": "打印装料单",
+    "loadSheetTitle": "装料单",
+    "loadSheetPrinter": "打印机",
+    "loadSheetHead": "喷头",
+    "loadSheetColor": "颜色",
+    "loadSheetMaterial": "材料",
+    "loadSheetPreset": "预设",
+    "loadSheetSwaps": "换料暂停",
+    "loadSheetFooter": "由 BedReady 生成 · bedready.io",
+    "vpTitle": "查找已验证的配置",
+    "vpBody": "粘贴模型在 MakerWorld、Printables 或 Thingiverse 上的链接。如果已有人在 {printer} 上验证过它的配置，会显示在这里。",
+    "vpInputLabel": "模型链接",
+    "vpFind": "查找",
+    "vpLooking": "查找中…",
+    "vpFound": "已在 MakerRun 验证：",
+    "vpNone": "此模型还没有已验证的配置。",
+    "vpRequest": "请求一个",
+    "vpInvalid": "这不是 MakerWorld、Printables 或 Thingiverse 的模型链接。",
+    "vpUnavailable": "查找暂时不可用，请稍后再试。",
+    "vpDesigner": "我是这个模型的设计者"
   },
   "help": {
     "title": "帮助与常见问题",
@@ -1419,7 +1439,11 @@
       "pink": "粉色"
     },
     "hfPreview": "正面光照下打印浮雕的模拟效果。实际打印效果取决于你的耗材和光线。",
-    "hfLooseMatch": "匹配较为粗略——这张图片需要四种耗材无法呈现的颜色。成品更像是一种诠释，而非复制。"
+    "hfLooseMatch": "匹配较为粗略——这张图片需要四种耗材无法呈现的颜色。成品更像是一种诠释，而非复制。",
+    "copyRecipe": "复制设置链接",
+    "recipeCopied": "链接已复制",
+    "recipeNote": "只分享这些设置，绝不包含你的照片。",
+    "recipeApplied": "已应用共享链接中的设置。你的照片不会离开此页面。"
   },
   "libraryTabs": {
     "label": "库视图",
@@ -1592,5 +1616,72 @@
   "sponsor": {
     "label": "赞助商",
     "visit": "访问 {name}"
+  },
+  "egress": {
+    "title": "这个页面发出了什么",
+    "fileBytes": "已发送的文件字节：{size}",
+    "intro": "本页面自打开以来发出的每一个请求，都会在发生时记录在你的浏览器里。任何超过 {threshold} 的请求都计为文件字节，所以如果你的文件被发送，它会出现在这里。",
+    "empty": "还没有请求。",
+    "sent": "已发送 {size}",
+    "sizeUnknown": "大小未知",
+    "bytes": "{n} B",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "显示地址",
+    "chosenTag": "你选择的上传",
+    "unexpectedTag": "意外的上传",
+    "chosenUpload": "在你选择的上传中发送了 {size}：{what}。这是因为你按下了那个按钮。",
+    "unexpectedUpload": "有 {size} 通过一个本页面不认识的请求发了出去。这不应该发生，请告诉我们，并附上下面列出的地址。",
+    "unknownNote": "有一个请求携带的是数据流，不读取就无法测量大小，而读取会改变这个请求。因此它显示为大小未知。",
+    "howFootnote": "通过监视 fetch、sendBeacon 和 XMLHttpRequest，以及浏览器的下载列表来记录。查询字符串已省略，以免显示任何令牌。浏览器的开发者工具（Network 标签页）会显示相同的请求。",
+    "kind": {
+      "counter": {
+        "label": "匿名转换计数器",
+        "why": "让公开的转换次数加一。不包含任何文件，也不包含关于你的任何信息。"
+      },
+      "counterRead": {
+        "label": "读取转换次数",
+        "why": "读取公开的转换次数以便显示。只是下载；不发送任何内容。"
+      },
+      "analytics": {
+        "label": "Vercel 分析事件",
+        "why": "不使用 Cookie 的统计：看了哪个页面、用了哪些按钮。从不包含文件。"
+      },
+      "sponsor": {
+        "label": "读取赞助商",
+        "why": "询问当前谁在赞助本站。只是下载；不会附带关于你或你的文件的任何信息。"
+      },
+      "verified": {
+        "label": "读取已验证设计",
+        "why": "为你选择的打印机获取已验证的 MakerRun 设计。只是下载；不会发送你的文件。"
+      },
+      "serverFallback": {
+        "label": "服务器转换",
+        "why": "你按下了在我们服务器上转换的按钮，所以文件被上传了。它在内存中转换，不会被保存。"
+      },
+      "report": {
+        "label": "失败报告",
+        "why": "你按下了把这个文件发给我们的按钮，好让我们修复转换器。"
+      },
+      "waitlist": {
+        "label": "邮箱登记",
+        "why": "你在通知框里输入的邮箱地址。"
+      },
+      "pageData": {
+        "label": "链接预加载",
+        "why": "网站会预加载屏幕上链接指向的页面。只是下载；不发送任何内容。"
+      },
+      "pageCode": {
+        "label": "页面代码",
+        "why": "本页面按需加载的部分：脚本、样式、字体和 3D 预览。只是下载。"
+      },
+      "image": {
+        "label": "图片",
+        "why": "页面上显示的图片，例如设计缩略图。只是下载。"
+      },
+      "other": {
+        "label": "其他请求",
+        "why": "本页面不认识名字的请求。显示了它的地址，方便你查询。"
+      }
+    }
   }
 }

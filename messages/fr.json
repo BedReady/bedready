@@ -425,7 +425,27 @@
     "extCardTitle": "Convertir chaque téléchargement automatiquement",
     "extCardBody": "L’extension gratuite BedReady convertit un .3mf au moment où vous le téléchargez depuis MakerWorld, Printables ou Thingiverse, dans votre navigateur.",
     "extCardCta": "Ajouter à {browser}",
-    "extCardDismiss": "Pas maintenant"
+    "extCardDismiss": "Pas maintenant",
+    "loadSheetButton": "Imprimer la fiche de chargement",
+    "loadSheetTitle": "Fiche de chargement",
+    "loadSheetPrinter": "Imprimante",
+    "loadSheetHead": "Tête",
+    "loadSheetColor": "Couleur",
+    "loadSheetMaterial": "Matériau",
+    "loadSheetPreset": "Profil",
+    "loadSheetSwaps": "Changements de bobine",
+    "loadSheetFooter": "Réalisé avec BedReady · bedready.io",
+    "vpTitle": "Trouver un profil vérifié",
+    "vpBody": "Collez le lien du modèle sur MakerWorld, Printables ou Thingiverse. Si quelqu’un a déjà vérifié un profil pour lui sur la {printer}, il apparaît ici.",
+    "vpInputLabel": "Lien du modèle",
+    "vpFind": "Rechercher",
+    "vpLooking": "Recherche…",
+    "vpFound": "Vérifié sur MakerRun :",
+    "vpNone": "Aucun profil vérifié pour ce modèle pour l’instant.",
+    "vpRequest": "En demander un",
+    "vpInvalid": "Ce n’est pas un lien de modèle MakerWorld, Printables ou Thingiverse.",
+    "vpUnavailable": "La recherche n’est pas disponible pour le moment. Réessayez plus tard.",
+    "vpDesigner": "J’ai conçu ce modèle"
   },
   "help": {
     "title": "Aide & FAQ",
@@ -1419,7 +1439,11 @@
       "pink": "Rose"
     },
     "hfPreview": "Aperçu simulé du relief imprimé, éclairé de face. Le vrai résultat dépend de vos filaments et de la lumière.",
-    "hfLooseMatch": "La correspondance est approximative : cette image demande des couleurs que quatre filaments ne peuvent pas atteindre. L’impression sera une interprétation plutôt qu’une copie."
+    "hfLooseMatch": "La correspondance est approximative : cette image demande des couleurs que quatre filaments ne peuvent pas atteindre. L’impression sera une interprétation plutôt qu’une copie.",
+    "copyRecipe": "Copier le lien des réglages",
+    "recipeCopied": "Lien copié",
+    "recipeNote": "Partage uniquement ces réglages, jamais votre photo.",
+    "recipeApplied": "Les réglages d’un lien partagé sont appliqués. Votre photo reste sur cette page."
   },
   "libraryTabs": {
     "label": "Vues de la bibliothèque",
@@ -1592,5 +1616,72 @@
   "sponsor": {
     "label": "Sponsor",
     "visit": "Visiter {name}"
+  },
+  "egress": {
+    "title": "Ce qui a quitté cette page",
+    "fileBytes": "Octets de fichier envoyés : {size}",
+    "intro": "Chaque requête faite par cette page depuis son ouverture, enregistrée dans votre navigateur au moment où elle part. Toute requête de plus de {threshold} compte comme des octets de fichier : si votre fichier était envoyé, il apparaîtrait ici.",
+    "empty": "Aucune requête pour l’instant.",
+    "sent": "{size} envoyés",
+    "sizeUnknown": "taille inconnue",
+    "bytes": "{n} o",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "Afficher les adresses",
+    "chosenTag": "envoi que vous avez choisi",
+    "unexpectedTag": "envoi inattendu",
+    "chosenUpload": "{size} envoyés lors de l’envoi que vous avez choisi : {what}. Cela s’est produit parce que vous avez appuyé sur ce bouton.",
+    "unexpectedUpload": "{size} sont partis dans une requête que cette page ne connaît pas. Cela ne devrait pas arriver. Merci de nous le signaler, avec l’adresse indiquée ci-dessous.",
+    "unknownNote": "Une requête contenait un flux dont la taille ne peut pas être mesurée sans le lire, ce qui modifierait la requête. Elle apparaît avec une taille inconnue.",
+    "howFootnote": "Enregistré en observant fetch, sendBeacon et XMLHttpRequest, ainsi que la liste des téléchargements du navigateur. Les chaînes de requête sont omises pour qu’aucun jeton ne s’affiche. Les outils de développement de votre navigateur (onglet Réseau) montrent les mêmes requêtes.",
+    "kind": {
+      "counter": {
+        "label": "Compteur anonyme de conversions",
+        "why": "ajoute un au nombre public de conversions. Il ne contient aucun fichier ni rien sur vous."
+      },
+      "counterRead": {
+        "label": "Lecture du compteur",
+        "why": "lit le nombre public de conversions pour l’afficher. Un téléchargement ; rien n’est envoyé."
+      },
+      "analytics": {
+        "label": "Événement d’analyse Vercel",
+        "why": "statistiques sans cookies : quelle page a été vue et quels boutons ont servi. Jamais le fichier."
+      },
+      "sponsor": {
+        "label": "Lecture du sponsor",
+        "why": "demande qui soutient financièrement le site en ce moment. Un téléchargement ; rien sur vous ni sur votre fichier n’est envoyé."
+      },
+      "verified": {
+        "label": "Lecture des modèles vérifiés",
+        "why": "récupère des modèles MakerRun vérifiés pour l’imprimante choisie. Un téléchargement ; votre fichier n’est pas envoyé."
+      },
+      "serverFallback": {
+        "label": "Conversion sur le serveur",
+        "why": "vous avez appuyé sur le bouton pour convertir sur notre serveur, donc votre fichier a été envoyé. Il est converti en mémoire et n’est pas conservé."
+      },
+      "report": {
+        "label": "Signalement d’échec",
+        "why": "vous avez appuyé sur le bouton pour nous envoyer ce fichier afin que nous corrigions le convertisseur."
+      },
+      "waitlist": {
+        "label": "Inscription par e-mail",
+        "why": "l’adresse e-mail saisie dans le champ de notification."
+      },
+      "pageData": {
+        "label": "Préchargement de lien",
+        "why": "le site précharge les pages vers lesquelles pointent les liens affichés. Un téléchargement ; rien n’est envoyé."
+      },
+      "pageCode": {
+        "label": "Code de la page",
+        "why": "parties de cette page chargées au besoin : scripts, styles, polices et aperçu 3D. Téléchargements uniquement."
+      },
+      "image": {
+        "label": "Images",
+        "why": "images affichées sur la page, comme les vignettes de modèles. Téléchargements uniquement."
+      },
+      "other": {
+        "label": "Autre requête",
+        "why": "une requête que cette page ne connaît pas par son nom. Son adresse est affichée pour que vous puissiez la vérifier."
+      }
+    }
   }
 }
