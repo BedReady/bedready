@@ -330,11 +330,5 @@
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",
-  "setting_id": "",
-  "graphic_effect_plate_temp": [
-    "80"
-  ],
-  "graphic_effect_plate_temp_initial_layer": [
-    "80"
-  ]
+  "setting_id": ""
 }

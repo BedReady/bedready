@@ -104,11 +104,5 @@
   "instantiation": "true",
   "compatible_printers_condition": "",
   "setting_id": "",
-  "version": "02.03.01.10",
-  "graphic_effect_plate_temp": [
-    "100"
-  ],
-  "graphic_effect_plate_temp_initial_layer": [
-    "100"
-  ]
+  "version": "02.03.01.10"
 }
