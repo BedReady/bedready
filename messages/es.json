@@ -1419,7 +1419,11 @@
       "pink": "Rosa"
     },
     "hfPreview": "Simulación del relieve impreso con luz frontal. La impresión real depende de tus filamentos y de la luz.",
-    "hfLooseMatch": "La coincidencia es aproximada: esta imagen necesita colores que cuatro filamentos no alcanzan. La impresión será una interpretación más que una copia."
+    "hfLooseMatch": "La coincidencia es aproximada: esta imagen necesita colores que cuatro filamentos no alcanzan. La impresión será una interpretación más que una copia.",
+    "copyRecipe": "Copiar enlace de ajustes",
+    "recipeCopied": "Enlace copiado",
+    "recipeNote": "Comparte solo estos ajustes, nunca tu foto.",
+    "recipeApplied": "Se aplicaron los ajustes de un enlace compartido. Tu foto se queda en esta página."
   },
   "libraryTabs": {
     "label": "Vistas de la biblioteca",

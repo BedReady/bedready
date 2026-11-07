@@ -1419,7 +1419,11 @@
       "pink": "Rosa"
     },
     "hfPreview": "Simulierte Ansicht des gedruckten Reliefs, von vorn beleuchtet. Der echte Druck hängt von deinen Filamenten und vom Licht ab.",
-    "hfLooseMatch": "Das ist eine grobe Annäherung — dieses Bild braucht Farben, die vier Filamente nicht erreichen. Der Druck wird eher eine Interpretation als eine Kopie."
+    "hfLooseMatch": "Das ist eine grobe Annäherung — dieses Bild braucht Farben, die vier Filamente nicht erreichen. Der Druck wird eher eine Interpretation als eine Kopie.",
+    "copyRecipe": "Einstellungslink kopieren",
+    "recipeCopied": "Link kopiert",
+    "recipeNote": "Teilt nur diese Einstellungen, nie dein Foto.",
+    "recipeApplied": "Einstellungen aus einem geteilten Link sind übernommen. Dein Foto bleibt auf dieser Seite."
   },
   "libraryTabs": {
     "label": "Bibliotheksansichten",
