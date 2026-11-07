@@ -25,6 +25,21 @@ const code = (c: ReactNode) => <code dir="ltr" className="text-violet-300">{c}</
 type Profile = { id: string; name: string; vendor: string; type: string; nozzleTemp: number; bedTemp: number; file: string };
 type Manifest = { machine: string; vendors: string[]; types: string[]; profiles: Profile[] };
 
+/**
+ * The catalog slice a landing page already knows on the server: the full vendor and material lists
+ * (for the dropdowns) and the profiles of this page's own facet.
+ *
+ * ── WHY THE SERVER HANDS THIS IN ────────────────────────────────────────────────────────────────
+ *
+ * The brand, material and combo pages are the long tail this catalog exists for, and until Nov 2026
+ * their server HTML held one line, "Loading filament catalog…": every profile name, temperature and
+ * download link arrived only after the browser fetched manifest.json. A crawler that does not run the
+ * script saw an empty page, and so did everyone for the first second. Now the first render IS the
+ * facet's list, with real download links, and the full manifest still loads after mount so search
+ * and the dropdowns can range over every profile.
+ */
+export type OrcaInitialCatalog = Manifest;
+
 const BASE = "/orca-filaments/";
 /** Cards drawn per page: divisible by the grid's 2 and 3 columns, so a page never ends mid-row. */
 const PAGE = 48;
@@ -124,20 +139,33 @@ function startersFor(material: string, profiles: Profile[]): Profile[] {
   return [own, generic].filter((p): p is Profile => !!p);
 }
 
-export default function OrcaFilaments({ initialVendor = "", initialType = "" }: { initialVendor?: string; initialType?: string }) {
+export default function OrcaFilaments({
+  initialVendor = "",
+  initialType = "",
+  initialCatalog,
+}: {
+  initialVendor?: string;
+  initialType?: string;
+  /** This page's facet, rendered on the server. See OrcaInitialCatalog. */
+  initialCatalog?: OrcaInitialCatalog;
+}) {
   const t = useTranslations("orca");
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+  const [manifest, setManifest] = useState<Manifest | null>(initialCatalog ?? null);
   const [err, setErr] = useState("");
   const [vendor, setVendor] = useState(initialVendor); // brand landing pages pre-filter to their vendor
   const [type, setType] = useState(initialType); // material landing pages pre-filter to their type
   const [query, setQuery] = useState("");
   const [supportsFs, setSupportsFs] = useState(false);
-  const [os] = useState(detectOs);
+  // macOS until mount: the server cannot know the visitor's OS, and the first client render has to
+  // match the server's HTML now that the server renders the list.
+  const [os, setOs] = useState("macOS");
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "warn" | "err" } | null>(null);
   const [pending, setPending] = useState<Profile | "bulk" | null>(null); // one-time "quit Orca" modal (single or bulk)
   const [busy, setBusy] = useState<string | null>(null); // id of the profile currently installing
   const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null); // bulk install progress
-  const [showGuide, setShowGuide] = useState(false);
+  // Open from the first paint: download + import is the path everywhere but Linux, and opening it
+  // after mount instead would push the page around under the reader.
+  const [showGuide, setShowGuide] = useState(true);
   // How many cards are drawn. Keyed to the filter that produced them, so a new search or dropdown
   // choice starts again at one page without an effect to reset it.
   const [page, setPage] = useState<{ sig: string; n: number }>({ sig: "", n: PAGE });
@@ -145,14 +173,18 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
   useEffect(() => {
     const fsApi = typeof window !== "undefined" && "showDirectoryPicker" in window;
     setSupportsFs(fsApi);
+    const detected = detectOs();
+    setOs(detected);
     // Chromium blocks writing into macOS ~/Library and Windows %APPDATA% (where the folder lives), so
-    // direct install only works on Linux. Open the import guide by default everywhere else, so the
-    // reliable download + import path is visible.
-    if (!fsApi || detectOs() !== "Linux") setShowGuide(true);
+    // direct install only works on Linux. The import guide stays open everywhere else, so the
+    // reliable download + import path is visible; only direct install folds it away.
+    if (fsApi && detected === "Linux") setShowGuide(false);
     fetch(BASE + "manifest.json")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("no manifest"))))
       .then((m: Manifest) => setManifest(m))
-      .catch(() => setErr(t("catalogError")));
+      // With the facet already rendered, a failed fetch only narrows search to this page's profiles,
+      // which is no reason to replace a working list with an error.
+      .catch(() => { if (!initialCatalog) setErr(t("catalogError")); });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount; `t` is stable per locale
   }, []);
 
@@ -321,6 +353,13 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
     );
   }
 
+  // The download link has already saved the file natively: it is a real <a download>, so it works
+  // before hydration and with no script at all. After hydration, also point at the import steps.
+  function onDownloaded(p: Profile) {
+    setShowGuide(true);
+    flash(t("downloadedImport", { file: safeName(p.name) + ".json" }), "ok");
+  }
+
   function onAdd(p: Profile) {
     if (!directInstall) {
       // Can't write directly (macOS ~/Library block, or Safari/Firefox) → download + import in Orca.
@@ -385,13 +424,16 @@ export default function OrcaFilaments({ initialVendor = "", initialType = "" }: 
             </button>
           </>
         ) : (
-          // No direct write (macOS ~/Library block, or Safari/Firefox): download → import in Orca.
-          <button
-            onClick={() => onAdd(p)}
+          // No direct write (macOS ~/Library block, Safari/Firefox, or not hydrated yet): a real link
+          // to the static profile, so the server HTML carries a working download.
+          <a
+            href={BASE + p.file}
+            download={safeName(p.name) + ".json"}
+            onClick={() => onDownloaded(p)}
             className="btn-secondary btn-sm"
           >
             {t("downloadForOrca")}
-          </button>
+          </a>
         )}
       </div>
     </div>

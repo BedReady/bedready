@@ -224,85 +224,71 @@ export function buildPanelMesh(q: Quantized, opts: PanelOpts = {}): PanelMesh {
     state.push(s);
   };
 
-  // ---- Relief (heightmap) path: a watertight height-field with shared per-corner heights ----
+  // ---- One watertight height-field, flat or relief ----
+  // Until Nov 2026 the flat plate had per-cell top quads but a single quad per wall and for the
+  // bottom, and the relief had per-segment skirts over a single bottom quad. Either way the long edges
+  // met a row of short ones (T-junctions): a 10×8 panel had 40 edges not shared by exactly two faces,
+  // which Orca reports as open edges and cannot repair on macOS. Now every boundary is split exactly
+  // where the top grid is — walls per cell segment, the bottom as a fan to every boundary segment —
+  // and a flat plate is the same construction with every corner at height T.
   const relief = opts.reliefMM && opts.reliefMM > 0 && opts.luma && opts.luma.length === w * h ? opts.reliefMM : 0;
-  if (relief) {
-    const luma = opts.luma!;
-    const vx = (gx: number) => gx * cell;
-    const vy = (gy: number) => (h - gy) * cell; // Y flip so image-top reads upright from above
-    // Height at a grid corner = base T + relief × average brightness of the ≤4 cells touching it.
-    // Shared corners → one height → the surface (and its skirt) stays watertight.
-    const cornerZ = (gx: number, gy: number): number => {
-      let s = 0, c = 0;
-      for (const [dx, dy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]] as const) {
-        const cx = gx + dx, cy = gy + dy;
-        if (cx >= 0 && cx < w && cy >= 0 && cy < h) { s += luma[cy * w + cx]; c++; }
-      }
-      return T + relief * (c ? s / c : 0);
-    };
-    // Top surface: 2 painted triangles per cell using its 4 corner heights.
-    for (let gy = 0; gy < h; gy++) {
-      for (let gx = 0; gx < w; gx++) {
-        const slot = (indices[gy * w + gx] ?? 0) + 1;
-        const x0 = vx(gx), x1 = vx(gx + 1), yA = vy(gy), yB = vy(gy + 1);
-        const z00 = cornerZ(gx, gy), z10 = cornerZ(gx + 1, gy), z11 = cornerZ(gx + 1, gy + 1), z01 = cornerZ(gx, gy + 1);
-        // yB is BELOW yA (the Y flip), so this order is counter-clockwise from above: normal +Z.
-        tri(x0, yA, z00, x1, yB, z11, x1, yA, z10, slot);
-        tri(x0, yA, z00, x0, yB, z01, x1, yB, z11, slot);
-      }
+  const luma = opts.luma;
+  // Coordinates from integer grid positions, never accumulated, so shared vertices are bit-identical.
+  const vx = (gx: number) => gx * cell;
+  const vy = (gy: number) => (h - gy) * cell; // Y flip so image-top reads upright from above
+  // Height at a grid corner = base T + relief × average brightness of the ≤4 cells touching it.
+  // Shared corners → one height → the surface (and its walls) stays watertight.
+  const cornerZ = (gx: number, gy: number): number => {
+    if (!relief || !luma) return T;
+    let sum = 0, c = 0;
+    for (const [dx, dy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]] as const) {
+      const cx = gx + dx, cy = gy + dy;
+      if (cx >= 0 && cx < w && cy >= 0 && cy < h) { sum += luma[cy * w + cx]; c++; }
     }
-    // Flat bottom over the full footprint.
-    tri(0, 0, 0, W, H, 0, W, 0, 0, 0);
-    tri(0, 0, 0, 0, H, 0, W, H, 0, 0);
-    // Skirt walls: per edge segment, connect the varying top profile down to z=0 (unpainted).
-    for (let gx = 0; gx < w; gx++) {
-      const x0 = vx(gx), x1 = vx(gx + 1);
-      // image-top edge (gy=0)
-      const yT = vy(0), zt0 = cornerZ(gx, 0), zt1 = cornerZ(gx + 1, 0);
-      tri(x0, yT, zt0, x1, yT, zt1, x1, yT, 0, 0); tri(x0, yT, zt0, x1, yT, 0, x0, yT, 0, 0);
-      // image-bottom edge (gy=h)
-      const yB = vy(h), zb0 = cornerZ(gx, h), zb1 = cornerZ(gx + 1, h);
-      tri(x0, yB, zb0, x1, yB, 0, x1, yB, zb1, 0); tri(x0, yB, zb0, x0, yB, 0, x1, yB, 0, 0);
-    }
-    for (let gy = 0; gy < h; gy++) {
-      const yA = vy(gy), yB2 = vy(gy + 1);
-      // left edge (gx=0)
-      const zl0 = cornerZ(0, gy), zl1 = cornerZ(0, gy + 1);
-      tri(0, yA, zl0, 0, yB2, 0, 0, yB2, zl1, 0); tri(0, yA, zl0, 0, yA, 0, 0, yB2, 0, 0);
-      // right edge (gx=w)
-      const zr0 = cornerZ(w, gy), zr1 = cornerZ(w, gy + 1);
-      tri(W, yA, zr0, W, yB2, zr1, W, yB2, 0, 0); tri(W, yA, zr0, W, yB2, 0, W, yA, 0, 0);
-    }
-    return { positions: Float32Array.from(pos), faceState: Uint8Array.from(state), palette };
-  }
-
-  // Top surface: per cell, two triangles, wound CCW seen from +Z (outward normal +Z), painted with slot.
-  // They were wound clockwise until Nov 2026: y1 is below y0 (the Y flip), which reverses the order
-  // the comment intended, so every top face pointed down and the 3D preview (which draws front faces
-  // only) showed an empty dark plate.
+    return T + relief * (c ? sum / c : 0);
+  };
+  // Top surface: 2 painted triangles per cell using its 4 corner heights.
   for (let gy = 0; gy < h; gy++) {
     for (let gx = 0; gx < w; gx++) {
       const slot = (indices[gy * w + gx] ?? 0) + 1; // 1-based filament slot
-      const x0 = gx * cell, x1 = x0 + cell;
-      // Flip Y so image-top maps to +Y-far → prints upright when viewed from above.
-      const y0 = (h - gy) * cell, y1 = y0 - cell;
-      tri(x0, y0, T, x1, y1, T, x1, y0, T, slot);
-      tri(x0, y0, T, x0, y1, T, x1, y1, T, slot);
+      const x0 = vx(gx), x1 = vx(gx + 1), yA = vy(gy), yB = vy(gy + 1);
+      const z00 = cornerZ(gx, gy), z10 = cornerZ(gx + 1, gy), z11 = cornerZ(gx + 1, gy + 1), z01 = cornerZ(gx, gy + 1);
+      // yB is BELOW yA (the Y flip), so this order is counter-clockwise from above: normal +Z.
+      tri(x0, yA, z00, x1, yB, z11, x1, yA, z10, slot);
+      tri(x0, yA, z00, x0, yB, z01, x1, yB, z11, slot);
     }
   }
-  // Bottom (z=0), CCW seen from -Z, unpainted.
-  tri(0, 0, 0, W, H, 0, W, 0, 0, 0);
-  tri(0, 0, 0, 0, H, 0, W, H, 0, 0);
-  // Four walls (unpainted). Each as two triangles with outward normals.
-  // Front (y=0)
-  tri(0, 0, 0, W, 0, 0, W, 0, T, 0); tri(0, 0, 0, W, 0, T, 0, 0, T, 0);
-  // Back (y=H)
-  tri(0, H, 0, W, H, T, W, H, 0, 0); tri(0, H, 0, 0, H, T, W, H, T, 0);
-  // Left (x=0)
-  tri(0, 0, 0, 0, 0, T, 0, H, T, 0); tri(0, 0, 0, 0, H, T, 0, H, 0, 0);
-  // Right (x=W)
-  tri(W, 0, 0, W, H, 0, W, H, T, 0); tri(W, 0, 0, W, H, T, W, 0, T, 0);
-
+  // Walls: per edge segment, connect the top profile down to z=0 (unpainted).
+  for (let gx = 0; gx < w; gx++) {
+    const x0 = vx(gx), x1 = vx(gx + 1);
+    // image-top edge (gy=0)
+    const yT = vy(0), zt0 = cornerZ(gx, 0), zt1 = cornerZ(gx + 1, 0);
+    tri(x0, yT, zt0, x1, yT, zt1, x1, yT, 0, 0); tri(x0, yT, zt0, x1, yT, 0, x0, yT, 0, 0);
+    // image-bottom edge (gy=h)
+    const yB = vy(h), zb0 = cornerZ(gx, h), zb1 = cornerZ(gx + 1, h);
+    tri(x0, yB, zb0, x1, yB, 0, x1, yB, zb1, 0); tri(x0, yB, zb0, x0, yB, 0, x1, yB, 0, 0);
+  }
+  for (let gy = 0; gy < h; gy++) {
+    const yA = vy(gy), yB2 = vy(gy + 1);
+    // left edge (gx=0)
+    const zl0 = cornerZ(0, gy), zl1 = cornerZ(0, gy + 1);
+    tri(0, yA, zl0, 0, yB2, 0, 0, yB2, zl1, 0); tri(0, yA, zl0, 0, yA, 0, 0, yB2, 0, 0);
+    // right edge (gx=w)
+    const zr0 = cornerZ(w, gy), zr1 = cornerZ(w, gy + 1);
+    tri(W, yA, zr0, W, yB2, zr1, W, yB2, 0, 0); tri(W, yA, zr0, W, yB2, 0, W, yA, 0, 0);
+  }
+  // Bottom (z=0, normal −Z): a fan from the centre to every boundary segment, walking the outline
+  // counter-clockwise seen from above, so each wall's bottom edge has exactly one partner.
+  const ring: [number, number][] = [];
+  for (let gx = 0; gx < w; gx++) ring.push([vx(gx), vy(h)]); // y = 0, left → right
+  for (let gy = h; gy > 0; gy--) ring.push([vx(w), vy(gy)]); // x = W, bottom → top
+  for (let gx = w; gx > 0; gx--) ring.push([vx(gx), vy(0)]); // y = H, right → left
+  for (let gy = 0; gy < h; gy++) ring.push([vx(0), vy(gy)]); // x = 0, top → bottom
+  const cx = W / 2, cy = H / 2;
+  for (let i = 0; i < ring.length; i++) {
+    const [ax, ay] = ring[i], [bx, by] = ring[(i + 1) % ring.length];
+    tri(cx, cy, 0, bx, by, 0, ax, ay, 0, 0);
+  }
   return { positions: Float32Array.from(pos), faceState: Uint8Array.from(state), palette };
 }
 
