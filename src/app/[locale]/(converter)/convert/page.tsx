@@ -4,7 +4,7 @@ import { useTranslations, useFormatter } from "next-intl";
 import { ldJson } from "@/lib/json-ld";
 import { Link } from "@/i18n/navigation";
 import { nextPaint } from "@/lib/next-paint";
-import { peekPlates, extractPlate, type PlateInfo } from "@/lib/plates";
+import { peekPlates, type PlateInfo } from "@/lib/plates";
 import { platesFitSlots } from "@/lib/plate-colors";
 import { fitVerdict } from "@/lib/fit";
 import { track } from "@vercel/analytics";
@@ -13,7 +13,6 @@ import { stageConvertedFile } from "@/lib/convert-handoff";
 import { convertApi } from "@/lib/convert-api";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  analyzeThreeMF,
   ThreeMFError,
   reduceColors,
   normalizeHex,
@@ -21,7 +20,6 @@ import {
   convertWarnings,
   bestMixMulti,
   bestPhysicalSet,
-  subsetThreeMF,
   zipFiles,
   U1_BUILD_MM,
   U1_BUILD_Z_MM,
@@ -30,7 +28,7 @@ import {
   type Analysis,
   type DiffReport,
 } from "@/lib/convert";
-import { cleanThreeMFAsync } from "@/lib/convert-client";
+import { cleanThreeMFAsync, analyzeThreeMFAsync, subsetThreeMFAsync, extractPlateAsync } from "@/lib/convert-client";
 import { receiveFromExtension } from "@/lib/extension-handoff";
 import { MACHINES, RETARGET_MACHINES, configFamily, u1NozzleVariant, U1_NOZZLES, U1_TESTED_NOZZLE } from "@/lib/targets";
 import { stlTo3MF } from "@/lib/stl";
@@ -454,10 +452,9 @@ export default function ConvertPage() {
     setPlateBusy(pl.index);
     await nextPaint();
     try {
-      // Re-read rather than retain. Both of these go out of scope as soon as the File is built, so
-      // the peak is one plate rather than archive + plate + output all alive at once.
-      const raw = new Uint8Array(await file.arrayBuffer());
-      const sub = extractPlate(raw, pl.index);
+      // Re-read rather than retain, in the worker: the archive is transferred there and freed with
+      // it, so the page's peak is one plate rather than archive + plate + output all alive at once.
+      const sub = await extractPlateAsync(file, pl.index);
       const name = file.name.replace(/\.3mf$/i, "") + `-plate${pl.index}.3mf`;
       await pick(new File([sub as BlobPart], name, { type: "model/3mf" }));
     } catch (err) {
@@ -514,7 +511,8 @@ export default function ConvertPage() {
     await nextPaint(); // rAF alone never resolves in a hidden tab — see nextPaint()
     let a: Analysis;
     try {
-      a = await analyzeThreeMF(f);
+      // In the worker: on the main thread a 162 MB file was one 6 s long task (Nov 7 review).
+      a = await analyzeThreeMFAsync(f);
       setAnalysis(a);
     } catch (e) {
       console.error(e);
@@ -1038,7 +1036,8 @@ export default function ConvertPage() {
         // centerXY reads mesh.parts, which are MILLIMETRES; the offset is written into the original
         // document, whose coordinates are in its own unit. Equal for the usual millimetre file, and
         // off by 25.4 for an inch one — so convert back rather than assume they are the same space.
-        const subBytes = subsetThreeMF(orig, new Set(groups[i].ids),
+        // Off the main thread; `orig` is reused for every plate, so the worker gets a copy.
+        const subBytes = await subsetThreeMFAsync(orig.slice(), new Set(groups[i].ids),
           [(bed - cx) / mesh.mmPerUnit, (bed - cy) / mesh.mmPerUnit]);
         const r = await cleanThreeMFAsync(new File([subBytes as BlobPart], `${groups[i].name}.3mf`), "u1", fileIndependentOpts());
         out.push({ name: `${base}_${groups[i].name}.u1.3mf`, bytes: new Uint8Array(await r.blob.arrayBuffer()) });
