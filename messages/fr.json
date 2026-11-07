@@ -434,7 +434,18 @@
     "loadSheetMaterial": "Matériau",
     "loadSheetPreset": "Profil",
     "loadSheetSwaps": "Changements de bobine",
-    "loadSheetFooter": "Réalisé avec BedReady · bedready.io"
+    "loadSheetFooter": "Réalisé avec BedReady · bedready.io",
+    "vpTitle": "Trouver un profil vérifié",
+    "vpBody": "Collez le lien du modèle sur MakerWorld, Printables ou Thingiverse. Si quelqu’un a déjà vérifié un profil pour lui sur la {printer}, il apparaît ici.",
+    "vpInputLabel": "Lien du modèle",
+    "vpFind": "Rechercher",
+    "vpLooking": "Recherche…",
+    "vpFound": "Vérifié sur MakerRun :",
+    "vpNone": "Aucun profil vérifié pour ce modèle pour l’instant.",
+    "vpRequest": "En demander un",
+    "vpInvalid": "Ce n’est pas un lien de modèle MakerWorld, Printables ou Thingiverse.",
+    "vpUnavailable": "La recherche n’est pas disponible pour le moment. Réessayez plus tard.",
+    "vpDesigner": "J’ai conçu ce modèle"
   },
   "help": {
     "title": "Aide & FAQ",

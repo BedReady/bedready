@@ -434,7 +434,18 @@
     "loadSheetMaterial": "Material",
     "loadSheetPreset": "Preset",
     "loadSheetSwaps": "Spool swaps",
-    "loadSheetFooter": "Made with BedReady · bedready.io"
+    "loadSheetFooter": "Made with BedReady · bedready.io",
+    "vpTitle": "Find a verified profile",
+    "vpBody": "Paste the model's MakerWorld, Printables or Thingiverse link. If someone has already checked a profile for it on {printer}, it shows here.",
+    "vpInputLabel": "Model link",
+    "vpFind": "Find",
+    "vpLooking": "Looking…",
+    "vpFound": "Verified on MakerRun:",
+    "vpNone": "No verified profile for this model yet.",
+    "vpRequest": "Request one",
+    "vpInvalid": "That isn't a MakerWorld, Printables or Thingiverse model link.",
+    "vpUnavailable": "The lookup isn't available right now. Try again later.",
+    "vpDesigner": "I designed this model"
   },
   "help": {
     "title": "Help & FAQ",
