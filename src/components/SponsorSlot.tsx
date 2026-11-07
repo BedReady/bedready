@@ -15,11 +15,19 @@ import { SPONSOR_LABEL, SPONSOR_LINK_REL, type Sponsor } from "@/lib/sponsor";
  * of MakerRun's evidence would undo both claims at once. `sponsorship-guard.test.mts` asserts it.
  */
 
+/**
+ * The words around a sponsor, in the reader's language. The sponsor's own name and tagline are
+ * theirs and stay as booked; only the chrome is translated. Defaults to the English constant, so a
+ * caller that passes nothing still labels the slot.
+ */
+export type SponsorCopy = { label: string; visit: string };
+const ENGLISH: SponsorCopy = { label: SPONSOR_LABEL, visit: "Visit {name}" };
+
 /** The label. One component, so the two slots cannot end up saying different things. */
-function Label() {
+function Label({ text }: { text: string }) {
   return (
     <span className="shrink-0 rounded-full bg-surface-3 px-2 py-0.5 text-xs font-medium uppercase tracking-wider text-fg-muted">
-      {SPONSOR_LABEL}
+      {text}
     </span>
   );
 }
@@ -49,12 +57,12 @@ function Logo({ sponsor, size }: { sponsor: Sponsor; size: number }) {
  * TOP — a slim line under the header. Text-led on purpose: it sits directly above a headline about
  * what the converter does, and a logo-first banner there reads as an advert competing with it.
  */
-export function SponsorBarView({ sponsor }: { sponsor: Sponsor | null }) {
+export function SponsorBarView({ sponsor, copy = ENGLISH }: { sponsor: Sponsor | null; copy?: SponsorCopy }) {
   if (!sponsor) return null;
   return (
-    <aside aria-label={SPONSOR_LABEL} className="border-b border-line bg-surface-2">
+    <aside aria-label={copy.label} className="border-b border-line bg-surface-2">
       <div className="page-read flex flex-wrap items-center gap-x-3 gap-y-1 py-1.5 text-xs">
-        <Label />
+        <Label text={copy.label} />
         <a href={sponsor.url} target="_blank" rel={SPONSOR_LINK_REL} className="min-w-0 text-fg-muted hover:text-fg">
           <span className="font-medium text-fg">{sponsor.name}</span>
           {sponsor.tagline ? <span className="hidden sm:inline"> — {sponsor.tagline}</span> : null}
@@ -65,19 +73,19 @@ export function SponsorBarView({ sponsor }: { sponsor: Sponsor | null }) {
 }
 
 /** BOTTOM — the fuller one, above the footer, where a logo belongs. Same company by construction. */
-export function SponsorStripView({ sponsor }: { sponsor: Sponsor | null }) {
+export function SponsorStripView({ sponsor, copy = ENGLISH }: { sponsor: Sponsor | null; copy?: SponsorCopy }) {
   if (!sponsor) return null;
   return (
-    <aside aria-label={SPONSOR_LABEL} className="border-t border-line bg-surface-2">
+    <aside aria-label={copy.label} className="border-t border-line bg-surface-2">
       <div className="page-read flex flex-wrap items-center gap-x-4 gap-y-2 py-4">
-        <Label />
+        <Label text={copy.label} />
         <Logo sponsor={sponsor} size={40} />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-fg">{sponsor.name}</p>
           {sponsor.tagline ? <p className="mt-0.5 text-xs text-fg-muted">{sponsor.tagline}</p> : null}
         </div>
         <a href={sponsor.url} target="_blank" rel={SPONSOR_LINK_REL} className="btn-secondary btn-sm shrink-0">
-          Visit {sponsor.name}
+          {copy.visit.replace("{name}", sponsor.name)}
         </a>
       </div>
     </aside>

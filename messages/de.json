@@ -1561,5 +1561,9 @@
     "pure": "100 % {name}",
     "blend": "{pa} % {a} + {pb} % {b}",
     "note": "Das sind Mischungen aus 2 Filamenten (der U1 dithert zwei Farben pro gemischtem Bereich). Echte Drucke weichen je nach Filamentmarke und Licht etwas ab – nimm das als gute Orientierung, nicht als exakten Treffer."
+  },
+  "sponsor": {
+    "label": "Sponsor",
+    "visit": "{name} besuchen"
   }
 }

@@ -64,7 +64,10 @@ test("no TRANSLATION still claims it either", () => {
         // and "Sponsorisé". Worth knowing while reading this: in those two languages a promoted
         // DESIGN and the site SPONSOR are one word apart, for genuinely different products. If that
         // ever reads as one thing, it is the promoted label that should change, not this exclusion.
+        // The `sponsor` group (Nov 7) is the slot's own label and link, which name a sponsor rather
+        // than deny one: Spanish "Patrocinador" matches /patrocinad/.
         if (path.endsWith(".sponsorshipNote") || path.endsWith(".sponsor") || path.endsWith(".promoted")) return;
+        if (path.startsWith(".sponsor.")) return;
         if (claim.test(node)) offenders.push(`${locale}${path}`);
       } else if (Array.isArray(node)) node.forEach((v, i) => walk(v, `${path}[${i}]`));
       else if (node && typeof node === "object") for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`);
@@ -84,10 +87,20 @@ test("every locale carries the replacement promise and the footer renders it", (
   assert.match(SPONSORSHIP_NOTE, /never affects/i);
 });
 
-test("both slots are labelled, from one constant", () => {
-  assert.equal((SLOT.match(/<Label\s*\/>/g) ?? []).length, 2, "top and bottom must each carry the label");
-  assert.ok(SLOT.includes("{SPONSOR_LABEL}"));
+test("both slots are labelled, from one source", () => {
+  // Translated since Nov 7, so the label is a prop — but ONE prop, the same in both slots, and the
+  // English constant is still the default a caller that passes nothing gets.
+  assert.equal((SLOT.match(/<Label text=\{copy\.label\} \/>/g) ?? []).length, 2, "top and bottom must each carry the label");
+  assert.match(SLOT, /label: SPONSOR_LABEL/);
   assert.ok(SPONSOR_LABEL.trim().length > 0);
+});
+
+test("every locale labels the slot and names the sponsor in its link", () => {
+  for (const l of LOCALES) {
+    const m = JSON.parse(readFileSync(`messages/${l}.json`, "utf8")) as { sponsor?: Record<string, string> };
+    assert.ok(m.sponsor?.label?.trim(), `${l} has no sponsor.label`);
+    assert.match(m.sponsor?.visit ?? "", /\{name\}/, `${l} sponsor.visit must contain {name}`);
+  }
 });
 
 test("nothing in the slot is styled like MakerRun's verified badge", () => {

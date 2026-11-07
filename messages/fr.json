@@ -1561,5 +1561,9 @@
     "pure": "100 % {name}",
     "blend": "{pa} % {a} + {pb} % {b}",
     "note": "Ce sont des mélanges de 2 filaments (la U1 alterne deux couleurs par zone mélangée). Les impressions réelles varient un peu selon la marque du filament et l’éclairage : prenez-le comme un guide fiable, pas une correspondance exacte."
+  },
+  "sponsor": {
+    "label": "Sponsor",
+    "visit": "Visiter {name}"
   }
 }
