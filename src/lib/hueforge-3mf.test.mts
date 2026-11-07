@@ -103,3 +103,24 @@ test("every emitted model part carries the required <build> element", () => {
       `${name} must contain a <build> element — the spec requires one in every model part`);
   }
 });
+
+// Nov 7 2026: the template was captured from a project whose filaments were ABS, then relabelled
+// "Generic PLA". Every HueForge export carried those values, and Snapmaker Orca sliced them as-is:
+// M104 S270 on all four heads and a 90 °C bed, for PLA. The labels and the numbers must agree — both
+// export paths, every filament key, all four slots — with the converter's own U1 PLA preset.
+test("HueForge exports print PLA at PLA temperatures, both modes", async () => {
+  const { u1FilamentPreset } = await import("./u1-filament-presets.ts");
+  const { buildFlatU1_3mf } = await import("./hueforge-3mf.ts");
+  const pla = u1FilamentPreset("PLA") as Record<string, string>;
+  const tri: [number, number, number][][] = [[[0, 0, 0], [10, 0, 0], [0, 10, 0.4]]];
+  const stacked = buildU1_3mf({ triangles: tri as never, bands: [{ hex: "#000000", z: 0.4 } as never], layerH: 0.08 });
+  const flat = buildFlatU1_3mf({ parts: [{ hex: "#000000", triangles: tri as never }], layerH: 0.08 });
+  for (const [mode, out] of [["stacked", stacked], ["flat", flat]] as const) {
+    assert.ok(out, `${mode}: no archive`);
+    const cfg = JSON.parse(strFromU8(unzipSync(out!)["Metadata/project_settings.config"]!));
+    assert.deepEqual(cfg.filament_settings_id, ["Generic PLA", "Generic PLA", "Generic PLA", "Generic PLA"]);
+    for (const [k, v] of Object.entries(pla)) {
+      assert.deepEqual(cfg[k], [v, v, v, v], `${mode}: ${k} is ${JSON.stringify(cfg[k])}, the U1 PLA preset says ${v}`);
+    }
+  }
+});
