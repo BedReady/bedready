@@ -103,3 +103,29 @@ test("the converter's Snapmaker filament brand list matches the real U1 catalogu
   }
   assert.equal(filamentPresetId("PA", "snapmaker"), "Generic PA", "PA-CF is not PA");
 });
+
+// bedready#88: the Graphic Effect plate is the U1's default, and Orca reads ITS key for the bed
+// temperature on that plate. Snapmaker's own U1 presets set it for PLA (same value as the hot plate)
+// and leave it 0 for ABS, ASA, PC, PETG, PVA and most TPU: on that plate 0 means "not supported", so
+// Orca refuses rather than printing ABS at 100 °C on a decorated sheet. The catalogue follows suit:
+// every heated PLA-family profile carries it at the temperature the page shows (bedTemp reads
+// hot_plate_temp first), and no other material is given one.
+test("PLA profiles set a Graphic Effect plate temperature, other materials do not (bedready#88)", () => {
+  const PLATES = ["hot_plate_temp", "textured_plate_temp", "eng_plate_temp", "cool_plate_temp"];
+  const n = (v: unknown) => Number(Array.isArray(v) ? v[0] : v) || 0;
+  let pla = 0;
+  for (const p of manifest.profiles) {
+    const j = JSON.parse(fs.readFileSync(path.join(DIR, p.file), "utf8"));
+    const g = j.graphic_effect_plate_temp;
+    if (!/^PLA/i.test(String(j.filament_type?.[0] ?? ""))) {
+      assert.ok(n(g) === 0, `${p.id}: a ${j.filament_type?.[0]} profile must not enable the Graphic Effect plate`);
+      continue;
+    }
+    if (!PLATES.some((k) => n(j[k]) > 0)) continue; // an unheated-bed printer's profile
+    pla++;
+    assert.ok(Array.isArray(g) && n(g) > 0, `${p.id}: no Graphic Effect plate temperature`);
+    assert.ok(n(j.graphic_effect_plate_temp_initial_layer) > 0, `${p.id}: no Graphic Effect first-layer temperature`);
+    if (n(j.hot_plate_temp) > 0) assert.equal(n(g), n(j.hot_plate_temp), `${p.id}: Graphic Effect should match the hot plate`);
+  }
+  assert.ok(pla > 400, `only ${pla} heated PLA profiles checked`);
+});
