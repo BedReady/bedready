@@ -4,7 +4,12 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.4** (in this repo; submit after 0.6.3 clears Chrome review): the new BedReady look — the popup,
+- **0.6.5** (in this repo): the original kept for "Edit colours on bedready.io" is now deleted 30
+  minutes after it is kept, as the privacy policy says, instead of staying until the next download;
+  plus the converter fixes merged since 0.6.4 (see the site's changelog / git log).
+  **Permission change:** adds `alarms` (no install warning in Chrome; existing users are not
+  disabled). Justification text below.
+- **0.6.4** (live on Chrome and Firefox since 2026-11-04): the new BedReady look — the popup,
   icons, the in-page "→ U1" / "Download for U1" buttons and the progress toast follow the site's Nov 2026
   "build plate" redesign (dark plate with a brass edge, filament as the only colour). No permission or
   behaviour changes.
@@ -121,6 +126,8 @@ Convert .3mf 3D-print files downloaded from model sites so they print correctly 
 **Permission justifications:**
 - **downloads** — to read the .3mf the user is downloading and save the converted file back.
 - **notifications** — to tell the user when a conversion finishes.
+- **alarms** — to delete the file kept for "Edit colours on bedready.io" 30 minutes after it was kept,
+  if the user never opened the editor. One timer, set when a file is kept; it only deletes.
 - **storage** — to remember the user's choices in the toolbar popup (which printer and nozzle to
   convert for, whether to convert downloads automatically, whether to keep the original). Stored only
   in this browser; nothing else is stored and nothing leaves the device.
