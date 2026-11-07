@@ -1573,5 +1573,72 @@
   "sponsor": {
     "label": "Sponsor",
     "visit": "Visit {name}"
+  },
+  "egress": {
+    "title": "What left this page",
+    "fileBytes": "File bytes sent: {size}",
+    "intro": "Every request this page has made since it opened, recorded in your browser as it happens. Any request carrying more than {threshold} counts as file bytes, so your file would show up here if it were sent.",
+    "empty": "No requests yet.",
+    "sent": "{size} sent",
+    "sizeUnknown": "size unknown",
+    "bytes": "{n} B",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "Show the addresses",
+    "chosenTag": "upload you chose",
+    "unexpectedTag": "unexpected upload",
+    "chosenUpload": "{size} sent as the upload you chose: {what}. This happened because you pressed that button.",
+    "unexpectedUpload": "{size} went out in a request this page does not know about. That should not happen. Please tell us, with the address listed below.",
+    "unknownNote": "A request carried a stream whose size can't be measured without reading it, which would change the request. It is listed as size unknown.",
+    "howFootnote": "Recorded by watching fetch, sendBeacon and XMLHttpRequest, plus the browser's list of downloads. Query strings are left off so no token is shown. Your browser's developer tools (the Network tab) show the same requests.",
+    "kind": {
+      "counter": {
+        "label": "Anonymous conversion counter",
+        "why": "adds one to the public count of conversions. It carries no file and nothing about you."
+      },
+      "counterRead": {
+        "label": "Conversion count read",
+        "why": "reads the public number of conversions to show it. A download; nothing is sent."
+      },
+      "analytics": {
+        "label": "Vercel analytics event",
+        "why": "cookie-free analytics: which page was viewed and which buttons were used. Never the file."
+      },
+      "sponsor": {
+        "label": "Sponsor read",
+        "why": "asks who sponsors the site right now. A download; nothing about you or your file goes with it."
+      },
+      "verified": {
+        "label": "Verified designs read",
+        "why": "fetches verified MakerRun designs for the printer you picked. A download; your file is not sent."
+      },
+      "serverFallback": {
+        "label": "Server conversion",
+        "why": "you pressed the button to convert on our server, so your file was uploaded. It is converted in memory and not stored."
+      },
+      "report": {
+        "label": "Failure report",
+        "why": "you pressed the button to send us this file so we can fix the converter."
+      },
+      "waitlist": {
+        "label": "Email sign-up",
+        "why": "the email address you typed into the notify-me box."
+      },
+      "pageData": {
+        "label": "Link preload",
+        "why": "the site preloads the pages that links on screen point to. A download; nothing is sent."
+      },
+      "pageCode": {
+        "label": "Page code",
+        "why": "parts of this page loaded when needed: scripts, styles, fonts and the 3D preview. Downloads only."
+      },
+      "image": {
+        "label": "Pictures",
+        "why": "images shown on the page, such as design thumbnails. Downloads only."
+      },
+      "other": {
+        "label": "Other request",
+        "why": "not one this page knows by name. Its address is shown so you can look it up."
+      }
+    }
   }
 }

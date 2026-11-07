@@ -1573,5 +1573,72 @@
   "sponsor": {
     "label": "Sponsor",
     "visit": "{name} besuchen"
+  },
+  "egress": {
+    "title": "Was diese Seite verlassen hat",
+    "fileBytes": "Gesendete Dateibytes: {size}",
+    "intro": "Jede Anfrage, die diese Seite seit dem Öffnen gestellt hat, in deinem Browser aufgezeichnet, während sie passiert. Jede Anfrage mit mehr als {threshold} zählt als Dateibytes – würde deine Datei gesendet, stünde sie hier.",
+    "empty": "Noch keine Anfragen.",
+    "sent": "{size} gesendet",
+    "sizeUnknown": "Größe unbekannt",
+    "bytes": "{n} B",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "Adressen anzeigen",
+    "chosenTag": "von dir gewählter Upload",
+    "unexpectedTag": "unerwarteter Upload",
+    "chosenUpload": "{size} gesendet als der Upload, den du gewählt hast: {what}. Das geschah, weil du diese Schaltfläche gedrückt hast.",
+    "unexpectedUpload": "{size} gingen in einer Anfrage hinaus, die diese Seite nicht kennt. Das sollte nicht passieren. Bitte sag uns Bescheid, mit der unten stehenden Adresse.",
+    "unknownNote": "Eine Anfrage enthielt einen Stream, dessen Größe sich nicht messen lässt, ohne ihn zu lesen – und das würde die Anfrage verändern. Sie steht daher mit unbekannter Größe in der Liste.",
+    "howFootnote": "Aufgezeichnet durch Beobachten von fetch, sendBeacon und XMLHttpRequest sowie der Download-Liste des Browsers. Query-Strings werden weggelassen, damit kein Token angezeigt wird. Die Entwicklertools deines Browsers (Tab „Netzwerk“) zeigen dieselben Anfragen.",
+    "kind": {
+      "counter": {
+        "label": "Anonymer Konvertierungszähler",
+        "why": "erhöht die öffentliche Zahl der Konvertierungen um eins. Enthält keine Datei und nichts über dich."
+      },
+      "counterRead": {
+        "label": "Abruf des Konvertierungszählers",
+        "why": "liest die öffentliche Zahl der Konvertierungen, um sie anzuzeigen. Ein Download; es wird nichts gesendet."
+      },
+      "analytics": {
+        "label": "Vercel-Analytics-Ereignis",
+        "why": "cookiefreie Statistik: welche Seite aufgerufen und welche Schaltflächen benutzt wurden. Nie die Datei."
+      },
+      "sponsor": {
+        "label": "Sponsor-Abfrage",
+        "why": "fragt, wer die Seite gerade sponsert. Ein Download; nichts über dich oder deine Datei wird mitgeschickt."
+      },
+      "verified": {
+        "label": "Abfrage verifizierter Designs",
+        "why": "lädt verifizierte MakerRun-Designs für den gewählten Drucker. Ein Download; deine Datei wird nicht gesendet."
+      },
+      "serverFallback": {
+        "label": "Konvertierung auf dem Server",
+        "why": "du hast die Schaltfläche zum Konvertieren auf unserem Server gedrückt, also wurde deine Datei hochgeladen. Sie wird im Arbeitsspeicher konvertiert und nicht gespeichert."
+      },
+      "report": {
+        "label": "Fehlerbericht",
+        "why": "du hast die Schaltfläche gedrückt, um uns diese Datei zu schicken, damit wir den Konverter reparieren können."
+      },
+      "waitlist": {
+        "label": "E-Mail-Anmeldung",
+        "why": "die E-Mail-Adresse, die du ins Benachrichtigungsfeld eingegeben hast."
+      },
+      "pageData": {
+        "label": "Link-Vorabladen",
+        "why": "die Seite lädt vorab die Seiten, auf die sichtbare Links zeigen. Ein Download; es wird nichts gesendet."
+      },
+      "pageCode": {
+        "label": "Seitencode",
+        "why": "Teile dieser Seite, die bei Bedarf geladen werden: Skripte, Stile, Schriften und die 3D-Vorschau. Nur Downloads."
+      },
+      "image": {
+        "label": "Bilder",
+        "why": "Bilder auf der Seite, etwa Design-Vorschaubilder. Nur Downloads."
+      },
+      "other": {
+        "label": "Andere Anfrage",
+        "why": "keine, die diese Seite beim Namen kennt. Die Adresse steht dabei, damit du sie nachschlagen kannst."
+      }
+    }
   }
 }
