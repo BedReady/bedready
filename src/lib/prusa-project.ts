@@ -239,6 +239,63 @@ function baseFilaments(entries: Record<string, Uint8Array>, ex: Extruders): (pat
   };
 }
 
+// ── MODIFIERS, NEGATIVE PARTS, SUPPORT BLOCKERS AND ENFORCERS ────────────────────────────────────
+//
+// Bambu/Orca keep a part's KIND in model_settings.config (`<part subtype="negative_part">`), which
+// PrusaSlicer does not read, and the project used to drop that file. PrusaSlicer 2.9 also turns every
+// `<component>` of a non-PrusaSlicer 3MF into its own object (Format/3mf.cpp _create_object_instance at
+// version_2.9.2), so a hole cutter arrived as a solid object printed beside the model, painted like it.
+//
+// PrusaSlicer's own form for a multi-part object is ONE mesh object holding every part's triangles, with
+// Metadata/Slic3r_PE_model.config naming each part's triangle range and its `volume_type`
+// (_generate_volumes in the same file; ModelVolume::type_from_string). So an object that has any
+// non-model part is flattened into that form: each component's vertices go through its transform,
+// parts keep their names and kinds, and only MODEL parts are painted. Objects made only of model parts
+// are left exactly as before, the shape PrusaSlicer 2.9.6 was checked against.
+const PRUSA_VOLUME_TYPE: Record<string, string> = {
+  normal_part: "ModelPart",
+  modifier_part: "ParameterModifier",
+  negative_part: "NegativeVolume",
+  support_blocker: "SupportBlocker",
+  support_enforcer: "SupportEnforcer",
+};
+
+/** What the PrusaSlicer project could not carry over, for the user to be told. */
+export type PrusaUntranslated = "per_height_colors" | "height_ranges" | "part_settings";
+
+type PartInfo = { subtype: string; name: string; extruder?: number; settings: boolean };
+
+/** model_settings.config parts by "objectId/partId": kind, name, extruder, and whether it sets anything else. */
+function readParts(entries: Record<string, Uint8Array>): Map<string, PartInfo> {
+  const parts = new Map<string, PartInfo>();
+  const entry = Object.entries(entries).find(([p]) => p.toLowerCase().endsWith("model_settings.config"));
+  if (!entry) return parts;
+  const IDENTITY = /^(name|extruder|matrix|source_.*)$/;
+  for (const om of strFromU8(entry[1]).matchAll(/<object id="(\d+)"[^>]*>([\s\S]*?)<\/object>/g)) {
+    for (const pm of om[2].matchAll(/<part id="(\d+)"([^>]*)>([\s\S]*?)<\/part>/g)) {
+      const subtype = /subtype="([^"]+)"/.exec(pm[2])?.[1] ?? "normal_part";
+      const meta = [...pm[3].matchAll(/<metadata key="([^"]+)" value="([^"]*)"/g)];
+      const ext = meta.find((m) => m[1] === "extruder")?.[2];
+      parts.set(`${om[1]}/${pm[1]}`, {
+        subtype,
+        name: meta.find((m) => m[1] === "name")?.[2] ?? "",
+        extruder: ext ? parseInt(ext, 10) : undefined,
+        settings: meta.some((m) => !IDENTITY.test(m[1])),
+      });
+    }
+  }
+  return parts;
+}
+
+const OBJECT_RE = /<object id="(\d+)"([^>]*)>([\s\S]*?)<\/object>/g;
+const xmlAttr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+/** Apply a 3MF row-major 3×4 transform ("m00 m01 m02 m10 … m32") to a point. */
+function transformPoint(t: number[] | null, x: number, y: number, z: number): [number, number, number] {
+  if (!t) return [x, y, z];
+  return [x * t[0] + y * t[3] + z * t[6] + t[9], x * t[1] + y * t[4] + z * t[7] + t[10], x * t[2] + y * t[5] + z * t[8] + t[11]];
+}
+
 /** Centre of a Bambu/Orca `printable_area` polygon, or null. */
 function areaCentre(area: unknown): [number, number] | null {
   if (!Array.isArray(area) || !area.length) return null;
@@ -271,15 +328,28 @@ export function prusaProjectConfig(machine: Machine, colours: string[], types: s
   return lines.join("\n") + "\n";
 }
 
+
+/** Settings in model_settings.config beyond a part's kind, name and filament (layer height, infill …). */
+function hasObjectSettings(entries: Record<string, Uint8Array>): boolean {
+  const entry = Object.entries(entries).find(([p]) => p.toLowerCase().endsWith("model_settings.config"));
+  if (!entry) return false;
+  for (const om of strFromU8(entry[1]).matchAll(/<object id="\d+"[^>]*>([\s\S]*?)<\/object>/g)) {
+    const own = om[1].replace(/<part\b[\s\S]*?<\/part>/g, "");
+    for (const m of own.matchAll(/<metadata key="([^"]+)"/g)) if (!/^(name|extruder|matrix|source_.*)$/.test(m[1])) return true;
+  }
+  return false;
+}
+
 /**
  * The project's entries. Geometry files are rewritten (explicit, remapped, Prusa-named paint), Bambu
  * metadata is dropped, and Metadata/Slic3r_PE.config is added. Everything else passes through.
+ * `untranslated` lists what the source carried that the project could not, so the user can be told.
  */
 export function toPrusaProject(
   entries: Record<string, Uint8Array>,
   machine: Machine,
   input: PrusaProjectInput,
-): { out: Record<string, Uint8Array>; removed: string[]; painted: boolean } {
+): { out: Record<string, Uint8Array>; removed: string[]; painted: boolean; untranslated: PrusaUntranslated[] } {
   const slots = Math.max(1, machine.toolheads);
   const blends = (input.blends ?? []).slice(0, Math.max(0, MAX_PAINT_STATE - slots));
   const toSlot = (filament: number): number => {
@@ -288,6 +358,36 @@ export function toPrusaProject(
     return Math.min(Math.max(1, s), slots + blends.length);
   };
   const baseOf = baseFilaments(entries, readExtruders(entries));
+  const parts = readParts(entries);
+
+  // What is dropped with Metadata/: say so instead of losing it silently. Per-height colour changes
+  // (custom_gcode_per_layer.xml) and height-range settings (layer_config_ranges.xml) are kept in
+  // Bambu's dialect, with Orca option names and object numbering PrusaSlicer reads differently, so
+  // they are not translated; neither are per-object or per-part settings.
+  const untranslated = new Set<PrusaUntranslated>();
+  for (const [path, data] of Object.entries(entries)) {
+    const base = path.toLowerCase().split("/").pop() ?? "";
+    if (base === "custom_gcode_per_layer.xml" && /<layer\b/.test(strFromU8(data))) untranslated.add("per_height_colors");
+    if (base === "layer_config_ranges.xml" && /<range\b/.test(strFromU8(data))) untranslated.add("height_ranges");
+  }
+  if ([...parts.values()].some((p) => p.settings) || hasObjectSettings(entries)) untranslated.add("part_settings");
+
+  // One triangle, painted for PrusaSlicer: every state remapped, and an unpainted face given its part's
+  // filament explicitly. Linear on purpose: `([^>]*?)\s*\/>` let both halves match whitespace, so a run
+  // of spaces with no "/>" backtracked quadratically — a 903-byte file held the main thread 15 s
+  // (2026-10-02 review).
+  const PAINT_ATTR = /\s(?:paint_color|slic3rpe:mmu_segmentation)="[0-9A-Fa-f]*"/g;
+  const paintTriangle = (rawAttrs: string, base: number): string => {
+    const attrs = rawAttrs.trimEnd();
+    const stateMap = (s: number) => (s === 0 ? base : toSlot(s));
+    const m = /\s(?:paint_color|slic3rpe:mmu_segmentation)="([0-9A-Fa-f]+)"/.exec(attrs);
+    const code = m ? remapPaintCode(m[1], stateMap) : encodeSolidPaint(base);
+    return `<triangle${attrs.replace(PAINT_ATTR, "")} slic3rpe:mmu_segmentation="${code}"/>`;
+  };
+
+  const texts: Record<string, string> = {};
+  for (const [path, data] of Object.entries(entries)) if (path.toLowerCase().endsWith(".model")) texts[path] = strFromU8(data);
+  const flat = flattenNonModelParts(texts, parts, baseOf, toSlot, paintTriangle);
 
   // Source bed centre, from project_settings.config, so items land on the target bed's centre.
   let shift: [number, number] = [0, 0];
@@ -303,7 +403,7 @@ export function toPrusaProject(
 
   const out: Record<string, Uint8Array> = {};
   const removed: string[] = [];
-  let painted = false;
+  let painted = flat.painted;
   for (const [path, data] of Object.entries(entries)) {
     const lower = path.toLowerCase();
     if (lower.startsWith("metadata/") && (lower.endsWith(".config") || lower.endsWith(".json") || lower.endsWith(".xml") || lower.endsWith(".gcode") || lower.endsWith(".md5"))) {
@@ -314,27 +414,22 @@ export function toPrusaProject(
       out[path] = data;
       continue;
     }
-    let xml = strFromU8(data);
+    let xml = texts[path];
     const filePath = path.replace(/^\//, "");
-    xml = xml.replace(/<object id="(\d+)"([^>]*)>([\s\S]*?)<\/object>/g, (block, oid: string) => {
+    const isRoot = lower === "3d/3dmodel.model";
+    xml = xml.replace(OBJECT_RE, (block, oid: string) => {
       if (!block.includes("<triangle")) return block; // a component wrapper: nothing to paint
+      if (isRoot && flat.ids.has(oid)) return block; // flattened above, already painted part by part
       const base = toSlot(baseOf(filePath, oid));
-      const stateMap = (s: number) => (s === 0 ? base : toSlot(s));
-      // Linear on purpose: `([^>]*?)\s*\/>` let both halves match whitespace, so a run of spaces with no
-      // "/>" backtracked quadratically — a 903-byte file held the main thread 15 s (2026-10-02 review).
       return block.replace(/<triangle\b([^>]*)\/>/g, (_t, rawAttrs: string) => {
-        const attrs = rawAttrs.trimEnd();
         painted = true;
-        const m = /\s(?:paint_color|slic3rpe:mmu_segmentation)="([0-9A-Fa-f]+)"/.exec(attrs);
-        const rest = attrs.replace(/\s(?:paint_color|slic3rpe:mmu_segmentation)="[0-9A-Fa-f]*"/g, "");
-        const code = m ? remapPaintCode(m[1], stateMap) : encodeSolidPaint(base);
-        return `<triangle${rest} slic3rpe:mmu_segmentation="${code}"/>`;
+        return paintTriangle(rawAttrs, base);
       });
     });
     if (painted && !/xmlns:slic3rpe=/.test(xml)) {
       xml = xml.replace(/<model\b/, `<model xmlns:slic3rpe="${SLIC3RPE_NS}"`);
     }
-    if (lower === "3d/3dmodel.model" && (shift[0] || shift[1])) {
+    if (isRoot && (shift[0] || shift[1])) {
       xml = xml.replace(/<item\b([^>]*?)\btransform="([^"]+)"/g, (_m, pre: string, tr: string) => {
         const v = tr.trim().split(/\s+/).map(Number);
         if (v.length !== 12 || !v.every(Number.isFinite)) return `<item${pre}transform="${tr}"`;
@@ -346,6 +441,123 @@ export function toPrusaProject(
     out[path] = strToU8(xml);
   }
   out["Metadata/Slic3r_PE.config"] = strToU8(prusaProjectConfig(machine, input.colours, input.types));
+  if (flat.config) out[PRUSA_MODEL_CONFIG] = strToU8(flat.config);
   if (blends.length) out[FULL_SPECTRUM_FILE] = strToU8(fullSpectrumJson(machine, input.colours, blends));
-  return { out, removed, painted };
+  return { out, removed, painted, untranslated: [...untranslated] };
+}
+
+export const PRUSA_MODEL_CONFIG = "Metadata/Slic3r_PE_model.config";
+
+/**
+ * Flatten every root object that has a non-model part into one mesh object, in place in `texts`, and
+ * return the Slic3r_PE_model.config describing its volumes (see the note above PRUSA_VOLUME_TYPE).
+ * Objects whose components cannot be resolved to meshes (nested components, a missing file) are left
+ * alone. Each flattened object gets an id no .model file uses: PrusaSlicer looks volume metadata up by
+ * bare object id across all files, so a reused id would hand these ranges to another mesh.
+ */
+function flattenNonModelParts(
+  texts: Record<string, string>,
+  parts: Map<string, PartInfo>,
+  baseOf: (path: string, objectId: string) => number,
+  toSlot: (filament: number) => number,
+  paintTriangle: (rawAttrs: string, base: number) => string,
+): { ids: Set<string>; config: string; painted: boolean } {
+  const ids = new Set<string>();
+  const rootPath = Object.keys(texts).find((p) => p.toLowerCase() === "3d/3dmodel.model");
+  if (!rootPath || ![...parts.values()].some((p) => p.subtype !== "normal_part")) return { ids, config: "", painted: false };
+
+  let nextId = 1;
+  const refs = new Map<string, number>(); // "path#id" → how many components reference it
+  const norm = (p: string) => p.replace(/^\//, "");
+  for (const [path, xml] of Object.entries(texts)) {
+    for (const om of xml.matchAll(OBJECT_RE)) {
+      nextId = Math.max(nextId, parseInt(om[1], 10) + 1);
+      for (const cm of om[3].matchAll(/<component\b([^>]*)\/>/g)) {
+        const key = `${norm(/p:path="([^"]+)"/.exec(cm[1])?.[1] ?? path)}#${/objectid="(\d+)"/.exec(cm[1])?.[1]}`;
+        refs.set(key, (refs.get(key) ?? 0) + 1);
+      }
+    }
+  }
+  const meshOf = (path: string, oid: string): string | null => {
+    const file = Object.keys(texts).find((p) => norm(p) === path);
+    if (!file) return null;
+    for (const om of texts[file].matchAll(OBJECT_RE)) if (om[1] === oid && om[3].includes("<mesh")) return om[3];
+    return null;
+  };
+
+  const consumed = new Map<string, number>();
+  const objectsXml: string[] = [];
+  const renamed = new Map<string, number>();
+  let painted = false;
+  texts[rootPath] = texts[rootPath].replace(OBJECT_RE, (block, rid: string, attrs: string, body: string) => {
+    if (!body.includes("<components")) return block;
+    const comps = [...body.matchAll(/<component\b([^>]*)\/>/g)].map((cm) => ({
+      path: norm(/p:path="([^"]+)"/.exec(cm[1])?.[1] ?? rootPath),
+      oid: /objectid="(\d+)"/.exec(cm[1])?.[1] ?? "",
+      t: (() => {
+        const v = /transform="([^"]+)"/.exec(cm[1])?.[1]?.trim().split(/\s+/).map(Number);
+        return v && v.length === 12 && v.every(Number.isFinite) ? v : null;
+      })(),
+    }));
+    const kinds = comps.map((c) => parts.get(`${rid}/${c.oid}`)?.subtype ?? "normal_part");
+    if (kinds.every((k) => k === "normal_part")) return block;
+    const meshes = comps.map((c) => meshOf(c.path, c.oid));
+    if (meshes.some((m) => m === null)) return block;
+
+    const vertices: string[] = [];
+    const triangles: string[] = [];
+    const volumes: string[] = [];
+    comps.forEach((c, i) => {
+      const part = parts.get(`${rid}/${c.oid}`);
+      const kind = kinds[i];
+      const isModel = kind === "normal_part";
+      const vOffset = vertices.length;
+      const first = triangles.length;
+      for (const vm of meshes[i]!.matchAll(/<vertex\b([^>]*)\/>/g)) {
+        const num = (k: string) => parseFloat(new RegExp(`\\b${k}="([^"]+)"`).exec(vm[1])?.[1] ?? "0");
+        const [x, y, z] = transformPoint(c.t, num("x"), num("y"), num("z"));
+        vertices.push(`<vertex x="${+x.toFixed(6)}" y="${+y.toFixed(6)}" z="${+z.toFixed(6)}"/>`);
+      }
+      const base = toSlot(baseOf(c.path, c.oid));
+      for (const tm of meshes[i]!.matchAll(/<triangle\b([^>]*)\/>/g)) {
+        const attrs = tm[1].replace(/\b(v[123])="(\d+)"/g, (_m, k: string, n: string) => `${k}="${parseInt(n, 10) + vOffset}"`);
+        // Only a model part is printed, so only a model part is painted.
+        if (isModel) {
+          painted = true;
+          triangles.push(paintTriangle(attrs, base));
+        } else {
+          triangles.push(`<triangle${attrs.trimEnd().replace(/\s(?:paint_color|slic3rpe:mmu_segmentation)="[0-9A-Fa-f]*"/g, "")}/>`);
+        }
+      }
+      if (triangles.length === first) return;
+      const meta = [
+        `<metadata type="volume" key="name" value="${xmlAttr(part?.name || `part ${c.oid}`)}"/>`,
+        `<metadata type="volume" key="volume_type" value="${PRUSA_VOLUME_TYPE[kind] ?? "ModelPart"}"/>`,
+        ...(kind === "modifier_part" && part?.extruder ? [`<metadata type="volume" key="extruder" value="${toSlot(part.extruder)}"/>`] : []),
+      ];
+      volumes.push(`  <volume firstid="${first}" lastid="${triangles.length - 1}">\n   ${meta.join("\n   ")}\n  </volume>`);
+      const key = `${c.path}#${c.oid}`;
+      consumed.set(key, (consumed.get(key) ?? 0) + 1);
+    });
+    if (!volumes.length) return block;
+    const id = nextId++;
+    renamed.set(rid, id);
+    ids.add(String(id));
+    objectsXml.push(` <object id="${id}" instances_count="1">\n${volumes.join("\n")}\n </object>`);
+    return `<object id="${id}"${attrs}><mesh><vertices>${vertices.join("")}</vertices><triangles>${triangles.join("")}</triangles></mesh></object>`;
+  });
+  if (!renamed.size) return { ids, config: "", painted: false };
+  texts[rootPath] = texts[rootPath].replace(/(<item\b[^>]*?\bobjectid=")(\d+)(")/g, (m, a: string, n: string, b: string) =>
+    renamed.has(n) ? `${a}${renamed.get(n)}${b}` : m,
+  );
+  // A part mesh referenced only by flattened objects now lives inside them; left in its file it would
+  // load as an extra object.
+  for (const [key, n] of consumed) {
+    if (refs.get(key) !== n) continue;
+    const [path, oid] = [key.slice(0, key.lastIndexOf("#")), key.slice(key.lastIndexOf("#") + 1)];
+    const file = Object.keys(texts).find((p) => norm(p) === path);
+    if (file) texts[file] = texts[file].replace(OBJECT_RE, (block, id: string) => (id === oid ? "" : block));
+  }
+  const config = `<?xml version="1.0" encoding="UTF-8"?>\n<config>\n${objectsXml.join("\n")}\n</config>\n`;
+  return { ids, config, painted };
 }

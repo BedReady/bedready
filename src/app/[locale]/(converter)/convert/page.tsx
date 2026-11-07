@@ -875,6 +875,9 @@ export default function ConvertPage() {
       });
       bumpConvertCount();
       setStatus("done");
+      // A PrusaSlicer project cannot carry everything a Bambu/Orca file holds: say what was left out.
+      const UNTRANSLATED = { per_height_colors: "untranslatedPerHeightColors", height_ranges: "untranslatedHeightRanges", part_settings: "untranslatedPartSettings" } as const;
+      setWarn((res.untranslated ?? []).map((u) => t(UNTRANSLATED[u])).join(" "));
       setMessage(
         isRetarget
           ? sameFamily
