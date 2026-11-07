@@ -56,3 +56,7 @@ user's existing MakerWorld session) for the signed file link, then converts that
 "Also work on makerworld.com.cn". The hosts are requested when the user turns it on; while they are
 granted, `background.ts` registers the bundled `dist/content.js` on makerworld.com.cn
 (`scripting.registerContentScripts`) and removes it when they are revoked. No remote code.
+
+`alarms` (0.6.5) is one timer: when the extension keeps the original file for "Edit colours on
+bedready.io" (`handoff.ts`, IndexedDB), it schedules a sweep 31 minutes later that deletes the file if
+the editor never took it, so nothing is kept past the 30 minutes the privacy policy states.

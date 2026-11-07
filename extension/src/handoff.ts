@@ -15,6 +15,13 @@
 // host permission and make Chrome disable the extension until every user re-approved it.
 //
 // One file, one take: `take` deletes the entry, and an entry older than TTL_MS is never handed out.
+//
+// ── AND NEVER KEPT PAST TTL_MS — FIXED NOV 7 ─────────────────────────────────────────────────────
+// The policy says the file is kept "for at most 30 minutes", but until 0.6.5 nothing deleted an entry
+// that was never taken: the background stashes every intercepted original for the toast's "Edit
+// colours" link, so the last model sat in IndexedDB until the next download replaced it — days, for
+// someone who converts once. Now every stash sets an alarm for TTL + 1 min that runs `sweep`, and the
+// background sweeps each time it wakes (the alarm can be lost if the browser closes).
 // Firefox has no `externally_connectable`, so there the page simply opens empty, as it did before.
 
 const DB = "bedready-handoff";
@@ -48,10 +55,27 @@ async function run<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRe
   }
 }
 
+export const SWEEP_ALARM = "bedready-handoff-sweep";
+
 /** Keep `file` for the editor. Returns false when it is too large to hand over by message. */
 export async function stash(file: Blob, name: string): Promise<boolean> {
   if (file.size > MAX_HANDOFF_BYTES) return false;
   await run("readwrite", (s) => s.put({ name, blob: file, at: Date.now() } satisfies Entry, KEY));
+  try {
+    const ext = (globalThis as any).browser ?? (globalThis as any).chrome;
+    // Re-creating an alarm with the same name replaces it, so the newest stash sets the deadline.
+    ext?.alarms?.create?.(SWEEP_ALARM, { delayInMinutes: TTL_MS / 60_000 + 1 });
+  } catch {
+    // No alarms (an old build without the permission): the wake-up sweep still covers it.
+  }
+  return true;
+}
+
+/** Delete the kept file once it is older than TTL_MS. Returns whether anything was deleted. */
+export async function sweep(now = Date.now()): Promise<boolean> {
+  const e = (await run<Entry | undefined>("readonly", (s) => s.get(KEY))) ?? null;
+  if (!e || now - e.at <= TTL_MS) return false;
+  await run("readwrite", (s) => s.delete(KEY));
   return true;
 }
 

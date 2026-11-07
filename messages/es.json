@@ -421,7 +421,11 @@
     "mixFirst": "Primer filamento",
     "mixSecond": "Segundo filamento",
     "mixShare": "Proporción del segundo filamento",
-    "dropTitleTouch": "Toca para elegir un archivo .3mf o .stl"
+    "dropTitleTouch": "Toca para elegir un archivo .3mf o .stl",
+    "extCardTitle": "Convierte cada descarga automáticamente",
+    "extCardBody": "La extensión gratuita de BedReady convierte un .3mf mientras lo descargas de MakerWorld, Printables o Thingiverse, en tu navegador.",
+    "extCardCta": "Añadir a {browser}",
+    "extCardDismiss": "Ahora no"
   },
   "help": {
     "title": "Ayuda y preguntas frecuentes",
