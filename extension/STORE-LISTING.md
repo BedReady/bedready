@@ -4,7 +4,16 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.5** (in this repo): the original kept for "Edit colours on bedready.io" is now deleted 30
+- **0.6.6** (in this repo): a "Check fit" control under "Download for U1" on MakerWorld model pages.
+  On click (never on its own) it fetches the picked print profile's file the same way the Download
+  button does, reads it with the converter's own analysis, and answers in one line for the printer
+  chosen in the popup ("4 colors · fits the U1", "6 colors → fits the U1 with Full Spectrum",
+  "3 colors · 2 plates · split per plate", "Too big for the U1's bed"), with "Open in BedReady" to
+  hand that file to the editor. Translated into all seven languages. The editor link (this one and
+  the toast's "Edit colors") now also names the model page the file came from (`src=`, a
+  MakerWorld / Printables / Thingiverse model page only, query and hash stripped), so the done screen
+  can look up a verified MakerRun profile for that model. **No permission changes.**
+- **0.6.5** (in AMO review; Chrome to follow): the original kept for "Edit colours on bedready.io" is now deleted 30
   minutes after it is kept, as the privacy policy says, instead of staying until the next download;
   plus the converter fixes merged since 0.6.4 (see the site's changelog / git log).
   **Permission change:** adds `alarms` (no install warning in Chrome; existing users are not

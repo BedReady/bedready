@@ -1552,7 +1552,22 @@
     "notifyDoneTitle": "BedReady ✓ Umgewandelt",
     "notifyDone": "{out} in Downloads gespeichert — bereit zum Slicen für deinen {printer}.",
     "toastFailed": "{file} konnte nicht umgewandelt werden. Deine ursprüngliche .3mf wurde heruntergeladen — wandle sie über das Popup um.",
-    "notifyFailedTitle": "BedReady — Umwandlung fehlgeschlagen"
+    "notifyFailedTitle": "BedReady — Umwandlung fehlgeschlagen",
+    "fitCheck": "Prüfen, ob es passt",
+    "fitChecking": "wird geprüft…",
+    "fitTitle": "Lädt die Datei dieses Druckprofils und prüft sie für deinen Drucker — im Browser, nichts wird hochgeladen",
+    "fitFailed": "Diese Datei ließ sich nicht prüfen.",
+    "fitOpen": "In BedReady öffnen →",
+    "fitOk": "{count, plural, one {# Farbe} other {# Farben}} · passt auf den {printer}",
+    "fitOkSlotsOnly": "{count, plural, one {# Farbe} other {# Farben}} · passt in die Slots des {printer} (Bett nicht geprüft)",
+    "fitFullSpectrum": "{count, plural, one {# Farbe} other {# Farben}} → passt auf den {printer} mit Full Spectrum",
+    "fitSwaps": "{count, plural, one {# Farbe} other {# Farben}} → passt auf den {printer} mit Spulenwechseln",
+    "fitSplit": "{count, plural, one {# Farbe} other {# Farben}} · {plates, plural, one {# Platte} other {# Platten}} · pro Platte aufteilen",
+    "fitMerge": "{count, plural, one {# Farbe} other {# Farben}} · der {printer} fasst {heads}, der Rest wird zusammengelegt",
+    "fitTooBig": "Zu groß für das Druckbett des {printer}",
+    "fitLayout": "Die Teile passen, liegen aber breiter als das Bett des {printer}: neu anordnen",
+    "fitGeneric": "{count, plural, one {# Farbe} other {# Farben}} · wähle einen Drucker, um das Bett zu prüfen",
+    "fitBigFileSplit": "Große Datei · {plates, plural, one {# Platte} other {# Platten}} · pro Platte aufteilen"
   },
   "mixer": {
     "metaTitle": "Full-Spectrum-Farbmischer — BedReady",

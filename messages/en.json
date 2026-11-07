@@ -1552,7 +1552,22 @@
     "notifyDoneTitle": "BedReady ✓ Converted",
     "notifyDone": "{out} saved to Downloads — ready to slice for your {printer}.",
     "toastFailed": "Couldn't convert {file}. Your original .3mf downloaded — convert it via the popup.",
-    "notifyFailedTitle": "BedReady — conversion failed"
+    "notifyFailedTitle": "BedReady — conversion failed",
+    "fitCheck": "Check fit",
+    "fitChecking": "checking…",
+    "fitTitle": "Fetch this print profile's file and check it against your printer — in your browser, nothing uploaded",
+    "fitFailed": "Couldn't check this file.",
+    "fitOpen": "Open in BedReady →",
+    "fitOk": "{count, plural, one {# color} other {# colors}} · fits the {printer}",
+    "fitOkSlotsOnly": "{count, plural, one {# color} other {# colors}} · fits the {printer}'s slots (bed not checked)",
+    "fitFullSpectrum": "{count, plural, one {# color} other {# colors}} → fits the {printer} with Full Spectrum",
+    "fitSwaps": "{count, plural, one {# color} other {# colors}} → fits the {printer} with spool swaps",
+    "fitSplit": "{count, plural, one {# color} other {# colors}} · {plates, plural, one {# plate} other {# plates}} · split per plate",
+    "fitMerge": "{count, plural, one {# color} other {# colors}} · the {printer} holds {heads}, extras merge",
+    "fitTooBig": "Too big for the {printer}'s bed",
+    "fitLayout": "Parts fit, but spread wider than the {printer}'s bed: rearrange",
+    "fitGeneric": "{count, plural, one {# color} other {# colors}} · pick a printer to check the bed",
+    "fitBigFileSplit": "Large file · {plates, plural, one {# plate} other {# plates}} · split per plate"
   },
   "mixer": {
     "metaTitle": "Full Spectrum color mixer — BedReady",

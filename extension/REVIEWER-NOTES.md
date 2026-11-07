@@ -52,6 +52,16 @@ On a MakerWorld model page the "Download for U1" button asks MakerWorld's own do
 (`/api/v1/design-service/instance/<id>/f3mf`, the same one MakerWorld's Download button calls, with the
 user's existing MakerWorld session) for the signed file link, then converts that file locally.
 
+"Check fit" (0.6.6), next to that button, makes the same two requests only when the user clicks it
+(never on page load): the f3mf endpoint for the signed link, then the file from MakerWorld's CDN in
+`background.ts`. Instead of saving a converted copy it reads the file locally with
+`src/lib/fit-check.ts` (the converter's own analysis) and shows one line of text; nothing is sent
+anywhere. The file is kept for "Open in BedReady" by the same `handoff.ts` store (30 minutes at most).
+The bedready.io/convert link it opens (like the toast's "Edit colours") carries `src=`, the model page
+the file came from, so the site can suggest a profile for that model. `src/lib/source-page.ts` admits
+only https MakerWorld / Printables / Thingiverse model pages, with the query and hash removed (except
+MakerWorld's `#profileId-<id>`); any other address is left out.
+
 `scripting` and the optional hosts `makerworld.com.cn` / `*.bblmw.cn` exist only for the popup switch
 "Also work on makerworld.com.cn". The hosts are requested when the user turns it on; while they are
 granted, `background.ts` registers the bundled `dist/content.js` on makerworld.com.cn

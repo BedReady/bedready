@@ -23,6 +23,7 @@
 // someone who converts once. Now every stash sets an alarm for TTL + 1 min that runs `sweep`, and the
 // background sweeps each time it wakes (the alarm can be lost if the browser closes).
 // Firefox has no `externally_connectable`, so there the page simply opens empty, as it did before.
+import { sourcePage } from "../../src/lib/source-page";
 
 const DB = "bedready-handoff";
 const STORE = "file";
@@ -31,7 +32,7 @@ export const TTL_MS = 30 * 60 * 1000;
 // Extension messages are JSON in Chrome (64 MB cap); base64 is 4/3 of the bytes. Stay well under it.
 export const MAX_HANDOFF_BYTES = 40 * 1024 * 1024;
 
-type Entry = { name: string; blob: Blob; at: number };
+type Entry = { name: string; blob: Blob; at: number; src?: string | null };
 
 function open(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -57,10 +58,13 @@ async function run<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRe
 
 export const SWEEP_ALARM = "bedready-handoff-sweep";
 
-/** Keep `file` for the editor. Returns false when it is too large to hand over by message. */
-export async function stash(file: Blob, name: string): Promise<boolean> {
+/**
+ * Keep `file` for the editor, with the model page it came from (kept only if `sourcePage` accepts it).
+ * Returns false when it is too large to hand over by message.
+ */
+export async function stash(file: Blob, name: string, src?: string | null): Promise<boolean> {
   if (file.size > MAX_HANDOFF_BYTES) return false;
-  await run("readwrite", (s) => s.put({ name, blob: file, at: Date.now() } satisfies Entry, KEY));
+  await run("readwrite", (s) => s.put({ name, blob: file, at: Date.now(), src: sourcePage(src) } satisfies Entry, KEY));
   try {
     const ext = (globalThis as any).browser ?? (globalThis as any).chrome;
     // Re-creating an alarm with the same name replaces it, so the newest stash sets the deadline.
@@ -77,6 +81,12 @@ export async function sweep(now = Date.now()): Promise<boolean> {
   if (!e || now - e.at <= TTL_MS) return false;
   await run("readwrite", (s) => s.delete(KEY));
   return true;
+}
+
+/** The model page of the kept file, without taking it (for the editor link), if it is fresh. */
+export async function keptSource(now = Date.now()): Promise<string | null> {
+  const e = (await run<Entry | undefined>("readonly", (s) => s.get(KEY))) ?? null;
+  return e && now - e.at <= TTL_MS ? sourcePage(e.src) : null;
 }
 
 /** The kept file, once, if it is fresh. */
@@ -96,11 +106,18 @@ export function canHandOff(api: any): boolean {
   }
 }
 
-/** The editor's address: the chosen printer, plus our id when the page can fetch the file from us. */
-export function editorUrl(api: any, target: string, withFile: boolean): string {
+/**
+ * The editor's address: the chosen printer, plus our id when the page can fetch the file from us, plus
+ * `src`, the model page the file came from, when one is known. `src` passes through `sourcePage` here,
+ * so no caller can hand the editor anything but a cleaned MakerWorld / Printables / Thingiverse model
+ * page (the done screen uses it to look up a verified MakerRun profile for that model).
+ */
+export function editorUrl(api: any, target: string, withFile: boolean, src?: string | null): string {
   const u = new URL("https://bedready.io/convert");
   u.searchParams.set("to", target);
   if (withFile && canHandOff(api) && api?.runtime?.id) u.searchParams.set("ext", api.runtime.id);
+  const page = sourcePage(src);
+  if (page) u.searchParams.set("src", page);
   return u.toString();
 }
 
