@@ -122,17 +122,23 @@ test("every sponsor link is qualified as paid", () => {
 test("the shell mounts a slot top AND bottom", () => {
   // Four mounts in one file, any of which a refactor can drop without a single other test noticing.
   const shell = readFileSync("src/app/[locale]/(converter)/layout.tsx", "utf8").replace(/\{\/\*[\s\S]*?\*\/\}/g, "");
-  assert.match(shell, /<ConverterSponsorBar\s*\/>/, "no sponsor bar at the top");
-  assert.match(shell, /<ConverterSponsorStrip\s*\/>/, "no sponsor strip at the bottom");
+  assert.match(shell, /<ConverterSponsorBar sponsor=\{sponsor\} \/>/, "no sponsor bar at the top");
+  assert.match(shell, /<ConverterSponsorStrip sponsor=\{sponsor\} \/>/, "no sponsor strip at the bottom");
+  // One read, handed to both: two reads could straddle a booking's end and show two companies.
+  assert.equal((shell.match(/fetchSponsor\(/g) ?? []).length, 1, "the shell must read the sponsor once");
 });
 
 test("the slot reaches the API and never a database", () => {
   // The property this whole repository is built to keep. convert-backend-free.test.mts owns it
   // generally; restated here because sponsorship is the feature most likely to break it — the row
   // it renders lives in a database that this code must never hold a key to.
+  // Read on the server since Nov 7 (sponsor-feed.ts), so that is where the seam is checked; the
+  // client slot fetches nothing at all now.
+  const feed = readFileSync("src/lib/sponsor-feed.ts", "utf8");
   const client = readFileSync("src/components/ConverterSponsorSlots.tsx", "utf8");
-  assert.ok(!/supabase/i.test(client), "the slot must not reach a database directly");
-  assert.match(client, /convertApi\("\/api\/v1\/sponsor"\)/, "it must go through the one permitted seam");
+  for (const f of [feed, client]) assert.ok(!/supabase/i.test(f), "the slot must not reach a database directly");
+  assert.match(feed, /convertApi\("\/api\/v1\/sponsor"\)/, "it must go through the one permitted seam");
+  assert.ok(!/fetch\(/.test(client), "the client slot must not fetch: the sponsor arrives in the HTML");
 });
 
 test("the window is half-open, matching the constraint on the other side", () => {
