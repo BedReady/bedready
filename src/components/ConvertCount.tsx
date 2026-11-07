@@ -38,7 +38,18 @@ export default function ConvertCount({ className }: { className?: string }) {
     };
   }, []);
 
-  if (count == null || count < MIN_TO_SHOW) return null;
+  // The line is RESERVED, not inserted. Returning null here put the counter in after hydration,
+  // above the headline, and pushed the headline, the drop zone and everything under it down 36px —
+  // the converter's whole layout shift (Lighthouse, Nov 7: 0.034 of the home page's 0.07). A blank
+  // line costs nothing when the number never comes; a page that jumps under the cursor costs a
+  // misplaced click on the drop zone.
+  if (count == null || count < MIN_TO_SHOW) {
+    return (
+      <p className={className} aria-hidden="true">
+        {"\u00a0"}
+      </p>
+    );
+  }
   return (
     <p className={className}>
       <span className="font-semibold text-fg-muted">{format.number(count)}</span> {t("convertedCount")}
