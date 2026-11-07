@@ -80,6 +80,7 @@ import ShareBedReady from "@/components/ShareBedReady";
 import ContributeToLibrary from "@/components/ContributeToLibrary";
 import VerifiedForYourPrinter from "@/components/VerifiedForYourPrinter";
 import ConvertCapture from "@/components/ConvertCapture";
+import ExtensionDoneCard from "@/components/ExtensionDoneCard";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
 import { planColorMix } from "@/lib/prusa-project";
@@ -208,6 +209,8 @@ export default function ConvertPage() {
   const [swapPauses, setSwapPauses] = useState(false);
   // >4 colours: write every filament through untouched and let Orca ask which head each loads on.
   const [keepAllColours, setKeepAllColours] = useState(false);
+  // Arrived with ?ext= — the file came from the extension, so the done screen doesn't offer it.
+  const [fromExtension, setFromExtension] = useState(false);
   // Which library preset each slot is NAMED after. Naming only — no print setting changes.
   const [filamentBrand, setFilamentBrand] = useState<FilamentBrand>("source");
   const [highFlow, setHighFlow] = useState(false);
@@ -282,6 +285,7 @@ export default function ConvertPage() {
     const url = new URL(window.location.href);
     url.searchParams.delete("ext");
     window.history.replaceState(window.history.state, "", url);
+    setFromExtension(true);
     void receiveFromExtension(search).then((f) => {
       if (f) void pick(f);
     });
@@ -2836,6 +2840,9 @@ export default function ConvertPage() {
           </ol>
         </div>
       )}
+      {/* The extension first among the asks: it is the one that brings a person back on their next
+          download (ExtensionDoneCard says when it stays quiet). */}
+      {status === "done" && <ExtensionDoneCard fromExtension={fromExtension} />}
       {status === "done" && <ContributeToLibrary />}
       {status === "done" && (
         <VerifiedForYourPrinter printerModel={MACHINES[targetId]?.printerModel} printerName={MACHINES[targetId]?.name} />

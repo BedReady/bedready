@@ -418,7 +418,11 @@
     "mixFirst": "第一种耗材",
     "mixSecond": "第二种耗材",
     "mixShare": "第二种耗材的比例",
-    "dropTitleTouch": "轻点以选择 .3mf 或 .stl 文件"
+    "dropTitleTouch": "轻点以选择 .3mf 或 .stl 文件",
+    "extCardTitle": "每次下载自动转换",
+    "extCardBody": "免费的 BedReady 扩展会在你从 MakerWorld、Printables 或 Thingiverse 下载 .3mf 时，直接在浏览器中完成转换。",
+    "extCardCta": "添加到 {browser}",
+    "extCardDismiss": "暂不"
   },
   "help": {
     "title": "帮助与常见问题",
