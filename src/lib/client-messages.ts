@@ -14,6 +14,7 @@
 export const CLIENT_NAMESPACES = [
   "calibrate",
   "convert",
+  "egress",
   "error",
   "image",
   "lang",

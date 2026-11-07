@@ -1,0 +1,95 @@
+name: Slicer golden (nightly)
+
+# Converter output through REAL slicers: scripts/slicer-golden.mjs builds U1, HueForge and Prusa
+# retarget outputs from fixtures, slices them with Snapmaker Orca and PrusaSlicer, and asserts on the
+# G-code (PLA temperatures, bed temperature, tools used, extruder count). It caught, in a dry run,
+# the ABS-under-a-PLA-label HueForge template that #100 fixed and no unit test saw.
+#
+# Nightly and by hand only. It downloads ~250 MB of slicers and is not a merge gate: it is not
+# triggered by pull requests, so it can never block one. A red run means "open the artifact".
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # 03:17 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: slicer-golden
+  cancel-in-progress: true
+
+env:
+  # Pinned to the Snapmaker Orca the site targets (2.4.x) and the last PrusaSlicer with an official
+  # Linux AppImage on GitHub (2.9.x ships Linux only through Flathub). Bump the version, asset and
+  # sha256 together; the cache key follows the asset name.
+  ORCA_URL: https://github.com/Snapmaker/OrcaSlicer/releases/download/v2.4.1/Snapmaker_Orca_Linux_AppImage_Ubuntu2404_V2.4.1.AppImage
+  ORCA_SHA256: 2b5117e22d04a3a27bcdfc5a873c55d28ff3b7ce9721946de1f134fa97d2cc06
+  PRUSA_URL: https://github.com/prusa3d/PrusaSlicer/releases/download/version_2.8.1/PrusaSlicer-2.8.1%2Blinux-x64-newer-distros-GTK3-202409181416.AppImage
+  PRUSA_SHA256: 565f2f4bd4dbb05904a459d54db1916b6932124709c1d17b5aacfe9f5f2f1b03
+
+jobs:
+  slicer-golden:
+    # The Snapmaker Orca AppImage is built on Ubuntu 24.04; run it there.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install --no-audit --no-fund
+
+      - name: Cache slicer AppImages
+        uses: actions/cache@v4
+        with:
+          path: .slicer-downloads
+          key: slicers-${{ env.ORCA_SHA256 }}-${{ env.PRUSA_SHA256 }}
+
+      - name: Download slicers (official GitHub releases, checksum-pinned)
+        run: |
+          mkdir -p .slicer-downloads
+          fetch() { # url sha256 file
+            if [ ! -f ".slicer-downloads/$3" ]; then curl -fsSL --retry 3 -o ".slicer-downloads/$3" "$1"; fi
+            echo "$2  .slicer-downloads/$3" | sha256sum -c -
+          }
+          fetch "$ORCA_URL" "$ORCA_SHA256" orca.AppImage
+          fetch "$PRUSA_URL" "$PRUSA_SHA256" prusa.AppImage
+
+      # Extracted rather than mounted: no FUSE needed on the runner.
+      - name: Unpack slicers
+        run: |
+          mkdir -p .slicers
+          for s in orca prusa; do
+            chmod +x ".slicer-downloads/$s.AppImage"
+            (cd .slicers && "../.slicer-downloads/$s.AppImage" --appimage-extract >/dev/null && mv squashfs-root "$s")
+          done
+          ls .slicers/orca/AppRun .slicers/prusa/AppRun
+
+      # The GUI toolkits both slicers link against, plus a virtual display: the CLIs initialize GTK
+      # before they look at their arguments.
+      - name: Install runtime libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            xvfb libgtk-3-0t64 libwebkit2gtk-4.1-0 libgl1 libegl1 libglu1-mesa libosmesa6 \
+            libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 libsecret-1-0 libfuse2t64 locales
+          sudo locale-gen en_US.UTF-8
+
+      - name: Slice and check
+        env:
+          LC_ALL: en_US.UTF-8
+          SLICER_GOLDEN_OUT: slicer-golden-out
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: xvfb-run -a npx tsx scripts/slicer-golden.mjs
+
+      - name: Upload failing cases (input 3MF, G-code, slicer log)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slicer-golden-failures
+          path: slicer-golden-out/failed/
+          retention-days: 14
+          if-no-files-found: ignore

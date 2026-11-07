@@ -425,7 +425,16 @@
     "extCardTitle": "Convierte cada descarga automáticamente",
     "extCardBody": "La extensión gratuita de BedReady convierte un .3mf mientras lo descargas de MakerWorld, Printables o Thingiverse, en tu navegador.",
     "extCardCta": "Añadir a {browser}",
-    "extCardDismiss": "Ahora no"
+    "extCardDismiss": "Ahora no",
+    "loadSheetButton": "Imprimir hoja de carga",
+    "loadSheetTitle": "Hoja de carga",
+    "loadSheetPrinter": "Impresora",
+    "loadSheetHead": "Cabezal",
+    "loadSheetColor": "Color",
+    "loadSheetMaterial": "Material",
+    "loadSheetPreset": "Perfil",
+    "loadSheetSwaps": "Cambios de bobina",
+    "loadSheetFooter": "Hecho con BedReady · bedready.io"
   },
   "help": {
     "title": "Ayuda y preguntas frecuentes",
@@ -1581,5 +1590,72 @@
   "sponsor": {
     "label": "Patrocinador",
     "visit": "Visitar {name}"
+  },
+  "egress": {
+    "title": "Qué ha salido de esta página",
+    "fileBytes": "Bytes de archivo enviados: {size}",
+    "intro": "Cada solicitud que esta página ha hecho desde que se abrió, registrada en tu navegador en el momento. Cualquier solicitud con más de {threshold} cuenta como bytes de archivo, así que si tu archivo se enviara, aparecería aquí.",
+    "empty": "Todavía no hay solicitudes.",
+    "sent": "{size} enviados",
+    "sizeUnknown": "tamaño desconocido",
+    "bytes": "{n} B",
+    "groupedRow": "GET × {count}",
+    "showAddresses": "Mostrar las direcciones",
+    "chosenTag": "subida que elegiste",
+    "unexpectedTag": "subida inesperada",
+    "chosenUpload": "{size} enviados en la subida que elegiste: {what}. Ocurrió porque pulsaste ese botón.",
+    "unexpectedUpload": "Salieron {size} en una solicitud que esta página no conoce. No debería pasar. Avísanos, con la dirección que aparece abajo.",
+    "unknownNote": "Una solicitud llevaba un flujo cuyo tamaño no se puede medir sin leerlo, y leerlo cambiaría la solicitud. Aparece con tamaño desconocido.",
+    "howFootnote": "Se registra observando fetch, sendBeacon y XMLHttpRequest, además de la lista de descargas del navegador. Se omiten las cadenas de consulta para no mostrar ningún token. Las herramientas para desarrolladores de tu navegador (pestaña Red) muestran las mismas solicitudes.",
+    "kind": {
+      "counter": {
+        "label": "Contador anónimo de conversiones",
+        "why": "suma uno al recuento público de conversiones. No lleva ningún archivo ni nada sobre ti."
+      },
+      "counterRead": {
+        "label": "Lectura del contador",
+        "why": "lee el número público de conversiones para mostrarlo. Una descarga; no se envía nada."
+      },
+      "analytics": {
+        "label": "Evento de analítica de Vercel",
+        "why": "analítica sin cookies: qué página se vio y qué botones se usaron. Nunca el archivo."
+      },
+      "sponsor": {
+        "label": "Consulta de quién patrocina",
+        "why": "pregunta quién patrocina el sitio ahora. Una descarga; no se envía nada sobre ti ni sobre tu archivo."
+      },
+      "verified": {
+        "label": "Consulta de diseños verificados",
+        "why": "trae diseños verificados de MakerRun para la impresora que elegiste. Una descarga; tu archivo no se envía."
+      },
+      "serverFallback": {
+        "label": "Conversión en el servidor",
+        "why": "pulsaste el botón para convertir en nuestro servidor, así que tu archivo se subió. Se convierte en memoria y no se guarda."
+      },
+      "report": {
+        "label": "Informe de fallo",
+        "why": "pulsaste el botón para enviarnos este archivo y que podamos arreglar el conversor."
+      },
+      "waitlist": {
+        "label": "Registro por correo",
+        "why": "la dirección de correo que escribiste en la casilla de aviso."
+      },
+      "pageData": {
+        "label": "Precarga de enlace",
+        "why": "el sitio precarga las páginas a las que apuntan los enlaces visibles. Una descarga; no se envía nada."
+      },
+      "pageCode": {
+        "label": "Código de la página",
+        "why": "partes de esta página que se cargan cuando hacen falta: scripts, estilos, fuentes y la vista previa 3D. Solo descargas."
+      },
+      "image": {
+        "label": "Imágenes",
+        "why": "imágenes que se muestran en la página, como miniaturas de diseños. Solo descargas."
+      },
+      "other": {
+        "label": "Otra solicitud",
+        "why": "no es una que esta página conozca por su nombre. Se muestra su dirección para que puedas consultarla."
+      }
+    }
   }
 }
