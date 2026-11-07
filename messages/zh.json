@@ -22,7 +22,8 @@
     "themeToLight": "切换到浅色主题",
     "themeToDark": "切换到深色主题",
     "themeLight": "浅色模式",
-    "themeDark": "深色模式"
+    "themeDark": "深色模式",
+    "menu": "菜单"
   },
   "footer": {
     "tagline": "天生不绑定品牌。",
@@ -175,6 +176,9 @@
     "retargeting": "正在为 {name} 重定向…",
     "doneRetarget": "完成 — 已为 {name} 重定向。请在该打印机的切片软件中重新切片。",
     "doneRetargetGeneric": "完成 — 已另存为通用 3MF。打开后在其切片软件中选择 {name}。",
+    "untranslatedPerHeightColors": "PrusaSlicer 无法读取此文件在指定高度的换色，因此未包含。请在 PrusaSlicer 的层滑块上重新添加。",
+    "untranslatedHeightRanges": "此文件按高度范围更改的设置未包含，因为 PrusaSlicer 无法读取。请在 PrusaSlicer 中用高度范围修改器重新设置。",
+    "untranslatedPartSettings": "按对象和按零件的设置（填充、层高等）未包含，因为 PrusaSlicer 无法读取 Bambu 的设置。请在 PrusaSlicer 中重新设置。",
     "batchTitle": "批量转换为 U1",
     "batchDesc": "有一整个文件夹的多色 .3mf 文件？一次性把它们全部转换为 U1 就绪文件（每个文件都保留其创作者的打印设置），并获得一个 ZIP。",
     "batchChoose": "选择 .3mf 文件…",
@@ -357,8 +361,8 @@
     "mfAppliedReused": "已装载 {count} 种——但你的耗材卷少于打印头数量，因此有 {reused} 个重复。添加更多耗材可获得更好的混色。",
     "mfDuplicate": "你已经有该颜色的耗材了。",
     "mfFull": "已达到 {max} 种耗材的上限——请先移除一个。",
-    "privacyBadge": "你的文件永远不会离开此页面",
-    "privacyDetail": "不上传、不经服务器、不留存——模型、设置，甚至文件名都不会外传。转换全部在你自己的机器上完成，因此适用于付费模型和不可再分发的文件。",
+    "privacyBadge": "你的文件留在此页面",
+    "privacyDetail": "转换在你自己的机器上完成：模型、设置和文件名都留在你的浏览器里，因此适用于付费模型和不可再分发的文件。我们会匿名统计转换次数，并使用不含 Cookie 的访问分析，两者都看不到文件。只有在你主动选择时文件才会上传：使用可选的服务器转换，或把转换失败的文件发给我们。",
     "warnMixedFilaments": "此文件混用了 {families} 耗材。在 U1 的擦料塔上它们可能彼此附着不良（例如 PLA 粘不住 PETG → “意大利面”）。请在 Orca 中将擦料塔的耗材设为你的主要材料，而不是“Default”。",
     "warnPaintedEdits": "颜色是绘制在网格上的。转换后请勿在 Orca 中使用“拆分为对象/零件”或切割工具——它们会丢失绘制的颜色。",
     "warnOverFourByLayer": "{count} 种颜色——超过 U1 的 4 个槽位。在下方启用 M600 换料暂停即可保留全部 {count} 种；不启用时，使用最少的颜色将合并到最接近的颜色。",
@@ -665,7 +669,7 @@
   },
   "extension": {
     "title": "BedReady 浏览器扩展",
-    "intro": "在 MakerWorld、Bambu、Printables 和 Thingiverse 的下载页面上，直接将多色 .3mf 文件转换为适用于 Snapmaker U1 的文件——也可以选择其他打印机，或输出干净的通用 3MF。想自己决定哪种颜色放进哪个槽位？一键即可在本站的完整编辑器中打开该文件。完全在浏览器中运行——不上传任何内容。支持 Chrome、Edge 和 Firefox。",
+    "intro": "在 MakerWorld、Bambu、Printables 和 Thingiverse 的下载页面上，直接将多色 .3mf 文件转换为适用于 Snapmaker U1 的文件——也可以选择其他打印机，或输出干净的通用 3MF。想自己决定哪种颜色放进哪个槽位？一键即可在本站的完整编辑器中打开该文件。完全在浏览器中运行——不上传任何内容。{safari, select, live {支持 Chrome、Edge、Firefox 和 Safari。} other {支持 Chrome、Edge 和 Firefox；Safari 版即将推出。}}",
     "chromeTitle": "Chrome 和 Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ 添加到 Chrome",
@@ -695,7 +699,10 @@
     "chromeStoreOnly": "在 Chrome 应用商店。",
     "popupCaption": "扩展的弹窗 —— 只需选一次打印机和喷嘴，下载的文件就能直接切片。也可以把 .3mf 拖进去，不用离开当前页面。",
     "metaTitle": "浏览器扩展 — BedReady",
-    "metaDescription": "直接在下载页面将 MakerWorld、Bambu、Printables 和 Thingiverse 的 .3mf 下载转换为 Snapmaker U1 或你自己的打印机可用的文件，支持 Chrome、Edge、Firefox 和 Safari。免费，在浏览器中运行。"
+    "metaDescription": "直接在下载页面将 MakerWorld、Bambu、Printables 和 Thingiverse 的 .3mf 下载转换为 Snapmaker U1 或你自己的打印机可用的文件，{safari, select, live {支持 Chrome、Edge、Firefox 和 Safari} other {支持 Chrome、Edge 和 Firefox（Safari 版即将推出）}}。免费，在浏览器中运行。",
+    "heroAddEdge": "＋ 添加到 Edge",
+    "heroAllBrowsers": "查看所有浏览器 ↓",
+    "desktopOnly": "{safari, select, live {需安装在电脑的桌面浏览器中：Chrome、Edge、Firefox 或 Safari。} other {需安装在电脑的桌面浏览器中：Chrome、Edge 或 Firefox。}}"
   },
   "upload": {
     "loading": "加载中…",
@@ -1054,7 +1061,7 @@
   "privacy": {
     "title": "隐私政策",
     "updated": "最后更新：2026 年 8 月 11 日",
-    "intro": "BedReady 是一个独立项目，帮助创客为任何打印机转换并分享 3D 打印文件——最初面向 Snapmaker U1，现已覆盖我们的文件检查器能识别的所有打印机。本政策涵盖网站（bedready.io）和 BedReady 浏览器扩展（Chrome、Edge、Firefox 和 Safari）。我们力求尽量少收集，并且绝不出售你的数据。",
+    "intro": "BedReady 是一个独立项目，帮助创客为任何打印机转换并分享 3D 打印文件——最初面向 Snapmaker U1，现已覆盖我们的文件检查器能识别的所有打印机。本政策涵盖网站（bedready.io）和 BedReady 浏览器扩展（Chrome、Edge 和 Firefox；Safari 版即将推出）。我们力求尽量少收集，并且绝不出售你的数据。",
     "extTitle": "浏览器扩展",
     "extIntro": "该扩展不收集任何数据，也不向任何服务器发送内容。转换完全在你的浏览器中进行 — 你的文件绝不会被上传。权限仅用于实现这一项功能（为 Snapmaker U1 转换已下载的 .3mf）：",
     "extBullets": [
@@ -1085,7 +1092,7 @@
     "intro": "拖入一个多色 .3mf，即可获得适配 Snapmaker U1 的文件 — 颜色、配置和擦料塔都已处理。免费、在浏览器中、不上传任何内容。",
     "ctaConvert": "转换文件 — 免费",
     "ctaBrowse": "浏览 MakerRun",
-    "note": "完全在你的设备上运行。也提供浏览器扩展（Chrome、Edge、Firefox、Safari），并支持 7 种语言。",
+    "note": "完全在你的设备上运行。也提供浏览器扩展（{safari, select, live {Chrome、Edge、Firefox、Safari} other {Chrome、Edge、Firefox；Safari 版即将推出}}），并支持 7 种语言。",
     "groups": {
       "slicers": {
         "title": "兼容各种切片软件",

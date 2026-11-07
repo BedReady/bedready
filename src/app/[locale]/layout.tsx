@@ -34,7 +34,8 @@ import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import AcquisitionCapture from "@/components/AcquisitionCapture";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { pickClientMessages } from "@/lib/client-messages";
 import { routing, dirOf } from "@/i18n/routing";
 import "../globals.css";
 
@@ -96,6 +97,8 @@ export default async function RootLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  // Only what client components use. See lib/client-messages.ts.
+  const messages = pickClientMessages(await getMessages());
 
   return (
     <html
@@ -114,7 +117,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
           {/* Skip link: first focusable element, jumps a keyboard/AT user past the header nav to content. */}
           <a
             href="#main-content"

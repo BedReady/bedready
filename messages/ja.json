@@ -22,7 +22,8 @@
     "themeToLight": "ライトテーマに切り替え",
     "themeToDark": "ダークテーマに切り替え",
     "themeLight": "ライトモード",
-    "themeDark": "ダークモード"
+    "themeDark": "ダークモード",
+    "menu": "メニュー"
   },
   "footer": {
     "tagline": "設計から機種に縛られない。",
@@ -175,6 +176,9 @@
     "retargeting": "{name}向けに再設定中…",
     "doneRetarget": "完了 — {name}向けに再設定しました。そのプリンターのスライサーで再スライスしてください。",
     "doneRetargetGeneric": "完了 — 汎用3MFとして保存しました。開いてスライサーで{name}を選んでください。",
+    "untranslatedPerHeightColors": "このファイルの指定高さでの色変更はPrusaSlicerが読めないため、含めていません。PrusaSlicerのレイヤースライダーで追加し直してください。",
+    "untranslatedHeightRanges": "このファイルが高さ範囲ごとに変更している設定は、PrusaSlicerが読めないため含めていません。PrusaSlicerの高さ範囲モディファイアで設定し直してください。",
+    "untranslatedPartSettings": "オブジェクト・パーツごとの設定（インフィル、積層ピッチなど）は、PrusaSlicerがBambuの設定を読めないため含めていません。PrusaSlicerで設定し直してください。",
     "batchTitle": "U1 へ一括変換",
     "batchDesc": "マルチカラーの .3mf ファイルがフォルダごとにありますか？ 一度にすべて U1 対応ファイルへ変換し（各ファイルは作者の印刷設定を保持）、ZIP で受け取れます。",
     "batchChoose": ".3mf ファイルを選択…",
@@ -357,8 +361,8 @@
     "mfAppliedReused": "{count} 件を読み込みましたが、スプール数がヘッド数より少ないため {reused} 件が重複しています。フィラメントを追加するとより良く混色できます。",
     "mfDuplicate": "その色のフィラメントはすでに登録されています。",
     "mfFull": "フィラメントは最大 {max} 件です — 先に 1 つ削除してください。",
-    "privacyBadge": "ファイルはこのページから出ません",
-    "privacyDetail": "アップロードなし、サーバーなし、保存なし — モデルも、その設定も、ファイル名さえ送信しません。変換はあなたのマシン上で実行されるため、有料モデルや再配布不可のファイルでも安心です。",
+    "privacyBadge": "ファイルはこのページの中にとどまります",
+    "privacyDetail": "変換はあなたのマシン上で実行されます。モデルも、その設定も、ファイル名もブラウザーの中にとどまるため、有料モデルや再配布不可のファイルでも安心です。変換回数は匿名で数え、Cookie を使わないアクセス解析も利用していますが、どちらもファイルを見ることはありません。ファイルが送信されるのは、任意のサーバー変換を選んだときか、変換に失敗したファイルをご自身で送ってくださったときだけです。",
     "warnMixedFilaments": "このファイルは {families} のフィラメントが混在しています。U1 のパージタワーでは互いに接着しないことがあります（例：PLA は PETG に付きません → 「スパゲッティ」）。Orca でパージタワーのフィラメントを「Default」ではなく主材料に設定してください。",
     "warnPaintedEdits": "色はメッシュにペイントされています。変換後、Orca の「オブジェクト/パーツに分割」やカットツールは使わないでください — ペイントした色が失われます。",
     "warnOverFourByLayer": "{count} 色 — U1 の 4 スロットを超えています。下の M600 スプール交換一時停止を有効にすれば {count} 色すべてを残せます。無効の場合は、使用量の少ない色が最も近い色に統合されます。",
@@ -665,7 +669,7 @@
   },
   "extension": {
     "title": "BedReady ブラウザ拡張機能",
-    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 向けに直接変換します。ほかのプリンターや、クリーンな汎用 3MF も選べます。どの色をどのスロットに入れるか自分で決めたいときは、ワンクリックでこのサイトのフルエディターにファイルが開きます。すべてブラウザ内で動作し、何もアップロードされません。Chrome、Edge、Firefox に対応。",
+    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 向けに直接変換します。ほかのプリンターや、クリーンな汎用 3MF も選べます。どの色をどのスロットに入れるか自分で決めたいときは、ワンクリックでこのサイトのフルエディターにファイルが開きます。すべてブラウザ内で動作し、何もアップロードされません。{safari, select, live {Chrome、Edge、Firefox、Safari に対応。} other {Chrome、Edge、Firefox に対応。Safari 版は近日公開予定です。}}",
     "chromeTitle": "Chrome と Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ Chrome に追加",
@@ -695,7 +699,10 @@
     "chromeStoreOnly": "Chrome ウェブストアで公開中。",
     "popupCaption": "拡張機能のポップアップ — プリンターとノズルを一度選べば、ダウンロードはそのままスライスできる状態で届きます。ページを離れずに .3mf をドロップすることもできます。",
     "metaTitle": "ブラウザ拡張機能 — BedReady",
-    "metaDescription": "MakerWorld・Bambu・Printables・Thingiverse の .3mf ダウンロードを、ダウンロードページから直接 Snapmaker U1 またはお使いのプリンター用に変換。Chrome・Edge・Firefox・Safari に対応。無料、ブラウザで動作。"
+    "metaDescription": "MakerWorld・Bambu・Printables・Thingiverse の .3mf ダウンロードを、ダウンロードページから直接 Snapmaker U1 またはお使いのプリンター用に変換。{safari, select, live {Chrome・Edge・Firefox・Safari に対応} other {Chrome・Edge・Firefox に対応（Safari 版は近日公開）}}。無料、ブラウザで動作。",
+    "heroAddEdge": "＋ Edge に追加",
+    "heroAllBrowsers": "すべてのブラウザーを見る ↓",
+    "desktopOnly": "{safari, select, live {パソコンのデスクトップ版ブラウザー（Chrome・Edge・Firefox・Safari）にインストールします。} other {パソコンのデスクトップ版ブラウザー（Chrome・Edge・Firefox）にインストールします。}}"
   },
   "upload": {
     "loading": "読み込み中…",
@@ -1054,7 +1061,7 @@
   "privacy": {
     "title": "プライバシーポリシー",
     "updated": "最終更新：2026 年 8 月 11 日",
-    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Edge、Firefox、Safari）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
+    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Edge、Firefox。Safari 版は近日公開予定）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
     "extTitle": "ブラウザ拡張機能",
     "extIntro": "拡張機能はデータを一切収集せず、いかなるサーバーにも何も送信しません。変換は完全にブラウザ内で行われ、ファイルがアップロードされることはありません。権限は唯一の機能（ダウンロードした .3mf を Snapmaker U1 向けに変換）のためだけに使われます：",
     "extBullets": [
@@ -1085,7 +1092,7 @@
     "intro": "マルチカラーの .3mf をドロップするだけで、Snapmaker U1 対応ファイルに — 色・プロファイル・プライムタワーをすべて処理。無料、ブラウザ内、何もアップロードしません。",
     "ctaConvert": "ファイルを変換 — 無料",
     "ctaBrowse": "MakerRun を見る",
-    "note": "完全にお使いのデバイス上で動作。ブラウザ拡張機能（Chrome・Edge・Firefox・Safari）としても、7 言語でも利用できます。",
+    "note": "完全にお使いのデバイス上で動作。ブラウザ拡張機能（{safari, select, live {Chrome・Edge・Firefox・Safari} other {Chrome・Edge・Firefox。Safari 版は近日公開}}）としても、7 言語でも利用できます。",
     "groups": {
       "slicers": {
         "title": "どのスライサーにも対応",

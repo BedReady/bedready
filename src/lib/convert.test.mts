@@ -294,7 +294,7 @@ test("retarget Bambu → another Bambu (X1C): printer identity rewritten, colour
   const r = await cleanThreeMF(f, "bambu-x1c");
   const c = await cfgOf(r.blob);
   assert.equal(c.printer_model, "Bambu Lab X1 Carbon"); // printer_model retargeted
-  assert.equal(c.printer_settings_id, "Bambu Lab X1 Carbon"); // settings id retargeted
+  assert.equal(c.printer_settings_id, "Bambu Lab X1 Carbon 0.4 nozzle"); // the real system preset (targets.ts), not a made-up name
   assert.deepEqual(c.printable_area, ["0x0", "256x0", "256x256", "0x256"]); // X1C bed polygon
   assert.equal(c.printable_height, "256");
   assert.deepEqual(c.filament_colour, ["#112233", "#445566"]); // colours preserved (≤4, no reorder)
@@ -1024,6 +1024,49 @@ test("safeUnzip: a normal file is unaffected by the guard", () => {
   const z = file3mf({ "Metadata/project_settings.config": project(), "3D/3dmodel.model": model() });
   assert.ok(Object.keys(safeUnzip(new Uint8Array(zipSync({ "a.txt": strToU8("hi") })))).length >= 1);
   assert.ok(z instanceof File);
+});
+
+// ---------- not a 3MF ----------
+// fflate's streaming Unzip emits nothing for bytes that are not a zip, so a text file renamed .3mf
+// unzipped to {} and "converted" into an archive holding only the generated project_settings.config,
+// with the page saying Done (2026-11-07 review). Both 3MF readers must refuse it, with the typed error.
+const notA3mf = () => new File([strToU8("this is a shopping list, not a model\n")], "list.3mf");
+const isNot3mf = (e: unknown) => e instanceof ThreeMFError && e.code === "not_3mf";
+
+test("not a 3MF: a text file named .3mf is refused by every conversion target, not converted", async () => {
+  for (const target of ["u1", "generic", "current", "bambu-x1c", "prusa-core-one-indx-4t"] as const) {
+    await assert.rejects(cleanThreeMF(notA3mf(), target), isNot3mf, `target ${target} converted a text file`);
+  }
+});
+
+test("not a 3MF: analyzeThreeMF refuses it with the typed error (the page's 'couldn't read' message)", async () => {
+  await assert.rejects(analyzeThreeMF(notA3mf()), isNot3mf);
+});
+
+test("not a 3MF: a zip with no 3D/3dmodel.model is refused too", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": project(), "notes.txt": "hello" });
+  await assert.rejects(cleanThreeMF(f, "u1"), isNot3mf);
+  await assert.rejects(analyzeThreeMF(f), isNot3mf);
+});
+
+test("not a 3MF: a model part named by _rels/.rels instead of 3D/3dmodel.model is still a 3MF", async () => {
+  const rels = `<?xml version="1.0"?><Relationships><Relationship Target="/3D/part.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>`;
+  const f = file3mf({ "_rels/.rels": rels, "3D/part.model": model() });
+  const r = await cleanThreeMF(f, "u1");
+  assert.ok(Object.keys(unzipSync(new Uint8Array(await r.blob.arrayBuffer()))).includes("3D/part.model"));
+});
+
+test("not a 3MF: an STL wrapped by stlTo3MF still converts (the STL path is unaffected)", async () => {
+  const stl = binaryStl([[[0, 0, 0], [1, 0, 0], [0, 1, 0]]]);
+  const f = new File([stlTo3MF(stl, "tri") as BlobPart], "tri.3mf");
+  const r = await cleanThreeMF(f, "u1");
+  assert.ok(r.kept > 1);
+  await analyzeThreeMF(f); // does not throw
+});
+
+test("not a 3MF: safeUnzip itself stays a generic unzip (other code reads non-3MF zips through it)", () => {
+  assert.deepEqual(Object.keys(safeUnzip(strToU8("not a zip"))), []);
+  assert.deepEqual(Object.keys(safeUnzip(new Uint8Array(zipSync({ "a.txt": strToU8("hi") })))), ["a.txt"]);
 });
 
 // A real 89 MB Luffy model holds ONE 707 MB object_1.model: under the 800 MB total cap, but past

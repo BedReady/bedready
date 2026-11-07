@@ -524,13 +524,13 @@ export default function ConvertPage() {
       // someone with a legitimate 228 MB multi-plate model that we "couldn't read" it sends them
       // looking for a problem with their file that isn't there.
       setMessage(
-        e instanceof ThreeMFError
+        e instanceof ThreeMFError && e.code !== "not_3mf" // not a 3MF at all: the plain "couldn't read"
           ? t(e.code === "too_large" ? "msgTooLarge" : "msgExpandsTooLarge", { size: e.sizeMB, cap: e.capMB })
           : t("msgReadFail"),
       );
       // Too big as one archive doesn't mean too big per plate. Reading the layout inflates only the
       // metadata entries, so this is safe even on a file we just refused to open.
-      if (e instanceof ThreeMFError) {
+      if (e instanceof ThreeMFError && e.code !== "not_3mf") {
         try {
           // peekPlates only inflates metadata (~80 KB), and `raw` is released on return.
           const found = peekPlates(new Uint8Array(await f.arrayBuffer())).filter((pl) => pl.bytes > 0);
@@ -819,6 +819,41 @@ export default function ConvertPage() {
     }
   }
 
+  // Whether the primary convert button is still below the viewport (drives the phone action bar).
+  const primaryRef = useRef<HTMLButtonElement>(null);
+  const [primaryBelow, setPrimaryBelow] = useState(false);
+  const hasFile = !!file;
+  useEffect(() => {
+    const el = primaryRef.current;
+    if (!el) {
+      setPrimaryBelow(false);
+      return;
+    }
+    // A position check, not an IntersectionObserver: an observer only reports CHANGES in
+    // intersection, so a jump from above the viewport straight to below it (scrollTo(0), a tap on
+    // the status bar) never fires and the bar stayed hidden. One rect read per frame is cheap.
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      setPrimaryBelow(el.getBoundingClientRect().top > window.innerHeight);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    // The button also moves without a scroll — the preview and slot editor load above it.
+    const ro = new ResizeObserver(schedule);
+    ro.observe(document.body);
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [hasFile]);
+
   // Pin/unpin a palette color so the >4→4 reducer won't merge it away; recompute the reduction.
   function togglePin(i: number) {
     if (!mesh) return;
@@ -899,6 +934,9 @@ export default function ConvertPage() {
       });
       bumpConvertCount();
       setStatus("done");
+      // A PrusaSlicer project cannot carry everything a Bambu/Orca file holds: say what was left out.
+      const UNTRANSLATED = { per_height_colors: "untranslatedPerHeightColors", height_ranges: "untranslatedHeightRanges", part_settings: "untranslatedPartSettings" } as const;
+      setWarn((res.untranslated ?? []).map((u) => t(UNTRANSLATED[u])).join(" "));
       setMessage(
         isRetarget
           ? sameFamily
@@ -2533,9 +2571,27 @@ export default function ConvertPage() {
           treatment, which is exactly the mistake. The primary action was drawn as a secondary one.
 
           One primary, three demoted to a labelled row. They are alternatives, not peers. */}
+      {/* ── THE ACTION, WITHIN REACH ON A PHONE ─────────────────────────────────────────────────
+          Measured Nov 7 at 390×844: after a file is picked the drop zone says "choose an output
+          below", and the button sits at y≈2308 of a 3658px page — under the printer, preview, slot
+          editor, filaments, profile, nozzle and presets. A one-row bar carries the same action while
+          the real button is still BELOW the viewport, and goes away once it is reached or passed
+          (so it never covers the footer). Phones only: on a desktop the button is a short scroll. */}
+      {file && status === "ready" && primaryBelow && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+          <button
+            onClick={() => clean(targetId)}
+            disabled={meshLoading}
+            className="btn-primary btn-md w-full"
+          >
+            {targetId !== "u1" && MACHINES[targetId] ? t("convertForPrinter", { name: MACHINES[targetId].name }) : t("cleanU1")}
+          </button>
+        </div>
+      )}
       {file && (
         <div className="mt-6">
           <button
+            ref={primaryRef}
             onClick={() => clean(targetId)}
             disabled={status === "working" || meshLoading}
             className="btn-primary btn-lg w-full"

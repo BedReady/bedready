@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { orcaBrands, orcaMaterials, orcaCombos } from "@/lib/orca-filaments";
+import { orcaBrands, orcaMaterials, indexedOrcaCombos } from "@/lib/orca-filaments";
 import { CONVERTER_ORIGIN, CONVERTER_ROUTES } from "@/lib/origin";
 import { GUIDES } from "@/lib/guides";
 import { ENGLISH_ONLY_ROUTES } from "@/lib/english-only";
@@ -64,11 +64,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const guidePages = GUIDES.map((g) => entry(`/guides/${g.slug}`, 0.7, "monthly", false));
 
-  // The filament pages are the long tail: brand, material, and every brand×material combination.
+  // The filament pages are the long tail: brand, material, and every brand×material combination
+  // with enough profiles to index. Thin combos are noindex and so not listed (isThinCombo()).
   const filaments = [
     ...orcaBrands().map((b) => entry(`/orca-filaments/${b.slug}`, 0.6, "monthly", false)),
     ...orcaMaterials().map((m) => entry(`/orca-filaments/${m.slug}`, 0.6, "monthly", false)),
-    ...orcaCombos().map((c) => entry(`/orca-filaments/${c.slug}`, 0.5, "monthly", false)),
+    ...indexedOrcaCombos().map((c) => entry(`/orca-filaments/${c.slug}`, 0.5, "monthly", false)),
   ];
 
   return [...routes, ...guidePages, ...filaments];
