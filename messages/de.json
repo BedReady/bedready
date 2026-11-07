@@ -328,6 +328,7 @@
     "optInFix": "(freiwilliger Upload) und wir beheben es.",
     "tryServerInstead": "Stattdessen auf unserem Server konvertieren",
     "serverFallbackNote": "Optionale Ausweichlösung für Dateien, die der Browser nicht verarbeiten kann – deine Datei wird hochgeladen und auf unserem Server konvertiert. Es wird nichts gespeichert.",
+    "serverTooLarge": "Zu groß für den Server-Konverter (Upload-Limit 4,5 MB) – diese Datei wird nur in deinem Browser konvertiert.",
     "reportSentFix": "Danke – Datei gesendet. Wir nutzen sie, um den Konverter zu reparieren.",
     "sendUsFileFix": "Sende uns diese Datei, um beim Beheben zu helfen",
     "reportSendingCap": "Wird gesendet …",

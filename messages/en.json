@@ -348,6 +348,7 @@
     "optInFix": "(opt-in upload) and we'll fix it.",
     "tryServerInstead": "Try converting on our server instead",
     "serverFallbackNote": "Optional fallback for files the browser can't handle — uploads your file and converts it on our server. Nothing is stored.",
+    "serverTooLarge": "Too big for the server converter (4.5 MB upload limit), so this one converts in your browser only.",
     "reportSentFix": "Thanks — file sent. We'll use it to fix the converter.",
     "sendUsFileFix": "Send us this file to help fix it",
     "reportSendingCap": "Sending…",
