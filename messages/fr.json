@@ -328,6 +328,7 @@
     "optInFix": "(envoi facultatif) et nous corrigerons cela.",
     "tryServerInstead": "Essayez plutôt la conversion sur notre serveur",
     "serverFallbackNote": "Solution de secours facultative pour les fichiers que le navigateur ne peut pas traiter — votre fichier est envoyé et converti sur notre serveur. Rien n'est conservé.",
+    "serverTooLarge": "Trop volumineux pour le convertisseur serveur (limite d’envoi de 4,5 Mo) : ce fichier se convertit uniquement dans votre navigateur.",
     "reportSentFix": "Merci — fichier envoyé. Nous l'utiliserons pour corriger le convertisseur.",
     "sendUsFileFix": "Envoyez-nous ce fichier pour aider à le corriger",
     "reportSendingCap": "Envoi…",

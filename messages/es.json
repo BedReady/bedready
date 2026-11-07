@@ -328,6 +328,7 @@
     "optInFix": "(subida voluntaria) y lo arreglaremos.",
     "tryServerInstead": "Prueba a convertir en nuestro servidor",
     "serverFallbackNote": "Alternativa opcional para archivos que el navegador no puede procesar: sube tu archivo y lo convierte en nuestro servidor. No se almacena nada.",
+    "serverTooLarge": "Demasiado grande para el conversor del servidor (límite de subida de 4,5 MB); este archivo solo se convierte en tu navegador.",
     "reportSentFix": "Gracias: archivo enviado. Lo usaremos para arreglar el conversor.",
     "sendUsFileFix": "Envíanos este archivo para ayudar a arreglarlo",
     "reportSendingCap": "Enviando…",
