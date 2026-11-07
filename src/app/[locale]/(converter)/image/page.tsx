@@ -11,6 +11,7 @@ import { download } from "@/lib/convert";
 import type { MeshData } from "@/lib/paint";
 import PlateHeads from "@/components/PlateHeads";
 import NoticeIcon from "@/components/NoticeIcon";
+import { imageRecipeQuery, parseImageRecipe } from "@/lib/image-recipe";
 
 // three.js only loads once a preview mesh exists (matches the converter's on-demand PaintPreview).
 const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
@@ -123,6 +124,36 @@ export default function ImagePage() {
   const fileRef = useRef<File | null>(null); // re-read at print resolution for the relief
   const lumaRef = useRef<Float32Array | null>(null); // per-cell brightness 0..1 for relief height
   const previewCanvas = useRef<HTMLCanvasElement | null>(null);
+
+  // A shared settings link (/image?mode=…, see image-recipe.ts) sets the starting controls; the
+  // visitor's own photo is still what gets printed. Read once, on arrival.
+  const [recipeApplied, setRecipeApplied] = useState(false);
+  const [recipeCopied, setRecipeCopied] = useState(false);
+  useEffect(() => {
+    const r = parseImageRecipe(window.location.search);
+    if (!Object.keys(r).length) return;
+    if (r.mode) {
+      setHueforge(r.mode === "hueforge" || r.mode === "hueforge-gray");
+      setHfGray(r.mode === "hueforge-gray");
+      setRelief(r.mode === "relief");
+    }
+    if (r.size !== undefined) setSizeMM(r.size);
+    if (r.colors !== undefined) setColors(r.colors);
+    if (r.base !== undefined) setThickness(r.base);
+    if (r.depth !== undefined) setReliefDepth(r.depth);
+    setRecipeApplied(true);
+  }, []);
+  async function copyRecipe() {
+    const mode = hueforge ? (hfGray ? "hueforge-gray" : "hueforge") : relief ? "relief" : "flat";
+    const url = `${window.location.origin}${window.location.pathname}${imageRecipeQuery({ mode, size: sizeMM, colors, base: thickness, depth: reliefDepth })}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setRecipeCopied(true);
+      setTimeout(() => setRecipeCopied(false), 2000);
+    } catch {
+      /* clipboard blocked: nothing to do */
+    }
+  }
 
   // Re-quantize the currently-loaded image at the current settings.
   const requantize = useCallback((k: number) => {
@@ -399,6 +430,14 @@ export default function ImagePage() {
               </span>
             </label>
           )}
+
+          {/* Share the set-up, never the photo: the link carries only the settings above. */}
+          <p className="mt-3 flex flex-wrap items-center gap-3 text-xs text-fg-subtle">
+            <button type="button" onClick={copyRecipe} className="btn-secondary btn-sm">
+              {recipeCopied ? t("recipeCopied") : t("copyRecipe")}
+            </button>
+            <span>{recipeApplied ? t("recipeApplied") : t("recipeNote")}</span>
+          </p>
 
           {hfQuality && (
             <div className="mt-3 rounded-lg border border-line bg-surface-2 px-4 py-3 text-xs text-fg-muted">
