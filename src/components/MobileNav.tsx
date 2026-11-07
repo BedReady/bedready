@@ -90,7 +90,7 @@ export default function MobileNav({ variant = "library" }: { variant?: "converte
       <button
         ref={btnRef}
         onClick={() => setOpen((v) => !v)}
-        aria-label="Menu"
+        aria-label={t("menu")}
         aria-expanded={open}
         className="icon-btn text-fg"
       >

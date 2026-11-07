@@ -50,9 +50,15 @@ export async function generateMetadata({
   return siteMetadata(locale, BRAND);
 }
 
-/** Brand description for the Organization node. */
+/**
+ * Brand description for the Organization node.
+ *
+ * This used to be MakerRun's ("Machine-agnostic 3D-print files with slicer profiles checked by our
+ * server…"), carried over at the split: a library of files and a server that checks them, neither of
+ * which this site has. converter-identity.test.mts keeps the library's claims out of it.
+ */
 const DESCRIPTION =
-  "Machine-agnostic 3D-print files with slicer profiles checked by our server, and a free in-browser converter for multicolor printing. Started with the Snapmaker U1, open to every printer.";
+  "Free, in-browser tools for multicolor 3D printing: convert .3mf files for the Snapmaker U1 or your own printer, turn images into multicolor prints, and add OrcaSlicer filament profiles to Snapmaker Orca. Files are converted on your own device, with no account.";
 
 export default async function ConverterLayout({
   children,
