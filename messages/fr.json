@@ -22,7 +22,8 @@
     "themeToLight": "Passer au thème clair",
     "themeToDark": "Passer au thème sombre",
     "themeLight": "Mode clair",
-    "themeDark": "Mode sombre"
+    "themeDark": "Mode sombre",
+    "menu": "Menu"
   },
   "footer": {
     "tagline": "agnostique par conception.",
@@ -328,6 +329,7 @@
     "optInFix": "(envoi facultatif) et nous corrigerons cela.",
     "tryServerInstead": "Essayez plutôt la conversion sur notre serveur",
     "serverFallbackNote": "Solution de secours facultative pour les fichiers que le navigateur ne peut pas traiter — votre fichier est envoyé et converti sur notre serveur. Rien n'est conservé.",
+    "serverTooLarge": "Trop volumineux pour le convertisseur serveur (limite d’envoi de 4,5 Mo) : ce fichier se convertit uniquement dans votre navigateur.",
     "reportSentFix": "Merci — fichier envoyé. Nous l'utiliserons pour corriger le convertisseur.",
     "sendUsFileFix": "Envoyez-nous ce fichier pour aider à le corriger",
     "reportSendingCap": "Envoi…",
@@ -356,8 +358,8 @@
     "mfAppliedReused": "{count} chargés — mais vous avez moins de bobines que de têtes, donc {reused} se répètent. Ajoutez des filaments pour un meilleur mélange.",
     "mfDuplicate": "Vous avez déjà un filament de cette couleur.",
     "mfFull": "C'est le maximum de {max} filaments — supprimez-en un d'abord.",
-    "privacyBadge": "Votre fichier ne quitte jamais cette page",
-    "privacyDetail": "Aucun envoi, aucun serveur, rien de stocké — ni le modèle, ni ses réglages, ni même le nom du fichier. La conversion s'exécute sur votre propre machine : sûre pour les modèles payants et les fichiers non redistribuables.",
+    "privacyBadge": "Votre fichier reste sur cette page",
+    "privacyDetail": "La conversion s’exécute sur votre propre machine : le modèle, ses réglages et le nom du fichier restent dans votre navigateur, ce qui la rend sûre pour les modèles payants et les fichiers non redistribuables. Nous comptons les conversions de façon anonyme et utilisons des statistiques sans cookies, et ni l’un ni l’autre ne voit le fichier. Un fichier n’est envoyé que si vous le choisissez : via le convertisseur serveur facultatif, ou en nous envoyant un fichier dont la conversion a échoué.",
     "warnMixedFilaments": "Ce fichier mélange des filaments {families}. Sur la tour de purge de l’U1, ils peuvent mal adhérer entre eux (p. ex. le PLA ne colle pas au PETG → « spaghetti »). Dans Orca, règle le filament de la tour sur ton matériau principal plutôt que sur « Default ».",
     "warnPaintedEdits": "Les couleurs sont peintes sur le maillage. Après conversion, n’utilise pas « Diviser en objets/parties » ni l’outil Découpe dans Orca — ils suppriment les couleurs peintes.",
     "warnOverFourByLayer": "{count, plural, one {# couleur} other {# couleurs}} — plus que les 4 emplacements de l’U1. Activez ci-dessous les pauses de changement de bobine M600 pour conserver les {count} ; sans elles, les couleurs les moins utilisées seront fusionnées avec la plus proche.",
@@ -664,7 +666,7 @@
   },
   "extension": {
     "title": "Extension de navigateur BedReady",
-    "intro": "Convertissez des fichiers .3mf multicolores pour la Snapmaker U1 — ou choisissez une autre imprimante, ou un 3MF générique propre — directement depuis la page de téléchargement de MakerWorld, Bambu, Printables et Thingiverse. Vous voulez choisir quelle couleur va dans quel emplacement ? Un clic ouvre le fichier dans l'éditeur complet ici. Tout se passe dans votre navigateur — rien n'est envoyé. Disponible pour Chrome, Edge et Firefox.",
+    "intro": "Convertissez des fichiers .3mf multicolores pour la Snapmaker U1 — ou choisissez une autre imprimante, ou un 3MF générique propre — directement depuis la page de téléchargement de MakerWorld, Bambu, Printables et Thingiverse. Vous voulez choisir quelle couleur va dans quel emplacement ? Un clic ouvre le fichier dans l'éditeur complet ici. Tout se passe dans votre navigateur — rien n'est envoyé. {safari, select, live {Disponible pour Chrome, Edge, Firefox et Safari.} other {Disponible pour Chrome, Edge et Firefox ; Safari arrive bientôt.}}",
     "chromeTitle": "Chrome et Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ Ajouter à Chrome",
@@ -694,7 +696,10 @@
     "chromeStoreOnly": "Sur le Chrome Web Store.",
     "popupCaption": "La fenêtre de l'extension — choisissez une fois votre imprimante et votre buse, et les téléchargements arrivent prêts à trancher. Ou déposez un .3mf, sans quitter la page.",
     "metaTitle": "Extension de navigateur — BedReady",
-    "metaDescription": "Convertissez les téléchargements .3mf de MakerWorld, Bambu, Printables et Thingiverse pour la Snapmaker U1 ou votre propre imprimante, directement depuis la page de téléchargement, dans Chrome, Edge, Firefox et Safari. Gratuit, dans votre navigateur."
+    "metaDescription": "Convertissez les téléchargements .3mf de MakerWorld, Bambu, Printables et Thingiverse pour la Snapmaker U1 ou votre propre imprimante, directement depuis la page de téléchargement, dans {safari, select, live {Chrome, Edge, Firefox et Safari} other {Chrome, Edge et Firefox (Safari bientôt)}}. Gratuit, dans votre navigateur.",
+    "heroAddEdge": "＋ Ajouter à Edge",
+    "heroAllBrowsers": "Voir tous les navigateurs ↓",
+    "desktopOnly": "{safari, select, live {S’installe dans un navigateur de bureau : Chrome, Edge, Firefox ou Safari sur votre ordinateur.} other {S’installe dans un navigateur de bureau : Chrome, Edge ou Firefox sur votre ordinateur.}}"
   },
   "upload": {
     "loading": "Chargement…",
@@ -1053,7 +1058,7 @@
   "privacy": {
     "title": "Politique de confidentialité",
     "updated": "Dernière mise à jour : 11 août 2026",
-    "intro": "BedReady est un projet indépendant qui aide les makers à convertir et partager des fichiers d'impression 3D pour n'importe quelle imprimante — il a commencé avec la Snapmaker U1 et couvre aujourd'hui toutes les imprimantes reconnues par notre vérificateur de fichiers. Cette politique couvre le site web (bedready.io) et l'extension de navigateur BedReady (Chrome, Edge, Firefox et Safari). Nous visons à collecter le strict minimum et ne vendons jamais vos données.",
+    "intro": "BedReady est un projet indépendant qui aide les makers à convertir et partager des fichiers d'impression 3D pour n'importe quelle imprimante — il a commencé avec la Snapmaker U1 et couvre aujourd'hui toutes les imprimantes reconnues par notre vérificateur de fichiers. Cette politique couvre le site web (bedready.io) et l'extension de navigateur BedReady (Chrome, Edge et Firefox ; une version Safari arrive bientôt). Nous visons à collecter le strict minimum et ne vendons jamais vos données.",
     "extTitle": "L'extension de navigateur",
     "extIntro": "L'extension ne collecte aucune donnée et n'envoie rien à aucun serveur. La conversion se fait entièrement dans votre navigateur — vos fichiers ne sont jamais envoyés. Les permissions servent uniquement à la seule fonction (convertir un .3mf téléchargé pour la Snapmaker U1) :",
     "extBullets": [
@@ -1084,7 +1089,7 @@
     "intro": "Déposez un .3mf multicolore et obtenez un fichier prêt pour la Snapmaker U1 — couleurs, profil et tour de purge gérés. Gratuit, dans votre navigateur, rien n'est envoyé.",
     "ctaConvert": "Convertir un fichier — gratuit",
     "ctaBrowse": "Parcourir MakerRun",
-    "note": "Tout se passe sur votre appareil. Aussi en extension de navigateur (Chrome, Edge, Firefox, Safari) et en 7 langues.",
+    "note": "Tout se passe sur votre appareil. Aussi en extension de navigateur ({safari, select, live {Chrome, Edge, Firefox, Safari} other {Chrome, Edge, Firefox ; Safari bientôt}}) et en 7 langues.",
     "groups": {
       "slicers": {
         "title": "Compatible avec tout trancheur",
