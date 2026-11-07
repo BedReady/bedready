@@ -12,6 +12,8 @@ on:
   schedule:
     - cron: "17 3 * * *" # 03:17 UTC daily
   workflow_dispatch:
+  push: # TEMPORARY: verify on this branch; removed before review
+    branches: [slicer-golden-nightly]
 
 permissions:
   contents: read
