@@ -20,7 +20,7 @@ import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 // One SEO page per brand, per material, AND per brand×material combo (e.g. "sunlu-petg"), each pre-filtered.
 // ALL of them are prebuilt — see generateStaticParams for why on-demand was the expensive option.
 // All disambiguated by resolveOrcaSlug and driven by the pre-baked manifest.
-export const revalidate = 86400; // a day; the catalog only changes when the manifest is regenerated
+export const revalidate = 3600; // an hour: the catalog changes only on regeneration, but the layout's sponsor read refreshes hourly (sponsor-feed.ts)
 
 export function generateStaticParams() {
   // Prebuild EVERY slug, combos included. On-demand generation looks like the cheaper option and is the

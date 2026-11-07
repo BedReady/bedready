@@ -20,7 +20,7 @@ import { activeSponsor, type Sponsor } from "./sponsor";
  *
  * ── FRESHNESS AND FAILURE ────────────────────────────────────────────────────────────────────────
  *
- * Cached for a DAY, tagged `sponsor`. This read sits in the converter layout, and a page's
+ * Cached for an HOUR, tagged `sponsor`. This read sits in the converter layout, and a page's
  * revalidate is the shortest of every cached fetch it renders. At five minutes (#98) it pulled every
  * converter page down to five minutes, the ~450 filament pages and the guides included, which export
  * a day of their own: production served `x-nextjs-stale-time: 300` on all of them, and each one
@@ -28,20 +28,24 @@ import { activeSponsor, type Sponsor } from "./sponsor";
  * booking does, a few times a month. sponsor-feed-cache.test.mts keeps this from dropping below the
  * longest page revalidate again.
  *
- * What a day costs, and what covers it:
- *   · A NEW booking can take up to a day to appear. Invalidating the `sponsor` tag on the bedready
+ * Why an hour and not a day (Nov 7): a paid booking that starts should show the
+ * same morning, not tomorrow; an hour keeps that while still being 12× fewer re-renders than five
+ * minutes. The filament pages export the same hour, so the test below holds.
+ *
+ * What an hour costs, and what covers it:
+ *   · A NEW booking can take up to an hour to appear. Invalidating the `sponsor` tag on the bedready
  *     Vercel project (dashboard, REST API, or the Vercel MCP's invalidate_by_tags) shows it on the
  *     next request to each page.
  *   · An ENDED booking may stay in a cached page past its end. The client slot re-checks the window
  *     on mount and drops it, by the same `activeSponsor()`, so an expired sponsor is never shown.
  *   · A failed refresh keeps the previous answer: the fetch cache serves its stale entry while it
- *     revalidates in the background, so a MakerRun blip does not blank the slot for a day.
+ *     revalidates in the background, so a MakerRun blip does not blank the slot.
  *
  * Any failure with nothing cached (timeout, HTTP error, bad JSON, the API down at build time) is
  * "no sponsor". The converter must build and render without the library, which is the whole point
  * of the split.
  */
-export const SPONSOR_REVALIDATE_SECONDS = 86400;
+export const SPONSOR_REVALIDATE_SECONDS = 3600;
 /** The cache tag on the sponsor read; invalidate it to publish a booking change at once. */
 export const SPONSOR_CACHE_TAG = "sponsor";
 const TIMEOUT_MS = 2500;
