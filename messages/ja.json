@@ -421,7 +421,11 @@
     "mixFirst": "1 本目のフィラメント",
     "mixSecond": "2 本目のフィラメント",
     "mixShare": "2 本目のフィラメントの割合",
-    "dropTitleTouch": "タップして .3mf または .stl ファイルを選択"
+    "dropTitleTouch": "タップして .3mf または .stl ファイルを選択",
+    "extCardTitle": "ダウンロードのたびに自動で変換",
+    "extCardBody": "無料の BedReady 拡張機能は、MakerWorld・Printables・Thingiverse から .3mf をダウンロードした時点でブラウザー内で変換します。",
+    "extCardCta": "{browser} に追加",
+    "extCardDismiss": "今はしない"
   },
   "help": {
     "title": "ヘルプ & FAQ",

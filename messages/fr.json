@@ -421,7 +421,11 @@
     "mixFirst": "Premier filament",
     "mixSecond": "Second filament",
     "mixShare": "Part du second filament",
-    "dropTitleTouch": "Touchez pour choisir un fichier .3mf ou .stl"
+    "dropTitleTouch": "Touchez pour choisir un fichier .3mf ou .stl",
+    "extCardTitle": "Convertir chaque téléchargement automatiquement",
+    "extCardBody": "L’extension gratuite BedReady convertit un .3mf au moment où vous le téléchargez depuis MakerWorld, Printables ou Thingiverse, dans votre navigateur.",
+    "extCardCta": "Ajouter à {browser}",
+    "extCardDismiss": "Pas maintenant"
   },
   "help": {
     "title": "Aide & FAQ",

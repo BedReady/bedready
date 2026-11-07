@@ -421,7 +421,11 @@
     "mixFirst": "الخيط الأول",
     "mixSecond": "الخيط الثاني",
     "mixShare": "نسبة الخيط الثاني",
-    "dropTitleTouch": "انقر لاختيار ملف ‎.3mf أو ‎.stl"
+    "dropTitleTouch": "انقر لاختيار ملف ‎.3mf أو ‎.stl",
+    "extCardTitle": "حوّل كل تنزيل تلقائيًا",
+    "extCardBody": "إضافة BedReady المجانية تحوّل ملف ‎.3mf أثناء تنزيله من MakerWorld أو Printables أو Thingiverse، داخل متصفحك.",
+    "extCardCta": "أضِفها إلى {browser}",
+    "extCardDismiss": "ليس الآن"
   },
   "help": {
     "title": "المساعدة والأسئلة الشائعة",
