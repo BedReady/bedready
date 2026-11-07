@@ -2,38 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { convertApi } from "@/lib/convert-api";
 import { activeSponsor, type Sponsor } from "@/lib/sponsor";
 import { SponsorBarView, SponsorStripView, type SponsorCopy } from "./SponsorSlot";
 
 /**
- * The sponsor slots, fetched over HTTP.
+ * The sponsor slots, rendered from the sponsor the SERVER read (`src/lib/sponsor-feed.ts`).
  *
- * ── WHY NOT SERVER-RENDERED ─────────────────────────────────────────────────────────────────────
+ * Until Nov 7 2026 these fetched the sponsor in an effect after hydration, so the top bar arrived
+ * after first paint and pushed the page down. The layout now reads it on the server and passes it
+ * in, so it is in the HTML and nothing moves.
  *
- * Because the booking is MakerRun's, and this repository holds no credential to read it with. That
- * is the property `convert-backend-free.test.mts` exists to keep: a public repo shipping a database
- * URL and key means every fork reads and writes the real project's tables, and it makes "nothing is
- * uploaded" harder to say rather than easier.
- *
- * So it goes through `convertApi()` — the one seam the converter may reach a server through — and
- * `next.config.mjs` proxies `/api/:path*` to the library origin, so the bare path needs no new
- * configuration on either side.
- *
- * ── THE COST, STATED PLAINLY ────────────────────────────────────────────────────────────────────
- *
- * The slot arrives after hydration rather than in the HTML. A content blocker can stop the request,
- * and the banner appears a beat late — both worse for a sponsor than MakerRun's server-rendered
- * copy, and both the price of the constraint above. It renders NOTHING while loading and reserves no
- * space, so a page with no sponsor never shows a gap and one with a sponsor grows rather than
- * displacing content already read.
+ * What stays on the client is the window check: the server's copy can be up to five minutes old, and
+ * a booking may end inside that. On mount each slot re-runs `activeSponsor()` against the visitor's
+ * clock and drops an expired sponsor — in an effect, not in render, so hydration still matches.
  */
-export default function ConverterSponsorBar() {
-  return <SponsorBarView sponsor={useLiveSponsor()} copy={useSponsorCopy()} />;
+export default function ConverterSponsorBar({ sponsor }: { sponsor: Sponsor | null }) {
+  return <SponsorBarView sponsor={useCurrentSponsor(sponsor)} copy={useSponsorCopy()} />;
 }
 
-export function ConverterSponsorStrip() {
-  return <SponsorStripView sponsor={useLiveSponsor()} copy={useSponsorCopy()} />;
+export function ConverterSponsorStrip({ sponsor }: { sponsor: Sponsor | null }) {
+  return <SponsorStripView sponsor={useCurrentSponsor(sponsor)} copy={useSponsorCopy()} />;
 }
 
 /** The slot chrome in the page's language. `visit` keeps `{name}` raw: the view fills it in. */
@@ -42,35 +30,11 @@ function useSponsorCopy(): SponsorCopy {
   return { label: t("label"), visit: t.raw("visit") as string };
 }
 
-/**
- * The live sponsor, or null.
- *
- * Both slots call this and each fetches — two requests per page rather than one. Deliberate: sharing
- * would need a provider in a shell whose entire reason for existing is that it mounts none. The
- * endpoint is cacheable for five minutes, so the second request is served from cache rather than
- * reaching a database twice.
- */
-function useLiveSponsor(): Sponsor | null {
-  const [sponsor, setSponsor] = useState<Sponsor | null>(null);
-
+/** The server's sponsor, unless its booking has ended since the page was rendered. */
+function useCurrentSponsor(initial: Sponsor | null): Sponsor | null {
+  const [sponsor, setSponsor] = useState(initial);
   useEffect(() => {
-    let live = true;
-    (async () => {
-      try {
-        const res = await fetch(convertApi("/api/v1/sponsor"));
-        if (!res.ok) return;
-        const body = (await res.json()) as { sponsor: Sponsor | null };
-        // Re-checked rather than trusted: the response is cacheable and a booking can end inside
-        // that window. Same rule, same function, as the side that wrote it.
-        if (live) setSponsor(activeSponsor(body.sponsor ? [body.sponsor] : [], new Date()));
-      } catch {
-        // No sponsor. A converter that cannot reach the API still converts, which is the point.
-      }
-    })();
-    return () => {
-      live = false;
-    };
-  }, []);
-
+    setSponsor(activeSponsor(initial ? [initial] : [], new Date()));
+  }, [initial]);
   return sponsor;
 }

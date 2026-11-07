@@ -1,6 +1,7 @@
 import ConverterHeader from "@/components/ConverterHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ConverterSponsorBar, { ConverterSponsorStrip } from "@/components/ConverterSponsorSlots";
+import { fetchSponsor } from "@/lib/sponsor-feed";
 
 /**
  * The converter's shell — `bedready.io` after the split.
@@ -61,6 +62,9 @@ export default async function ConverterLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  // Read once on the server and handed to both slots, so the bar is in the first paint (no layout
+  // shift) and the two slots cannot show different companies. See sponsor-feed.ts.
+  const sponsor = await fetchSponsor();
   return (
     <>
       <script
@@ -73,13 +77,13 @@ export default async function ConverterLayout({
             visitor crossing between the two sites sees one sponsorship rather than two adverts.
             Outside `#main-content` deliberately: it is chrome, and a skip link that lands on an
             advert is not a skip link. Renders nothing at all when nobody is sponsoring. */}
-        <ConverterSponsorBar />
+        <ConverterSponsorBar sponsor={sponsor} />
         {/* `#main-content` is the target of the skip link in the root layout. Both group shells must
             render it, or a keyboard user's first action lands nowhere on half the site. */}
         <div id="main-content" tabIndex={-1} className="flex-1">
           {children}
         </div>
-        <ConverterSponsorStrip />
+        <ConverterSponsorStrip sponsor={sponsor} />
         <SiteFooter />
       </div>
     </>
