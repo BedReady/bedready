@@ -20,7 +20,7 @@ const MAX_ZIP_INFLATED = 800 * 1024 * 1024; // 800 MB decompressed (sum of entri
  * discarded, so a legitimate 228 MB multi-plate model just produced "Couldn't read that 3MF." The
  * numbers travel with the error now so the page can say what actually happened and what to do.
  */
-export type ThreeMFErrorCode = "too_large" | "expands_too_large";
+export type ThreeMFErrorCode = "too_large" | "expands_too_large" | "not_3mf";
 
 export class ThreeMFError extends Error {
   constructor(
@@ -29,7 +29,7 @@ export class ThreeMFError extends Error {
     readonly sizeMB: number,
     readonly capMB: number,
   ) {
-    super(`${code}: ${sizeMB}MB exceeds ${capMB}MB`);
+    super(code === "not_3mf" ? "not_3mf: no 3D model in this file" : `${code}: ${sizeMB}MB exceeds ${capMB}MB`);
     this.name = "ThreeMFError";
   }
 }
@@ -64,6 +64,38 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
   // is bounded by MAX_ZIP_INFLATED of real output whatever the headers say. Checked byte-identical to
   // unzipSync across 553 real .3mf files before it shipped.
   return boundedUnzipOrThrow(buf);
+}
+
+// ── A ZIP IS NOT A 3MF, AND NOT EVERYTHING NAMED .3mf IS A ZIP ─────────────────────────────────
+//
+// boundedUnzip streams with fflate's Unzip, which emits nothing for bytes that are not a zip: no
+// entry, no error. So a text file renamed .3mf came back as {}, nothing downstream objected, and the
+// converter wrote out an archive holding only the project_settings.config it had generated while the
+// page said Done (2026-11-07 review). A zip with no model in it fared the same.
+//
+// The check lives in the 3MF readers, not in boundedUnzip: that is a generic bounded unzip, and other
+// code borrows it for archives that are not 3MFs at all.
+
+/** The model part every producer we read writes. */
+const ROOT_MODEL = "3d/3dmodel.model";
+
+/** Does this archive hold a 3MF model? 3D/3dmodel.model, or the start part _rels/.rels names. */
+function hasModelPart(entries: Record<string, Uint8Array>): boolean {
+  const names = new Set(Object.keys(entries).map((p) => p.toLowerCase()));
+  if (names.has(ROOT_MODEL)) return true;
+  const rels = Object.keys(entries).find((p) => p.toLowerCase() === "_rels/.rels");
+  if (!rels) return false;
+  for (const m of strFromU8(entries[rels]).matchAll(/Target="\/?([^"]+\.model)"/gi)) {
+    if (names.has(m[1].toLowerCase())) return true;
+  }
+  return false;
+}
+
+/** safeUnzip for a file that must be a 3MF: ThreeMFError("not_3mf") when it is not a zip or holds no model. */
+export function readThreeMF(buf: Uint8Array): Record<string, Uint8Array> {
+  const entries = safeUnzip(buf);
+  if (!hasModelPart(entries)) throw new ThreeMFError("not_3mf", Math.round(buf.length / MB), 0);
+  return entries;
 }
 
 /**
@@ -1183,7 +1215,7 @@ function tallyUsage(entries: Record<string, Uint8Array>, n: number): number[] {
 
 export async function analyzeThreeMF(file: File): Promise<Analysis> {
   const buf = new Uint8Array(await file.arrayBuffer());
-  const entries = applyPrusaVolumePaint(safeUnzip(buf));
+  const entries = applyPrusaVolumePaint(readThreeMF(buf));
   let colors: string[] = [];
   let types: string[] = [];
   let painted = false;
@@ -1836,7 +1868,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
 
 export async function cleanThreeMF(file: File, target: CleanTarget, opts?: CleanOpts): Promise<CleanResult> {
   const buf = new Uint8Array(await file.arrayBuffer());
-  const entries = applyPrusaVolumePaint(safeUnzip(buf)); // Prusa multi-volume → paint, then process
+  const entries = applyPrusaVolumePaint(readThreeMF(buf)); // Prusa multi-volume → paint, then process
 
   // Generic "strip vendor lock": produce a clean core-spec 3MF — keep geometry (.model + rels),
   // [Content_Types].xml and thumbnails/images; drop every vendor slicer config (Metadata/*.config,
