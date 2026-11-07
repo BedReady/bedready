@@ -37,6 +37,7 @@ import { SOURCE_REPO_URL } from "@/lib/links";
 import NoticeIcon from "@/components/NoticeIcon";
 import BeforeAfter from "@/components/BeforeAfter";
 import PlateHeads, { PlateCorners } from "@/components/PlateHeads";
+import EgressPanel from "@/components/EgressPanel";
 
 // Fire-and-forget global "converter used" counter. Goes through our own rate-limited route rather
 // than calling the RPC directly, so `bump_counter` can be locked down to the service role — the
@@ -1462,6 +1463,8 @@ export default function ConvertPage() {
                   ),
                 })}
               </p>
+              {/* The claim above, checkable live: every request this page has sent, with its size. */}
+              <EgressPanel className="mt-6 max-w-xl" />
             </div>
             <BeforeAfter />
           </section>
@@ -2780,6 +2783,7 @@ export default function ConvertPage() {
           </p>
         )
       )}
+      {status === "done" && <EgressPanel className="mt-3" />}
       {status === "done" && diff && (
         <section className="mt-3 rounded-lg border border-line bg-surface-2 px-5 py-4 text-sm text-fg-muted">
           <h2 className="font-semibold text-fg">{t("whatChanged")}</h2>
@@ -2897,6 +2901,7 @@ export default function ConvertPage() {
               )}
             </div>
           )}
+          <EgressPanel className="mt-4" />
         </div>
       )}
     </main>
