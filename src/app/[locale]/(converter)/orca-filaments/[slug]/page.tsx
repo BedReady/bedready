@@ -4,7 +4,17 @@ import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { canonicalOnly } from "@/lib/seo";
 import OrcaFilaments from "@/components/OrcaFilaments";
-import { orcaBrands, orcaMaterials, orcaCombos, resolveOrcaSlug, materialsForBrand, brandsForMaterial } from "@/lib/orca-filaments";
+import {
+  orcaBrands,
+  orcaMaterials,
+  orcaCombos,
+  resolveOrcaSlug,
+  materialsForBrand,
+  brandsForMaterial,
+  readOrcaManifest,
+  facetProfiles,
+  isThinCombo,
+} from "@/lib/orca-filaments";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
 // One SEO page per brand, per material, AND per brand×material combo (e.g. "sunlu-petg"), each pre-filtered.
@@ -38,6 +48,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     // locale-prefixed variants of this page are the same page, not translations of it. Advertising
     // them multiplied a 451-page catalog into 3,157 crawlable URLs, every one of which a crawler walks.
     alternates: canonicalOnly(`/orca-filaments/${r.slug}`),
+    // A combo with one or two profiles stays reachable and keeps passing its links on, but is not
+    // offered for indexing, and the sitemap leaves it out. See isThinCombo().
+    ...(r.kind === "combo" && isThinCombo({ count: facetProfiles(r).length })
+      ? { robots: { index: false, follow: true } }
+      : {}),
   };
 }
 
@@ -49,6 +64,13 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
 
   const initialVendor = r.kind === "brand" ? r.name : r.kind === "combo" ? r.brand : "";
   const initialType = r.kind === "material" ? r.name : r.kind === "combo" ? r.material : "";
+
+  // The facet's own profiles, rendered into the HTML. Without this the server sent "Loading filament
+  // catalog…" and nothing else; see OrcaInitialCatalog in the component.
+  const manifest = readOrcaManifest();
+  const initialCatalog = manifest
+    ? { machine: manifest.machine, vendors: manifest.vendors, types: manifest.types, profiles: facetProfiles(r, manifest) }
+    : undefined;
 
   // Internal links to the long tail: from a brand → its materials, from a material → its brands.
   const crossLinks =
@@ -86,7 +108,7 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
         Pick one below and install it in one click, or download and import. Free, in your browser, nothing uploaded.
       </p>
 
-      <OrcaFilaments initialVendor={initialVendor} initialType={initialType} />
+      <OrcaFilaments initialVendor={initialVendor} initialType={initialType} initialCatalog={initialCatalog} />
 
       {crossLinks.length > 0 && (
         <div className="mt-8">

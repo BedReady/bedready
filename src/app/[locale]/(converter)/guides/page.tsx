@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { GUIDES } from "@/lib/guides";
 import { canonicalOnly } from "@/lib/seo";
@@ -21,7 +22,11 @@ const TOOLS = [
 
 // The /extension and /features grammar: a hero, the four-filament rule, then ruled rows with the
 // subject on the start edge — here "Guides" and "Tools", each beside its list of links.
-export default function GuidesPage() {
+export default async function GuidesPage({ params }: { params: Promise<{ locale: string }> }) {
+  // Without this the locale-aware <Link> below asks next-intl for the locale, next-intl reads it from
+  // the request headers, and reading headers makes the page dynamic: /guides was rendered on every
+  // request (`cache-control: private, no-store`) while every page it links to was cached for a day.
+  setRequestLocale((await params).locale);
   return (
     <main lang="en" dir="ltr" className="page-read py-12">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-5xl">Guides</h1>
