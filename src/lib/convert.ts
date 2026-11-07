@@ -1641,7 +1641,7 @@ function isPrinterPresetKey(k: string): boolean {
 }
 
 /** Point a Bambu/Orca project_settings.config at the target's own printer preset, in place (see above). */
-function retargetPrinterIdentity(o: Record<string, unknown>, machine: Machine): void {
+export function retargetPrinterIdentity(o: Record<string, unknown>, machine: Machine): void {
   for (const k of Object.keys(o)) if (isPrinterPresetKey(k)) delete o[k];
   if (machine.printerModel) o.printer_model = machine.printerModel;
   else delete o.printer_model;

@@ -71,15 +71,15 @@ for (const [target, preset, model_] of [
 }
 
 test("retarget: a target with no known preset name gets no printer_settings_id rather than an invented one", async () => {
-  const id = "test-orca-unknown";
-  MACHINES[id] = { ...MACHINES["creality-k2"], id, name: "Some Orca Printer", printerModel: "Some Orca Printer", printerSettingsId: undefined, printerVariant: undefined };
-  try {
-    const o = JSON.parse(await entry((await cleanThreeMF(bambuFile(), id as CleanTarget)).blob, "Metadata/project_settings.config"));
-    assert.ok(!("printer_settings_id" in o), `invented ${o.printer_settings_id}`);
-    assert.ok(!("printer_variant" in o));
-    assert.equal(o.printer_model, "Some Orca Printer");
-    assert.ok(!("machine_start_gcode" in o));
-  } finally {
-    delete MACHINES[id];
-  }
+  // Every machine in targets.ts has a preset name today, so this branch is defensive: exercised on the
+  // identity rewrite directly with a stand-in machine. (Injecting a fake entry into MACHINES worked on
+  // Node 26 but not on CI's Node 20, where tsx gave convert.ts its own copy of targets.ts.)
+  const { retargetPrinterIdentity } = await import("./convert.ts");
+  const machine = { ...MACHINES["creality-k2"], id: "test-orca-unknown", name: "Some Orca Printer", printerModel: "Some Orca Printer", printerSettingsId: undefined, printerVariant: undefined };
+  const o: Record<string, unknown> = JSON.parse(JSON.stringify(X1C));
+  retargetPrinterIdentity(o, machine as never);
+  assert.ok(!("printer_settings_id" in o), `invented ${o.printer_settings_id}`);
+  assert.ok(!("printer_variant" in o));
+  assert.equal(o.printer_model, "Some Orca Printer");
+  assert.ok(!("machine_start_gcode" in o));
 });
