@@ -115,6 +115,33 @@ There is also a `lib3mf` validation step in the upstream project's CI, using the
 own reference implementation as an independent opinion — because every other structural check in
 this repository is one we wrote ourselves.
 
+### Slicer golden check (nightly)
+
+`scripts/slicer-golden.mjs` goes one step further and hands converter output to **real slicers**.
+It builds U1 (stamp and preserve), HueForge relief and flat, and a Prusa MMU3 retarget from small
+fixtures through the real code, slices each with the Snapmaker Orca CLI (PrusaSlicer for the Prusa
+case), and checks the G-code: the slicer exits 0 with no "Invalid values" / "not compatible" error;
+every tool that prints is set to a PLA nozzle temperature (200–249 °C, never 260+); the bed is
+50–70 °C; the number of tools used matches the fixture; the MMU3 retarget keeps five extruders. It
+exists because the HueForge template once sliced every PLA export at 270 °C on a 90 °C bed (#100),
+which no unit test could see.
+
+```bash
+npx tsx scripts/slicer-golden.mjs                      # all cases
+npx tsx scripts/slicer-golden.mjs hueforge-relief      # one case
+```
+
+It finds the slicers through `ORCA_BIN` / `PRUSA_BIN`, then `.slicers/{orca,prusa}/AppRun`, then
+`/Applications/Snapmaker Orca.app` and `/Applications/PrusaSlicer*.app` on a Mac. Use a stable
+PrusaSlicer: the 3.0 alphas abort on CLI export (the
+[2.8.1 macOS build](https://github.com/prusa3d/PrusaSlicer/releases/tag/version_2.8.1) is the one
+CI pins; point `PRUSA_BIN` at `PrusaSlicer.app/Contents/MacOS/PrusaSlicer`). Output, including the
+input 3MF, G-code and slicer log of any failing case, goes to `slicer-golden-out/`.
+
+`.github/workflows/slicer-golden.yml` runs it nightly on Ubuntu with the pinned Linux AppImages and
+uploads the failing cases as an artifact. It is not triggered by pull requests and does not gate
+merges; run it on a branch with `gh workflow run slicer-golden.yml --ref <branch>`.
+
 ## The library is elsewhere
 
 BedReady used to be a converter *and* a design library. The library — published designs, verified
