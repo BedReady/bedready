@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
 import { alternates } from "@/lib/seo";
+import { SAFARI_LIVE } from "@/lib/extension-stores";
 
 /**
  * schema.org markup for one of the site's tools, in the page's language: its name and description
@@ -17,18 +18,21 @@ export default async function AppJsonLd({
   namespace,
   path,
   kind = "web",
+  values,
 }: {
   locale: string;
   namespace: string;
   path: string;
   kind?: "web" | "extension";
+  /** ICU arguments the namespace's metaDescription takes (the extension's takes `safari`). */
+  values?: Record<string, string>;
 }) {
   const t = await getTranslations({ locale, namespace });
   const common = {
     "@context": "https://schema.org",
     // The meta title's " — BedReady" suffix is for the browser tab, not the application's name.
     name: t("metaTitle").replace(/\s+—\s+BedReady$/, ""),
-    description: t("metaDescription"),
+    description: t("metaDescription", values),
     url: alternates(path, locale).canonical,
     inLanguage: locale,
     isAccessibleForFree: true,
@@ -41,7 +45,7 @@ export default async function AppJsonLd({
           ...common,
           "@type": "SoftwareApplication",
           applicationCategory: "BrowserApplication",
-          operatingSystem: "Chrome, Edge, Firefox",
+          operatingSystem: SAFARI_LIVE ? "Chrome, Edge, Firefox, Safari" : "Chrome, Edge, Firefox",
         }
       : {
           ...common,
