@@ -328,6 +328,7 @@
     "optInFix": "（自愿上传），我们会修复它。",
     "tryServerInstead": "改用我们的服务器进行转换",
     "serverFallbackNote": "针对浏览器无法处理的文件的可选备用方案——上传你的文件并在我们的服务器上转换。不会存储任何内容。",
+    "serverTooLarge": "文件超过服务器转换的上传上限（4.5 MB），因此只能在浏览器中转换。",
     "reportSentFix": "谢谢——文件已发送。我们会用它来修复转换器。",
     "sendUsFileFix": "把这个文件发给我们以帮助修复",
     "reportSendingCap": "发送中…",
