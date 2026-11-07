@@ -22,7 +22,8 @@
     "themeToLight": "Switch to light theme",
     "themeToDark": "Switch to dark theme",
     "themeLight": "Light mode",
-    "themeDark": "Dark mode"
+    "themeDark": "Dark mode",
+    "menu": "Menu"
   },
   "footer": {
     "tagline": "agnostic by design.",
@@ -357,8 +358,8 @@
     "mfAppliedReused": "Loaded {count} — but you own fewer spools than heads, so {reused} had to repeat. Add more filaments for a better mix.",
     "mfDuplicate": "You already have a filament in that color.",
     "mfFull": "That's the maximum of {max} filaments — remove one first.",
-    "privacyBadge": "Your file never leaves this page",
-    "privacyDetail": "No upload, no server, nothing stored — not the model, not its settings, not even the file name. The conversion runs on your own machine, so it's safe for paid models and no-redistribution files.",
+    "privacyBadge": "Your file stays on this page",
+    "privacyDetail": "The conversion runs on your own machine: the model, its settings and its file name stay in your browser, so it's safe for paid models and no-redistribution files. We count conversions anonymously and use cookie-free analytics, and neither ever sees the file. A file is uploaded only if you choose to: the optional server fallback, or sending us one that failed to convert.",
     "warnMixedFilaments": "This file mixes {families} filaments. On the U1’s prime/wipe tower these can fail to bond to each other (e.g. PLA won’t stick to PETG → \"spaghetti\"). In Orca, set the prime tower’s filament to your main material instead of \"Default\".",
     "warnPaintedEdits": "Colors are painted onto the mesh. After converting, don’t use \"Split to objects/parts\" or the Cut tool in Orca — those drop painted colors.",
     "warnOverFourByLayer": "{count, plural, one {# color} other {# colors}} — more than the U1’s 4 slots. Turn on the M600 spool-swap pauses below to keep all {count}; leave them off and the least-used colors merge into their nearest match.",

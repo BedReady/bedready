@@ -22,7 +22,8 @@
     "themeToLight": "Cambiar al tema claro",
     "themeToDark": "Cambiar al tema oscuro",
     "themeLight": "Modo claro",
-    "themeDark": "Modo oscuro"
+    "themeDark": "Modo oscuro",
+    "menu": "Menú"
   },
   "footer": {
     "tagline": "agnóstico por diseño.",
@@ -357,8 +358,8 @@
     "mfAppliedReused": "Se cargaron {count}, pero tienes menos bobinas que cabezales, así que {reused} se repiten. Añade más filamentos para mezclar mejor.",
     "mfDuplicate": "Ya tienes un filamento de ese color.",
     "mfFull": "Ese es el máximo de {max} filamentos: quita uno primero.",
-    "privacyBadge": "Tu archivo nunca sale de esta página",
-    "privacyDetail": "Sin subidas, sin servidor, sin almacenamiento: ni el modelo, ni sus ajustes, ni siquiera el nombre del archivo. La conversión se ejecuta en tu propia máquina, así que es segura para modelos de pago y archivos sin derecho de redistribución.",
+    "privacyBadge": "Tu archivo se queda en esta página",
+    "privacyDetail": "La conversión se ejecuta en tu propia máquina: el modelo, sus ajustes y el nombre del archivo se quedan en tu navegador, así que es segura para modelos de pago y archivos sin derecho de redistribución. Contamos las conversiones de forma anónima y usamos analítica sin cookies, y ninguna de las dos ve el archivo. Un archivo solo se sube si tú lo decides: con el conversor opcional en el servidor o al enviarnos uno que no se pudo convertir.",
     "warnMixedFilaments": "Este archivo mezcla filamentos {families}. En la torre de purga del U1 pueden no adherirse entre sí (p. ej. el PLA no se pega al PETG → «espagueti»). En Orca, ajusta el filamento de la torre a tu material principal en lugar de «Default».",
     "warnPaintedEdits": "Los colores están pintados sobre la malla. Después de convertir, no uses «Dividir en objetos/partes» ni la herramienta Cortar en Orca — eliminan los colores pintados.",
     "warnOverFourByLayer": "{count, plural, one {# color} other {# colores}} — más de las 4 ranuras del U1. Activa abajo las pausas de cambio de bobina M600 para conservar los {count}; sin ellas, los colores menos usados se fusionarán con el más parecido.",
