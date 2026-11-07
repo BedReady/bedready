@@ -425,7 +425,16 @@
     "extCardTitle": "ダウンロードのたびに自動で変換",
     "extCardBody": "無料の BedReady 拡張機能は、MakerWorld・Printables・Thingiverse から .3mf をダウンロードした時点でブラウザー内で変換します。",
     "extCardCta": "{browser} に追加",
-    "extCardDismiss": "今はしない"
+    "extCardDismiss": "今はしない",
+    "loadSheetButton": "装填シートを印刷",
+    "loadSheetTitle": "装填シート",
+    "loadSheetPrinter": "プリンター",
+    "loadSheetHead": "ヘッド",
+    "loadSheetColor": "色",
+    "loadSheetMaterial": "素材",
+    "loadSheetPreset": "プリセット",
+    "loadSheetSwaps": "スプール交換",
+    "loadSheetFooter": "BedReady で作成 · bedready.io"
   },
   "help": {
     "title": "ヘルプ & FAQ",

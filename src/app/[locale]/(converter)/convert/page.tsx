@@ -79,6 +79,7 @@ import ContributeToLibrary from "@/components/ContributeToLibrary";
 import VerifiedForYourPrinter from "@/components/VerifiedForYourPrinter";
 import ConvertCapture from "@/components/ConvertCapture";
 import ExtensionDoneCard from "@/components/ExtensionDoneCard";
+import LoadSheetButton from "@/components/LoadSheetButton";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
 import { planColorMix } from "@/lib/prusa-project";
@@ -2761,6 +2762,13 @@ export default function ConvertPage() {
             </svg>
             {t("downloadAgain")}
           </button>
+          {/* One page for beside the printer: which filament in which head, and when to swap. */}
+          <LoadSheetButton
+            blob={result.blob}
+            fileName={result.name}
+            printerName={MACHINES[targetId]?.name ?? "Snapmaker U1"}
+            swaps={swapPlan.map((s) => s.label)}
+          />
         </div>
       )}
       {status === "done" && file && (
