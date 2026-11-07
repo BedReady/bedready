@@ -1576,7 +1576,22 @@
     "notifyDoneTitle": "BedReady ✓ 変換完了",
     "notifyDone": "{out} をダウンロードに保存しました — {printer} でそのままスライスできます。",
     "toastFailed": "{file} を変換できませんでした。元の .3mf はダウンロード済みです。ポップアップで変換してください。",
-    "notifyFailedTitle": "BedReady — 変換に失敗しました"
+    "notifyFailedTitle": "BedReady — 変換に失敗しました",
+    "fitCheck": "収まるか確認",
+    "fitChecking": "確認中…",
+    "fitTitle": "この印刷プロファイルのファイルを取得し、お使いのプリンターに合うか確認します。ブラウザ内で処理し、アップロードはしません",
+    "fitFailed": "このファイルを確認できませんでした。",
+    "fitOpen": "BedReady で開く →",
+    "fitOk": "{count} 色 · {printer} に収まります",
+    "fitOkSlotsOnly": "{count} 色 · {printer} のスロットに収まります（ベッドは未確認）",
+    "fitFullSpectrum": "{count} 色 → Full Spectrum で {printer} に収まります",
+    "fitSwaps": "{count} 色 → スプール交換で {printer} に収まります",
+    "fitSplit": "{count} 色 · {plates} プレート · プレートごとに分割",
+    "fitMerge": "{count} 色 · {printer} は {heads} 色まで、残りは統合されます",
+    "fitTooBig": "{printer} のベッドには大きすぎます",
+    "fitLayout": "各パーツは収まりますが、配置が {printer} のベッドより広がっています。並べ直してください",
+    "fitGeneric": "{count} 色 · プリンターを選ぶとベッドを確認できます",
+    "fitBigFileSplit": "大きなファイル · {plates} プレート · プレートごとに分割"
   },
   "mixer": {
     "metaTitle": "Full Spectrum カラーミキサー — BedReady",

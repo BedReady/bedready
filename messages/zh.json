@@ -1576,7 +1576,22 @@
     "notifyDoneTitle": "BedReady ✓ 已转换",
     "notifyDone": "{out} 已保存到“下载”——可直接为你的 {printer} 切片。",
     "toastFailed": "无法转换 {file}。原始 .3mf 已下载——请通过弹窗转换。",
-    "notifyFailedTitle": "BedReady——转换失败"
+    "notifyFailedTitle": "BedReady——转换失败",
+    "fitCheck": "检查是否适配",
+    "fitChecking": "检查中…",
+    "fitTitle": "获取此打印配置的文件并检查是否适合你的打印机——在浏览器中完成，不上传任何内容",
+    "fitFailed": "无法检查此文件。",
+    "fitOpen": "在 BedReady 中打开 →",
+    "fitOk": "{count} 种颜色 · 适合 {printer}",
+    "fitOkSlotsOnly": "{count} 种颜色 · {printer} 的料槽够用（未检查热床）",
+    "fitFullSpectrum": "{count} 种颜色 → 用 Full Spectrum 可适合 {printer}",
+    "fitSwaps": "{count} 种颜色 → 加入换料暂停后可适合 {printer}",
+    "fitSplit": "{count} 种颜色 · {plates} 个打印板 · 按打印板拆分",
+    "fitMerge": "{count} 种颜色 · {printer} 只支持 {heads} 种，其余会合并",
+    "fitTooBig": "超出 {printer} 的热床尺寸",
+    "fitLayout": "零件本身放得下，但排布超出 {printer} 的热床：请重新排列",
+    "fitGeneric": "{count} 种颜色 · 选择打印机后可检查热床",
+    "fitBigFileSplit": "大文件 · {plates} 个打印板 · 按打印板拆分"
   },
   "mixer": {
     "metaTitle": "Full Spectrum 混色器 — BedReady",

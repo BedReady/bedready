@@ -8,8 +8,10 @@
 // redirects and Firefox — for those, open the background console (Chrome: chrome://extensions →
 // "service worker"; Firefox: about:debugging → Inspect) and read the [BedReady] logs.
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
-import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, type Settings } from "./settings";
-import { stash, take, sweep, SWEEP_ALARM, editorUrl, bytesToBase64 } from "./handoff";
+import { loadSettings, machineOf, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, type Settings } from "./settings";
+import { checkFit } from "../../src/lib/fit-check";
+import { stash, take, sweep, keptSource, SWEEP_ALARM, editorUrl, bytesToBase64 } from "./handoff";
+import { sourcePage } from "../../src/lib/source-page";
 import { t } from "./i18n";
 
 // Cross-browser API handle: Firefox exposes `browser` (promise-based); Chrome MV3's `chrome` is also
@@ -46,6 +48,16 @@ async function toast(state: "working" | "done" | "error", text: string, action?:
     const id = tabs?.[0]?.id;
     if (id != null) api.tabs.sendMessage(id, { type: "bedready-toast", state, text, action }).catch(() => {});
   } catch { /* no active tab / no content script */ }
+}
+// The active tab's address. Readable only for sites in host_permissions (no `tabs` permission), which
+// are exactly the model sites; anything else reads as undefined.
+async function activeTabUrl(): Promise<string | undefined> {
+  try {
+    const tabs = await api.tabs.query({ active: true, currentWindow: true });
+    return typeof tabs?.[0]?.url === "string" ? tabs[0].url : undefined;
+  } catch {
+    return undefined;
+  }
 }
 // Secondary, best-effort: a desktop notification (only if the OS/Chrome allows it).
 let notifId = 0;
@@ -110,9 +122,12 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     // real .3mf instead of nothing. (If the original finishes before we do, the cancel is a harmless
     // no-op and the user simply keeps both files.)
     console.log("[BedReady] intercepting .3mf:", url, "(from", from + ")");
+    // The model page, for the editor's `src`: the referrer when it is one, else the active tab when
+    // that is a model page (a MakerWorld download's referrer is often just the site's origin).
+    const src = sourcePage(item.referrer) ?? sourcePage(await activeTabUrl());
     await convertRemote(url, base, settings, async () => {
       if (!settings.keepOriginal) await api.downloads.cancel(item.id).catch(() => {});
-    });
+    }, src);
   } finally {
     inFlight.delete(key);
   }
@@ -123,7 +138,7 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
  * notification along the way. Shared by download interception and the in-page MakerWorld button.
  * `beforeSave` runs only once the conversion has succeeded (interception cancels the original there).
  */
-async function convertRemote(url: string, base: string, settings: Settings, beforeSave?: () => Promise<void>): Promise<void> {
+async function convertRemote(url: string, base: string, settings: Settings, beforeSave?: () => Promise<void>, src?: string | null): Promise<void> {
   const who = shortName(settings);
   setBadge("…", "#f97316"); // instant feedback: we caught the file and are working on it
   toast("working", t("toastWorking", { file: base, printer: who }));
@@ -139,7 +154,7 @@ async function convertRemote(url: string, base: string, settings: Settings, befo
     const file = new File([await res.arrayBuffer()], name);
     // Keep the ORIGINAL for the toast's "Edit colours" link: the editor should start from the
     // creator's file, not from our one-click result. Best-effort — a full disk only loses the link.
-    const kept = await stash(file, name).catch(() => false);
+    const kept = await stash(file, name, src).catch(() => false);
     // Already set up for this printer (a creator who published a U1 profile, say) → converting again
     // would only rewrite what is there. Leave the user's own download untouched and say so.
     const info = await detectProfile(file).catch(() => null);
@@ -197,12 +212,44 @@ api?.runtime?.onMessage?.addListener((msg: { type?: string; url?: string; name?:
   inFlight.add(key);
   void (async () => {
     try {
-      await convertRemote(msg.url!, base, await loadSettings());
+      await convertRemote(msg.url!, base, await loadSettings(), undefined, sender?.tab?.url);
     } finally {
       inFlight.delete(key);
     }
   })();
 });
+
+// ---------- "Check fit" on a MakerWorld page (content.ts) ----------
+// Same route as the button above — the page gets the signed link, the bytes come from the CDN here —
+// but nothing is saved: the file is read with the converter's own analysis (lib/fit-check.ts) and
+// one line goes back. Only ever on the user's click; the page never asks on its own. The bytes are
+// kept for "Open in BedReady" exactly as the toast's "Edit colours" keeps them (handoff.ts: one file,
+// 30 minutes at most).
+api?.runtime?.onMessage?.addListener(
+  (msg: { type?: string; url?: string; name?: string }, sender: { tab?: { url?: string } }, sendResponse: (r: unknown) => void) => {
+    if (msg?.type !== "bedready-check-fit" || typeof msg.url !== "string") return;
+    if (!MAKERWORLD_RE.test(host(sender?.tab?.url || ""))) return;
+    const h = host(msg.url);
+    if (!(CDN_RE.test(h) || MAKERWORLD_RE.test(h)) || !msg.url.startsWith("https://")) return;
+    const base = (typeof msg.name === "string" && msg.name.trim() ? msg.name.trim() : "model.3mf").replace(/[\\/:*?"<>|]/g, "_");
+    const name = base.toLowerCase().endsWith(".3mf") ? base : base + ".3mf";
+    void (async () => {
+      try {
+        const res = await fetch(msg.url!);
+        if (!res.ok) throw new Error("download fetch " + res.status);
+        const file = new File([await res.arrayBuffer()], name);
+        const kept = await stash(file, name, sender?.tab?.url).catch(() => false);
+        const s = await loadSettings();
+        const line = await checkFit(file, { machine: machineOf(s), isU1: s.target === "u1", printer: shortName(s) });
+        sendResponse(line ? { ok: true, line, kept } : { ok: false });
+      } catch (e) {
+        console.error("[BedReady] check fit failed:", e);
+        sendResponse({ ok: false });
+      }
+    })();
+    return true; // answering asynchronously
+  },
+);
 
 // ---------- the editor handoff (handoff.ts) ----------
 // The toast's "Edit colours" link: open /convert for the chosen printer, with our id so the page can
@@ -212,7 +259,7 @@ api?.runtime?.onMessage?.addListener((msg: { type?: string }) => {
   if (msg?.type !== "bedready-open-editor") return;
   void (async () => {
     const s = await loadSettings();
-    await api.tabs.create({ url: editorUrl(api, s.target, true) });
+    await api.tabs.create({ url: editorUrl(api, s.target, true, await keptSource().catch(() => null)) });
   })();
 });
 

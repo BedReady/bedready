@@ -10,7 +10,7 @@ import { pickLocale, t, warningText } from "../../extension/src/i18n.ts";
 
 const LOCALES = ["en", "ar", "de", "es", "fr", "ja", "zh"] as const;
 const ext = (l: string) => JSON.parse(readFileSync(`messages/${l}.json`, "utf8")).ext as Record<string, string>;
-const VALUES = { printer: "U1", file: "a.3mf", out: "a.u1.3mf", size: 0.4, total: 6, mixes: 2, kept: 4, count: 3, heads: 4, dx: 1, dy: 2, message: "x" };
+const VALUES = { printer: "U1", file: "a.3mf", out: "a.u1.3mf", size: 0.4, total: 6, mixes: 2, kept: 4, count: 3, heads: 4, plates: 2, dx: 1, dy: 2, message: "x" };
 
 test("every extension string formats in every locale, with the placeholders English uses", () => {
   const en = ext("en");

@@ -1576,7 +1576,22 @@
     "notifyDoneTitle": "BedReady ✓ تم التحويل",
     "notifyDone": "حُفظ {out} في التنزيلات — جاهزًا للتقطيع لطابعتك {printer}.",
     "toastFailed": "تعذّر تحويل {file}. نُزِّل ملف ‎.3mf الأصلي — حوّله من النافذة المنبثقة.",
-    "notifyFailedTitle": "BedReady — فشل التحويل"
+    "notifyFailedTitle": "BedReady — فشل التحويل",
+    "fitCheck": "تحقّق من الملاءمة",
+    "fitChecking": "جارٍ التحقق…",
+    "fitTitle": "يجلب ملف إعداد الطباعة هذا ويتحقق من ملاءمته لطابعتك — داخل متصفحك، دون رفع أي شيء",
+    "fitFailed": "تعذّر التحقق من هذا الملف.",
+    "fitOpen": "افتح في BedReady ←",
+    "fitOk": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} · يناسب {printer}",
+    "fitOkSlotsOnly": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} · تتسع لها خانات {printer} (لم يُفحص سرير الطباعة)",
+    "fitFullSpectrum": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} ← يناسب {printer} مع Full Spectrum",
+    "fitSwaps": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} ← يناسب {printer} مع تبديل البكرات",
+    "fitSplit": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} · {plates, plural, zero {# ألواح} one {لوح واحد} two {لوحان} few {# ألواح} many {# لوحًا} other {# لوح}} · قسّمه حسب اللوح",
+    "fitMerge": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} · تتسع {printer} لـ {heads}، ويُدمج الباقي",
+    "fitTooBig": "أكبر من سرير طباعة {printer}",
+    "fitLayout": "القطع تناسب، لكنها تمتد أوسع من سرير {printer}: أعد ترتيبها",
+    "fitGeneric": "{count, plural, zero {# ألوان} one {لون واحد} two {لونان} few {# ألوان} many {# لونًا} other {# لون}} · اختر طابعة للتحقق من السرير",
+    "fitBigFileSplit": "ملف كبير · {plates, plural, zero {# ألواح} one {لوح واحد} two {لوحان} few {# ألواح} many {# لوحًا} other {# لوح}} · قسّمه حسب اللوح"
   },
   "mixer": {
     "metaTitle": "خلّاط ألوان Full Spectrum — BedReady",

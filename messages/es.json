@@ -1576,7 +1576,22 @@
     "notifyDoneTitle": "BedReady ✓ Convertido",
     "notifyDone": "{out} guardado en Descargas, listo para laminar para tu {printer}.",
     "toastFailed": "No se pudo convertir {file}. Tu .3mf original se descargó: conviértelo desde la ventana emergente.",
-    "notifyFailedTitle": "BedReady: falló la conversión"
+    "notifyFailedTitle": "BedReady: falló la conversión",
+    "fitCheck": "Comprobar si cabe",
+    "fitChecking": "comprobando…",
+    "fitTitle": "Descarga el archivo de este perfil de impresión y lo comprueba para tu impresora, en tu navegador y sin subir nada",
+    "fitFailed": "No se pudo comprobar este archivo.",
+    "fitOpen": "Abrir en BedReady →",
+    "fitOk": "{count, plural, one {# color} other {# colores}} · cabe en la {printer}",
+    "fitOkSlotsOnly": "{count, plural, one {# color} other {# colores}} · encaja en las ranuras de la {printer} (cama sin comprobar)",
+    "fitFullSpectrum": "{count, plural, one {# color} other {# colores}} → cabe en la {printer} con Full Spectrum",
+    "fitSwaps": "{count, plural, one {# color} other {# colores}} → cabe en la {printer} con cambios de bobina",
+    "fitSplit": "{count, plural, one {# color} other {# colores}} · {plates, plural, one {# placa} other {# placas}} · dividir por placa",
+    "fitMerge": "{count, plural, one {# color} other {# colores}} · la {printer} admite {heads}, el resto se fusiona",
+    "fitTooBig": "Demasiado grande para la cama de la {printer}",
+    "fitLayout": "Las piezas caben, pero ocupan más que la cama de la {printer}: reordénalas",
+    "fitGeneric": "{count, plural, one {# color} other {# colores}} · elige una impresora para comprobar la cama",
+    "fitBigFileSplit": "Archivo grande · {plates, plural, one {# placa} other {# placas}} · dividir por placa"
   },
   "mixer": {
     "metaTitle": "Mezclador de color Full Spectrum — BedReady",

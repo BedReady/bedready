@@ -1576,7 +1576,22 @@
     "notifyDoneTitle": "BedReady ✓ Converti",
     "notifyDone": "{out} enregistré dans Téléchargements — prêt à trancher pour votre {printer}.",
     "toastFailed": "Impossible de convertir {file}. Votre .3mf d'origine a été téléchargé — convertissez-le depuis la fenêtre de l'extension.",
-    "notifyFailedTitle": "BedReady — échec de la conversion"
+    "notifyFailedTitle": "BedReady — échec de la conversion",
+    "fitCheck": "Vérifier si ça tient",
+    "fitChecking": "vérification…",
+    "fitTitle": "Récupère le fichier de ce profil d'impression et le vérifie pour votre imprimante — dans votre navigateur, rien n'est envoyé",
+    "fitFailed": "Impossible de vérifier ce fichier.",
+    "fitOpen": "Ouvrir dans BedReady →",
+    "fitOk": "{count, plural, one {# couleur} other {# couleurs}} · tient sur la {printer}",
+    "fitOkSlotsOnly": "{count, plural, one {# couleur} other {# couleurs}} · tient dans les emplacements de la {printer} (plateau non vérifié)",
+    "fitFullSpectrum": "{count, plural, one {# couleur} other {# couleurs}} → tient sur la {printer} avec Full Spectrum",
+    "fitSwaps": "{count, plural, one {# couleur} other {# couleurs}} → tient sur la {printer} avec des changements de bobine",
+    "fitSplit": "{count, plural, one {# couleur} other {# couleurs}} · {plates, plural, one {# plateau} other {# plateaux}} · un fichier par plateau",
+    "fitMerge": "{count, plural, one {# couleur} other {# couleurs}} · la {printer} en accepte {heads}, le reste est fusionné",
+    "fitTooBig": "Trop grand pour le plateau de la {printer}",
+    "fitLayout": "Les pièces tiennent, mais débordent du plateau de la {printer} : réorganisez-les",
+    "fitGeneric": "{count, plural, one {# couleur} other {# couleurs}} · choisissez une imprimante pour vérifier le plateau",
+    "fitBigFileSplit": "Fichier volumineux · {plates, plural, one {# plateau} other {# plateaux}} · un fichier par plateau"
   },
   "mixer": {
     "metaTitle": "Mélangeur de couleurs Full Spectrum — BedReady",

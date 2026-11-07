@@ -8,6 +8,8 @@
 import { cleanThreeMF, download } from "../../src/lib/convert";
 import { t, dir } from "./i18n";
 import { DEFAULTS, loadSettings, onSettingsChanged, quickOpts, shortName, suffixOf, type Settings } from "./settings";
+import { editorUrl } from "./handoff";
+import { fitTone, parseFitLine } from "../../src/lib/fit-check";
 // import { initMakerWorldColors } from "./makerworld-colors"; // paused — see note at the call site below
 
 // Cross-browser: Firefox exposes `browser`, Chrome exposes `chrome`; either works for runtime.onMessage.
@@ -153,23 +155,122 @@ function makerWorldInstanceId(): string | null {
   return null;
 }
 
-async function convertMakerWorld(btn: HTMLButtonElement): Promise<void> {
+/** The signed file link for the profile picked on the page, or "signin" when MakerWorld wants a login. */
+async function makerWorldFileLink(): Promise<{ id: string; url: string; name: string } | "signin"> {
   const id = makerWorldInstanceId();
   if (!id) throw new Error("no print profile on this page");
   const res = await fetch(`/api/v1/design-service/instance/${id}/f3mf?type=download`, { credentials: "include" });
   const json = (await res.json().catch(() => ({}))) as { url?: string; downloadUrl?: string; name?: string; error?: string };
-  if (res.status === 401 || res.status === 403) {
-    showToast("error", t("mwSignIn"));
-    btn.dataset.state = "idle";
-    btn.textContent = mwLabel();
-    return;
-  }
+  if (res.status === 401 || res.status === 403) return "signin";
   const url = json.url || json.downloadUrl;
   if (!res.ok || !url) throw new Error(`MakerWorld answered ${res.status}`);
-  // The background worker shows progress in the toast and saves the file.
-  await api.runtime.sendMessage({ type: "bedready-convert-url", url, name: json.name || `makerworld-${id}.3mf` });
+  return { id, url, name: json.name || `makerworld-${id}.3mf` };
+}
+
+async function convertMakerWorld(btn: HTMLButtonElement): Promise<void> {
+  const link = await makerWorldFileLink();
+  if (link === "signin") {
+    showToast("error", t("mwSignIn"));
+  } else {
+    // The background worker shows progress in the toast and saves the file.
+    await api.runtime.sendMessage({ type: "bedready-convert-url", url: link.url, name: link.name });
+  }
   btn.dataset.state = "idle";
   btn.textContent = mwLabel();
+}
+
+// ── "Check fit" ─────────────────────────────────────────────────────────────────────────────────
+// A small control under the Download button: on click, and only on click, the background fetches
+// the picked profile's file, runs the converter's own analysis on it (lib/fit-check.ts) and answers
+// with one line — "4 colors · fits the U1", "Too big for the U1's bed" — plus "Open in BedReady",
+// which hands that same file to the editor. Never automatic: fetching on page load would download
+// every model a visitor merely looks at. Every word shown is set with textContent.
+const TONE = { ok: "#34d399", caution: "#c9a86a", no: "#f87171" } as const;
+
+function resetFit(wrap: HTMLElement): void {
+  const btn = wrap.querySelector<HTMLButtonElement>("button[data-bedready-fit]");
+  const verdict = wrap.querySelector<HTMLElement>("[data-bedready-verdict]");
+  const open = wrap.querySelector<HTMLAnchorElement>("a[data-bedready-open]");
+  delete wrap.dataset.instance;
+  if (btn && btn.dataset.state !== "busy") btn.textContent = t("fitCheck");
+  if (verdict) { verdict.textContent = ""; verdict.hidden = true; }
+  if (open) open.hidden = true;
+}
+
+function fitRow(): HTMLElement {
+  const wrap = document.createElement("div");
+  wrap.dataset.bedreadyFitRow = "1";
+  wrap.dir = dir;
+  Object.assign(wrap.style, { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 8px", marginTop: "6px", fontSize: "12px", lineHeight: "1.4" });
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.dataset.bedreadyFit = "1";
+  btn.dataset.state = "idle";
+  btn.textContent = t("fitCheck");
+  btn.title = t("fitTitle");
+  Object.assign(btn.style, {
+    padding: "3px 10px", fontSize: "12px", lineHeight: "1.4", fontWeight: "600", borderRadius: "8px",
+    border: "1px solid #c9a86a", background: "#1d1b17", color: "#f4f2ec", cursor: "pointer",
+  });
+
+  // The verdict and the link carry their own plate, like the buttons: the host page's colours are not ours.
+  const verdict = document.createElement("span");
+  verdict.dataset.bedreadyVerdict = "1";
+  verdict.setAttribute("role", "status");
+  verdict.hidden = true;
+  Object.assign(verdict.style, { padding: "3px 8px", borderRadius: "6px", background: "#1d1b17", color: "#f4f2ec", border: "1px solid #c9a86a" });
+
+  const open = document.createElement("a");
+  open.dataset.bedreadyOpen = "1";
+  open.hidden = true;
+  open.target = "_blank";
+  open.rel = "noopener";
+  open.textContent = t("fitOpen");
+  Object.assign(open.style, { padding: "3px 8px", borderRadius: "6px", background: "#1d1b17", color: "#c9a86a", textDecoration: "underline", fontWeight: "600" });
+  open.addEventListener("click", (e) => {
+    // Kept file → the background opens the editor with our id so the page can take it (handoff.ts).
+    // Not kept (too big to hand over): the plain link opens the editor empty, as it always could.
+    if (open.dataset.kept !== "1") return;
+    e.preventDefault();
+    api.runtime.sendMessage({ type: "bedready-open-editor" }).catch?.(() => {});
+  });
+
+  btn.addEventListener("click", async () => {
+    if (btn.dataset.state === "busy") return;
+    btn.dataset.state = "busy";
+    btn.textContent = t("fitChecking");
+    verdict.hidden = true;
+    open.hidden = true;
+    try {
+      const link = await makerWorldFileLink();
+      if (link === "signin") {
+        showToast("error", t("mwSignIn"));
+        return;
+      }
+      const r = (await api.runtime.sendMessage({ type: "bedready-check-fit", url: link.url, name: link.name })) as
+        { ok?: boolean; line?: unknown; kept?: boolean } | undefined;
+      const line = r?.ok ? parseFitLine(r.line) : null;
+      if (!line) throw new Error("no answer");
+      verdict.textContent = t(line.key, line.params);
+      verdict.style.borderColor = TONE[fitTone(line.key)];
+      open.href = editorUrl(api, settings.target, false, location.href);
+      open.dataset.kept = r?.kept ? "1" : "";
+      open.hidden = false;
+      wrap.dataset.instance = link.id;
+    } catch (err) {
+      console.error("[BedReady]", err);
+      verdict.textContent = t("fitFailed");
+      verdict.style.borderColor = TONE.no;
+    } finally {
+      verdict.hidden = !verdict.textContent;
+      btn.dataset.state = "idle";
+      btn.textContent = t("fitCheck");
+    }
+  });
+
+  wrap.append(btn, verdict, open);
+  return wrap;
 }
 
 function injectMakerWorldButton(): void {
@@ -209,7 +310,19 @@ function injectMakerWorldButton(): void {
       showToast("error", t("mwFailed"));
     }
   });
-  row.insertAdjacentElement("afterend", btn);
+  // The button and the "Check fit" row travel together, so the check above sees one block of ours.
+  const block = document.createElement("div");
+  block.dataset.bedreadyMw = "1";
+  block.append(btn, fitRow());
+  row.insertAdjacentElement("afterend", block);
+}
+
+/** A verdict is for one profile and one printer: drop it when the page's profile moves on. */
+function expireFits(): void {
+  const id = makerWorldInstanceId();
+  document.querySelectorAll<HTMLElement>("div[data-bedready-fit-row][data-instance]").forEach((w) => {
+    if (w.dataset.instance !== id) resetFit(w);
+  });
 }
 
 function scan(): void {
@@ -219,11 +332,21 @@ function scan(): void {
   document
     .querySelectorAll<HTMLAnchorElement>('a[href$=".3mf" i], a[href*=".3mf?" i], a[download$=".3mf" i]')
     .forEach(injectButton);
-  if (/(^|\.)makerworld\.com(\.cn)?$/i.test(location.hostname)) injectMakerWorldButton();
+  if (/(^|\.)makerworld\.com(\.cn)?$/i.test(location.hostname)) {
+    injectMakerWorldButton();
+    expireFits();
+  }
 }
 
 if (HOSTS.test(location.host)) {
-  onSettingsChanged((s) => { settings = s; relabel(); });
+  onSettingsChanged((s) => {
+    settings = s;
+    relabel();
+    // A verdict names the printer it was checked for; another printer needs another check.
+    document.querySelectorAll<HTMLElement>("div[data-bedready-fit-row]").forEach(resetFit);
+  });
+  // Picking another print profile changes only the hash, which no mutation may follow.
+  window.addEventListener("hashchange", () => expireFits());
   void (async () => { settings = await loadSettings(); relabel(); })();
   scan();
   // initMakerWorldColors(): PAUSED — MakerWorld's grid feed carries no filament/colour data (it lives only

@@ -16,7 +16,7 @@ import { readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync } from "n
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { unzipSync, strFromU8 } from "fflate";
+import { unzipSync, zipSync, strFromU8 } from "fflate";
 
 const EXT = dirname(fileURLToPath(import.meta.url));
 const SRC = process.argv[2] || join(EXT, "..", "sample.3mf");
@@ -133,6 +133,68 @@ async function runMakerWorldButton({ file, signedIn = true, site = "makerworld.c
   }
 }
 
+// "Check fit": nothing is fetched until the click; then one line, and "Open in BedReady" opens the
+// editor with our id so it can take the file. `scale` blows the sample up past the U1's bed.
+function scaledCopy(file, scale) {
+  const z = unzipSync(readFileSync(file));
+  const k = Object.keys(z).find((n) => /\.model$/i.test(n));
+  z[k] = new TextEncoder().encode(strFromU8(z[k]).replace(/([xyz])="([\d.]+)"/g, (_, a, v) => `${a}="${Number(v) * scale}"`));
+  const out = join(mkdtempSync(join(tmpdir(), "br-big-")), "Big.3mf");
+  writeFileSync(out, zipSync(z));
+  return out;
+}
+
+async function runMakerWorldFit({ file }) {
+  const browser = await puppeteer.launch({
+    executablePath: CHROME, headless: true, pipe: true,
+    ignoreDefaultArgs: ["--disable-extensions"], args: ["--enable-unsafe-extension-debugging", "--no-first-run"],
+  });
+  const seen = [];
+  try {
+    const b = await browser.target().createCDPSession();
+    const { id } = await b.send("Extensions.loadUnpacked", { path: EXT });
+    const swt = await browser.waitForTarget((t) => t.type() === "service_worker" && t.url().includes(id));
+    const html = `<!doctype html><html><body><div class="panel"><div class="row"><div class="btn"><span class="primaryButton"><div><span>Open in Bambu Studio</span></div></span><span>▾</span></div></div></div></body></html>`;
+    const body = readFileSync(file).toString("base64");
+    const answer = (s) => s.on("Fetch.requestPaused", (e) => {
+      const u = e.request.url;
+      seen.push(u);
+      const r = u.includes("/f3mf")
+        ? { type: "application/json", body: Buffer.from(JSON.stringify({ name: "Benchy.3mf", url: "https://public-cdn.bblmw.com/makerworld/model/Benchy.3mf?sig=x" })).toString("base64") }
+        : u.includes("bblmw.")
+          ? { type: "application/octet-stream", body }
+          : { type: "text/html", body: Buffer.from(u.includes("bedready.io") ? "<!doctype html><title>editor</title>" : html).toString("base64") };
+      s.send("Fetch.fulfillRequest", { requestId: e.requestId, responseCode: 200, body: r.body, responseHeaders: [{ name: "Content-Type", value: r.type }] }).catch(() => {});
+    });
+    const sw = await swt.createCDPSession();
+    const patterns = [{ urlPattern: "https://makerworld.com/*" }, { urlPattern: "https://public-cdn.bblmw.com/*" }, { urlPattern: "https://bedready.io/*" }];
+    for (const s of [b, sw]) { answer(s); await s.send("Fetch.enable", { patterns }); }
+    const page = await browser.newPage();
+    await page.goto("https://makerworld.com/en/models/1092486-benchy#profileId-42", { waitUntil: "domcontentloaded" });
+    const fit = await page.waitForSelector("button[data-bedready-fit]", { timeout: 15000 }).catch(() => null);
+    await sleep(1500);
+    const before = seen.filter((u) => u.includes("/f3mf") || u.includes("bblmw.")).length;
+    const label = fit ? await fit.evaluate((e) => e.textContent) : "";
+    if (fit) await fit.click();
+    await page.waitForFunction(() => document.querySelector("[data-bedready-verdict]")?.textContent, { timeout: 15000 }).catch(() => {});
+    const verdict = await page.evaluate(() => document.querySelector("[data-bedready-verdict]")?.textContent || "");
+    const openShown = await page.evaluate(() => !document.querySelector("a[data-bedready-open]")?.hidden);
+    let editor = "";
+    if (openShown) {
+      const tab = browser.waitForTarget((t) => t.url().startsWith("https://bedready.io/"), { timeout: 10000 }).catch(() => null);
+      await page.click("a[data-bedready-open]");
+      editor = (await tab)?.url() || "";
+    }
+    // Another profile picked on the page: the old verdict goes.
+    await page.evaluate(() => { location.hash = "profileId-43"; });
+    await sleep(500);
+    const afterHash = await page.evaluate(() => document.querySelector("[data-bedready-verdict]")?.textContent || "");
+    return { fit: !!fit, label, before, verdict, editor, extId: id, afterHash };
+  } finally {
+    await browser.close();
+  }
+}
+
 let failed = 0;
 const check = (ok, what) => { console.log(`${ok ? "✓" : "✗"} ${what}`); if (!ok) failed++; };
 
@@ -141,7 +203,8 @@ const conv = u1.files.find((x) => x.printer.startsWith("Snapmaker U1"));
 check(!!conv, `U1: download intercepted and converted (${JSON.stringify(u1.files)})`);
 
 const x1 = await run({ target: "bambu-x1c", keep: true, file: SRC });
-check(x1.files.some((x) => x.printer === "Bambu Lab X1 Carbon"), "X1 Carbon: converted for the chosen printer");
+// The real preset name since #106: "Bambu Lab X1 Carbon 0.4 nozzle".
+check(x1.files.some((x) => x.printer.startsWith("Bambu Lab X1 Carbon")), `X1 Carbon: converted for the chosen printer (${JSON.stringify(x1.files)})`);
 check(x1.files.length === 2, `keep original: both files present (${x1.files.length})`);
 
 if (conv) {
@@ -158,4 +221,14 @@ const cnOff = await runMakerWorldButton({ file: SRC, site: "makerworld.com.cn" }
 check(!cnOff.button, "makerworld.com.cn, not opted in: no button (the site is opt-in)");
 const cnOn = await runMakerWorldButton({ file: SRC, site: "makerworld.com.cn", ext: grantedCnCopy() });
 check(cnOn.button && cnOn.files.some((x) => x.printer.startsWith("Snapmaker U1")), `makerworld.com.cn, opted in: the button converts from the .cn CDN (${JSON.stringify(cnOn.files)})`);
+const fit = await runMakerWorldFit({ file: SRC });
+check(fit.fit && fit.label === "Check fit", `MakerWorld page: "Check fit" appears (${fit.label})`);
+check(fit.before === 0, `Check fit: nothing is fetched before the click (${fit.before} requests)`);
+// The sample's second filament is listed but never painted, so it uses one colour (as /convert counts).
+check(fit.verdict === "1 color · fits the U1", `Check fit: one line for the sample (${fit.verdict})`);
+const src = encodeURIComponent("https://makerworld.com/en/models/1092486-benchy#profileId-42");
+check(fit.editor === `https://bedready.io/convert?to=u1&ext=${fit.extId}&src=${src}`, `Check fit: "Open in BedReady" hands the file over, with the model page (${fit.editor})`);
+check(fit.afterHash === "", `Check fit: picking another profile clears the verdict (${fit.afterHash})`);
+const big = await runMakerWorldFit({ file: scaledCopy(SRC, 10) });
+check(big.verdict === "Too big for the U1's bed", `Check fit: a 400 mm model is too big for the U1 (${big.verdict})`);
 process.exit(failed ? 1 : 0);
