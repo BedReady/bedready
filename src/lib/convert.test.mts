@@ -294,7 +294,7 @@ test("retarget Bambu → another Bambu (X1C): printer identity rewritten, colour
   const r = await cleanThreeMF(f, "bambu-x1c");
   const c = await cfgOf(r.blob);
   assert.equal(c.printer_model, "Bambu Lab X1 Carbon"); // printer_model retargeted
-  assert.equal(c.printer_settings_id, "Bambu Lab X1 Carbon"); // settings id retargeted
+  assert.equal(c.printer_settings_id, "Bambu Lab X1 Carbon 0.4 nozzle"); // the real system preset (targets.ts), not a made-up name
   assert.deepEqual(c.printable_area, ["0x0", "256x0", "256x256", "0x256"]); // X1C bed polygon
   assert.equal(c.printable_height, "256");
   assert.deepEqual(c.filament_colour, ["#112233", "#445566"]); // colours preserved (≤4, no reorder)

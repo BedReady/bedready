@@ -135,21 +135,29 @@ export function u1NozzleVariant(nozzle: number): Machine {
 // Retarget targets — a few popular printers ported from the app registry. No reference profile: the
 // converter rewrites the SOURCE file's vendor config in place (same family) or emits a Generic 3MF
 // (cross family). buildMM/buildZMM mirror bed.x/bed.z for the shared fit-warning helpers.
+//
+// printerSettingsId / printerVariant on the Bambu and Creality entries are the system printer preset a
+// same-family retarget names (see retargetThreeMF), each read from the slicer's own profile, never
+// composed: Bambu Studio's BBL bundle 02.08.00.06 (system/BBL/machine/<name>.json, "name" and
+// "printer_variant"), and OrcaSlicer's resources/profiles/Creality/machine/ on main (2026-11-07).
 const RETARGET: Machine[] = [
   {
     id: "bambu-x1c", name: "Bambu Lab X1 Carbon", vendor: "Bambu Lab", flavour: "bambu",
     toolheads: 4, buildMM: 256, buildZMM: 256, bed: { x: 256, y: 256, z: 256 }, nozzle: 0.4,
     printerModel: "Bambu Lab X1 Carbon", // source: app printer-profiles.js bambu-x1c
+    printerSettingsId: "Bambu Lab X1 Carbon 0.4 nozzle", printerVariant: "0.4",
   },
   {
     id: "bambu-p1s", name: "Bambu Lab P1S", vendor: "Bambu Lab", flavour: "bambu",
     toolheads: 4, buildMM: 256, buildZMM: 256, bed: { x: 256, y: 256, z: 256 }, nozzle: 0.4,
     printerModel: "Bambu Lab P1S", // source: app printer-profiles.js bambu-p1s
+    printerSettingsId: "Bambu Lab P1S 0.4 nozzle", printerVariant: "0.4",
   },
   {
     id: "bambu-a1", name: "Bambu Lab A1", vendor: "Bambu Lab", flavour: "bambu",
     toolheads: 4, buildMM: 256, buildZMM: 256, bed: { x: 256, y: 256, z: 256 }, nozzle: 0.4,
     printerModel: "Bambu Lab A1", // source: app printer-profiles.js bambu-a1
+    printerSettingsId: "Bambu Lab A1 0.4 nozzle", printerVariant: "0.4",
   },
   // The MK4 with an MMU3. Its printer_model was "MK4IS" (ported from the app's printer-profiles.js),
   // which is Prusa's id for the SINGLE-extruder MK4: a retarget relabelled a 5-colour project as a
@@ -186,6 +194,7 @@ const RETARGET: Machine[] = [
     id: "creality-k2", name: "Creality K2 Plus", vendor: "Creality", flavour: "orca",
     toolheads: 4, buildMM: 350, buildZMM: 350, bed: { x: 350, y: 350, z: 350 }, nozzle: 0.4,
     printerModel: "Creality K2 Plus", // source: app printer-profiles.js creality-k2
+    printerSettingsId: "Creality K2 Plus 0.4 nozzle", printerVariant: "0.4",
   },
 ];
 

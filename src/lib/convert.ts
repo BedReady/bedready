@@ -1718,6 +1718,72 @@ function bedRect(bed: { x: number; y: number }): string[] {
   return ["0x0", `${bed.x}x0`, `${bed.x}x${bed.y}`, `0x${bed.y}`];
 }
 
+// ── WHICH PRINTER A SAME-FAMILY RETARGET NAMES ──────────────────────────────────────────────────
+//
+// A Bambu/Orca project carries its whole printer preset: start/end G-code, filament-change G-code,
+// G-code flavour, the bed's excluded corner, machine limits, inherits_group. A retarget used to
+// rewrite only printer_model and printer_settings_id, so an X1C file "for a K2" still started with the
+// X1C's M620 AMS sequence in Marlin flavour, kept the X1C's excluded bed corner, and named a preset
+// ("Creality K2 Plus") that does not exist (2026-11-07 review, repro r1).
+//
+// What we do instead, on the printer side only (process and filament settings are the creator's and
+// stay):
+//   · Name the target's real SYSTEM printer preset — only the exact name targets.ts carries, read from
+//     the slicer's own bundle — with a blank printer entry in inherits_group (it IS the system preset)
+//     and a blank printer entry in different_settings_to_system (the source's printer edits were
+//     against another machine). Orca rebuilds a named system preset and re-applies only the listed
+//     differences (the same mechanism the Full Spectrum overrides rely on, see withMixes), so the
+//     target's own G-code, limits and bed come back.
+//   · Drop every source printer-preset key we do not set ourselves, so that whichever way the slicer
+//     resolves the preset, it can never print the SOURCE machine's G-code on the target. A missing key
+//     takes the target preset's value (or the slicer default); a carried one is wrong by construction.
+//   · Without a known preset name, printer_settings_id and printer_variant are removed rather than
+//     guessed: a made-up name resolves to nothing.
+// Key list: Bambu Studio's BBL machine presets (fdm_machine_common → … → "Bambu Lab X1 Carbon 0.4
+// nozzle"), plus the Orca-only printer keys, plus anything machine_* / printer_* / non-filament *_gcode.
+const KEPT_PRINTER_KEYS = new Set(["printer_model", "printer_settings_id", "printer_variant", "nozzle_diameter", "printable_area", "printable_height", "printer_technology"]);
+const PRINTER_PRESET_KEYS = new Set([
+  "auxiliary_fan", "bed_exclude_area", "bed_custom_model", "bed_custom_texture", "best_object_pos", "cooling_filter_enabled",
+  "default_filament_profile", "default_nozzle_volume_type", "default_print_profile", "deretraction_speed",
+  "enable_long_retraction_when_cut", "enable_pre_heating", "extruder_clearance_dist_to_rod",
+  "extruder_clearance_height_to_lid", "extruder_clearance_height_to_rod", "extruder_clearance_max_radius",
+  "extruder_clearance_radius", "extruder_colour", "extruder_height_gap", "extruder_max_nozzle_count", "extruder_offset",
+  "extruder_printable_area", "extruder_printable_height", "extruder_type", "extruder_variant_list", "fan_direction",
+  "farthest_point_timelapse", "gcode_flavor", "grab_length", "group_algo_with_time", "head_wrap_detect_zone",
+  "hotend_cooling_rate", "hotend_heating_rate", "long_retractions_when_cut", "master_extruder_id", "max_layer_height",
+  "min_layer_height", "nozzle_flush_dataset", "nozzle_height", "nozzle_type", "nozzle_volume", "nozzle_hrc",
+  "physical_extruder_map", "print_in_clockwise", "retract_before_wipe", "retract_length_toolchange",
+  "retract_lift_above", "retract_lift_below", "retract_lift_enforce", "retract_restart_extra",
+  "retract_restart_extra_toolchange", "retract_when_changing_layer", "retraction_distances_when_cut",
+  "retraction_length", "retraction_minimum_travel", "retraction_speed", "scan_first_layer", "silent_mode",
+  "single_extruder_multi_material", "support_air_filtration", "support_chamber_temp_control", "support_cooling_filter",
+  "support_fast_purge_mode", "support_object_skip_flush", "travel_slope", "upward_compatible_machine", "wipe",
+  "wipe_distance", "wrapping_exclude_area", "z_hop", "z_hop_types", "z_offset", "thumbnails", "thumbnails_format",
+  "use_firmware_retraction", "use_relative_e_distances", "emit_machine_limits_to_gcode", "disable_m73",
+  "manual_filament_change", "host_type", "print_host", "printhost_apikey", "bbl_use_printhost",
+]);
+function isPrinterPresetKey(k: string): boolean {
+  if (KEPT_PRINTER_KEYS.has(k)) return false;
+  if (PRINTER_PRESET_KEYS.has(k) || k.startsWith("machine_") || k.startsWith("printer_")) return true;
+  return k.endsWith("_gcode") && !k.startsWith("filament_"); // filament start/end G-code is the filament's
+}
+
+/** Point a Bambu/Orca project_settings.config at the target's own printer preset, in place (see above). */
+export function retargetPrinterIdentity(o: Record<string, unknown>, machine: Machine): void {
+  for (const k of Object.keys(o)) if (isPrinterPresetKey(k)) delete o[k];
+  if (machine.printerModel) o.printer_model = machine.printerModel;
+  else delete o.printer_model;
+  if (machine.printerSettingsId) o.printer_settings_id = machine.printerSettingsId;
+  else delete o.printer_settings_id;
+  if (machine.printerVariant) o.printer_variant = machine.printerVariant;
+  else delete o.printer_variant;
+  // [print, ...filaments, printer]: the printer entry is the last one in both lists.
+  for (const k of ["inherits_group", "different_settings_to_system"]) {
+    const v = o[k];
+    if (Array.isArray(v) && v.length) o[k] = [...v.slice(0, -1), ""];
+  }
+}
+
 /** "Generic / strip vendor lock" export: keep geometry + rels + content-types + thumbnails, drop every
  *  vendor slicer config. Colours/painting live in the .model, so they survive. Shared by the "generic"
  *  target and by a cross-family retarget (where rewriting metadata can't produce a coherent file). */
@@ -1848,7 +1914,6 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     };
   }
 
-  const settingsId = machine.printerSettingsId || machine.printerModel || machine.name;
   const nozzleStr = String(machine.nozzle ?? 0.4);
   const printableArea = machine.printableArea ?? bedRect(machine.bed);
   const printableHeight = machine.printableHeight ?? String(machine.bed.z);
@@ -1871,8 +1936,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
         out[path] = data;
         continue;
       }
-      if (machine.printerModel) o.printer_model = machine.printerModel;
-      o.printer_settings_id = settingsId;
+      retargetPrinterIdentity(o, machine);
       o.nozzle_diameter = Array.isArray(o.nozzle_diameter) ? (o.nozzle_diameter as unknown[]).map(() => nozzleStr) : nozzleStr;
       o.printable_area = printableArea.slice();
       o.printable_height = printableHeight;
@@ -1899,7 +1963,16 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     if (base === "slic3r_pe.config") {
       let text = strFromU8(data);
       if (machine.printerModel) text = text.replace(/^(;?\s*printer_model\s*=).*$/im, `$1 ${machine.printerModel}`);
-      text = text.replace(/^(;?\s*nozzle_diameter\s*=).*$/im, `$1 ${nozzleStr}`);
+      // One value per extruder, as the source had them: an MMU3 project lists five, and a single value
+      // turned it into a one-extruder printer. The count is the source's: its other per-extruder lists
+      // and filament list are that long.
+      text = text.replace(/^(;?\s*nozzle_diameter\s*=)(.*)$/im, (_m, k: string, v: string) => `${k} ${v.split(",").map(() => nozzleStr).join(",")}`);
+      // The preset the project names. Prusa entries in targets.ts carry the exact name and variant from
+      // Prusa's bundle; without one the line goes rather than keep naming the source's printer.
+      for (const [key, val] of [["printer_settings_id", machine.printerSettingsId], ["printer_variant", machine.printerVariant]] as const) {
+        const line = new RegExp(`^(;?\\s*${key}\\s*=).*$`, "im");
+        text = val ? text.replace(line, `$1 ${val}`) : text.replace(new RegExp(`^;?\\s*${key}\\s*=.*(\\r?\\n|$)`, "im"), "");
+      }
       const { x, y, z } = machine.bed;
       text = text.replace(/^(;?\s*bed_shape\s*=).*$/im, `$1 0x0,${x}x0,${x}x${y},0x${y}`);
       text = text.replace(/^(;?\s*max_print_height\s*=).*$/im, `$1 ${z}`);
