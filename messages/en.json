@@ -664,7 +664,7 @@
   },
   "extension": {
     "title": "BedReady browser extension",
-    "intro": "Convert multicolor .3mf files for the Snapmaker U1 — or pick another printer, or a clean generic 3MF — right from the download page on MakerWorld, Bambu, Printables & Thingiverse. Want to choose which color goes in which slot? One click opens the file in the full editor here. It runs entirely in your browser — nothing is uploaded. Available for Chrome, Edge, Firefox, and Safari.",
+    "intro": "Convert multicolor .3mf files for the Snapmaker U1 — or pick another printer, or a clean generic 3MF — right from the download page on MakerWorld, Bambu, Printables & Thingiverse. Want to choose which color goes in which slot? One click opens the file in the full editor here. It runs entirely in your browser — nothing is uploaded. {safari, select, live {Available for Chrome, Edge, Firefox, and Safari.} other {Available for Chrome, Edge, and Firefox; Safari is coming soon.}}",
     "chromeTitle": "Chrome & Edge",
     "firefoxTitle": "Firefox",
     "safariTitle": "Safari (Mac)",
@@ -694,7 +694,10 @@
     "chromeStoreOnly": "On the Chrome Web Store.",
     "popupCaption": "The extension's popup — choose your printer and nozzle once, and downloads arrive ready to slice. Or drop a .3mf in, without leaving the page you are on.",
     "metaTitle": "Browser extension — BedReady",
-    "metaDescription": "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser."
+    "metaDescription": "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in {safari, select, live {Chrome, Edge, Firefox, and Safari} other {Chrome, Edge, and Firefox (Safari coming soon)}}. Free, in your browser.",
+    "heroAddEdge": "＋ Add to Edge",
+    "heroAllBrowsers": "See every browser ↓",
+    "desktopOnly": "{safari, select, live {Installs on a desktop browser: Chrome, Edge, Firefox or Safari on your computer.} other {Installs on a desktop browser: Chrome, Edge or Firefox on your computer.}}"
   },
   "upload": {
     "loading": "Loading…",
@@ -1053,7 +1056,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "updated": "Last updated: 11 August 2026",
-    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognises. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Edge, Firefox, and Safari). We aim to collect as little as possible and never sell your data.",
+    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognizes. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Edge, and Firefox; a Safari version is coming soon). We aim to collect as little as possible and never sell your data.",
     "extTitle": "The browser extension",
     "extIntro": "The extension collects no data and sends nothing to any server. Conversion happens entirely in your browser — your files are never uploaded. Permissions are used only to provide the single feature (converting a downloaded .3mf for the Snapmaker U1):",
     "extBullets": [
@@ -1084,7 +1087,7 @@
     "intro": "Drop in a multicolor .3mf and get a Snapmaker U1-ready file — colors, profile, and prime tower all handled. Free, in your browser, nothing uploaded.",
     "ctaConvert": "Convert a file — free",
     "ctaBrowse": "Browse MakerRun",
-    "note": "Runs entirely on your device. Also available as a browser extension (Chrome, Edge, Firefox, Safari) and in 7 languages.",
+    "note": "Runs entirely on your device. Also available as a browser extension ({safari, select, live {Chrome, Edge, Firefox, Safari} other {Chrome, Edge, Firefox; Safari coming soon}}) and in 7 languages.",
     "groups": {
       "slicers": {
         "title": "Works with any slicer",
