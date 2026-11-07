@@ -425,7 +425,16 @@
     "extCardTitle": "حوّل كل تنزيل تلقائيًا",
     "extCardBody": "إضافة BedReady المجانية تحوّل ملف ‎.3mf أثناء تنزيله من MakerWorld أو Printables أو Thingiverse، داخل متصفحك.",
     "extCardCta": "أضِفها إلى {browser}",
-    "extCardDismiss": "ليس الآن"
+    "extCardDismiss": "ليس الآن",
+    "loadSheetButton": "اطبع ورقة التحميل",
+    "loadSheetTitle": "ورقة التحميل",
+    "loadSheetPrinter": "الطابعة",
+    "loadSheetHead": "الرأس",
+    "loadSheetColor": "اللون",
+    "loadSheetMaterial": "المادة",
+    "loadSheetPreset": "الإعداد المسبق",
+    "loadSheetSwaps": "تبديلات البكرات",
+    "loadSheetFooter": "أُعدّت باستخدام BedReady · bedready.io"
   },
   "help": {
     "title": "المساعدة والأسئلة الشائعة",

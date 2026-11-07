@@ -425,7 +425,16 @@
     "extCardTitle": "Jeden Download automatisch konvertieren",
     "extCardBody": "Die kostenlose BedReady-Erweiterung konvertiert eine .3mf direkt beim Download von MakerWorld, Printables oder Thingiverse – in deinem Browser.",
     "extCardCta": "Zu {browser} hinzufügen",
-    "extCardDismiss": "Nicht jetzt"
+    "extCardDismiss": "Nicht jetzt",
+    "loadSheetButton": "Ladeplan drucken",
+    "loadSheetTitle": "Ladeplan",
+    "loadSheetPrinter": "Drucker",
+    "loadSheetHead": "Kopf",
+    "loadSheetColor": "Farbe",
+    "loadSheetMaterial": "Material",
+    "loadSheetPreset": "Profil",
+    "loadSheetSwaps": "Spulenwechsel",
+    "loadSheetFooter": "Erstellt mit BedReady · bedready.io"
   },
   "help": {
     "title": "Hilfe & FAQ",

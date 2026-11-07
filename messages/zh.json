@@ -425,7 +425,16 @@
     "extCardTitle": "每次下载自动转换",
     "extCardBody": "免费的 BedReady 扩展会在你从 MakerWorld、Printables 或 Thingiverse 下载 .3mf 时，直接在浏览器中完成转换。",
     "extCardCta": "添加到 {browser}",
-    "extCardDismiss": "暂不"
+    "extCardDismiss": "暂不",
+    "loadSheetButton": "打印装料单",
+    "loadSheetTitle": "装料单",
+    "loadSheetPrinter": "打印机",
+    "loadSheetHead": "喷头",
+    "loadSheetColor": "颜色",
+    "loadSheetMaterial": "材料",
+    "loadSheetPreset": "预设",
+    "loadSheetSwaps": "换料暂停",
+    "loadSheetFooter": "由 BedReady 生成 · bedready.io"
   },
   "help": {
     "title": "帮助与常见问题",
