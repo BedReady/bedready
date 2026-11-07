@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "@/components/SiteLink";
 import { PlateCorners } from "@/components/PlateHeads";
 import { alternates } from "@/lib/seo";
+import { safariArg } from "@/lib/extension-stores";
 
 export async function generateMetadata({
   params,
@@ -181,7 +182,7 @@ export default function FeaturesPage({ params }: { params: Promise<{ locale: str
         </div>
       </div>
       <p className="mt-3 text-xs text-fg-subtle">{t("compare.note")}</p>
-      <p className="mt-10 text-sm text-fg-muted">{t("note")}</p>
+      <p className="mt-10 text-sm text-fg-muted">{t("note", safariArg)}</p>
     </main>
   );
 }

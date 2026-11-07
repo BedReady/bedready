@@ -329,6 +329,7 @@
     "optInFix": "（任意アップロード）修正いたします。",
     "tryServerInstead": "代わりにサーバーで変換してみる",
     "serverFallbackNote": "ブラウザーで処理できないファイル向けの任意の代替手段です。ファイルをアップロードし、サーバーで変換します。データは一切保存されません。",
+    "serverTooLarge": "サーバー変換の上限（アップロード 4.5 MB）を超えているため、このファイルはブラウザー内でのみ変換できます。",
     "reportSentFix": "ありがとうございます。ファイルを送信しました。コンバーターの修正に役立てます。",
     "sendUsFileFix": "このファイルを送って修正にご協力ください",
     "reportSendingCap": "送信中…",
@@ -665,7 +666,7 @@
   },
   "extension": {
     "title": "BedReady ブラウザ拡張機能",
-    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 向けに直接変換します。ほかのプリンターや、クリーンな汎用 3MF も選べます。どの色をどのスロットに入れるか自分で決めたいときは、ワンクリックでこのサイトのフルエディターにファイルが開きます。すべてブラウザ内で動作し、何もアップロードされません。Chrome、Edge、Firefox に対応。",
+    "intro": "MakerWorld、Bambu、Printables、Thingiverse のダウンロードページで、マルチカラーの .3mf ファイルを Snapmaker U1 向けに直接変換します。ほかのプリンターや、クリーンな汎用 3MF も選べます。どの色をどのスロットに入れるか自分で決めたいときは、ワンクリックでこのサイトのフルエディターにファイルが開きます。すべてブラウザ内で動作し、何もアップロードされません。{safari, select, live {Chrome、Edge、Firefox、Safari に対応。} other {Chrome、Edge、Firefox に対応。Safari 版は近日公開予定です。}}",
     "chromeTitle": "Chrome と Edge",
     "firefoxTitle": "Firefox",
     "addChrome": "＋ Chrome に追加",
@@ -695,7 +696,10 @@
     "chromeStoreOnly": "Chrome ウェブストアで公開中。",
     "popupCaption": "拡張機能のポップアップ — プリンターとノズルを一度選べば、ダウンロードはそのままスライスできる状態で届きます。ページを離れずに .3mf をドロップすることもできます。",
     "metaTitle": "ブラウザ拡張機能 — BedReady",
-    "metaDescription": "MakerWorld・Bambu・Printables・Thingiverse の .3mf ダウンロードを、ダウンロードページから直接 Snapmaker U1 またはお使いのプリンター用に変換。Chrome・Edge・Firefox・Safari に対応。無料、ブラウザで動作。"
+    "metaDescription": "MakerWorld・Bambu・Printables・Thingiverse の .3mf ダウンロードを、ダウンロードページから直接 Snapmaker U1 またはお使いのプリンター用に変換。{safari, select, live {Chrome・Edge・Firefox・Safari に対応} other {Chrome・Edge・Firefox に対応（Safari 版は近日公開）}}。無料、ブラウザで動作。",
+    "heroAddEdge": "＋ Edge に追加",
+    "heroAllBrowsers": "すべてのブラウザーを見る ↓",
+    "desktopOnly": "{safari, select, live {パソコンのデスクトップ版ブラウザー（Chrome・Edge・Firefox・Safari）にインストールします。} other {パソコンのデスクトップ版ブラウザー（Chrome・Edge・Firefox）にインストールします。}}"
   },
   "upload": {
     "loading": "読み込み中…",
@@ -1054,7 +1058,7 @@
   "privacy": {
     "title": "プライバシーポリシー",
     "updated": "最終更新：2026 年 8 月 11 日",
-    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Edge、Firefox、Safari）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
+    "intro": "BedReady は、メイカーがあらゆるプリンター向けに 3D プリントファイルを変換・共有するのを助ける独立プロジェクトです。Snapmaker U1 から始まり、現在はファイル検査が認識するすべてのプリンターに対応しています。本ポリシーはウェブサイト（bedready.io）と BedReady ブラウザー拡張機能（Chrome、Edge、Firefox。Safari 版は近日公開予定）の両方を対象とします。収集は最小限に努め、あなたのデータを販売することは決してありません。",
     "extTitle": "ブラウザ拡張機能",
     "extIntro": "拡張機能はデータを一切収集せず、いかなるサーバーにも何も送信しません。変換は完全にブラウザ内で行われ、ファイルがアップロードされることはありません。権限は唯一の機能（ダウンロードした .3mf を Snapmaker U1 向けに変換）のためだけに使われます：",
     "extBullets": [
@@ -1085,7 +1089,7 @@
     "intro": "マルチカラーの .3mf をドロップするだけで、Snapmaker U1 対応ファイルに — 色・プロファイル・プライムタワーをすべて処理。無料、ブラウザ内、何もアップロードしません。",
     "ctaConvert": "ファイルを変換 — 無料",
     "ctaBrowse": "MakerRun を見る",
-    "note": "完全にお使いのデバイス上で動作。ブラウザ拡張機能（Chrome・Edge・Firefox・Safari）としても、7 言語でも利用できます。",
+    "note": "完全にお使いのデバイス上で動作。ブラウザ拡張機能（{safari, select, live {Chrome・Edge・Firefox・Safari} other {Chrome・Edge・Firefox。Safari 版は近日公開}}）としても、7 言語でも利用できます。",
     "groups": {
       "slicers": {
         "title": "どのスライサーにも対応",
