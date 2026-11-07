@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { convertApi } from "@/lib/convert-api";
 import { activeSponsor, type Sponsor } from "@/lib/sponsor";
-import { SponsorBarView, SponsorStripView } from "./SponsorSlot";
+import { SponsorBarView, SponsorStripView, type SponsorCopy } from "./SponsorSlot";
 
 /**
  * The sponsor slots, fetched over HTTP.
@@ -28,11 +29,17 @@ import { SponsorBarView, SponsorStripView } from "./SponsorSlot";
  * displacing content already read.
  */
 export default function ConverterSponsorBar() {
-  return <SponsorBarView sponsor={useLiveSponsor()} />;
+  return <SponsorBarView sponsor={useLiveSponsor()} copy={useSponsorCopy()} />;
 }
 
 export function ConverterSponsorStrip() {
-  return <SponsorStripView sponsor={useLiveSponsor()} />;
+  return <SponsorStripView sponsor={useLiveSponsor()} copy={useSponsorCopy()} />;
+}
+
+/** The slot chrome in the page's language. `visit` keeps `{name}` raw: the view fills it in. */
+function useSponsorCopy(): SponsorCopy {
+  const t = useTranslations("sponsor");
+  return { label: t("label"), visit: t.raw("visit") as string };
 }
 
 /**

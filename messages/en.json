@@ -1561,5 +1561,9 @@
     "pure": "100% {name}",
     "blend": "{pa}% {a} + {pb}% {b}",
     "note": "These are 2-filament blends (the U1 dithers two colors per mixed region). Real prints vary a little with filament brand and lighting — treat this as a close guide, not an exact match."
+  },
+  "sponsor": {
+    "label": "Sponsor",
+    "visit": "Visit {name}"
   }
 }
