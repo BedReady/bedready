@@ -1428,7 +1428,11 @@
       "pink": "Pink"
     },
     "hfPreview": "Simulated look of the printed relief, front-lit. The real print depends on your filaments and light.",
-    "hfLooseMatch": "That’s a loose match — this image needs colors four filaments can’t reach. Expect the print to read as an interpretation rather than a copy."
+    "hfLooseMatch": "That’s a loose match — this image needs colors four filaments can’t reach. Expect the print to read as an interpretation rather than a copy.",
+    "copyRecipe": "Copy settings link",
+    "recipeCopied": "Link copied",
+    "recipeNote": "Shares these settings only, never your photo.",
+    "recipeApplied": "Settings from a shared link are applied. Your photo stays on this page."
   },
   "libraryTabs": {
     "label": "Library views",

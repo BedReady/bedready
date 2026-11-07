@@ -1428,7 +1428,11 @@
       "pink": "Rose"
     },
     "hfPreview": "Aperçu simulé du relief imprimé, éclairé de face. Le vrai résultat dépend de vos filaments et de la lumière.",
-    "hfLooseMatch": "La correspondance est approximative : cette image demande des couleurs que quatre filaments ne peuvent pas atteindre. L’impression sera une interprétation plutôt qu’une copie."
+    "hfLooseMatch": "La correspondance est approximative : cette image demande des couleurs que quatre filaments ne peuvent pas atteindre. L’impression sera une interprétation plutôt qu’une copie.",
+    "copyRecipe": "Copier le lien des réglages",
+    "recipeCopied": "Lien copié",
+    "recipeNote": "Partage uniquement ces réglages, jamais votre photo.",
+    "recipeApplied": "Les réglages d’un lien partagé sont appliqués. Votre photo reste sur cette page."
   },
   "libraryTabs": {
     "label": "Vues de la bibliothèque",
