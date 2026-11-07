@@ -103,3 +103,23 @@ test("the converter's Snapmaker filament brand list matches the real U1 catalogu
   }
   assert.equal(filamentPresetId("PA", "snapmaker"), "Generic PA", "PA-CF is not PA");
 });
+
+// bedready#88: the Graphic Effect plate is the U1's default, and Orca reads ITS key for the bed
+// temperature on that plate — a profile without graphic_effect_plate_temp heats the bed to 0. Every
+// profile that heats ANY plate must heat this one, and to the same value the catalogue page shows
+// (the manifest's bedTemp, which reads hot_plate_temp first).
+test("every heated profile sets a Graphic Effect plate temperature (bedready#88)", () => {
+  const PLATES = ["hot_plate_temp", "textured_plate_temp", "eng_plate_temp", "cool_plate_temp"];
+  const n = (v: unknown) => Number(Array.isArray(v) ? v[0] : v) || 0;
+  let checked = 0;
+  for (const p of manifest.profiles) {
+    const j = JSON.parse(fs.readFileSync(path.join(DIR, p.file), "utf8"));
+    if (!PLATES.some((k) => n(j[k]) > 0)) continue; // an unheated-bed printer's profile
+    checked++;
+    const g = j.graphic_effect_plate_temp;
+    assert.ok(Array.isArray(g) && n(g) > 0, `${p.id}: no Graphic Effect plate temperature`);
+    assert.ok(n(j.graphic_effect_plate_temp_initial_layer) > 0, `${p.id}: no Graphic Effect first-layer temperature`);
+    if (n(j.hot_plate_temp) > 0) assert.equal(n(g), n(j.hot_plate_temp), `${p.id}: Graphic Effect should match the hot plate`);
+  }
+  assert.ok(checked > 1000, `only ${checked} heated profiles checked`);
+});
