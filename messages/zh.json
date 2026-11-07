@@ -434,7 +434,18 @@
     "loadSheetMaterial": "材料",
     "loadSheetPreset": "预设",
     "loadSheetSwaps": "换料暂停",
-    "loadSheetFooter": "由 BedReady 生成 · bedready.io"
+    "loadSheetFooter": "由 BedReady 生成 · bedready.io",
+    "vpTitle": "查找已验证的配置",
+    "vpBody": "粘贴模型在 MakerWorld、Printables 或 Thingiverse 上的链接。如果已有人在 {printer} 上验证过它的配置，会显示在这里。",
+    "vpInputLabel": "模型链接",
+    "vpFind": "查找",
+    "vpLooking": "查找中…",
+    "vpFound": "已在 MakerRun 验证：",
+    "vpNone": "此模型还没有已验证的配置。",
+    "vpRequest": "请求一个",
+    "vpInvalid": "这不是 MakerWorld、Printables 或 Thingiverse 的模型链接。",
+    "vpUnavailable": "查找暂时不可用，请稍后再试。",
+    "vpDesigner": "我是这个模型的设计者"
   },
   "help": {
     "title": "帮助与常见问题",

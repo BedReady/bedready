@@ -434,7 +434,18 @@
     "loadSheetMaterial": "素材",
     "loadSheetPreset": "プリセット",
     "loadSheetSwaps": "スプール交換",
-    "loadSheetFooter": "BedReady で作成 · bedready.io"
+    "loadSheetFooter": "BedReady で作成 · bedready.io",
+    "vpTitle": "検証済みプロファイルを探す",
+    "vpBody": "MakerWorld・Printables・Thingiverse のモデルリンクを貼り付けてください。{printer} 向けにすでに検証されたプロファイルがあれば、ここに表示されます。",
+    "vpInputLabel": "モデルのリンク",
+    "vpFind": "検索",
+    "vpLooking": "検索中…",
+    "vpFound": "MakerRun で検証済み：",
+    "vpNone": "このモデルの検証済みプロファイルはまだありません。",
+    "vpRequest": "リクエストする",
+    "vpInvalid": "MakerWorld・Printables・Thingiverse のモデルリンクではありません。",
+    "vpUnavailable": "現在検索を利用できません。後でもう一度お試しください。",
+    "vpDesigner": "このモデルの作者です"
   },
   "help": {
     "title": "ヘルプ & FAQ",
