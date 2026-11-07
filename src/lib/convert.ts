@@ -138,7 +138,7 @@ const tooManyColours = (n: number) => new Error(`This .3mf declares ${n} filamen
 // exceed it, so their result is unchanged.
 const EXHAUSTIVE_DROP_MAX = 8;
 import { boundedUnzip, remapPaintCode, dominantState, applyPrusaVolumePaint, extractMeshFromBuffer, paletteFromFullSpectrum, recipesFromFullSpectrum } from "./paint";
-import { toPrusaProject, planColorMix, type PrusaBlend } from "./prusa-project";
+import { toPrusaProject, planColorMix, type PrusaBlend, type PrusaUntranslated } from "./prusa-project";
 import { detectColorBandsForMesh, type BandPlan, type ColorBand } from "./color-bands";
 import { insertSwapPauses, buildBandSwapPlan, type SwapInstruction } from "./swap-pauses";
 import { mixRgb } from "./filament-mixer";
@@ -1697,6 +1697,8 @@ export type CleanResult = {
   preserved: boolean; // true = kept the creator's settings (identity-swap); false = stamped U1 profile
   swaps: SwapInstruction[]; // M600 spool-swap plan, when swap-pauses were inserted (else empty)
   diff: DiffReport | null; // what the conversion changed (U1 target only; null for import/STL)
+  /** Bambu/Orca → PrusaSlicer project only: what the source carried that the project could not. */
+  untranslated?: PrusaUntranslated[];
 };
 
 // ---------- source flavour detection + retarget (non-U1 target printers) ----------
@@ -1911,6 +1913,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
       preserved: false,
       swaps: [],
       diff: null,
+      untranslated: project.untranslated,
     };
   }
 
