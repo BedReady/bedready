@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ldJson } from "@/lib/json-ld";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { GUIDES, guideBySlug } from "@/lib/guides";
 import { absoluteUrl } from "@/lib/origin";
@@ -31,8 +32,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function GuidePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  // So the locale-aware <Link> never falls back to reading request headers, which makes a page
+  // dynamic. That is what kept the guides index uncached; see static-locale.test.mts.
+  setRequestLocale(locale);
   const g = guideBySlug(slug);
   if (!g) notFound();
 

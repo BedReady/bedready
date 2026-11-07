@@ -12,7 +12,7 @@ import { SponsorBarView, SponsorStripView, type SponsorCopy } from "./SponsorSlo
  * after first paint and pushed the page down. The layout now reads it on the server and passes it
  * in, so it is in the HTML and nothing moves.
  *
- * What stays on the client is the window check: the server's copy can be up to five minutes old, and
+ * What stays on the client is the window check: the server's copy can be up to a day old (see SPONSOR_REVALIDATE_SECONDS), and
  * a booking may end inside that. On mount each slot re-runs `activeSponsor()` against the visitor's
  * clock and drops an expired sponsor — in an effect, not in render, so hydration still matches.
  */

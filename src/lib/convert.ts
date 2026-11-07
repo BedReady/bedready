@@ -20,7 +20,7 @@ const MAX_ZIP_INFLATED = 800 * 1024 * 1024; // 800 MB decompressed (sum of entri
  * discarded, so a legitimate 228 MB multi-plate model just produced "Couldn't read that 3MF." The
  * numbers travel with the error now so the page can say what actually happened and what to do.
  */
-export type ThreeMFErrorCode = "too_large" | "expands_too_large";
+export type ThreeMFErrorCode = "too_large" | "expands_too_large" | "not_3mf";
 
 export class ThreeMFError extends Error {
   constructor(
@@ -29,7 +29,7 @@ export class ThreeMFError extends Error {
     readonly sizeMB: number,
     readonly capMB: number,
   ) {
-    super(`${code}: ${sizeMB}MB exceeds ${capMB}MB`);
+    super(code === "not_3mf" ? "not_3mf: no 3D model in this file" : `${code}: ${sizeMB}MB exceeds ${capMB}MB`);
     this.name = "ThreeMFError";
   }
 }
@@ -64,6 +64,38 @@ export function safeUnzip(buf: Uint8Array): Record<string, Uint8Array> {
   // is bounded by MAX_ZIP_INFLATED of real output whatever the headers say. Checked byte-identical to
   // unzipSync across 553 real .3mf files before it shipped.
   return boundedUnzipOrThrow(buf);
+}
+
+// ── A ZIP IS NOT A 3MF, AND NOT EVERYTHING NAMED .3mf IS A ZIP ─────────────────────────────────
+//
+// boundedUnzip streams with fflate's Unzip, which emits nothing for bytes that are not a zip: no
+// entry, no error. So a text file renamed .3mf came back as {}, nothing downstream objected, and the
+// converter wrote out an archive holding only the project_settings.config it had generated while the
+// page said Done (2026-11-07 review). A zip with no model in it fared the same.
+//
+// The check lives in the 3MF readers, not in boundedUnzip: that is a generic bounded unzip, and other
+// code borrows it for archives that are not 3MFs at all.
+
+/** The model part every producer we read writes. */
+const ROOT_MODEL = "3d/3dmodel.model";
+
+/** Does this archive hold a 3MF model? 3D/3dmodel.model, or the start part _rels/.rels names. */
+function hasModelPart(entries: Record<string, Uint8Array>): boolean {
+  const names = new Set(Object.keys(entries).map((p) => p.toLowerCase()));
+  if (names.has(ROOT_MODEL)) return true;
+  const rels = Object.keys(entries).find((p) => p.toLowerCase() === "_rels/.rels");
+  if (!rels) return false;
+  for (const m of strFromU8(entries[rels]).matchAll(/Target="\/?([^"]+\.model)"/gi)) {
+    if (names.has(m[1].toLowerCase())) return true;
+  }
+  return false;
+}
+
+/** safeUnzip for a file that must be a 3MF: ThreeMFError("not_3mf") when it is not a zip or holds no model. */
+export function readThreeMF(buf: Uint8Array): Record<string, Uint8Array> {
+  const entries = safeUnzip(buf);
+  if (!hasModelPart(entries)) throw new ThreeMFError("not_3mf", Math.round(buf.length / MB), 0);
+  return entries;
 }
 
 /**
@@ -441,12 +473,66 @@ export function reduceColors(
   return { colors: groups.map((g) => normalizeHex(g.rep)), map };
 }
 
-/** Remap `key="extruder" value="N"` slot indices in a .config part using old->new(0..3) map. */
-function remapExtruders(text: string, map: number[]): string {
-  return text.replace(/(key="extruder"\s+value=")(\d+)(")/g, (_m, a, n, c) => {
-    const old = parseInt(n, 10);
-    const ni = old >= 1 && old <= map.length ? map[old - 1] + 1 : old;
-    return `${a}${ni}${c}`;
+// ── ONE SLOT REMAP FOR EVERY SLOT REFERENCE ─────────────────────────────────────────────────────
+//
+// When slots are merged, swapped or reordered, every place a file names a filament by number has to
+// move with them. Only `key="extruder"` and the per-filament arrays used to: the process keys that pick
+// a filament for a FEATURE were left behind, so swapping slots 1 and 3 moved the support material to
+// slot 1 while support_interface_filament still said "3", and a 6→4 merge left "6" and "5" pointing past
+// the last slot (2026-11-07 review). Per-object and per-part overrides of the same keys in
+// model_settings.config were left behind too. Every path now goes through remapSlotRefs.
+
+/** Process keys naming the filament that prints a feature: 1-based, "0" = auto (see the U1 sentinel guard). */
+const FEATURE_FILAMENT_KEYS = [
+  "wall_filament", "sparse_infill_filament", "solid_infill_filament", "support_filament",
+  "support_interface_filament", "wipe_tower_filament",
+];
+const SLOT_REF_XML = new RegExp(`(key="(extruder|${FEATURE_FILAMENT_KEYS.join("|")})"\\s+value=")(\\d+)(")`, "g");
+
+/**
+ * Old → new slot map. `slot[i]` is the new 0-based slot of source filament i, for object/part
+ * `extruder` refs. `feature` (default: `slot`) is the same for the feature keys; it differs only in
+ * Full Spectrum, where an object may print in a virtual mix but a feature needs a filament on a head.
+ */
+type SlotRemap = { slot: number[]; feature?: number[] };
+
+function remapSlotNumber(n: number, map: number[]): number {
+  return n >= 1 && n <= map.length && map[n - 1] != null ? map[n - 1] + 1 : n; // 0 (auto) stays 0
+}
+
+/**
+ * Move every slot reference by one map: `extruder` and the feature keys in a model_settings.config
+ * (XML text in, text out), or the feature keys of a parsed project config (mutated and returned).
+ */
+function remapSlotRefs(target: string, r: SlotRemap): string;
+function remapSlotRefs(target: Record<string, unknown>, r: SlotRemap): Record<string, unknown>;
+function remapSlotRefs(target: string | Record<string, unknown>, r: SlotRemap): string | Record<string, unknown> {
+  const feature = r.feature ?? r.slot;
+  if (typeof target === "string") {
+    return target.replace(SLOT_REF_XML, (_m, a, key, n, c) => `${a}${remapSlotNumber(parseInt(n, 10), key === "extruder" ? r.slot : feature)}${c}`);
+  }
+  for (const k of FEATURE_FILAMENT_KEYS) {
+    if (!(k in target)) continue;
+    target[k] = mapVal(target[k], null, (v) => {
+      if (!/^\s*\d+\s*$/.test(String(v))) return v;
+      const n = remapSlotNumber(parseInt(String(v), 10), feature);
+      return typeof v === "number" ? n : String(n);
+    });
+  }
+  return target;
+}
+
+/**
+ * Which source filament each output slot takes its settings from. A merged slot shows ONE member's
+ * colour, and must take that member's type and temperatures too: the first member used to win, so a
+ * slot showing white printed with green's settings. Falls back to the first member when no member has
+ * the slot's colour (a colour picked in the UI); -1 for an empty slot.
+ */
+function slotSources(assign: number[], slotCount: number, srcColours: unknown[], slotColours: string[]): number[] {
+  return Array.from({ length: slotCount }, (_, s) => {
+    const members = assign.flatMap((a, i) => (a === s ? [i] : []));
+    const want = slotColours[s] ? normalizeHex(slotColours[s]) : "";
+    return members.find((i) => want && typeof srcColours[i] === "string" && normalizeHex(srcColours[i] as string) === want) ?? members[0] ?? -1;
   });
 }
 
@@ -542,11 +628,27 @@ function isU1IdentityKey(k: string): boolean {
   return U1_IDENTITY_KEYS.has(k);
 }
 
-/** Map a source per-filament array (length = source filament count) to exactly 4 U1 slots. */
-function mapTo4<T>(arr: T[], assign: number[], u1Arr: T[]): T[] {
+// The U1 has 4 heads AND 4 filament slots, so its reference profile's 4-long arrays are of two kinds.
+// These are per EXTRUDER (Orca's printer-preset extruder options): they stay one per head however
+// many filaments a file declares. Nozzle and extruder_offset keys are identity and excluded already.
+const PER_EXTRUDER_KEYS = new Set([
+  "extruder_colour", "deretraction_speed", "long_retractions_when_cut",
+  "max_layer_height", "min_layer_height", "retract_before_wipe", "retract_length_toolchange",
+  "retract_lift_above", "retract_lift_below", "retract_lift_enforce", "retract_restart_extra",
+  "retract_restart_extra_toolchange", "retract_when_changing_layer", "retraction_distances_when_cut",
+  "retraction_length", "retraction_minimum_travel", "retraction_speed", "travel_slope", "wipe",
+  "wipe_distance", "z_hop", "z_hop_types", "z_hop_when_prime",
+]);
+/** A per-FILAMENT key: one entry per filament in the reference's 4-slot shape, not identity, not per extruder. */
+function isPerFilamentKey(k: string, ref: unknown): boolean {
+  return Array.isArray(ref) && ref.length === 4 && !isU1IdentityKey(k) && !PER_EXTRUDER_KEYS.has(k);
+}
+
+/** Map a source per-filament array (length = source filament count) to exactly 4 U1 slots. `sources` from slotSources. */
+function mapTo4<T>(arr: T[], sources: number[], u1Arr: T[]): T[] {
   const out: T[] = [];
   for (let s = 0; s < 4; s++) {
-    const i = assign.findIndex((a) => a === s);
+    const i = sources[s] ?? -1;
     out.push(i >= 0 && i < arr.length ? arr[i] : (arr[0] ?? u1Arr[s] ?? u1Arr[0]));
   }
   return out;
@@ -586,10 +688,7 @@ const U1_CLAMP_AGAINST: Record<string, string> = {
   nozzle_temperature_initial_layer: "nozzle_temperature_range_high",
 };
 // Bambu uses "0" as an auto-sentinel for these filament-slot keys; Orca needs an explicit slot.
-const U1_FILAMENT_SLOT_SENTINEL_KEYS = new Set([
-  "wall_filament", "sparse_infill_filament", "solid_infill_filament", "support_filament",
-  "support_interface_filament", "wipe_tower_filament",
-]);
+const U1_FILAMENT_SLOT_SENTINEL_KEYS = new Set(FEATURE_FILAMENT_KEYS);
 // Bambu uses -1 as an inherit/auto sentinel for these; Orca needs a real value.
 const U1_NEGATIVE_SENTINEL_KEYS = new Set([
   "raft_first_layer_expansion", "tree_support_wall_count", "prime_tower_lift_height",
@@ -1067,6 +1166,10 @@ function buildPreservedConfig(
   const u1 = JSON.parse(JSON.stringify(machine.profile)) as Record<string, unknown>;
   const out: Record<string, unknown> = {};
   if (diff) diff.droppedForeignKeys = Object.keys(src).filter((k) => !(k in u1)).length;
+  // The source's own feature-filament picks follow their filaments to the new slots. Remapped on a
+  // copy of the source, before the reference fills in, so a reference value is never renumbered.
+  src = remapSlotRefs({ ...src }, { slot: assign });
+  const sources = slotSources(assign, 4, Array.isArray(src.filament_colour) ? src.filament_colour : [], colors);
 
   // Start from the U1 key universe (this drops any foreign-only keys the source carried).
   for (const k of Object.keys(u1)) {
@@ -1081,7 +1184,7 @@ function buildPreservedConfig(
     const uv = u1[k];
     if (Array.isArray(uv) && uv.length === 4) {
       const sv = out[k];
-      out[k] = Array.isArray(sv) ? mapTo4(sv as unknown[], assign, uv as unknown[]) : uv;
+      out[k] = Array.isArray(sv) ? mapTo4(sv as unknown[], sources, uv as unknown[]) : uv;
     }
   }
 
@@ -1090,7 +1193,7 @@ function buildPreservedConfig(
   // The source's own types, mapped to slots. NOT out.filament_type: when the source has none, that is the
   // reference's ABS, which is how a PLA file became ABS.
   const srcTypesAll = sourceFilamentTypes(src);
-  const prevType = srcTypesAll.length ? mapTo4(srcTypesAll, assign, ["PLA", "PLA", "PLA", "PLA"]) as string[] : undefined;
+  const prevType = srcTypesAll.length ? mapTo4(srcTypesAll, sources, ["PLA", "PLA", "PLA", "PLA"]) as string[] : undefined;
   const prevSid = out.filament_settings_id as string[] | undefined;
   out.filament_colour = [0, 1, 2, 3].map((s) => normalizeHex(colors[s] ?? "#FFFFFF"));
   out.filament_type = [0, 1, 2, 3].map((s) => types[s] ?? prevType?.[s] ?? "PLA");
@@ -1120,10 +1223,12 @@ function buildFullSpectrumConfig(
   hasVLH = false,
   machine: Machine = U1,
   brand: FilamentBrand = "source",
+  remap?: SlotRemap, // source filament → new filament, for the feature-filament keys (none = identity)
 ): string {
   const u1 = JSON.parse(JSON.stringify(machine.profile)) as Record<string, unknown>;
   const out: Record<string, unknown> = {};
   if (diff) diff.droppedForeignKeys = Object.keys(src).filter((k) => !(k in u1)).length;
+  if (remap) src = remapSlotRefs({ ...src }, remap);
   for (const k of Object.keys(u1)) {
     if (isU1IdentityKey(k)) out[k] = u1[k];
     else if (k in src) out[k] = src[k];
@@ -1136,6 +1241,23 @@ function buildFullSpectrumConfig(
       out[k] = keptOld.map((oldI) => v[oldI] ?? v[0]);
     }
   }
+  // Every OTHER per-filament array still has the reference's 4 entries: the keys a compact config
+  // leaves out, and any the source wrote at another length. Keep-all-colours with 6 filaments wrote 95
+  // of them 4 long (2026-11-07 review). Each slot takes the source's own value where it has one, else
+  // the reference's, which the material preset below then corrects for that slot's material.
+  // The declared nozzle range is identity (always the reference's) but still one entry per filament.
+  const refFilled: [string, number][] = []; // source keys whose slot came from the reference
+  for (const k of Object.keys(out)) {
+    const ref = u1[k], v = out[k];
+    const range = k.startsWith("nozzle_temperature_range") && Array.isArray(ref) && ref.length === 4;
+    if (!(isPerFilamentKey(k, ref) || range) || !Array.isArray(v) || v.length === keptOld.length) continue;
+    const sv = !range && Array.isArray(src[k]) ? (src[k] as unknown[]) : null;
+    out[k] = keptOld.map((oldI, j) => {
+      if (sv && oldI < sv.length) return sv[oldI];
+      if (sv) refFilled.push([k, j]);
+      return (ref as unknown[])[j] ?? (ref as unknown[])[0];
+    });
+  }
   const srcColours = (src.filament_colour as string[]) ?? [];
   const srcTypes = sourceFilamentTypes(src);
   const baseId = (Array.isArray(u1.filament_settings_id) ? (u1.filament_settings_id[0] as string) : "") || "Generic PLA";
@@ -1146,6 +1268,12 @@ function buildFullSpectrumConfig(
     filamentPresetId(srcTypes[i] || "PLA", brand, srcSid[i] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${srcTypes[i] || "PLA"}`)),
   );
   fillMissingFromPreset(out, src, machine);
+  if (isU1Reference(machine)) {
+    for (const [k, j] of refFilled) {
+      const v = u1FilamentPreset((out.filament_type as string[])[j])?.[k];
+      if (v !== undefined && !PRESET_FILL_SKIP.has(k)) (out[k] as unknown[])[j] = v;
+    }
+  }
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
@@ -1183,7 +1311,7 @@ function tallyUsage(entries: Record<string, Uint8Array>, n: number): number[] {
 
 export async function analyzeThreeMF(file: File): Promise<Analysis> {
   const buf = new Uint8Array(await file.arrayBuffer());
-  const entries = applyPrusaVolumePaint(safeUnzip(buf));
+  const entries = applyPrusaVolumePaint(readThreeMF(buf));
   let colors: string[] = [];
   let types: string[] = [];
   let painted = false;
@@ -1740,20 +1868,15 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
   if (manual) {
     map = opts!.assign!;
     useColours = opts!.slots!.slice(0, slots).map(normalizeHex);
-    useTypes = useColours.map((_, s) => {
-      const oi = map!.findIndex((a) => a === s);
-      return oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA";
-    });
   } else if (colorsTotal > slots) {
     const r = reduceColors(srcColours, tallyUsage(entries, colorsTotal), undefined, slots);
     // One group per target slot; the clamp is belt and braces.
     map = r.map.map((g) => Math.min(g, slots - 1));
     useColours = r.colors.slice(0, slots).map(normalizeHex);
-    useTypes = useColours.map((_, s) => {
-      const oi = map!.findIndex((a) => a === s);
-      return oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA";
-    });
   }
+  // Each slot's settings come from the source filament whose colour it shows (see slotSources).
+  const sources = map ? slotSources(map, slots, srcColours, useColours) : null;
+  if (sources) useTypes = useColours.map((_, s) => (sources[s] >= 0 ? srcTypes[sources[s]] ?? "PLA" : "PLA"));
   const reduced = !!map && (colorsTotal > slots || !map.every((a, i) => a === i));
   // Colours edited in the UI without moving any slot. `reduced` stays false (nothing to reindex), and
   // these used to be dropped on the floor: the file came out in its original colours.
@@ -1823,14 +1946,10 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
         for (const k of Object.keys(o)) {
           const v = o[k];
           if (Array.isArray(v) && v.length === colorsTotal) {
-            const slotArr: unknown[] = new Array(slots);
-            for (let s = 0; s < slots; s++) {
-              const oi = map.findIndex((a) => a === s);
-              slotArr[s] = oi >= 0 ? v[oi] : v[0];
-            }
-            o[k] = slotArr;
+            o[k] = sources!.map((oi) => (oi >= 0 ? v[oi] : v[0]));
           }
         }
+        remapSlotRefs(o, { slot: map });
         o.filament_colour = useColours.slice();
         o.filament_type = useTypes.slice();
       } else if (recoloured) {
@@ -1882,8 +2001,8 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
     }
 
     if (reduced && map && lower.endsWith(".config")) {
-      // model_settings.config (XML) part→extruder refs → the reduced slots.
-      out[path] = strToU8(remapExtruders(strFromU8(data), map));
+      // model_settings.config (XML) part→extruder refs and per-object feature overrides → the reduced slots.
+      out[path] = strToU8(remapSlotRefs(strFromU8(data), { slot: map }));
       continue;
     }
 
@@ -1909,7 +2028,7 @@ function retargetThreeMF(entries: Record<string, Uint8Array>, machine: Machine, 
 
 export async function cleanThreeMF(file: File, target: CleanTarget, opts?: CleanOpts): Promise<CleanResult> {
   const buf = new Uint8Array(await file.arrayBuffer());
-  const entries = applyPrusaVolumePaint(safeUnzip(buf)); // Prusa multi-volume → paint, then process
+  const entries = applyPrusaVolumePaint(readThreeMF(buf)); // Prusa multi-volume → paint, then process
 
   // Generic "strip vendor lock": produce a clean core-spec 3MF — keep geometry (.model + rels),
   // [Content_Types].xml and thumbnails/images; drop every vendor slicer config (Metadata/*.config,
@@ -2237,10 +2356,8 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
       assign = r.map;
       useColours = r.colors;
     }
-    useTypes = [0, 1, 2, 3].map((s) => {
-      const oi = assign.findIndex((a) => a === s);
-      return oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA";
-    });
+    const sources = slotSources(assign, 4, srcColours, useColours);
+    useTypes = sources.map((oi) => (oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA"));
     const pu = tallyPaintUsage(entries, colorsTotal);
     const domIdx = pu.indexOf(Math.max(...pu, 0));
     const domSlot = domIdx >= 0 && assign[domIdx] != null ? assign[domIdx] + 1 : 1;
@@ -2251,10 +2368,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
     if (manual) {
       useColours = opts!.slots!.slice(0, 4).map(normalizeHex);
       if (opts!.assign && srcTypes.length) {
-        useTypes = [0, 1, 2, 3].map((s) => {
-          const oi = opts!.assign!.findIndex((a) => a === s);
-          return oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA";
-        });
+        useTypes = slotSources(opts!.assign, 4, srcColours, useColours).map((oi) => (oi >= 0 ? srcTypes[oi] ?? "PLA" : "PLA"));
       }
       // Rewrite per-object `key="extruder"` refs whenever the slot order actually changed — either a
       // >4 object reduction (objectAssigned) OR the user reordered the ≤4 slots (a non-identity assign,
@@ -2271,10 +2385,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
       const r = reduceColors(srcColours, tallyUsage(entries, srcColours.length));
       map = r.map;
       useColours = r.colors;
-      useTypes = r.colors.map((_, gi) => {
-        const fo = map!.indexOf(gi);
-        return srcTypes[fo] ?? srcTypes[0] ?? "PLA";
-      });
+      useTypes = slotSources(r.map, r.colors.length, srcColours, r.colors).map((oi) => srcTypes[oi] ?? srcTypes[0] ?? "PLA");
       reduced = true;
     }
   }
@@ -2289,6 +2400,17 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   const brand: FilamentBrand = opts?.filamentBrand ?? "source";
   // source filament index -> slot 0..3 (reduction map if any, else manual assign, else identity).
   const assignEff = map ?? opts?.assign ?? srcColours.map((_, i) => Math.min(i, 3));
+  // Full Spectrum: an object can print in a virtual mix (5+), but walls, supports and the prime tower
+  // are printed by ONE filament on a head. A feature key whose filament became a mix goes to the head
+  // that carries most of that mix.
+  const mixHead = (d: MixedDef | undefined): number => {
+    if (!d) return 0;
+    const ids = d.gradientIds ? d.gradientIds.split("").map(Number) : [d.componentA, d.componentB];
+    const w = d.gradientWeights ? d.gradientWeights.split("/").map(Number) : [100 - d.mixBPercent, d.mixBPercent];
+    return (ids[w.indexOf(Math.max(...w))] ?? d.componentA) - 1;
+  };
+  const featureMap = map && mixDefs.length ? map.map((v) => (v < 4 ? v : mixHead(mixDefs[v - 4]))) : undefined;
+  const slotRemap: SlotRemap | null = map ? { slot: map, feature: featureMap } : null;
   const diff: DiffReport | null =
     target === "u1"
       ? {
@@ -2401,7 +2523,7 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   const makeU1Config = () =>
     finishConfig(
       fsKeptOld && srcCfg
-        ? buildFullSpectrumConfig(srcCfg, fsKeptOld, colorsTotal, useColours, diff ?? undefined, guardVlh, machine, brand)
+        ? buildFullSpectrumConfig(srcCfg, fsKeptOld, colorsTotal, useColours, diff ?? undefined, guardVlh, machine, brand, slotRemap ?? undefined)
         : canPreserve
           ? buildPreservedConfig(srcCfg!, useColours, useTypes, assignEff, diff ?? undefined, guardVlh, machine, brand)
           : buildU1Config(useColours, useTypes, guardVlh, diff ?? undefined, machine, brand),
@@ -2477,8 +2599,8 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
         if (diff) diff.foreignNative = true;
       }
       out[path] = strToU8(text);
-    } else if (reduced && map && lower.endsWith(".config")) {
-      out[path] = strToU8(remapExtruders(strFromU8(data), map));
+    } else if (reduced && slotRemap && lower.endsWith(".config")) {
+      out[path] = strToU8(remapSlotRefs(strFromU8(data), slotRemap));
     } else {
       out[path] = data;
     }
