@@ -9,7 +9,7 @@
 // "service worker"; Firefox: about:debugging → Inspect) and read the [BedReady] logs.
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
 import { loadSettings, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, type Settings } from "./settings";
-import { stash, take, editorUrl, bytesToBase64 } from "./handoff";
+import { stash, take, sweep, SWEEP_ALARM, editorUrl, bytesToBase64 } from "./handoff";
 import { t } from "./i18n";
 
 // Cross-browser API handle: Firefox exposes `browser` (promise-based); Chrome MV3's `chrome` is also
@@ -258,5 +258,12 @@ async function syncCnScript(): Promise<void> {
   }
 }
 void syncCnScript();
+// The kept original never outlives TTL_MS (see handoff.ts): on the alarm each stash sets, and on
+// every wake of this worker in case the browser was closed when the alarm was due.
+api?.alarms?.onAlarm?.addListener?.((a: { name?: string }) => {
+  if (a?.name === SWEEP_ALARM) void sweep().catch(() => {});
+});
+void sweep().catch(() => {});
+
 api?.permissions?.onAdded?.addListener?.(() => void syncCnScript());
 api?.permissions?.onRemoved?.addListener?.(() => void syncCnScript());
