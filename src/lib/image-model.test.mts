@@ -35,7 +35,9 @@ test("panel mesh: correct triangle + paint counts", () => {
   const q = quantize(px, w, h, 3);
   const mesh = buildPanelMesh(q, { widthMM: 40, thicknessMM: 2.4 });
   const triCount = mesh.positions.length / 9;
-  assert.equal(triCount, 42); // 16*2 top + 2 bottom + 8 walls
+  // 16*2 top + 2 per wall segment (4×4 × 4 sides = 16 segments → 32) + 1 bottom-fan tri per segment (16).
+  // Was 42 with single-quad walls and bottom, which left T-junctions (open edges) — see the watertight test.
+  assert.equal(triCount, 80);
   const painted = [...mesh.faceState].filter((s) => s > 0).length;
   assert.equal(painted, 32); // only the 16 top cells (2 tris each)
   // Bounds: 40mm longest side, 4x4 → 40mm square, 2.4mm thick.
@@ -60,7 +62,7 @@ test("emitted .3mf round-trips through the real extractMeshFromBuffer", () => {
   // The converter's own reader must parse it: palette + geometry recovered.
   const mesh = extractMeshFromBuffer(bytes);
   assert.equal(mesh.palette.length, 3, "extractor reads 3 filament colours");
-  assert.equal(mesh.positions.length / 9, 42, "extractor sees all 42 faces");
+  assert.equal(mesh.positions.length / 9, 80, "extractor sees all 80 faces");
   // Palette colours survived the round-trip (order preserved via filament_colour).
   assert.equal(mesh.palette[0], palette[0]);
   // Painted faces recovered across slots (sum of usage covers the painted top at least).
@@ -99,8 +101,9 @@ test("relief mode: brightness raises the top surface, watertight + round-trips",
   assert.equal(zMin, 0);
   // Only the top cells are painted (2 tris each).
   assert.equal([...relief.faceState].filter((s) => s > 0).length, w * h * 2);
-  // Relief adds per-segment skirt walls → strictly more triangles than the flat single-quad walls.
-  assert.ok(relief.positions.length > flat.positions.length, "relief has more geometry than flat");
+  // Flat and relief share one watertight construction (per-segment walls, fanned bottom), so they
+  // have the same triangle count; only the heights differ.
+  assert.equal(relief.positions.length, flat.positions.length, "relief and flat share one topology");
 
   // A brightness gradient produces varying heights (real relief, not a flat raise).
   const grad = new Float32Array(w * h);
@@ -144,4 +147,28 @@ test("panel mesh faces point outward: the signed volume is the plate's real volu
   assert.ok(Math.abs(signedVolume(flat.positions) - 30 * 20 * 2.4) < 1e-3);
   const relief = buildPanelMesh(q, { widthMM: 30, thicknessMM: 2.4, reliefMM: 1, luma: new Float32Array(6).fill(0.5) });
   assert.ok(signedVolume(relief.positions) > 30 * 20 * 2.4);
+});
+
+// Nov 2026: per-cell top quads met single-quad walls and a single-quad bottom (T-junctions), so a 10×8
+// panel had 40 edges not shared by exactly two faces — open edges in Orca. Flat and relief alike.
+test("image panels are watertight: every edge is shared by exactly two faces", async () => {
+  const { buildPanelMesh } = await import("./image-model.ts");
+  const w = 10, h = 8;
+  const q = { width: w, height: h, indices: new Uint8Array(w * h).map((_, i) => i % 3), palette: ["#000000", "#FFFFFF", "#FF0000"] };
+  for (const opts of [{}, { reliefMM: 1.2, luma: new Float32Array(w * h).map((_, i) => (i % 7) / 7) }]) {
+    const m = buildPanelMesh(q as never, opts as never);
+    const p = m.positions;
+    const key = (i: number) => `${p[i]},${p[i + 1]},${p[i + 2]}`;
+    const edges = new Map<string, number>();
+    for (let t = 0; t < p.length / 9; t++) {
+      const v = [key(t * 9), key(t * 9 + 3), key(t * 9 + 6)];
+      for (let k = 0; k < 3; k++) {
+        const a = v[k], b = v[(k + 1) % 3];
+        const e = a < b ? `${a}|${b}` : `${b}|${a}`;
+        edges.set(e, (edges.get(e) ?? 0) + 1);
+      }
+    }
+    const open = [...edges.values()].filter((c) => c !== 2).length;
+    assert.equal(open, 0, `${"reliefMM" in opts ? "relief" : "flat"}: ${open} edges not shared by exactly two faces`);
+  }
 });

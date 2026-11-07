@@ -85,6 +85,10 @@ import { matchToSpools } from "@/lib/spool-match";
 import { planColorMix } from "@/lib/prusa-project";
 import { absoluteUrl } from "@/lib/origin";
 
+/** Vercel's request-body ceiling for the server converter (4.5 MB), less a margin for the multipart
+ *  envelope. A file over this can't reach the route at all — see serverCanTake. */
+const SERVER_UPLOAD_MAX_BYTES = 4_400_000;
+
 type Status = "idle" | "ready" | "working" | "done" | "error";
 
 // Pad/trim a colour array to exactly n slots (n = the selected target's toolhead count). For the U1
@@ -522,13 +526,13 @@ export default function ConvertPage() {
       // someone with a legitimate 228 MB multi-plate model that we "couldn't read" it sends them
       // looking for a problem with their file that isn't there.
       setMessage(
-        e instanceof ThreeMFError
+        e instanceof ThreeMFError && e.code !== "not_3mf" // not a 3MF at all: the plain "couldn't read"
           ? t(e.code === "too_large" ? "msgTooLarge" : "msgExpandsTooLarge", { size: e.sizeMB, cap: e.capMB })
           : t("msgReadFail"),
       );
       // Too big as one archive doesn't mean too big per plate. Reading the layout inflates only the
       // metadata entries, so this is safe even on a file we just refused to open.
-      if (e instanceof ThreeMFError) {
+      if (e instanceof ThreeMFError && e.code !== "not_3mf") {
         try {
           // peekPlates only inflates metadata (~80 KB), and `raw` is released on return.
           const found = peekPlates(new Uint8Array(await f.arrayBuffer())).filter((pl) => pl.bytes > 0);
@@ -817,6 +821,41 @@ export default function ConvertPage() {
     }
   }
 
+  // Whether the primary convert button is still below the viewport (drives the phone action bar).
+  const primaryRef = useRef<HTMLButtonElement>(null);
+  const [primaryBelow, setPrimaryBelow] = useState(false);
+  const hasFile = !!file;
+  useEffect(() => {
+    const el = primaryRef.current;
+    if (!el) {
+      setPrimaryBelow(false);
+      return;
+    }
+    // A position check, not an IntersectionObserver: an observer only reports CHANGES in
+    // intersection, so a jump from above the viewport straight to below it (scrollTo(0), a tap on
+    // the status bar) never fires and the bar stayed hidden. One rect read per frame is cheap.
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      setPrimaryBelow(el.getBoundingClientRect().top > window.innerHeight);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    // The button also moves without a scroll — the preview and slot editor load above it.
+    const ro = new ResizeObserver(schedule);
+    ro.observe(document.body);
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [hasFile]);
+
   // Pin/unpin a palette color so the >4→4 reducer won't merge it away; recompute the reduction.
   function togglePin(i: number) {
     if (!mesh) return;
@@ -829,6 +868,28 @@ export default function ConvertPage() {
     setSlots(padN(r.colors, slotCount));
     setTouched([]);
     setSpoolMatch(null);
+  }
+
+  /**
+   * The choices that don't depend on one file's palette — the printer variant, profile mode,
+   * filament brand and so on. Split-per-plate and batch convert many files at once, so they can't
+   * take this file's slot mapping, but they must still honour these: until Nov 7 they passed only
+   * mode/swapPauses/fullSpectrum, and a 0.6 mm-nozzle user who split a project got files declaring
+   * a 0.4 nozzle, with no warning.
+   */
+  function fileIndependentOpts() {
+    return {
+      mode: profileMode,
+      swapPauses,
+      fullSpectrum,
+      mixedLayerHeight,
+      subdivide,
+      vlhGuard: keepVlhTower ? ("keep-prime-tower" as const) : ("keep-layers" as const),
+      ...(nozzle !== U1_TESTED_NOZZLE ? { machine: u1NozzleVariant(nozzle) } : {}),
+      keepAllColours,
+      filamentBrand,
+      highFlow: highFlow && nozzle === U1_TESTED_NOZZLE,
+    };
   }
 
   async function clean(target: CleanTarget) {
@@ -979,7 +1040,7 @@ export default function ConvertPage() {
         // off by 25.4 for an inch one — so convert back rather than assume they are the same space.
         const subBytes = subsetThreeMF(orig, new Set(groups[i].ids),
           [(bed - cx) / mesh.mmPerUnit, (bed - cy) / mesh.mmPerUnit]);
-        const r = await cleanThreeMFAsync(new File([subBytes as BlobPart], `${groups[i].name}.3mf`), "u1", { mode: profileMode, swapPauses, fullSpectrum });
+        const r = await cleanThreeMFAsync(new File([subBytes as BlobPart], `${groups[i].name}.3mf`), "u1", fileIndependentOpts());
         out.push({ name: `${base}_${groups[i].name}.u1.3mf`, bytes: new Uint8Array(await r.blob.arrayBuffer()) });
       }
       deliver(new Blob([zipFiles(out) as BlobPart]), `${base}.u1.parts.zip`);
@@ -1014,7 +1075,7 @@ export default function ConvertPage() {
       setBatchProgress(i / list.length);
       setBatchMsg(t("batchProgress", { i: i + 1, n: list.length, name: list[i].name }));
       try {
-        const r = await cleanThreeMFAsync(list[i], "u1", { mode: profileMode, swapPauses, fullSpectrum });
+        const r = await cleanThreeMFAsync(list[i], "u1", fileIndependentOpts());
         out.push({ name: list[i].name.replace(/\.3mf$/i, "") + ".u1.3mf", bytes: new Uint8Array(await r.blob.arrayBuffer()) });
         bumpConvertCount();
       } catch (e) {
@@ -1041,6 +1102,11 @@ export default function ConvertPage() {
   // OPTIONAL fallback: convert on our server. The in-browser path above is the default
   // (private, free, no upload). This only exists for files the browser can't handle — it
   // uploads the file, converts in memory on the server (nothing stored), and downloads the result.
+  // Vercel refuses a request body over 4.5 MB before the route runs, so a bigger upload can only
+  // fail — after the user agreed to send a model that may be paid or no-redistribution. Offer the
+  // server only when it can actually take the file.
+  const serverCanTake = !!file && file.size <= SERVER_UPLOAD_MAX_BYTES;
+
   async function serverConvert() {
     if (!file) return;
     setStatus("working");
@@ -1056,6 +1122,12 @@ export default function ConvertPage() {
         swapPauses: swapPauses ? "1" : "0",
         // Sent only when ticked, so a server that predates the option sees the request it always did.
         ...(keepVlhTower ? { vlhGuard: "keep-prime-tower" } : {}),
+        // Same rule, for the choices added since: sent only when they differ from the default, so
+        // the request is unchanged for everyone who didn't touch them.
+        ...(nozzle !== U1_TESTED_NOZZLE ? { nozzle: String(nozzle) } : {}),
+        ...(keepAllColours ? { keepAllColours: "1" } : {}),
+        ...(filamentBrand !== "source" ? { filamentBrand: String(filamentBrand) } : {}),
+        ...(highFlow && nozzle === U1_TESTED_NOZZLE ? { highFlow: "1" } : {}),
       });
       const res = await fetch(`${convertApi("/api/convert")}?${qs}`, { method: "POST", body: fd });
       if (!res.ok) {
@@ -2500,9 +2572,27 @@ export default function ConvertPage() {
           treatment, which is exactly the mistake. The primary action was drawn as a secondary one.
 
           One primary, three demoted to a labelled row. They are alternatives, not peers. */}
+      {/* ── THE ACTION, WITHIN REACH ON A PHONE ─────────────────────────────────────────────────
+          Measured Nov 7 at 390×844: after a file is picked the drop zone says "choose an output
+          below", and the button sits at y≈2308 of a 3658px page — under the printer, preview, slot
+          editor, filaments, profile, nozzle and presets. A one-row bar carries the same action while
+          the real button is still BELOW the viewport, and goes away once it is reached or passed
+          (so it never covers the footer). Phones only: on a desktop the button is a short scroll. */}
+      {file && status === "ready" && primaryBelow && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+          <button
+            onClick={() => clean(targetId)}
+            disabled={meshLoading}
+            className="btn-primary btn-md w-full"
+          >
+            {targetId !== "u1" && MACHINES[targetId] ? t("convertForPrinter", { name: MACHINES[targetId].name }) : t("cleanU1")}
+          </button>
+        </div>
+      )}
       {file && (
         <div className="mt-6">
           <button
+            ref={primaryRef}
             onClick={() => clean(targetId)}
             disabled={status === "working" || meshLoading}
             className="btn-primary btn-lg w-full"
@@ -2594,13 +2684,19 @@ export default function ConvertPage() {
           <p className="text-fg-muted">
             {t("bigFileNote")}
           </p>
-          <button
-            onClick={serverConvert}
-            className="btn-secondary btn-sm mt-2"
-          >
-            {t("convertOnServer")}
-          </button>
-          <span className="ml-2 text-xs text-fg-subtle">{t("serverOptionalNote")}</span>
+          {serverCanTake ? (
+            <>
+              <button
+                onClick={serverConvert}
+                className="btn-secondary btn-sm mt-2"
+              >
+                {t("convertOnServer")}
+              </button>
+              <span className="ml-2 text-xs text-fg-subtle">{t("serverOptionalNote")}</span>
+            </>
+          ) : (
+            <p className="mt-2 text-xs text-fg-subtle">{t("serverTooLarge")}</p>
+          )}
         </div>
       )}
 
@@ -2763,7 +2859,7 @@ export default function ConvertPage() {
       {status === "error" && analysis && (
         <div className="mt-4">
           <p role="alert" className="text-sm text-red-300">{message}</p>
-          {file && (
+          {file && serverCanTake && (
             <button
               onClick={serverConvert}
               className="btn-secondary btn-sm mt-3"
@@ -2771,6 +2867,7 @@ export default function ConvertPage() {
               {t("tryServerInstead")}
             </button>
           )}
+          {file && !serverCanTake && <p className="mt-3 text-xs text-fg-subtle">{t("serverTooLarge")}</p>}
           <p className="mt-2 text-xs text-fg-subtle">
             {t("serverFallbackNote")}
           </p>

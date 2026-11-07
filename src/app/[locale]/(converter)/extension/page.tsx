@@ -4,6 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { alternates } from "@/lib/seo";
 import { PlateCorners } from "@/components/PlateHeads";
+import ExtensionHeroInstall from "@/components/ExtensionHeroInstall";
+import { CHROME_WEBSTORE_URL, FIREFOX_AMO_URL, SAFARI_APPSTORE_URL, safariArg } from "@/lib/extension-stores";
 
 export async function generateMetadata({
   params,
@@ -14,16 +16,14 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "extension" });
   return {
     title: t("metaTitle"),
-    description: t("metaDescription"),
+    description: t("metaDescription", safariArg),
     alternates: alternates("/extension", locale),
   };
 }
 
-// Set these to the live store listing URLs to switch each browser's card to a one-click install button.
-// When empty, the card shows only the manual/load-unpacked fallback (collapsed).
-const CHROME_WEBSTORE_URL = "https://chromewebstore.google.com/detail/bedready-%E2%80%94-3mf-%E2%86%92-snapmake/empadffogehgmbleajehbplobfajddnh";
-const FIREFOX_AMO_URL = "https://addons.mozilla.org/firefox/addon/bedready-3mf-snapmaker-u1/"; // live on AMO
-const SAFARI_APPSTORE_URL = ""; // set once approved on the Mac App Store
+// The store listings live in lib/extension-stores.ts, with the `safariArg` that keeps the copy
+// honest about Safari. Set a URL there to switch that browser's row to a one-click install button;
+// when one is empty, the row shows only the manual/load-unpacked fallback (collapsed).
 
 // ── WHY THESE STOPPED BEING THE GRADIENT ────────────────────────────────────────────────────────
 //
@@ -66,12 +66,24 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
   // photo rows: the browser on the start edge, how to get it in the middle, the install at the end.
   return (
     <main className="page-read py-12">
-      <AppJsonLd locale={locale} namespace="extension" path="/extension" kind="extension" />
+      <AppJsonLd locale={locale} namespace="extension" path="/extension" kind="extension" values={safariArg} />
 
       <div className="measure-full lg:flex lg:items-center lg:gap-20">
         <div className="lg:max-w-[35rem] lg:flex-1">
           <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-5xl">{t("title")}</h1>
-          <p className="mt-5 text-lg text-fg-muted">{t("intro")}</p>
+          <p className="mt-5 text-lg text-fg-muted">{t("intro", safariArg)}</p>
+          {/* The install, above the fold. The rows below were the only way to install, and on a
+              phone-width or 1280px screen they start well below the first screen. */}
+          <ExtensionHeroInstall
+            options={{
+              chrome: { label: t("addChrome"), href: CHROME_WEBSTORE_URL },
+              edge: { label: t("heroAddEdge"), href: CHROME_WEBSTORE_URL },
+              firefox: { label: t("getFirefox"), href: FIREFOX_AMO_URL },
+              safari: { label: t("getSafari"), href: SAFARI_APPSTORE_URL || "#browsers" },
+              other: { label: t("heroAllBrowsers"), href: "#browsers" },
+            }}
+            desktopNote={t("desktopOnly", safariArg)}
+          />
         </div>
 
         {/* A capture of the real `extension/popup.html` with the extension INSTALLED
@@ -105,7 +117,7 @@ export default async function ExtensionPage({ params }: { params: Promise<{ loca
         </figure>
       </div>
 
-      <div className="measure-full mt-16">
+      <div id="browsers" className="measure-full mt-16 scroll-mt-6">
         <div className="brand-rule" aria-hidden="true" />
 
         <InstallRow title={t("chromeTitle")} action={

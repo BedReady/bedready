@@ -22,7 +22,8 @@
     "themeToLight": "Switch to light theme",
     "themeToDark": "Switch to dark theme",
     "themeLight": "Light mode",
-    "themeDark": "Dark mode"
+    "themeDark": "Dark mode",
+    "menu": "Menu"
   },
   "footer": {
     "tagline": "agnostic by design.",
@@ -351,6 +352,7 @@
     "optInFix": "(opt-in upload) and we'll fix it.",
     "tryServerInstead": "Try converting on our server instead",
     "serverFallbackNote": "Optional fallback for files the browser can't handle — uploads your file and converts it on our server. Nothing is stored.",
+    "serverTooLarge": "Too big for the server converter (4.5 MB upload limit), so this one converts in your browser only.",
     "reportSentFix": "Thanks — file sent. We'll use it to fix the converter.",
     "sendUsFileFix": "Send us this file to help fix it",
     "reportSendingCap": "Sending…",
@@ -359,8 +361,8 @@
     "mfAppliedReused": "Loaded {count} — but you own fewer spools than heads, so {reused} had to repeat. Add more filaments for a better mix.",
     "mfDuplicate": "You already have a filament in that color.",
     "mfFull": "That's the maximum of {max} filaments — remove one first.",
-    "privacyBadge": "Your file never leaves this page",
-    "privacyDetail": "No upload, no server, nothing stored — not the model, not its settings, not even the file name. The conversion runs on your own machine, so it's safe for paid models and no-redistribution files.",
+    "privacyBadge": "Your file stays on this page",
+    "privacyDetail": "The conversion runs on your own machine: the model, its settings and its file name stay in your browser, so it's safe for paid models and no-redistribution files. We count conversions anonymously and use cookie-free analytics, and neither ever sees the file. A file is uploaded only if you choose to: the optional server fallback, or sending us one that failed to convert.",
     "warnMixedFilaments": "This file mixes {families} filaments. On the U1’s prime/wipe tower these can fail to bond to each other (e.g. PLA won’t stick to PETG → \"spaghetti\"). In Orca, set the prime tower’s filament to your main material instead of \"Default\".",
     "warnPaintedEdits": "Colors are painted onto the mesh. After converting, don’t use \"Split to objects/parts\" or the Cut tool in Orca — those drop painted colors.",
     "warnOverFourByLayer": "{count, plural, one {# color} other {# colors}} — more than the U1’s 4 slots. Turn on the M600 spool-swap pauses below to keep all {count}; leave them off and the least-used colors merge into their nearest match.",
@@ -667,7 +669,7 @@
   },
   "extension": {
     "title": "BedReady browser extension",
-    "intro": "Convert multicolor .3mf files for the Snapmaker U1 — or pick another printer, or a clean generic 3MF — right from the download page on MakerWorld, Bambu, Printables & Thingiverse. Want to choose which color goes in which slot? One click opens the file in the full editor here. It runs entirely in your browser — nothing is uploaded. Available for Chrome, Edge, Firefox, and Safari.",
+    "intro": "Convert multicolor .3mf files for the Snapmaker U1 — or pick another printer, or a clean generic 3MF — right from the download page on MakerWorld, Bambu, Printables & Thingiverse. Want to choose which color goes in which slot? One click opens the file in the full editor here. It runs entirely in your browser — nothing is uploaded. {safari, select, live {Available for Chrome, Edge, Firefox, and Safari.} other {Available for Chrome, Edge, and Firefox; Safari is coming soon.}}",
     "chromeTitle": "Chrome & Edge",
     "firefoxTitle": "Firefox",
     "safariTitle": "Safari (Mac)",
@@ -697,7 +699,10 @@
     "chromeStoreOnly": "On the Chrome Web Store.",
     "popupCaption": "The extension's popup — choose your printer and nozzle once, and downloads arrive ready to slice. Or drop a .3mf in, without leaving the page you are on.",
     "metaTitle": "Browser extension — BedReady",
-    "metaDescription": "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in Chrome, Edge, Firefox, and Safari. Free, in your browser."
+    "metaDescription": "Convert MakerWorld, Bambu, Printables & Thingiverse .3mf downloads for the Snapmaker U1 or your own printer, right from the download page — in {safari, select, live {Chrome, Edge, Firefox, and Safari} other {Chrome, Edge, and Firefox (Safari coming soon)}}. Free, in your browser.",
+    "heroAddEdge": "＋ Add to Edge",
+    "heroAllBrowsers": "See every browser ↓",
+    "desktopOnly": "{safari, select, live {Installs on a desktop browser: Chrome, Edge, Firefox or Safari on your computer.} other {Installs on a desktop browser: Chrome, Edge or Firefox on your computer.}}"
   },
   "upload": {
     "loading": "Loading…",
@@ -1056,7 +1061,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "updated": "Last updated: 11 August 2026",
-    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognises. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Edge, Firefox, and Safari). We aim to collect as little as possible and never sell your data.",
+    "intro": "BedReady is an independent project that helps makers convert and share 3D-print files for any printer — it began with the Snapmaker U1 and now covers every printer its file checker recognizes. This policy covers both the website (bedready.io) and the BedReady browser extension (Chrome, Edge, and Firefox; a Safari version is coming soon). We aim to collect as little as possible and never sell your data.",
     "extTitle": "The browser extension",
     "extIntro": "The extension collects no data and sends nothing to any server. Conversion happens entirely in your browser — your files are never uploaded. Permissions are used only to provide the single feature (converting a downloaded .3mf for the Snapmaker U1):",
     "extBullets": [
@@ -1087,7 +1092,7 @@
     "intro": "Drop in a multicolor .3mf and get a Snapmaker U1-ready file — colors, profile, and prime tower all handled. Free, in your browser, nothing uploaded.",
     "ctaConvert": "Convert a file — free",
     "ctaBrowse": "Browse MakerRun",
-    "note": "Runs entirely on your device. Also available as a browser extension (Chrome, Edge, Firefox, Safari) and in 7 languages.",
+    "note": "Runs entirely on your device. Also available as a browser extension ({safari, select, live {Chrome, Edge, Firefox, Safari} other {Chrome, Edge, Firefox; Safari coming soon}}) and in 7 languages.",
     "groups": {
       "slicers": {
         "title": "Works with any slicer",
