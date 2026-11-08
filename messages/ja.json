@@ -427,6 +427,8 @@
     "extCardCta": "{browser} に追加",
     "extCardDismiss": "今はしない",
     "loadSheetButton": "装填シートを印刷",
+    "khaytSend": "Khaytに送る",
+    "khaytSendHint": "ダウンロードしたファイルから Khayt for Mac で新しいジョブを開きます。",
     "loadSheetTitle": "装填シート",
     "loadSheetPrinter": "プリンター",
     "loadSheetHead": "ヘッド",

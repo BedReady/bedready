@@ -427,6 +427,8 @@
     "extCardCta": "Add to {browser}",
     "extCardDismiss": "Not now",
     "loadSheetButton": "Print load sheet",
+    "khaytSend": "Send to Khayt",
+    "khaytSendHint": "Opens a new job in Khayt for Mac from the file you just downloaded.",
     "loadSheetTitle": "Load sheet",
     "loadSheetPrinter": "Printer",
     "loadSheetHead": "Head",
