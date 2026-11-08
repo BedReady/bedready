@@ -81,6 +81,7 @@ import VerifiedForYourPrinter from "@/components/VerifiedForYourPrinter";
 import ConvertCapture from "@/components/ConvertCapture";
 import ExtensionDoneCard from "@/components/ExtensionDoneCard";
 import LoadSheetButton from "@/components/LoadSheetButton";
+import SendToKhaytButton from "@/components/SendToKhaytButton";
 import MyFilaments from "@/components/MyFilaments";
 import { matchToSpools } from "@/lib/spool-match";
 import { planColorMix } from "@/lib/prusa-project";
@@ -2779,6 +2780,8 @@ export default function ConvertPage() {
             printerName={MACHINES[targetId]?.name ?? "Snapmaker U1"}
             swaps={swapPlan.map((s) => s.label)}
           />
+          {/* Khayt for Mac: a new job from this file (khayt://job/new, Mac beta.30+). Mac only. */}
+          <SendToKhaytButton blob={result.blob} fileName={result.name} />
         </div>
       )}
       {status === "done" && file && (

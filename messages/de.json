@@ -427,6 +427,8 @@
     "extCardCta": "Zu {browser} hinzufügen",
     "extCardDismiss": "Nicht jetzt",
     "loadSheetButton": "Ladeplan drucken",
+    "khaytSend": "An Khayt senden",
+    "khaytSendHint": "Öffnet in Khayt für Mac einen neuen Auftrag aus der gerade heruntergeladenen Datei.",
     "loadSheetTitle": "Ladeplan",
     "loadSheetPrinter": "Drucker",
     "loadSheetHead": "Kopf",

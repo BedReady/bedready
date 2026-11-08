@@ -427,6 +427,8 @@
     "extCardCta": "Añadir a {browser}",
     "extCardDismiss": "Ahora no",
     "loadSheetButton": "Imprimir hoja de carga",
+    "khaytSend": "Enviar a Khayt",
+    "khaytSendHint": "Abre un nuevo trabajo en Khayt para Mac con el archivo que acabas de descargar.",
     "loadSheetTitle": "Hoja de carga",
     "loadSheetPrinter": "Impresora",
     "loadSheetHead": "Cabezal",

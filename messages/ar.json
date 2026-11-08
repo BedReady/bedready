@@ -427,6 +427,8 @@
     "extCardCta": "أضِفها إلى {browser}",
     "extCardDismiss": "ليس الآن",
     "loadSheetButton": "اطبع ورقة التحميل",
+    "khaytSend": "أرسل إلى Khayt",
+    "khaytSendHint": "يفتح مهمة جديدة في Khayt لأجهزة Mac من الملف الذي نزّلته للتو.",
     "loadSheetTitle": "ورقة التحميل",
     "loadSheetPrinter": "الطابعة",
     "loadSheetHead": "الرأس",
