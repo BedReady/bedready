@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import Link from "@/components/SiteLink";
+import FeedbackLink from "@/components/FeedbackLink";
 import { SOURCE_REPO_URL, REDDIT_URL, SPONSOR_URL, KHAYT_URL } from "@/lib/links";
 
 /**
@@ -82,7 +83,7 @@ export default function SiteFooter() {
               <li><Link href="/compare-u1-converters" className="block py-1 hover:text-fg">{t("compareConverters")}</Link></li>
               <li><Link href="/changelog" className="block py-1 hover:text-fg">{t("changelog")}</Link></li>
               <li><Link href="/help" className="block py-1 hover:text-fg">{t("help")}</Link></li>
-              <li><Link href="/feedback" className="block py-1 hover:text-fg">{t("feedback")}</Link></li>
+              <li><FeedbackLink className="block py-1 hover:text-fg">{t("feedback")}</FeedbackLink></li>
             </ul>
           </div>
           <div>
