@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { englishOnlyRedirect, isEnglishOnlyPath } from "@/lib/english-only";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { frontDoorPath } from "./lib/front-door";
@@ -95,6 +96,13 @@ export default function middleware(request: NextRequest) {
     // not lose its attribution on the first hop.
     return NextResponse.redirect(new URL(target + request.nextUrl.search, request.url), 301);
   }
+
+  // English-only pages live at one URL: /de/guides/x → /guides/x (see lib/english-only.ts).
+  const english = englishOnlyRedirect(pathname);
+  if (english) return NextResponse.redirect(new URL(english + request.nextUrl.search, request.url), 308);
+  // …and the English URL is served as English without next-intl's locale detection. Otherwise a
+  // visitor with NEXT_LOCALE=de or Accept-Language: de is sent /guides → /de/guides → /guides, forever.
+  if (isEnglishOnlyPath(pathname)) return NextResponse.rewrite(new URL(`/en${pathname}${request.nextUrl.search}`, request.url));
 
   const redirectOrigin = crossOriginRedirect(request.headers.get("host"), pathname);
   if (redirectOrigin) {

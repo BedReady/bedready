@@ -1,6 +1,8 @@
 import type { ComponentProps, ReactNode } from "react";
 import { useLocale } from "next-intl";
+import NextLink from "next/link";
 import { Link } from "@/i18n/navigation";
+import { isEnglishOnlyPath } from "@/lib/english-only";
 import { CONVERTER_ORIGIN, originFor } from "@/lib/origin";
 
 /**
@@ -33,6 +35,15 @@ export default function SiteLink({
   ...rest
 }: { href: string; children: ReactNode } & Omit<ComponentProps<"a">, "href">) {
   const locale = useLocale();
+  // An English-only page has one URL, unprefixed; a localized link would land on the 308 the
+  // middleware sends /de/guides/x through (lib/english-only.ts). Same origin, so prefetch is fine.
+  if (href.startsWith("/") && isEnglishOnlyPath(href.split(/[?#]/)[0])) {
+    return (
+      <NextLink href={href} {...rest}>
+        {children}
+      </NextLink>
+    );
+  }
   // Decide ownership on the BARE path — originFor knows the route table, not the locale prefixes.
   if (href.startsWith("/") && originFor(href) !== CONVERTER_ORIGIN) {
     const path = locale === "en" ? href : `/${locale}${href}`;
