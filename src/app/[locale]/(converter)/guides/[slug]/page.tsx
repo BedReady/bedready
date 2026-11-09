@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ldJson } from "@/lib/json-ld";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { GUIDES, guideBySlug } from "@/lib/guides";
 import { absoluteUrl } from "@/lib/origin";
 import { canonicalOnly } from "@/lib/seo";

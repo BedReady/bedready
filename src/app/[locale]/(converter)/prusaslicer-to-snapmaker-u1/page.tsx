@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { canonicalOnly } from "@/lib/seo";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 

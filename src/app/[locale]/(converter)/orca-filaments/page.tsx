@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ldJson } from "@/lib/json-ld";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { alternates } from "@/lib/seo";
 import OrcaFilaments from "@/components/OrcaFilaments";
 import { orcaBrands, orcaMaterials } from "@/lib/orca-filaments";

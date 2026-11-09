@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { canonicalOnly } from "@/lib/seo";
 import OrcaFilaments from "@/components/OrcaFilaments";
 import {

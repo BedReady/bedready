@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { ldJson } from "@/lib/json-ld";
-import { Link } from "@/i18n/navigation";
+import Link from "@/components/SiteLink";
 import { canonicalOnly } from "@/lib/seo";
 import { SPONSORSHIP_NOTE } from "@/lib/sponsor";
 
@@ -59,7 +59,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
-          href={{ pathname: "/convert", query: { to: "prusa-mk4-mmu3" } }}
+          href="/convert?to=prusa-mk4-mmu3"
           className="btn-primary btn-lg"
         >
           Convert for Prusa — free
@@ -128,7 +128,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <div className="mt-12 rounded-lg border border-line bg-surface-2 p-6 text-center">
         <p className="font-semibold text-fg">Ready to open that U1 model in PrusaSlicer?</p>
         <Link
-          href={{ pathname: "/convert", query: { to: "prusa-mk4-mmu3" } }}
+          href="/convert?to=prusa-mk4-mmu3"
           className="btn-primary btn-lg mt-4 inline-flex"
         >
           Convert your .3mf — free
