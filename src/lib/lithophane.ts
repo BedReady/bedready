@@ -610,3 +610,6 @@ export function asTriangles(m: IndexedMesh): number[][][] {
   });
   return view;
 }
+
+/** Shared with the front-lit full-colour mode (fullcolour.ts), which solves the same slab. */
+export { resample as resampleToGrid, hexLin, labOfLin, linLum, toSrgb, boxBlur3, MeshBuilder };
