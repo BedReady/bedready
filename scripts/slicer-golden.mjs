@@ -37,6 +37,8 @@ import { buildFlatU1_3mf } from "../src/lib/hueforge-3mf.ts";
 import { imageToHueForgeU1 } from "../src/lib/hueforge-pipeline.ts";
 import { planLithophane } from "../src/lib/lithophane.ts";
 import { lithophaneTo3MF } from "../src/lib/lithophane-3mf.ts";
+import { planFullColour } from "../src/lib/fullcolour.ts";
+import { fullColourTo3MF } from "../src/lib/fullcolour-3mf.ts";
 
 const OUT = resolve(process.env.SLICER_GOLDEN_OUT || "slicer-golden-out");
 const SKIP_MISSING = process.env.SLICER_GOLDEN_SKIP_MISSING === "1";
@@ -430,6 +432,18 @@ const CASES = [
       const bytes = lithophaneTo3MF(plan, { name: "golden-litho-hanger", frame: { kind: "hanger" } });
       if (!bytes) throw new Error("lithophaneTo3MF returned null");
       return { bytes, expectTools: 1 };
+    },
+  },
+  {
+    name: "fullcolour",
+    what: "Full-colour front-lit print (planFullColour → fullColourTo3MF): white base + CMY slab on four heads",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planFullColour(gradientImage(), { widthMm: 40, heightMm: 30 });
+      const bytes = fullColourTo3MF(plan, { name: "golden-fullcolour" });
+      if (!bytes) throw new Error("fullColourTo3MF returned null");
+      return { bytes, expectTools: 4 };
     },
   },
   {
