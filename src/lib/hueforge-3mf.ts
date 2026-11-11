@@ -58,6 +58,11 @@ export type BuildFlatOpts = {
   capMm?: number;
   thumbnailPng?: Uint8Array;
   thumbnailSmallPng?: Uint8Array;
+  /**
+   * Extra print settings, written into project_settings and marked as changed from the system
+   * preset (lithophane: 100% infill). Optional and additive: absent = the output is unchanged.
+   */
+  settings?: Record<string, string>;
 };
 
 /** Pack the assembled members. Mirrors the app's zip-write.writeZip contract. */
@@ -456,7 +461,12 @@ function buildFlatU1_3mf(o: BuildFlatOpts): Uint8Array | null {
   cfg.layer_height = String(layerH);
   cfg.initial_layer_print_height = String(firstLayerH || layerH);
   cfg.enable_prime_tower = '0';
-  cfg.different_settings_to_system = ['enable_prime_tower;support_type;layer_height;initial_layer_print_height', '', '', '', '', ''];
+  const changed = ['enable_prime_tower', 'support_type', 'layer_height', 'initial_layer_print_height'];
+  for (const [k, v] of Object.entries(o.settings || {})) {
+    cfg[k] = String(v);
+    if (!changed.includes(k)) changed.push(k);
+  }
+  cfg.different_settings_to_system = [changed.join(';'), '', '', '', '', ''];
 
   const thumb = o.thumbnailPng;
   const thumbSmall = o.thumbnailSmallPng || thumb;
