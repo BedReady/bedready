@@ -2,7 +2,7 @@
 // visitor's browser). Somebody who liked a result can send "/image?mode=hueforge&size=120" and the
 // recipient drops in their own photo with the same set-up.
 //
-//   mode   flat | relief | hueforge | hueforge-gray
+//   mode   flat | relief | hueforge | hueforge-gray | hueforge-full (full colour, CMY + white)
 //   size   longest side, mm (20–250)
 //   colors flat/relief palette size (2–4)
 //   base   plate thickness, mm (1–10)
@@ -11,10 +11,10 @@
 // Every value is validated and clamped to the page's own control ranges; an unknown or malformed
 // value is dropped, so a link can never put the page in a state its controls could not.
 
-export type ImageMode = "flat" | "relief" | "hueforge" | "hueforge-gray";
+export type ImageMode = "flat" | "relief" | "hueforge" | "hueforge-gray" | "hueforge-full";
 export type ImageRecipe = { mode?: ImageMode; size?: number; colors?: number; base?: number; depth?: number };
 
-const MODES: readonly ImageMode[] = ["flat", "relief", "hueforge", "hueforge-gray"];
+const MODES: readonly ImageMode[] = ["flat", "relief", "hueforge", "hueforge-gray", "hueforge-full"];
 const num = (s: string | null, min: number, max: number, step: number): number | undefined => {
   if (s == null || s.trim() === "") return undefined;
   const n = Number(s);

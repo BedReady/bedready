@@ -1445,7 +1445,16 @@
     "copyRecipe": "Einstellungslink kopieren",
     "recipeCopied": "Link kopiert",
     "recipeNote": "Teilt nur diese Einstellungen, nie dein Foto.",
-    "recipeApplied": "Einstellungen aus einem geteilten Link sind übernommen. Dein Foto bleibt auf dieser Seite."
+    "recipeApplied": "Einstellungen aus einem geteilten Link sind übernommen. Dein Foto bleibt auf dieser Seite.",
+    "hfStyle": "Stil",
+    "hfStyleBands": "Höhenstufen (beliebige 4 Farben)",
+    "hfStyleFull": "Vollfarbe (CMY + Weiß)",
+    "hfFullNote": "Vollfarbe wählt pro Pixel Cyan, Magenta und Gelb über einer weißen Basis, sodass jede Farbe des Fotos druckbar ist — nicht nur Mischungen aus vier Spulen. Lade transluzentes Cyan, Magenta und Gelb plus Weiß als T1–T4; opakes Filament druckt blassere, flachere Farben.",
+    "hfFullSlots": "Laden als",
+    "hfFullPreview": "Vorschau — Vollfarbe, wie sie bei Raumlicht aussieht",
+    "hfFullThickness": "Etwa {mm} mm dick: eine weiße Basis plus dünne Farbschichten. Druckt flach.",
+    "hfFullDownload": "Vollfarbdruck herunterladen (.3mf)",
+    "hfFullDone": "Heruntergeladen — in Snapmaker Orca öffnen, mit Cyan, Magenta, Gelb und Weiß als T1–T4 geladen."
   },
   "libraryTabs": {
     "label": "Bibliotheksansichten",
