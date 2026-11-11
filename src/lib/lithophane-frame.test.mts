@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { unzipSync, strFromU8 } from "fflate";
 import { planLithophane, lithophaneParts, meshVolume, type IndexedMesh, type LithoImage, type LithoPlan } from "./lithophane.ts";
 import {
-  frameParts, borderMesh, hangerMesh, footSize, withFrame, translateParts, partsBounds, printThicknessMm,
+  frameParts, borderMesh, hangerMesh, standSize, withFrame, translateParts, partsBounds, printThicknessMm,
   FRAME_DEFAULTS, type LithoFrameKind,
 } from "./lithophane-frame.ts";
 import { lithophaneTo3MF } from "./lithophane-3mf.ts";
@@ -100,29 +100,26 @@ test("border width follows borderMm", () => {
   assert.equal(borderMesh(10, 10, 2, 1).indices.length / 3, 32);
 });
 
-test("stand: a foot below the bottom border, deep enough behind the face, leaning back", () => {
+test("stand: a separate flat block below the frame, with a leaning slot the print fits", () => {
   for (const [mode, plan] of plans) {
     const b = FRAME_DEFAULTS.borderMm, W = plan.gw * plan.cellMm, H = plan.gh * plan.cellMm, T = printThicknessMm(plan);
-    const [, foot] = frameParts(plan, { frame: "stand" });
-    assert.equal(foot.name, "stand");
-    const { depth, drop, tan } = footSize(H + 2 * b);
-    const fb = partsBounds([foot]);
-    assert.ok(Math.abs(fb.max[1] + b) < 1e-4, `${mode}: foot top at y=-b`);
-    assert.ok(Math.abs(fb.min[1] - (-b - drop)) < 1e-4);
-    assert.ok(Math.abs(fb.min[2]) < 1e-6, "foot on the bed");
-    assert.ok(fb.max[2] > T && Math.abs(fb.max[2] - depth) < 1e-4, "foot reaches behind the print");
-    assert.ok(Math.abs(fb.min[0] + b) < 1e-4 && Math.abs(fb.max[0] - (W + b)) < 1e-4, "foot spans the frame");
-    // Volume of the trapezoid prism.
-    const want = (W + 2 * b) * (drop * depth - (depth * depth * tan) / 2);
-    assert.ok(Math.abs(meshVolume(foot.mesh) - want) < 1e-3 * want, `${mode}: foot ${meshVolume(foot.mesh)} vs ${want}`);
-    // The underside's slope is the lean: rise/run = tan(lean).
+    const Wf = W + 2 * b, Hf = H + 2 * b;
+    const [, stand] = frameParts(plan, { frame: "stand" });
+    assert.equal(stand.name, "stand");
+    const { depth, length, height, slotDepth, slot, tan } = standSize(Wf, Hf, T);
+    const sb = partsBounds([stand]);
+    // Flat on the bed, low, a gap below the frame and centred on it — not touching it.
+    assert.ok(Math.abs(sb.min[2]) < 1e-6 && Math.abs(sb.max[2] - height) < 1e-4, `${mode}: lies flat, ${height} mm tall`);
+    assert.ok(height < 20, "low: does not multiply the layer count");
+    assert.ok(Math.abs(sb.max[1] - (-b - FRAME_DEFAULTS.standGapMm)) < 1e-4, `${mode}: a gap below the frame`);
+    assert.ok(Math.abs((sb.min[0] + sb.max[0]) / 2 - W / 2) < 1e-4 && Math.abs(sb.max[0] - sb.min[0] - length) < 1e-4, `${mode}: centred`);
+    // Volume = block − slot (a parallelogram of width `slot`, height `slotDepth`).
+    const want = length * (depth * height - slot * slotDepth);
+    assert.ok(Math.abs(meshVolume(stand.mesh) - want) < 1e-3 * want, `${mode}: stand ${meshVolume(stand.mesh)} vs ${want}`);
+    // The slot fits the print with clearance, and leans back by the lean angle.
+    assert.ok(slot > T && slot - T <= 0.5);
     assert.ok(Math.abs(Math.atan(tan) * 180 / Math.PI - FRAME_DEFAULTS.leanDeg) < 1e-9);
     assert.ok(FRAME_DEFAULTS.leanDeg >= 10 && FRAME_DEFAULTS.leanDeg <= 15);
-    // Stood on its underside, the picture's centre of mass is over the foot (between its front and back edges).
-    const th = Math.atan(tan), s = Math.sin(th), c = Math.cos(th);
-    const back = (y: number, z: number) => s * y + c * z; // horizontal distance behind, standing
-    const front = back(-b - drop, 0), rear = back(-b - drop + depth * tan, depth), com = back(H / 2, T / 2);
-    assert.ok(com > front && com < rear, `${mode}: com ${com} not over ${front}..${rear}`);
   }
 });
 
@@ -147,7 +144,7 @@ test("hanger: a tab above the top border with a through hole (genus 1)", () => {
     // The hole's flats are at least the hole size apart: a 4 mm nail fits.
     assert.ok(2 * R * Math.cos(Math.PI / n) >= holeMm - 1e-9);
   }
-  // The border alone is a ring too; a foot is a ball.
+  // The border alone is a ring too; the stand block is a ball.
   const plan = plans[0][1];
   assert.equal(euler(frameParts(plan, { frame: "none" })[0].mesh), 0);
   assert.equal(euler(frameParts(plan, { frame: "stand" })[1].mesh), 2);
@@ -165,7 +162,7 @@ test("withFrame moves everything to ≥ 0 and reports the framed size", () => {
     assert.ok(Math.abs(f.sizeMm.x - max[0]) < 1e-4 && Math.abs(f.sizeMm.y - max[1]) < 1e-4);
     assert.ok(Math.abs(f.sizeMm.x - (W + 2 * b)) < 1e-4);
     assert.equal(f.offset.x, b);
-    const drop = kind === "stand" ? footSize(H + 2 * b).drop : 0;
+    const drop = kind === "stand" ? FRAME_DEFAULTS.standGapMm + standSize(W + 2 * b, H + 2 * b, printThicknessMm(plan)).depth : 0;
     assert.ok(Math.abs(f.offset.y - (b + drop)) < 1e-4, `${mode}/${kind}: offset ${f.offset.y}`);
     assert.ok(Math.abs(f.sizeMm.y - (H + 2 * b + drop + (kind === "hanger" ? FRAME_DEFAULTS.hangerHeightMm : 0))) < 1e-4);
     // Moving does not change a part's volume or closure.
