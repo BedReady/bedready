@@ -160,3 +160,14 @@ test("3MF: four heads named, 100% infill, first layer = layer height", () => {
   const ms = strFromU8(files["Metadata/model_settings.config"]);
   for (const e of [1, 2, 3, 4]) assert.ok(ms.includes(`key="extruder" value="${e}"`), `extruder ${e}`);
 });
+
+test("shadows use the colour slab: a black patch backlights far darker than with white alone", () => {
+  const img = card();
+  const dark = (o: object) => {
+    const p = planLithophane(img, { ...SMALL, ...o });
+    const at = ((p.gh - 2) * p.gw + (p.gw - 2)) * 4; // inside the black patch
+    return 0.2126 * p.backlit[at] + 0.7152 * p.backlit[at + 1] + 0.0722 * p.backlit[at + 2];
+  };
+  const slab = dark({}), white = dark({ shadows: "white" });
+  assert.ok(slab < white * 0.5, `slab ${slab} vs white ${white}`);
+});

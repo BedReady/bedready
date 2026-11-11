@@ -45,6 +45,10 @@
 // matches the target and keep the one with the smallest CIEDE2000 — the same metric the rest of
 // the site uses. Unique colours are cached, so a photo costs a few hundred thousand ΔE calls.
 //
+// Black maps to the darkest the whole column can go — thickest white AND the densest slab — so
+// shadows use dense C+M+Y. Mapping black to the thickest white alone (the first version) left every
+// dark area a light grey: sRGB ~100 for the darkest 5% of a portrait, against ~20 now.
+//
 // Classic mode is the same without the slab: white thickness only.
 import { ciede2000, rgbToLab, type Lab } from "./color-mix";
 
@@ -78,6 +82,14 @@ export type LithoOptions = {
    * as a gradient instead of bands. On by default.
    */
   diffuse?: boolean;
+  /**
+   * Where black maps to. "slab" (default): the darkest the WHOLE column can go — thickest white
+   * plus the densest colour slab — so shadows use dense C+M+Y instead of stopping at grey white.
+   * "white": the darkest the white alone reaches (the first version; washed-out darks).
+   */
+  shadows?: "slab" | "white";
+  /** Tone curve on the photo (linear light) before mapping: >1 deepens the mid-shadows. Default 1. */
+  gamma?: number;
 };
 
 export type LithoPlan = {
@@ -290,7 +302,10 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
 
   // Tone-mapped targets in linear light: black → the darkest heightfield, white → white.
   const tgt = new Float32Array(cells * 3);
-  for (let c = 0; c < cells; c++) for (let ch = 0; ch < 3; ch++) tgt[c * 3 + ch] = rMin + (1 - rMin) * px[c * 4 + ch];
+  // The darkest column: thickest white times the densest slab (colour mode, unless shadows: "white").
+  const floor = rMin * (mode === "colour" && opts.shadows !== "white" ? Math.min(...QY) : 1);
+  const gamma = fin(opts.gamma, 1);
+  for (let c = 0; c < cells; c++) for (let ch = 0; ch < 3; ch++) tgt[c * 3 + ch] = floor + (1 - floor) * Math.pow(px[c * 4 + ch], gamma);
   const diffuse = opts.diffuse !== false && mode === "colour";
   const pick = (t: number[]) => {
     const key = (Math.round(clamp(t[0], 0, 1) * 63) << 12) | (Math.round(clamp(t[1], 0, 1) * 63) << 6) | Math.round(clamp(t[2], 0, 1) * 63);
