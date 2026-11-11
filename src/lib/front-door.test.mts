@@ -29,7 +29,7 @@ test("every locale root is a front door, not just the English one", () => {
 });
 
 test("a real page is never redirected", () => {
-  for (const p of ["/convert", "/guides", "/de/convert", "/orca-filaments/prusament", "/image", "/mixer"]) {
+  for (const p of ["/convert", "/guides", "/de/convert", "/orca-filaments/prusament", "/image", "/image/lithophane", "/mixer"]) {
     assert.equal(frontDoorPath(p), null, p);
   }
 });

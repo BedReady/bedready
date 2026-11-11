@@ -13,6 +13,7 @@ import type { MeshData } from "@/lib/paint";
 import PlateHeads from "@/components/PlateHeads";
 import NoticeIcon from "@/components/NoticeIcon";
 import { imageRecipeQuery, parseImageRecipe } from "@/lib/image-recipe";
+import { Link } from "@/i18n/navigation";
 
 // three.js only loads once a preview mesh exists (matches the converter's on-demand PaintPreview).
 const PaintPreview = dynamic(() => import("@/components/PaintPreview"), {
@@ -95,6 +96,7 @@ async function pixelsFromFile(file: File, grid: number): Promise<{ px: Uint8Clam
 
 export default function ImagePage() {
   const t = useTranslations("image");
+  const tl = useTranslations("lithophane");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("");
@@ -340,6 +342,14 @@ export default function ImagePage() {
       </h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
         {t("intro", { colors })}
+      </p>
+      {/* The other photo tool: a backlit print rather than a painted plate. Up here, not beside the
+          mode switches below, because those only appear once a photo is loaded — and someone who came
+          for a lithophane should not have to load one here first to find the way. */}
+      <p className="mt-2 text-sm">
+        <Link href="/image/lithophane" className="font-medium text-violet-300 hover:underline">
+          {tl("title")} <span aria-hidden="true" className="inline-block rtl:-scale-x-100">→</span>
+        </Link>
       </p>
 
       {/* Dropzone */}

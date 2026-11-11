@@ -18,6 +18,7 @@ export const CLIENT_NAMESPACES = [
   "error",
   "image",
   "lang",
+  "lithophane",
   "mixer",
   "nav",
   "notFound",

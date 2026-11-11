@@ -36,7 +36,7 @@ import { execFileSync } from "node:child_process";
  */
 const NOT_ALERTS: { file: string; needle: string; why: string }[] = [
   {
-    file: "src/app/[locale]/(converter)/image/page.tsx",
+    file: "src/app/[locale]/(converter)/image/(panel)/page.tsx",
     needle: 'notice-warn" : status === "done"',
     why:
       "One element for three states — info, done and error — so its className is computed. Marking " +

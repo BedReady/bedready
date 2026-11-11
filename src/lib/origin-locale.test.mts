@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { originFor, CONVERTER_ORIGIN, LIBRARY_ORIGIN, crossOriginRedirect } from "./origin.ts";
 
-const CONVERTER_PATHS = ["/convert", "/guides", "/orca-filaments", "/extension", "/image", "/features"];
+const CONVERTER_PATHS = ["/convert", "/guides", "/orca-filaments", "/extension", "/image", "/image/lithophane", "/features"];
 const LOCALES = ["en", "de", "es", "fr", "zh", "ja", "ar"];
 
 test("a converter path belongs to the converter under EVERY locale prefix, en included", () => {
@@ -76,7 +76,7 @@ test("real library paths still redirect, including the ones that cannot be enume
 });
 
 test("converter paths are never redirected away from the converter", () => {
-  for (const p of ["/convert", "/guides", "/orca-filaments", "/image", "/mixer", "/en/convert"]) {
+  for (const p of ["/convert", "/guides", "/orca-filaments", "/image", "/image/lithophane", "/mixer", "/en/convert"]) {
     assert.equal(crossOriginRedirect("bedready.io", p), null, p);
   }
 });
