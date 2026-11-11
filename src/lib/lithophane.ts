@@ -90,6 +90,19 @@ export type LithoOptions = {
   shadows?: "slab" | "white";
   /** Tone curve on the photo (linear light) before mapping: >1 deepens the mid-shadows. Default 1. */
   gamma?: number;
+  /**
+   * Colour slab pitch, mm (colour mode). Coarser than cellMm (e.g. 0.8 against 0.4) keeps the
+   * light-and-shade at full detail in the white while the colour comes in larger, calmer patches —
+   * light scatters inside the print anyway — and the colour solids get far fewer walls.
+   * Rounded to a whole multiple of cellMm. Default: cellMm.
+   */
+  colourCellMm?: number;
+  /**
+   * A white layer in FRONT of the colour (between the viewing face and the slab), mm; 0 = none.
+   * It diffuses the colour pattern and gives the face an even white look with the light off.
+   * Printed as the first layer, so it is also the first-layer height. Test-print option; 0.2 typical.
+   */
+  whiteFrontMm?: number;
 };
 
 export type LithoPlan = {
@@ -99,6 +112,10 @@ export type LithoPlan = {
   cellMm: number;
   layerH: number;
   colourLayers: number;
+  /** Colour block size in cells (1 = per cell). */
+  colourBlock: number;
+  /** White layer in front of the slab, mm (0 = none). The slab starts at this z. */
+  whiteFrontMm: number;
   minMm: number;
   maxMm: number;
   /** Filaments by head (colour: 4; classic: 1). */
@@ -307,6 +324,7 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
   const gamma = fin(opts.gamma, 1);
   for (let c = 0; c < cells; c++) for (let ch = 0; ch < 3; ch++) tgt[c * 3 + ch] = floor + (1 - floor) * Math.pow(px[c * 4 + ch], gamma);
   const diffuse = opts.diffuse !== false && mode === "colour";
+  const whiteFrontMm = mode === "colour" ? Math.max(0, Number(opts.whiteFrontMm) || 0) : 0;
   const pick = (t: number[]) => {
     const key = (Math.round(clamp(t[0], 0, 1) * 63) << 12) | (Math.round(clamp(t[1], 0, 1) * 63) << 6) | Math.round(clamp(t[2], 0, 1) * 63);
     let hit = cache.get(key);
@@ -327,14 +345,29 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
     return hit;
   };
 
-  for (let jj = 0; jj < gh; jj++) {
+  // Colour blocks: the slab combination is chosen per block of `cb`×`cb` cells (1 = per cell),
+  // from the block's mean target, with error diffusion between blocks. Brightness (the white
+  // thickness) is then solved per CELL against that block's filter, so detail stays fine.
+  const cb = mode === "colour" ? Math.max(1, Math.round(fin(opts.colourCellMm, n.cellMm) / n.cellMm)) : 1;
+  const bw = Math.ceil(gw / cb), bh = Math.ceil(gh / cb);
+  const btgt = new Float32Array(bw * bh * 3);
+  const bcnt = new Float32Array(bw * bh);
+  for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+    const b = ((j / cb) | 0) * bw + ((i / cb) | 0), c = j * gw + i;
+    for (let ch = 0; ch < 3; ch++) btgt[b * 3 + ch] += tgt[c * 3 + ch];
+    bcnt[b]++;
+  }
+  for (let b = 0; b < bw * bh; b++) for (let ch = 0; ch < 3; ch++) btgt[b * 3 + ch] /= bcnt[b] || 1;
+  const bk = new Uint16Array(bw * bh);
+  for (let jj = 0; jj < bh; jj++) {
     // Serpentine rows, so the error does not drift one way across the picture.
     const ltr = jj % 2 === 0;
-    for (let s = 0; s < gw; s++) {
-      const ii = ltr ? s : gw - 1 - s;
-      const c = jj * gw + ii;
-      const t = [tgt[c * 3], tgt[c * 3 + 1], tgt[c * 3 + 2]];
+    for (let s = 0; s < bw; s++) {
+      const ii = ltr ? s : bw - 1 - s;
+      const b = jj * bw + ii;
+      const t = [btgt[b * 3], btgt[b * 3 + 1], btgt[b * 3 + 2]];
       const hit = pick(t);
+      bk[b] = hit.k;
       if (diffuse) {
         const q = Q[hit.k];
         const dir = ltr ? 1 : -1;
@@ -343,29 +376,40 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
           const err = DIFFUSE_GAIN * clamp(t[ch] - q[ch] * hit.rho, -0.15, 0.15);
           const add = (di: number, dj: number, w: number) => {
             const i2 = ii + di, j2 = jj + dj;
-            if (i2 < 0 || i2 >= gw || j2 >= gh) return;
-            tgt[(j2 * gw + i2) * 3 + ch] += err * w;
+            if (i2 < 0 || i2 >= bw || j2 >= bh) return;
+            btgt[(j2 * bw + i2) * 3 + ch] += err * w;
           };
           add(dir, 0, 7 / 16); add(-dir, 1, 3 / 16); add(0, 1, 5 / 16); add(dir, 1, 1 / 16);
         }
       }
-    deSum += hit.de;
-    const cnt = combos[hit.k];
+    }
+  }
+
+  for (let jj = 0; jj < gh; jj++) for (let ii = 0; ii < gw; ii++) {
+    const c = jj * gw + ii;
+    const k = bk[((jj / cb) | 0) * bw + ((ii / cb) | 0)];
+    const q = Q[k];
+    const tc = [tgt[c * 3], tgt[c * 3 + 1], tgt[c * 3 + 2]].map((v) => clamp(v, 0, 1));
+    const rho = clamp(QY[k] > 1e-6 ? linLum(tc[0], tc[1], tc[2]) / QY[k] : 1, rMin, 1);
+    deSum += ciede2000(labOfLin(tc[0], tc[1], tc[2]), labOfLin(q[0] * rho, q[1] * rho, q[2] * rho));
+    const cnt = combos[k];
     let used = 0;
     cnt.forEach((v, i) => { counts[c * heads + slabOrder[i]] = v; used += v; });
     if (mode === "colour") counts[c * heads + whiteHead] = N - used;
-    thickness[c] = minMm + -Math.log(hit.rho) / kW;
-
-    const q = Q[hit.k];
-    for (let ch = 0; ch < 3; ch++) lit[c * 3 + ch] = q[ch] * hit.rho;
+    thickness[c] = minMm + -Math.log(rho) / kW;
+    for (let ch = 0; ch < 3; ch++) lit[c * 3 + ch] = q[ch] * rho;
 
     // Light off: what the face shows in room light — the slab composited from the viewing face
-    // inwards over the white bulk (each layer covers 1 - 10^(-h/TD) of what is behind it).
+    // inwards over the white bulk (each layer covers 1 - 10^(-h/TD) of what is behind it), behind
+    // the white front layer when there is one.
     let fr = 0, fg = 0, fb = 0, cover = 1;
     const shade = 0.82 + 0.12 * ((thickness[c] - minMm) / (maxMm - minMm)); // thicker reads a touch brighter
     if (mode === "colour") {
-      const seq = [...slabOrder, whiteHead];
-      for (const h of seq) {
+      if (whiteFrontMm > 0) {
+        const a = 1 - Math.pow(0.1, whiteFrontMm / Math.max(0.05, fils[whiteHead].td));
+        fr += a; fg += a; fb += a; cover *= 1 - a;
+      }
+      for (const h of [...slabOrder, whiteHead]) {
         const lay = counts[c * heads + h];
         if (!lay) continue;
         const a = 1 - Math.pow(0.1, (lay * layerH) / Math.max(0.05, fils[h].td));
@@ -375,7 +419,6 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
     }
     fr += cover; fg += cover; fb += cover;
     frontlit[c * 4] = toSrgb(fr * shade); frontlit[c * 4 + 1] = toSrgb(fg * shade); frontlit[c * 4 + 2] = toSrgb(fb * shade); frontlit[c * 4 + 3] = 255;
-    }
   }
 
   // Light spreads sideways inside the white before it leaves the print, so neighbouring cells blend.
@@ -387,7 +430,7 @@ export function planLithophane(img: LithoImage, opts: LithoOptions = {}): LithoP
   }
 
   return {
-    mode, gw, gh, cellMm: n.cellMm, layerH, colourLayers: N, minMm, maxMm,
+    mode, gw, gh, cellMm: n.cellMm, layerH, colourLayers: N, colourBlock: cb, whiteFrontMm, minMm, maxMm,
     filaments: fils, whiteHead, slabOrder, counts, thickness, backlit, frontlit,
     meanDeltaE: deSum / cells,
   };
@@ -432,7 +475,7 @@ export function slabMeshForHead(plan: LithoPlan, head: number): IndexedMesh {
   const m = new MeshBuilder();
   const X = (i: number) => (gw - i) * s;
   const Y = (j: number) => (gh - j) * s;
-  const Z = (l: number) => l * layerH;
+  const Z = (l: number) => plan.whiteFrontMm + l * layerH;
   for (let j = 0; j < gh; j++) {
     for (let i = 0; i < gw; i++) {
       const r = run(i, j);
@@ -467,7 +510,7 @@ export function slabMeshForHead(plan: LithoPlan, head: number): IndexedMesh {
  */
 export function heightfieldMesh(plan: LithoPlan): IndexedMesh {
   const { gw, gh, cellMm: s, thickness } = plan;
-  const base = plan.colourLayers * plan.layerH;
+  const base = plan.whiteFrontMm + plan.colourLayers * plan.layerH;
   const W = gw + 1, H = gh + 1;
   const top = new Float32Array(W * H);
   for (let cj = 0; cj < H; cj++) for (let ci = 0; ci < W; ci++) {
@@ -512,6 +555,10 @@ export type LithoPart = { hex: string; head: number; name: string; mesh: Indexed
 /** Every solid in the print, one per (head, role). The white head owns the slab fill and the heightfield. */
 export function lithophaneParts(plan: LithoPlan): LithoPart[] {
   const parts: LithoPart[] = [];
+  if (plan.whiteFrontMm > 0) {
+    const W = plan.gw * plan.cellMm, H = plan.gh * plan.cellMm;
+    parts.push({ hex: plan.filaments[plan.whiteHead].hex, head: plan.whiteHead, name: "white front", mesh: boxMesh(W, H, plan.whiteFrontMm) });
+  }
   if (plan.mode === "colour") {
     for (const h of [...plan.slabOrder, plan.whiteHead]) {
       const mesh = slabMeshForHead(plan, h);
@@ -520,6 +567,19 @@ export function lithophaneParts(plan: LithoPlan): LithoPart[] {
   }
   parts.push({ hex: plan.filaments[plan.whiteHead].hex, head: plan.whiteHead, name: "lithophane", mesh: heightfieldMesh(plan) });
   return parts;
+}
+
+/** A closed box [0,w]×[0,h]×[0,d] — the white front layer under the slab. */
+function boxMesh(w: number, h: number, d: number): IndexedMesh {
+  const m = new MeshBuilder();
+  const a = (x: number, y: number, z: number) => m.v(x, y, z);
+  m.quad(a(0, 0, d), a(w, 0, d), a(w, h, d), a(0, h, d));
+  m.quad(a(0, 0, 0), a(0, h, 0), a(w, h, 0), a(w, 0, 0));
+  m.quad(a(0, 0, 0), a(w, 0, 0), a(w, 0, d), a(0, 0, d));
+  m.quad(a(0, h, 0), a(0, h, d), a(w, h, d), a(w, h, 0));
+  m.quad(a(0, 0, 0), a(0, 0, d), a(0, h, d), a(0, h, 0));
+  m.quad(a(w, 0, 0), a(w, h, 0), a(w, h, d), a(w, 0, d));
+  return m.done();
 }
 
 /** Signed volume of a closed mesh (mm³) — positive when its faces point outwards. */

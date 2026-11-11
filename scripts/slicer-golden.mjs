@@ -385,6 +385,18 @@ const CASES = [
     },
   },
   {
+    name: "lithophane-colour-testprint",
+    what: "Colour lithophane with the test-print options: 0.8 mm colour grid + 0.2 mm white front layer",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, colourCellMm: 0.8, whiteFrontMm: 0.2 });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-testprint" });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 4 };
+    },
+  },
+  {
     name: "lithophane-classic",
     what: "Classic white lithophane: one heightfield on one head",
     slicer: "orca",
@@ -392,6 +404,30 @@ const CASES = [
     async build() {
       const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, mode: "classic" });
       const bytes = lithophaneTo3MF(plan, { name: "golden-litho-classic" });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 1 };
+    },
+  },
+  {
+    name: "lithophane-colour-stand",
+    what: "Colour lithophane with a 6 mm border and a stand foot (frame parts on the white head)",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30 });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-stand", frame: { kind: "stand" } });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 4 };
+    },
+  },
+  {
+    name: "lithophane-classic-hanger",
+    what: "Classic white lithophane with a 6 mm border and a hanger tab with a 4 mm hole",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, mode: "classic" });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-hanger", frame: { kind: "hanger" } });
       if (!bytes) throw new Error("lithophaneTo3MF returned null");
       return { bytes, expectTools: 1 };
     },
