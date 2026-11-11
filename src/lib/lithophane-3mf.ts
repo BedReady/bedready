@@ -20,9 +20,10 @@ export function lithophaneTo3MF(plan: LithoPlan, o: LithoExportOpts = {}): Uint8
   return buildFlatU1_3mf({
     parts: parts.map((p) => ({ hex: p.hex, head: p.head, name: p.name, triangles: asTriangles(p.mesh) })),
     layerH: plan.layerH,
-    firstLayerH: plan.layerH,
+    // The white front layer, when there is one, IS the first layer; the slab's 0.1 mm layers follow.
+    firstLayerH: plan.whiteFrontMm > 0 ? plan.whiteFrontMm : plan.layerH,
     name: o.name || "Lithophane",
-    sizeMm: { x: plan.gw * plan.cellMm, y: plan.gh * plan.cellMm, z: plan.colourLayers * plan.layerH + plan.maxMm },
+    sizeMm: { x: plan.gw * plan.cellMm, y: plan.gh * plan.cellMm, z: plan.whiteFrontMm + plan.colourLayers * plan.layerH + plan.maxMm },
     filaments: plan.filaments.map((f) => f.hex),
     baseHead: plan.whiteHead,
     thumbnailPng: o.thumbnailPng,

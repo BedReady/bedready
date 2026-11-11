@@ -385,6 +385,18 @@ const CASES = [
     },
   },
   {
+    name: "lithophane-colour-testprint",
+    what: "Colour lithophane with the test-print options: 0.8 mm colour grid + 0.2 mm white front layer",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, colourCellMm: 0.8, whiteFrontMm: 0.2 });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-testprint" });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 4 };
+    },
+  },
+  {
     name: "lithophane-classic",
     what: "Classic white lithophane: one heightfield on one head",
     slicer: "orca",

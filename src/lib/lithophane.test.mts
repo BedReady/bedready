@@ -171,3 +171,38 @@ test("shadows use the colour slab: a black patch backlights far darker than with
   const slab = dark({}), white = dark({ shadows: "white" });
   assert.ok(slab < white * 0.5, `slab ${slab} vs white ${white}`);
 });
+
+test("colour grid 0.8 mm: one slab combination per 2×2 block, white detail still per cell", () => {
+  const plan = planLithophane(card(), { ...SMALL, cellMm: 0.5, colourCellMm: 1.0 });
+  assert.equal(plan.colourBlock, 2);
+  const heads = plan.filaments.length;
+  const key = (i: number, j: number) => [...plan.counts.slice((j * plan.gw + i) * heads, (j * plan.gw + i + 1) * heads)].join();
+  for (let j = 0; j + 1 < plan.gh; j += 2) for (let i = 0; i + 1 < plan.gw; i += 2) {
+    const k = key(i, j);
+    assert.equal(key(i + 1, j), k); assert.equal(key(i, j + 1), k); assert.equal(key(i + 1, j + 1), k);
+  }
+  // Still watertight, still fills the slab, and fewer triangles than the per-cell slab.
+  let tris = 0, total = 0;
+  for (let h = 0; h < heads; h++) { const m = slabMeshForHead(plan, h); assertWatertight(m, `block head ${h}`); tris += m.indices.length / 3; total += meshVolume(m); }
+  const slab = plan.gw * plan.cellMm * plan.gh * plan.cellMm * plan.colourLayers * plan.layerH;
+  assert.ok(Math.abs(total - slab) < 1e-3);
+  const fine = planLithophane(card(), { ...SMALL, cellMm: 0.5 });
+  let fineTris = 0; for (let h = 0; h < heads; h++) fineTris += slabMeshForHead(fine, h).indices.length / 3;
+  assert.ok(tris < fineTris, `${tris} vs ${fineTris}`);
+});
+
+test("white front layer: a white box under the slab, slab and heightfield lifted, 3MF first layer = 0.2", () => {
+  const plan = planLithophane(card(), { ...SMALL, whiteFrontMm: 0.2 });
+  const parts = lithophaneParts(plan);
+  const front = parts.find((p) => p.name === "white front")!;
+  assert.ok(front && front.head === plan.whiteHead);
+  assertWatertight(front.mesh, "front");
+  const W = plan.gw * plan.cellMm, H = plan.gh * plan.cellMm;
+  assert.ok(Math.abs(meshVolume(front.mesh) - W * H * 0.2) < 1e-3);
+  const zs = (m: IndexedMesh) => { let lo = Infinity; for (let i = 2; i < m.positions.length; i += 3) lo = Math.min(lo, m.positions[i]); return lo; };
+  for (const h of plan.slabOrder) { const m = slabMeshForHead(plan, h); if (m.indices.length) assert.ok(Math.abs(zs(m) - 0.2) < 1e-4 || zs(m) > 0.2); }
+  assert.ok(Math.abs(zs(heightfieldMesh(plan)) - (0.2 + plan.colourLayers * plan.layerH)) < 1e-4);
+  const cfg = JSON.parse(strFromU8(unzipSync(lithophaneTo3MF(plan)!)["Metadata/project_settings.config"]));
+  assert.equal(cfg.initial_layer_print_height, "0.2");
+  assert.equal(cfg.layer_height, "0.1");
+});
