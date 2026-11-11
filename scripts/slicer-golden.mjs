@@ -397,6 +397,30 @@ const CASES = [
     },
   },
   {
+    name: "lithophane-colour-stand",
+    what: "Colour lithophane with a 6 mm border and a stand foot (frame parts on the white head)",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30 });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-stand", frame: { kind: "stand" } });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 4 };
+    },
+  },
+  {
+    name: "lithophane-classic-hanger",
+    what: "Classic white lithophane with a 6 mm border and a hanger tab with a 4 mm hole",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, mode: "classic" });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-hanger", frame: { kind: "hanger" } });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 1 };
+    },
+  },
+  {
     name: "prusa-mmu3-retarget",
     what: "PrusaSlicer MK4 MMU3 project (5 filaments, boxes on 1/3/5) → MK4S MMU3 retarget",
     slicer: "prusa",
