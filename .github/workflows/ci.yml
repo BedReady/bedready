@@ -51,8 +51,15 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
+      # The browser itself, then its apt dependencies (fonts for CJK/Thai and a few libraries). The
+      # runner image already has Chromium's libraries, so if Ubuntu's mirrors are unreachable the
+      # job carries on with a warning instead of failing: on Nov 11 2026 the runner could not
+      # resolve azure.archive.ubuntu.com for 90+ minutes and every run died here.
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 10
+        run: |
+          npx playwright install chromium
+          npx playwright install-deps chromium || echo "::warning::Playwright apt deps unavailable (Ubuntu mirror unreachable); using the runner image's libraries — CJK/Thai glyphs in the E2E report may be fallback fonts"
 
       - name: E2E
         run: npm run test:e2e
