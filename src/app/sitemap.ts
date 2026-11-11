@@ -55,12 +55,19 @@ function entry(path: string, priority: number, changeFrequency: "weekly" | "mont
   return { url: `${BASE}${path}`, changeFrequency, priority, ...(translated ? { alternates: alts(path) } : {}) };
 }
 
+/** Translated tool pages below a top-level converter route (see `nested` below). */
+const NESTED_TOOL_ROUTES = ["image/lithophane"] as const;
+
 const englishOnly = new Set<string>(ENGLISH_ONLY_ROUTES);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = CONVERTER_ROUTES.map((r) =>
     entry(`/${r}`, PRIORITY[r] ?? 0.8, r === "orca-filaments" || r === "guides" ? "weekly" : "monthly", !englishOnly.has(r)),
   );
+
+  // Tools nested under a converter route. CONVERTER_ROUTES lists the route group's top-level
+  // directories only, so a page one level down is listed here or not at all.
+  const nested = NESTED_TOOL_ROUTES.map((r) => entry(`/${r}`, 0.7, "monthly"));
 
   const guidePages = GUIDES.map((g) => entry(`/guides/${g.slug}`, 0.7, "monthly", false));
 
@@ -72,5 +79,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...indexedOrcaCombos().map((c) => entry(`/orca-filaments/${c.slug}`, 0.5, "monthly", false)),
   ];
 
-  return [...routes, ...guidePages, ...filaments];
+  return [...routes, ...nested, ...guidePages, ...filaments];
 }
