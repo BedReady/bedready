@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { reliefGrid } from "@/lib/relief-grid";
 import dynamic from "next/dynamic";
 import { quantize, despeckle, buildPanelMesh, buildImage3MF, type Quantized, type PanelMesh } from "@/lib/image-model";
+import { DEFAULT_CMYW } from "@/lib/lithophane";
 import { nearestFilament } from "@/lib/filament-colors";
 import { cleanThreeMFAsync } from "@/lib/convert-client";
 import { download } from "@/lib/convert";
@@ -116,6 +117,10 @@ export default function ImagePage() {
   const [hueforge, setHueforge] = useState(false);
   // Relief in black, greys and white rather than the photo's own colours.
   const [hfGray, setHfGray] = useState(false);
+  // Full colour (fullcolour.ts): C/M/Y chosen per pixel over a white base, instead of filaments
+  // swapped at global heights. A different print from the height-band relief, so its own style.
+  const [hfFull, setHfFull] = useState(false);
+  const [fullResult, setFullResult] = useState<{ preview: string | null; mm: number } | null>(null);
   // Includes the filaments, because relief mode picks its OWN — they are not the palette shown in
   // "Colors used", which comes from the flat-panel quantiser. Downloading a file containing four
   // colours the page never displayed is a good way to lose someone's trust in the output.
@@ -135,8 +140,9 @@ export default function ImagePage() {
     const r = parseImageRecipe(window.location.search);
     if (!Object.keys(r).length) return;
     if (r.mode) {
-      setHueforge(r.mode === "hueforge" || r.mode === "hueforge-gray");
+      setHueforge(r.mode === "hueforge" || r.mode === "hueforge-gray" || r.mode === "hueforge-full");
       setHfGray(r.mode === "hueforge-gray");
+      setHfFull(r.mode === "hueforge-full");
       setRelief(r.mode === "relief");
     }
     if (r.size !== undefined) setSizeMM(r.size);
@@ -146,7 +152,7 @@ export default function ImagePage() {
     setRecipeApplied(true);
   }, []);
   async function copyRecipe() {
-    const mode = hueforge ? (hfGray ? "hueforge-gray" : "hueforge") : relief ? "relief" : "flat";
+    const mode = hueforge ? (hfFull ? "hueforge-full" : hfGray ? "hueforge-gray" : "hueforge") : relief ? "relief" : "flat";
     const url = `${window.location.origin}${window.location.pathname}${imageRecipeQuery({ mode, size: sizeMM, colors, base: thickness, depth: reliefDepth })}`;
     try {
       await navigator.clipboard.writeText(url);
@@ -268,6 +274,33 @@ export default function ImagePage() {
       setMessage(t("hfDone"));
     } catch (e) {
       console.error("[hueforge]", e);
+      setStatus("error");
+      setMessage(t("hfFailed"));
+    }
+  }
+
+  // Full colour runs in a worker (fullcolour-client.ts): a 100 mm photo is seconds of solving plus a
+  // million-triangle mesh. Same print grid as the relief, so the cells sit on the 0.4 mm nozzle.
+  async function makeFullColour() {
+    const preview = rawPixels.current;
+    const file = fileRef.current;
+    if (!preview || !file) return;
+    setStatus("working");
+    setMessage(t("hfBuilding"));
+    setFullResult(null);
+    try {
+      const px = await pixelsFromFile(file, reliefGrid(sizeMM, preview.w, preview.h, detail));
+      const base = fileName.replace(/\.[^.]+$/, "") || "image";
+      const { planFullColourAsync } = await import("@/lib/fullcolour-client");
+      const heightMm = (sizeMM * px.h) / px.w;
+      const r = await planFullColourAsync({ data: px.px, width: px.w, height: px.h }, { widthMm: sizeMM, heightMm }, base, true);
+      if (!r.bytes) { setStatus("error"); setMessage(t("hfFailed")); return; }
+      setFullResult({ preview: previewUrl(r.preview, r.gw, r.gh), mm: Math.round(r.sizeMm.z * 10) / 10 });
+      download(new Blob([r.bytes as BlobPart], { type: "model/3mf" }), `${base}.fullcolor.u1.3mf`);
+      setStatus("done");
+      setMessage(t("hfFullDone"));
+    } catch (e) {
+      console.error("[fullcolor]", e);
       setStatus("error");
       setMessage(t("hfFailed"));
     }
@@ -427,6 +460,45 @@ export default function ImagePage() {
             </span>
           </label>
           {hueforge && (
+            <div className="mt-2 px-4">
+              <p className="text-sm font-medium text-fg-muted">{t("hfStyle")}</p>
+              <div className="mt-1 inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-1 text-sm" role="group" aria-label={t("hfStyle")}>
+                <button
+                  type="button"
+                  aria-pressed={!hfFull}
+                  onClick={() => { setHfFull(false); setFullResult(null); }}
+                  className={`rounded-lg px-3 py-1.5 ${!hfFull ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
+                >
+                  {t("hfStyleBands")}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={hfFull}
+                  onClick={() => { setHfFull(true); setHfQuality(null); }}
+                  className={`rounded-lg px-3 py-1.5 ${hfFull ? "bg-violet-600 text-on-accent" : "text-fg-muted hover:text-fg"}`}
+                >
+                  {t("hfStyleFull")}
+                </button>
+              </div>
+              {hfFull && (
+                <>
+                  <p className="mt-2 max-w-prose text-xs text-fg-subtle">{t("hfFullNote")}</p>
+                  {/* The four spools this print needs, in slot order — fixed for this style. */}
+                  <p className="mt-2 flex flex-wrap items-center gap-3 text-xs text-fg-muted">
+                    <span>{t("hfFullSlots")}</span>
+                    {/* The same constant the file is written from, so the page names the spools it ships. */}
+                    {DEFAULT_CMYW.map(({ hex }, i) => (
+                      <span key={hex} className="inline-flex items-center gap-1" data-testid="fullcolor-slot">
+                        <span className="h-4 w-4 rounded border border-line" style={{ background: hex }} aria-hidden />
+                        <span dir="ltr" className="tabular-nums">T{i + 1} {hex.toUpperCase()}</span>
+                      </span>
+                    ))}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+          {hueforge && !hfFull && (
             <label className="mt-2 flex items-start gap-2 px-4 text-sm text-fg-muted">
               <input
                 type="checkbox"
@@ -486,14 +558,27 @@ export default function ImagePage() {
             </div>
           )}
 
+          {hueforge && hfFull && fullResult && (
+            <div className="mt-3 rounded-lg border border-line bg-surface-2 px-4 py-3 text-xs text-fg-muted">
+              {fullResult.preview && (
+                <figure>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={fullResult.preview} alt={t("hfFullPreview")} className="max-h-[360px] w-auto rounded-lg border border-line" />
+                  <figcaption className="mt-1.5 text-fg-subtle">{t("hfFullPreview")}</figcaption>
+                </figure>
+              )}
+              <p className="mt-2">{t("hfFullThickness", { mm: fullResult.mm })}</p>
+            </div>
+          )}
+
           <div className="mt-5 flex flex-wrap gap-3">
             {hueforge && (
               <button
-                onClick={makeHueForge}
+                onClick={hfFull ? makeFullColour : makeHueForge}
                 disabled={status === "working"}
                 className="btn-primary btn-lg"
               >
-                {status === "working" ? t("building") : t("hfDownload")}
+                {status === "working" ? t("building") : hfFull ? t("hfFullDownload") : t("hfDownload")}
               </button>
             )}
             <button

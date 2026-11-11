@@ -1445,7 +1445,16 @@
     "copyRecipe": "Copiar enlace de ajustes",
     "recipeCopied": "Enlace copiado",
     "recipeNote": "Comparte solo estos ajustes, nunca tu foto.",
-    "recipeApplied": "Se aplicaron los ajustes de un enlace compartido. Tu foto se queda en esta página."
+    "recipeApplied": "Se aplicaron los ajustes de un enlace compartido. Tu foto se queda en esta página.",
+    "hfStyle": "Estilo",
+    "hfStyleBands": "Bandas de altura (4 colores cualesquiera)",
+    "hfStyleFull": "Color completo (CMY + blanco)",
+    "hfFullNote": "El color completo elige cian, magenta y amarillo por píxel sobre una base blanca, así que cualquier color de la foto se puede imprimir, no solo mezclas de cuatro bobinas. Carga cian, magenta y amarillo translúcidos más blanco como T1–T4; el filamento opaco imprime colores más pálidos y planos.",
+    "hfFullSlots": "Cargar como",
+    "hfFullPreview": "Vista previa: color completo, como se ve con luz ambiente",
+    "hfFullThickness": "Unos {mm} mm de grosor: una base blanca más finas capas de color. Se imprime plano.",
+    "hfFullDownload": "Descargar impresión a color completo (.3mf)",
+    "hfFullDone": "Descargado: ábrelo en Snapmaker Orca con cian, magenta, amarillo y blanco cargados como T1–T4."
   },
   "libraryTabs": {
     "label": "Vistas de la biblioteca",

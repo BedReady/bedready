@@ -1445,7 +1445,16 @@
     "copyRecipe": "复制设置链接",
     "recipeCopied": "链接已复制",
     "recipeNote": "只分享这些设置，绝不包含你的照片。",
-    "recipeApplied": "已应用共享链接中的设置。你的照片不会离开此页面。"
+    "recipeApplied": "已应用共享链接中的设置。你的照片不会离开此页面。",
+    "hfStyle": "样式",
+    "hfStyleBands": "高度分层（任意 4 色）",
+    "hfStyleFull": "全彩（CMY + 白）",
+    "hfFullNote": "全彩模式在白色底色上逐像素选取青色、品红和黄色，因此照片中的任何颜色都能打印——不只是四卷耗材的混色。请将半透明青色、品红、黄色和白色装入 T1–T4；不透明耗材打出的颜色更淡、更平。",
+    "hfFullSlots": "装入为",
+    "hfFullPreview": "预览 — 全彩，室内光线下的效果",
+    "hfFullThickness": "约 {mm} mm 厚：白色底色加上薄薄的彩色层。平面打印。",
+    "hfFullDownload": "下载全彩打印文件 (.3mf)",
+    "hfFullDone": "已下载——在 Snapmaker Orca 中打开，并将青色、品红、黄色和白色装入 T1–T4。"
   },
   "libraryTabs": {
     "label": "库视图",

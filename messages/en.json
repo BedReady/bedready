@@ -1445,7 +1445,16 @@
     "copyRecipe": "Copy settings link",
     "recipeCopied": "Link copied",
     "recipeNote": "Shares these settings only, never your photo.",
-    "recipeApplied": "Settings from a shared link are applied. Your photo stays on this page."
+    "recipeApplied": "Settings from a shared link are applied. Your photo stays on this page.",
+    "hfStyle": "Style",
+    "hfStyleBands": "Height bands (any 4 colors)",
+    "hfStyleFull": "Full color (CMY + white)",
+    "hfFullNote": "Full color picks cyan, magenta and yellow per pixel over a white base, so any color in the photo can print — not just mixes of four spools. Load translucent cyan, magenta and yellow plus white as T1–T4; opaque filament prints paler, flatter colors.",
+    "hfFullSlots": "Load as",
+    "hfFullPreview": "Preview — full color, as it looks in room light",
+    "hfFullThickness": "About {mm} mm thick: a white base plus thin color layers. Prints flat.",
+    "hfFullDownload": "Download full-color print (.3mf)",
+    "hfFullDone": "Downloaded — open it in Snapmaker Orca with cyan, magenta, yellow and white loaded as T1–T4."
   },
   "libraryTabs": {
     "label": "Library views",

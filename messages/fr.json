@@ -1445,7 +1445,16 @@
     "copyRecipe": "Copier le lien des réglages",
     "recipeCopied": "Lien copié",
     "recipeNote": "Partage uniquement ces réglages, jamais votre photo.",
-    "recipeApplied": "Les réglages d’un lien partagé sont appliqués. Votre photo reste sur cette page."
+    "recipeApplied": "Les réglages d’un lien partagé sont appliqués. Votre photo reste sur cette page.",
+    "hfStyle": "Style",
+    "hfStyleBands": "Paliers de hauteur (4 couleurs au choix)",
+    "hfStyleFull": "Couleur complète (CMY + blanc)",
+    "hfFullNote": "La couleur complète choisit cyan, magenta et jaune pixel par pixel sur une base blanche : toute couleur de la photo peut s’imprimer, pas seulement des mélanges de quatre bobines. Chargez du cyan, du magenta et du jaune translucides plus du blanc en T1–T4 ; un filament opaque donne des couleurs plus pâles et plus ternes.",
+    "hfFullSlots": "Charger en",
+    "hfFullPreview": "Aperçu — couleur complète, telle qu’en lumière ambiante",
+    "hfFullThickness": "Environ {mm} mm d’épaisseur : une base blanche plus de fines couches de couleur. S’imprime à plat.",
+    "hfFullDownload": "Télécharger l’impression couleur complète (.3mf)",
+    "hfFullDone": "Téléchargé — ouvrez-le dans Snapmaker Orca avec le cyan, le magenta, le jaune et le blanc chargés en T1–T4."
   },
   "libraryTabs": {
     "label": "Vues de la bibliothèque",

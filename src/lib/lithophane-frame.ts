@@ -9,11 +9,11 @@
 //
 //   BORDER  a rectangular ring [-b, W+b] × [-b, H+b] minus the picture, z ∈ [0, T]. Its inner walls
 //           lie exactly on the picture's outer walls: the two touch and never overlap.
-//   STAND   a foot under the bottom edge (the y = -b side): a prism along x whose cross-section is a
-//           wedge in (y, z). Its underside rises towards the back at LEAN_DEG, so when the print is
-//           stood on that face the picture leans back by LEAN_DEG; it reaches FOOT depth behind the
-//           face (+z) so the centre of mass stays over it. It prints flat on the bed beside the
-//           border, touching it along y = -b.
+//   STAND   a SEPARATE flat block printed beside the frame (below it on the bed, a gap away), with
+//           a slot along its length that leans back by LEAN_DEG: the framed print slides into the
+//           slot and stands leaning back. Printed flat it adds only its own ~12 mm of height — the
+//           first version, a foot fused to the frame and reaching 20–30 mm up behind the face,
+//           multiplied the print's layer count (107 → 602 layer changes) for a solid fin.
 //   HANGER  a tab on the top edge (the y = H+b side) with a round hole for a nail or string, the
 //           circle a 24-sided polygon whose INSCRIBED circle is the hole size (so the nail fits).
 //
@@ -30,12 +30,19 @@ export const FRAME_DEFAULTS = {
   borderMm: 6,
   /** Backward lean of a standing print, degrees. */
   leanDeg: 12,
-  /** Foot depth behind the face: at least this, mm … */
-  footMinMm: 20,
+  /** Stand block: depth (front to back) at least this, mm … */
+  standMinDepthMm: 30,
   /** … or this share of the framed height, whichever is more. */
-  footShare: 0.2,
-  /** Foot thickness left under the border at the back of the wedge, mm. */
-  footBackMm: 3,
+  standDepthShare: 0.22,
+  /** Block height and slot depth, mm. */
+  standHeightMm: 12,
+  slotDepthMm: 8,
+  /** Slot = print thickness + this clearance, mm (a snug sliding fit in PLA). */
+  slotClearanceMm: 0.4,
+  /** Gap between the frame and the stand on the bed, mm. */
+  standGapMm: 8,
+  /** Stand length as a share of the framed width (min 50 mm, never wider than the frame). */
+  standLengthShare: 0.6,
   hangerWidthMm: 14,
   hangerHeightMm: 10,
   holeMm: 4,
@@ -119,24 +126,32 @@ export function borderMesh(W: number, H: number, b: number, T: number): IndexedM
   return prism(sectors, outer, [inner], 0, T, XY);
 }
 
-/** Stand-foot geometry for a framed height Hf (mm): depth behind the face and drop below the border. */
-export function footSize(Hf: number) {
-  const t = Math.tan((FRAME_DEFAULTS.leanDeg * Math.PI) / 180);
-  const depth = Math.max(FRAME_DEFAULTS.footMinMm, FRAME_DEFAULTS.footShare * Hf);
-  const drop = depth * t + FRAME_DEFAULTS.footBackMm;
-  return { depth, drop, tan: t };
+/** Stand-block geometry for a framed width Wf, height Hf and print thickness T (mm). */
+export function standSize(Wf: number, Hf: number, T: number) {
+  const D = FRAME_DEFAULTS;
+  const tan = Math.tan((D.leanDeg * Math.PI) / 180);
+  const depth = Math.max(D.standMinDepthMm, D.standDepthShare * Hf);
+  const length = Math.min(Wf, Math.max(50, D.standLengthShare * Wf));
+  const slot = T + D.slotClearanceMm;
+  // The slot's mouth sits 40% of the way back, so the leaning print's weight lands over the block.
+  const mouth = depth * 0.4;
+  return { depth, length, height: D.standHeightMm, slotDepth: D.slotDepthMm, slot, mouth, tan };
 }
 
 /**
- * The stand foot: x ∈ [x0, x1], cross-section in (y, z) a trapezoid hanging below y = yTop. Its
- * underside runs from (yTop - drop, z 0) to (yTop - drop + depth·tan, z depth): stood on it, the
- * print leans back by LEAN_DEG.
+ * The stand block, lying on the bed: x ∈ [x0, x0 + length], y ∈ [y0, y0 + depth], z ∈ [0, height],
+ * minus a slot cut down from the top face that leans back (towards +y) by LEAN_DEG. Cross-section
+ * in (y, z) swept along x, in three convex sectors (the floor under the slot and the two cheeks).
  */
-export function footMesh(x0: number, x1: number, yTop: number, Hf: number): IndexedMesh {
-  const { depth, drop, tan } = footSize(Hf);
-  // (u, v) = (y, z), swept along x.
-  const poly: P2[] = [[yTop - drop, 0], [yTop, 0], [yTop, depth], [yTop - drop + depth * tan, depth]];
-  return prism([poly], poly, [], x0, x1, (u, v, w) => [w, u, v]);
+export function standMesh(x0: number, y0: number, Wf: number, Hf: number, T: number): IndexedMesh {
+  const { depth: Dp, length, height: Hs, slotDepth: d, slot: w, mouth: a, tan } = standSize(Wf, Hf, T);
+  const z1 = Hs - d, dt = d * tan; // the slot's floor is `dt` further back than its mouth (it leans)
+  const Y = (y: number) => y0 + y;
+  const floor: P2[] = [[Y(0), 0], [Y(Dp), 0], [Y(Dp), z1], [Y(a + w + dt), z1], [Y(a + dt), z1], [Y(0), z1]];
+  const front: P2[] = [[Y(0), z1], [Y(a + dt), z1], [Y(a), Hs], [Y(0), Hs]];
+  const back: P2[] = [[Y(a + w + dt), z1], [Y(Dp), z1], [Y(Dp), Hs], [Y(a + w), Hs]];
+  const outer: P2[] = [[Y(0), 0], [Y(Dp), 0], [Y(Dp), z1], [Y(Dp), Hs], [Y(a + w), Hs], [Y(a + w + dt), z1], [Y(a + dt), z1], [Y(a), Hs], [Y(0), Hs], [Y(0), z1]];
+  return prism([floor, front, back], outer, [], x0, x0 + length, (u, v, ww) => [ww, u, v]);
 }
 
 /**
@@ -179,7 +194,11 @@ export function frameParts(plan: LithoPlan, opts: LithoFrameOpts = {}): LithoPar
   const W = plan.gw * plan.cellMm, H = plan.gh * plan.cellMm, T = printThicknessMm(plan);
   const head = plan.whiteHead, hex = plan.filaments[head].hex;
   const parts: LithoPart[] = [{ hex, head, name: "frame", mesh: borderMesh(W, H, b, T) }];
-  if (kind === "stand") parts.push({ hex, head, name: "stand", mesh: footMesh(-b, W + b, -b, H + 2 * b) });
+  if (kind === "stand") {
+    const Wf = W + 2 * b, Hf = H + 2 * b, { depth, length } = standSize(Wf, Hf, T);
+    // Centred under the frame, a gap below its bottom edge.
+    parts.push({ hex, head, name: "stand", mesh: standMesh(-b + (Wf - length) / 2, -b - FRAME_DEFAULTS.standGapMm - depth, Wf, Hf, T) });
+  }
   if (kind === "hanger") parts.push({ hex, head, name: "hanger", mesh: hangerMesh(W / 2, H + b, T) });
   return parts;
 }
@@ -209,7 +228,7 @@ export function translateParts(parts: LithoPart[], dx: number, dy: number, dz = 
 /**
  * Picture + frame, moved so every coordinate is ≥ 0 (the flat 3MF writer centres by size and does
  * not move parts), with the framed size. No `frame` → the picture as it was. `offset` is how far
- * the picture moved: (b, b), or (b, b + foot drop) with a stand.
+ * the picture moved: (b, b), or (b, b + gap + stand depth) with a stand.
  */
 export function withFrame(picture: LithoPart[], plan: LithoPlan, frame?: { kind: LithoFrameKind; borderMm?: number }) {
   const all = frame ? [...picture, ...frameParts(plan, { frame: frame.kind, borderMm: frame.borderMm })] : picture;

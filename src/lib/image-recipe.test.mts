@@ -19,3 +19,8 @@ test("values are clamped to the controls' ranges and junk is dropped", () => {
   assert.deepEqual(parseImageRecipe("?base=2.33"), { base: 2.4 });
   assert.deepEqual(parseImageRecipe(""), {});
 });
+
+test("full colour round-trips as its own mode", () => {
+  assert.equal(parseImageRecipe("?mode=hueforge-full&size=100").mode, "hueforge-full");
+  assert.equal(imageRecipeQuery({ mode: "hueforge-full", size: 100, colors: 4, base: 2.4 }), "?mode=hueforge-full&size=100&base=2.4");
+});
