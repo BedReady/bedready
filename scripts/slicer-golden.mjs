@@ -35,6 +35,8 @@ import { unzipSync, zipSync, strToU8, strFromU8 } from "fflate";
 import { cleanThreeMF } from "../src/lib/convert.ts";
 import { buildFlatU1_3mf } from "../src/lib/hueforge-3mf.ts";
 import { imageToHueForgeU1 } from "../src/lib/hueforge-pipeline.ts";
+import { planLithophane } from "../src/lib/lithophane.ts";
+import { lithophaneTo3MF } from "../src/lib/lithophane-3mf.ts";
 
 const OUT = resolve(process.env.SLICER_GOLDEN_OUT || "slicer-golden-out");
 const SKIP_MISSING = process.env.SLICER_GOLDEN_SKIP_MISSING === "1";
@@ -368,6 +370,30 @@ const CASES = [
       const bytes = buildFlatU1_3mf({ parts, layerH: 0.2, name: "golden-flat", sizeMm: { x: 42, y: 30, z: 1.6 } });
       if (!bytes) throw new Error("buildFlatU1_3mf returned null");
       return { bytes, expectTools: 4 };
+    },
+  },
+  {
+    name: "lithophane-colour",
+    what: "Colour lithophane (planLithophane → lithophaneTo3MF): CMY colour slab + white heightfield on four heads",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30 });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho" });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 4 };
+    },
+  },
+  {
+    name: "lithophane-classic",
+    what: "Classic white lithophane: one heightfield on one head",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const plan = planLithophane(gradientImage(), { widthMm: 40, heightMm: 30, mode: "classic" });
+      const bytes = lithophaneTo3MF(plan, { name: "golden-litho-classic" });
+      if (!bytes) throw new Error("lithophaneTo3MF returned null");
+      return { bytes, expectTools: 1 };
     },
   },
   {
