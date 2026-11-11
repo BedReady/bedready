@@ -133,3 +133,33 @@ test.describe("relief", () => {
     await expect(page.getByText(/loose match/i)).toBeVisible();
   });
 });
+
+test.describe("full color", () => {
+  /** Upload, pick HueForge → Full color, download, and hand back the archive. */
+  async function fullColorArchive(page: Page): Promise<Archive> {
+    await uploadGradient(page);
+    await page.getByRole("checkbox", { name: /HueForge relief/i }).check();
+    await page.getByRole("button", { name: /Full color \(CMY \+ white\)/i }).click();
+    const [dl] = await Promise.all([
+      page.waitForEvent("download", { timeout: 120_000 }),
+      page.getByRole("button", { name: /Download full-color print/i }).click(),
+    ]);
+    return openDownload(dl);
+  }
+
+  test("ships the four spools the page names, in slot order", async ({ page }) => {
+    test.setTimeout(180_000);
+    const archive = await fullColorArchive(page);
+    const shown = hexes((await page.getByTestId("fullcolor-slot").allInnerTexts()).join(" "));
+    expect(shown).toHaveLength(4);
+    expect(filamentColours(archive).slice(0, 4)).toEqual(shown);
+    expect(printerModel(archive)).toBe("Snapmaker U1");
+    expect(danglingRels(archive)).toEqual([]);
+  });
+
+  test("shows its room-light preview after the download", async ({ page }) => {
+    test.setTimeout(180_000);
+    await fullColorArchive(page);
+    await expect(page.getByRole("img", { name: /full color, as it looks in room light/i })).toBeVisible();
+  });
+});
