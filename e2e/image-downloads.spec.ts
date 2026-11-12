@@ -157,9 +157,14 @@ test.describe("full color", () => {
     expect(danglingRels(archive)).toEqual([]);
   });
 
-  test("shows its room-light preview after the download", async ({ page }) => {
+  test("shows its room-light preview before anything is downloaded", async ({ page }) => {
     test.setTimeout(180_000);
-    await fullColorArchive(page);
-    await expect(page.getByRole("img", { name: /full color, as it looks in room light/i })).toBeVisible();
+    await uploadGradient(page);
+    await page.getByRole("checkbox", { name: /HueForge relief/i }).check();
+    await page.getByRole("button", { name: /Full color \(CMY \+ white\)/i }).click();
+    let downloaded = false;
+    page.on("download", () => { downloaded = true; });
+    await expect(page.getByRole("img", { name: /full color, as it looks in room light/i })).toBeVisible({ timeout: 120_000 });
+    expect(downloaded).toBe(false);
   });
 });
