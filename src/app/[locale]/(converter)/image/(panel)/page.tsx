@@ -279,6 +279,29 @@ export default function ImagePage() {
     }
   }
 
+  // Full colour's room-light preview, BEFORE any download: solved in the worker without the mesh
+  // (the slow half), re-run when the style, photo or size changes. Debounced, and a newer run wins —
+  // a slow solve for an old size never replaces the current one.
+  const fullRun = useRef(0);
+  useEffect(() => {
+    if (!hueforge || !hfFull || !fileName) return;
+    const run = ++fullRun.current;
+    const timer = setTimeout(async () => {
+      const raw = rawPixels.current;
+      const file = fileRef.current;
+      if (!raw || !file) return;
+      try {
+        const px = await pixelsFromFile(file, reliefGrid(sizeMM, raw.w, raw.h, detail));
+        const { planFullColourAsync } = await import("@/lib/fullcolour-client");
+        const r = await planFullColourAsync({ data: px.px, width: px.w, height: px.h }, { widthMm: sizeMM, heightMm: (sizeMM * px.h) / px.w }, "preview", false);
+        if (run === fullRun.current) setFullResult({ preview: previewUrl(r.preview, r.gw, r.gh), mm: Math.round(r.sizeMm.z * 10) / 10 });
+      } catch (e) {
+        console.error("[fullcolor preview]", e);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [hueforge, hfFull, fileName, sizeMM]);
+
   // Full colour runs in a worker (fullcolour-client.ts): a 100 mm photo is seconds of solving plus a
   // million-triangle mesh. Same print grid as the relief, so the cells sit on the 0.4 mm nozzle.
   async function makeFullColour() {
@@ -287,7 +310,6 @@ export default function ImagePage() {
     if (!preview || !file) return;
     setStatus("working");
     setMessage(t("hfBuilding"));
-    setFullResult(null);
     try {
       const px = await pixelsFromFile(file, reliefGrid(sizeMM, preview.w, preview.h, detail));
       const base = fileName.replace(/\.[^.]+$/, "") || "image";
