@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsx --test src/lib/*.test.mts",
+    "test": "tsx --test src/lib/*.test.mts scripts/*.test.mts",
     "test:e2e": "playwright test",
     "build:ext": "node extension/build.mjs"
   },
