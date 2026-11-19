@@ -20,7 +20,8 @@ export default function LanguageSwitcher() {
       className="cursor-pointer rounded-lg border border-line bg-surface-2 px-2 py-1 text-xs text-fg-muted hover:text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50"
     >
       {routing.locales.map((l) => (
-        <option key={l} value={l} className="bg-surface">
+        // Each name is written in its own language ("العربية", "日本語"), so it is announced in it.
+        <option key={l} value={l} lang={l} className="bg-surface">
           {localeNames[l]}
         </option>
       ))}
