@@ -145,10 +145,8 @@
   "nozzle_temperature_range_high": [
     "230"
   ],
+  "renamed_from": "Flashforge Generic HS PLA",
   "filament_id": "GFL99",
-  "bed_temperature_difference": [
-    "10"
-  ],
   "chamber_temperature": [
     "0"
   ],
@@ -177,9 +175,6 @@
     "4"
   ],
   "filament_is_support": [
-    "0"
-  ],
-  "filament_load_time": [
     "0"
   ],
   "filament_loading_speed": [
@@ -216,9 +211,6 @@
     "100%"
   ],
   "filament_toolchange_delay": [
-    "0"
-  ],
-  "filament_unload_time": [
     "0"
   ],
   "filament_unloading_speed": [

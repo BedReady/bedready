@@ -38,7 +38,7 @@
     "0.92"
   ],
   "reduce_fan_stop_start_freq": [
-    "0"
+    "1"
   ],
   "fan_cooling_layer_time": [
     "15"
@@ -48,6 +48,9 @@
   ],
   "filament_density": [
     "1.24"
+  ],
+  "filament_change_length": [
+    "0"
   ],
   "filament_deretraction_speed": [
     "nil"
@@ -59,7 +62,7 @@
     "24"
   ],
   "filament_minimal_purge_on_wipe_tower": [
-    "40"
+    "50"
   ],
   "filament_retraction_minimum_travel": [
     "nil"
@@ -116,10 +119,10 @@
     "80"
   ],
   "slow_down_min_speed": [
-    "10"
+    "20"
   ],
   "slow_down_layer_time": [
-    "6"
+    "8"
   ],
   "filament_start_gcode": [
     "; Filament gcode\n"
@@ -130,7 +133,6 @@
   "temperature_vitrification": [
     "60"
   ],
-  "filament_id": "Generic PLA @E3NG v1.2S",
   "filament_shrink": [
     "99.95"
   ],
@@ -141,6 +143,7 @@
   "nozzle_temperature_range_high": [
     "250"
   ],
+  "filament_id": "Generic PLA @E3NG v1.2S",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",

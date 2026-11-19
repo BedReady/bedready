@@ -68,6 +68,7 @@
     "15"
   ],
   "filament_minimal_purge_on_wipe_tower": [
+    "15",
     "15"
   ],
   "filament_retraction_minimum_travel": [
@@ -112,12 +113,6 @@
   "filament_unloading_speed": [
     "25"
   ],
-  "filament_load_time": [
-    "0"
-  ],
-  "filament_unload_time": [
-    "0"
-  ],
   "filament_toolchange_delay": [
     "0"
   ],
@@ -149,9 +144,11 @@
     "0"
   ],
   "fan_max_speed": [
+    "100",
     "100"
   ],
   "fan_min_speed": [
+    "100",
     "100"
   ],
   "slow_down_min_speed": [
@@ -197,6 +194,7 @@
     "230"
   ],
   "additional_cooling_fan_speed": [
+    "70",
     "70"
   ],
   "filament_id": "GFL65",
@@ -205,6 +203,10 @@
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
   ],
   "from": "User",
   "instantiation": "true",

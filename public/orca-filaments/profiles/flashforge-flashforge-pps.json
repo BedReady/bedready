@@ -1,6 +1,6 @@
 {
   "type": "filament",
-  "name": "FlashForge PPS",
+  "name": "Flashforge PPS",
   "cool_plate_temp": [
     "0"
   ],
@@ -92,7 +92,7 @@
     "nil"
   ],
   "filament_settings_id": [
-    "FlashForge PPS @FF G4 0.6 HF nozzle"
+    "Flashforge PPS @FF G4 0.6 HF nozzle"
   ],
   "filament_soluble": [
     "0"
@@ -101,7 +101,7 @@
     "PPS"
   ],
   "filament_vendor": [
-    "Generic"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -139,12 +139,19 @@
   "temperature_vitrification": [
     "125"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "300"
   ],
   "nozzle_temperature_range_high": [
     "320"
   ],
+  "renamed_from": "FlashForge PPS @FF G4 0.6 HF nozzle;FlashForge PPS FF G4 0.6 HF nozzle",
   "filament_id": "GFB99",
   "support_material_interface_fan_speed": [
     "40"

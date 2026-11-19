@@ -1,0 +1,353 @@
+{
+  "type": "filament",
+  "name": "INSLOGIC PETG Pro",
+  "activate_air_filtration": [
+    "0",
+    "0"
+  ],
+  "chamber_temperatures": [
+    "0"
+  ],
+  "close_fan_the_first_x_layers": [
+    "1"
+  ],
+  "complete_print_exhaust_fan_speed": [
+    "70",
+    "70"
+  ],
+  "cool_plate_temp": [
+    "0"
+  ],
+  "cool_plate_temp_initial_layer": [
+    "0"
+  ],
+  "during_print_exhaust_fan_speed": [
+    "70",
+    "70"
+  ],
+  "eng_plate_temp": [
+    "70"
+  ],
+  "eng_plate_temp_initial_layer": [
+    "70"
+  ],
+  "fan_cooling_layer_time": [
+    "25"
+  ],
+  "fan_max_speed": [
+    "100",
+    "100"
+  ],
+  "fan_min_speed": [
+    "60",
+    "60"
+  ],
+  "filament_cost": [
+    "30"
+  ],
+  "filament_density": [
+    "1.28"
+  ],
+  "filament_deretraction_speed": [
+    "nil",
+    "nil"
+  ],
+  "filament_diameter": [
+    "1.75"
+  ],
+  "filament_flow_ratio": [
+    "0.98",
+    "0.98"
+  ],
+  "filament_is_support": [
+    "0"
+  ],
+  "filament_long_retractions_when_cut": [
+    "0",
+    "0"
+  ],
+  "filament_max_volumetric_speed": [
+    "12",
+    "12"
+  ],
+  "filament_minimal_purge_on_wipe_tower": [
+    "15",
+    "15"
+  ],
+  "filament_multitool_ramming": [
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5"
+  ],
+  "filament_retract_before_wipe": [
+    "nil",
+    "nil"
+  ],
+  "filament_retract_restart_extra": [
+    "nil",
+    "nil"
+  ],
+  "filament_retract_when_changing_layer": [
+    "nil",
+    "nil"
+  ],
+  "filament_retraction_distances_when_cut": [
+    "nil",
+    "nil"
+  ],
+  "filament_retraction_length": [
+    "nil",
+    "nil"
+  ],
+  "filament_retraction_minimum_travel": [
+    "nil",
+    "nil"
+  ],
+  "filament_retraction_speed": [
+    "nil",
+    "nil"
+  ],
+  "filament_settings_id": [
+    ""
+  ],
+  "filament_soluble": [
+    "0"
+  ],
+  "filament_type": [
+    "PETG"
+  ],
+  "filament_vendor": [
+    "INSLOGIC"
+  ],
+  "filament_wipe": [
+    "nil",
+    "nil"
+  ],
+  "filament_wipe_distance": [
+    "nil",
+    "nil"
+  ],
+  "filament_z_hop": [
+    "nil",
+    "nil"
+  ],
+  "filament_z_hop_types": [
+    "nil",
+    "nil"
+  ],
+  "full_fan_speed_layer": [
+    "0"
+  ],
+  "filament_scarf_seam_type": [
+    "none"
+  ],
+  "filament_scarf_height": [
+    "10%"
+  ],
+  "filament_scarf_gap": [
+    "0%"
+  ],
+  "filament_scarf_length": [
+    "10"
+  ],
+  "filament_shrink": [
+    "100%"
+  ],
+  "hot_plate_temp": [
+    "70"
+  ],
+  "hot_plate_temp_initial_layer": [
+    "70"
+  ],
+  "nozzle_temperature": [
+    "245",
+    "245"
+  ],
+  "nozzle_temperature_initial_layer": [
+    "245",
+    "245"
+  ],
+  "overhang_fan_speed": [
+    "100"
+  ],
+  "overhang_fan_threshold": [
+    "95%"
+  ],
+  "reduce_fan_stop_start_freq": [
+    "1"
+  ],
+  "required_nozzle_HRC": [
+    "3"
+  ],
+  "supertack_plate_temp": [
+    "70"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "70"
+  ],
+  "slow_down_for_layer_cooling": [
+    "1"
+  ],
+  "slow_down_layer_time": [
+    "8"
+  ],
+  "slow_down_min_speed": [
+    "20",
+    "20"
+  ],
+  "temperature_vitrification": [
+    "81"
+  ],
+  "textured_plate_temp": [
+    "70"
+  ],
+  "textured_plate_temp_initial_layer": [
+    "70"
+  ],
+  "filament_start_gcode": [
+    "; Filament gcode\nM145 P0 ; set airduct mode to cooling mode for cooling\nM106 P2 S255 ; turn on auxiliary fan for cooling\nM106 P3 S127 ; turn on chamber fan for cooling\nM1002 gcode_claim_action : 29\nM191 S0 ; wait for chamber temp\nM106 P2 S102 ; turn on chamber cooling fan\nM106 P10 S0 ; turn off left aux fan\nM142 P6 R30 S40 U0.3 V0.8 ; set PETG exhaust chamber autocooling\n"
+  ],
+  "filament_end_gcode": [
+    "; filament end gcode \n\n"
+  ],
+  "compatible_printers": [
+    "Snapmaker U1 (0.4 nozzle)",
+    "Snapmaker U1 (0.2 nozzle)",
+    "Snapmaker U1 (0.6 nozzle)",
+    "Snapmaker U1 (0.8 nozzle)"
+  ],
+  "filament_multitool_ramming_flow": [
+    "15"
+  ],
+  "nozzle_temperature_range_high": [
+    "260",
+    "260"
+  ],
+  "nozzle_temperature_range_low": [
+    "240",
+    "240"
+  ],
+  "filament_id": "OFBdBfg1",
+  "filament_notes": [
+    "Inslogic PETG Pro TDS (12.02.2024). Nozzle sizes 0.2/0.4/0.6mm. 230-240C at 50-100mm/s; 240-255C at 100-300mm/s; 255-270C at 300-600mm/s. Bed 60-70C. Cooling fan 100%. Bed: Smooth PEI Sheet / High Temperature Plate. Drying 50C for 4h. TDS linear speed is not converted to filament_max_volumetric_speed."
+  ],
+  "filament_flush_temp": [
+    "0",
+    "0"
+  ],
+  "filament_flush_volumetric_speed": [
+    "0",
+    "0"
+  ],
+  "filament_ramming_volumetric_speed": [
+    "-1",
+    "-1"
+  ],
+  "filament_ramming_volumetric_speed_nc": [
+    "-1",
+    "-1"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
+  ],
+  "filament_pre_cooling_temperature": [
+    "0",
+    "0"
+  ],
+  "filament_pre_cooling_temperature_nc": [
+    "0",
+    "0"
+  ],
+  "filament_ramming_travel_time": [
+    "0",
+    "0"
+  ],
+  "filament_ramming_travel_time_nc": [
+    "0",
+    "0"
+  ],
+  "filament_adaptive_volumetric_speed": [
+    "0",
+    "0"
+  ],
+  "long_retractions_when_ec": [
+    "0",
+    "0"
+  ],
+  "retraction_distances_when_ec": [
+    "0",
+    "0"
+  ],
+  "volumetric_speed_coefficients": [
+    "0 0 0 0 0 0",
+    "0 0 0 0 0 0"
+  ],
+  "additional_cooling_fan_speed": [
+    "70",
+    "70"
+  ],
+  "filament_cooling_before_tower": [
+    "10",
+    "10"
+  ],
+  "filament_dev_ams_drying_ams_limitations": [
+    "1",
+    "0"
+  ],
+  "filament_dev_ams_drying_heat_distortion_temperature": [
+    "75"
+  ],
+  "filament_dev_ams_drying_temperature": [
+    "65",
+    "65",
+    "55",
+    "55"
+  ],
+  "filament_dev_ams_drying_time": [
+    "12",
+    "12",
+    "12",
+    "12"
+  ],
+  "filament_dev_chamber_drying_bed_temperature": [
+    "80"
+  ],
+  "filament_dev_chamber_drying_time": [
+    "12.0"
+  ],
+  "filament_dev_drying_cooling_temperature": [
+    "55"
+  ],
+  "filament_dev_drying_softening_temperature": [
+    "60"
+  ],
+  "filament_prime_volume": [
+    "45"
+  ],
+  "filament_prime_volume_nc": [
+    "60"
+  ],
+  "filament_printable": [
+    "3"
+  ],
+  "filament_retract_length_nc": [
+    "14",
+    "14"
+  ],
+  "filament_change_length": [
+    "10"
+  ],
+  "filament_adhesiveness_category": [
+    "300"
+  ],
+  "idle_temperature": [
+    "0"
+  ],
+  "from": "User",
+  "instantiation": "true",
+  "compatible_printers_condition": "",
+  "setting_id": "",
+  "version": "02.03.01.10"
+}

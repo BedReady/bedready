@@ -133,12 +133,19 @@
   "temperature_vitrification": [
     "60"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "190"
   ],
   "nozzle_temperature_range_high": [
     "230"
   ],
+  "renamed_from": "Anycubic Generic PETG",
   "filament_id": "GFG99",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -185,9 +192,6 @@
   "filament_is_support": [
     "0"
   ],
-  "filament_load_time": [
-    "42"
-  ],
   "filament_loading_speed": [
     "0"
   ],
@@ -228,9 +232,6 @@
     "100%"
   ],
   "filament_toolchange_delay": [
-    "0"
-  ],
-  "filament_unload_time": [
     "0"
   ],
   "filament_unloading_speed": [

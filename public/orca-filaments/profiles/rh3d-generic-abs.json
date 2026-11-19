@@ -38,16 +38,19 @@
     "0.94"
   ],
   "reduce_fan_stop_start_freq": [
-    "0"
+    "1"
   ],
   "fan_cooling_layer_time": [
-    "10"
+    "12"
   ],
   "filament_cost": [
     "20"
   ],
   "filament_density": [
     "1.04"
+  ],
+  "filament_change_length": [
+    "0"
   ],
   "filament_deretraction_speed": [
     "nil"
@@ -56,10 +59,10 @@
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "32"
+    "24"
   ],
   "filament_minimal_purge_on_wipe_tower": [
-    "40"
+    "50"
   ],
   "filament_retraction_minimum_travel": [
     "nil"
@@ -116,10 +119,10 @@
     "20"
   ],
   "slow_down_min_speed": [
-    "10"
+    "20"
   ],
   "slow_down_layer_time": [
-    "2"
+    "4"
   ],
   "filament_start_gcode": [
     "; Filament gcode\n"
@@ -130,7 +133,6 @@
   "temperature_vitrification": [
     "110"
   ],
-  "filament_id": "Generic ABS @E3NG v1.2S",
   "chamber_temperature": [
     "55"
   ],
@@ -144,6 +146,7 @@
   "nozzle_temperature_range_high": [
     "275"
   ],
+  "filament_id": "Generic ABS @E3NG v1.2S",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",

@@ -9,6 +9,20 @@
  *
  *   public/orca-filaments/manifest.json          — index the web UI reads
  *   public/orca-filaments/profiles/<id>.json     — install-ready presets (written verbatim)
+ *   public/orca-filaments/aliases.json           — every id a refresh dropped → its successor, or null
+ *
+ * CONTINUITY (Turki, Nov 19 2026: a refresh must not break anything already out there). The previous
+ * output is read before it is replaced, and:
+ *   - every profile id it had keeps a profiles/<id>.json: a dropped id's old file is carried over
+ *     byte-for-byte, so a saved download link still works;
+ *   - a dropped id that was renamed (same vendor, same material, the new name is the old one minus a
+ *     vendor prefix, e.g. "Anker Generic PLA" → "Generic PLA") is listed in aliases.json → the new id,
+ *     and stays out of the manifest (the new one is listed instead);
+ *   - a dropped id with no successor stays IN the manifest with `legacy: true` (aliases → null), so
+ *     its brand, material and combo pages still exist (Phrozen, SILK in the 2.5.1 refresh);
+ *   - a profile whose upstream filament_id changed keeps the PREVIOUS filament_id (so do renamed
+ *     successors), because presets already on U1s and in projects match on it.
+ * The run dies if any previous id would end up with neither a file nor a manifest/alias entry.
  *
  * This is a DEV/build-time generator, not part of `next build` — run it by hand when you
  * want to refresh the library from a newer OrcaSlicer, then commit the output. This repo owns the
@@ -54,6 +68,8 @@ const SNAP_SRC = process.env.SNAPMAKER_PROFILES_DIR
 const OUT = path.join(REPO, 'public', 'orca-filaments');
 const OUT_TMP = path.join(REPO, 'public', `.orca-filaments-tmp-${process.pid}`);
 const OUT_PROFILES = path.join(OUT_TMP, 'profiles');
+// The output being replaced, for continuity. A test points this elsewhere.
+const PREV = process.env.ORCA_PREVIOUS_DIR || OUT;
 
 // All U1 nozzle variants — bind to every one so the preset shows regardless of the nozzle the
 // user has selected. Exact names come from Snapmaker Orca's machine presets.
@@ -113,6 +129,12 @@ const META_KEEP = new Set([
   'type', 'name', 'from', 'instantiation', 'compatible_printers', 'filament_type', 'filament_vendor',
   'filament_settings_id', 'filament_id', 'setting_id', 'version', 'is_custom_defined',
 ]);
+
+// Stripped even when Snapmaker Orca's own presets use them: the prime-tower keys arrived in its 2.4
+// presets (filament_tower_ironing_area), but no bake before has shipped them and the catalogue test
+// (src/lib/orca-filaments.test.mts, shared with makerrun) forbids the whole family. Absent, Orca uses
+// its default, which is what every preset installed before the 2.5.1 refresh already does.
+const ALWAYS_STRIP = /^(filament_tower_|epoxy_resin_plate_temp)|_(BRASS|HS)$/;
 
 /**
  * The set of filament keys Snapmaker Orca actually understands, learned from the union of keys across
@@ -258,7 +280,7 @@ function normalize(flat, name, vocab, stripStats, version) {
   if (!out.filament_type || !out.nozzle_temperature || !out.nozzle_temperature.length) return null;
   if (vocab) {
     for (const k of Object.keys(out)) {
-      if (!vocab.has(k) && !META_KEEP.has(k)) { delete out[k]; if (stripStats) stripStats.set(k, (stripStats.get(k) || 0) + 1); }
+      if ((!vocab.has(k) || ALWAYS_STRIP.test(k)) && !META_KEEP.has(k)) { delete out[k]; if (stripStats) stripStats.set(k, (stripStats.get(k) || 0) + 1); }
     }
   }
   out.type = 'filament';
@@ -272,6 +294,130 @@ function normalize(flat, name, vocab, stripStats, version) {
   out.setting_id = '';
   out.version = version;
   graphicEffectPlate(out); // last, so the two keys follow `version` in every file
+  return out;
+}
+
+const sortKeys = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
+const carried = { filamentIds: 0 };
+
+/**
+ * The names a renamed preset may now have: the old name minus its vendor prefix ("Anker Generic PLA"
+ * → "Generic PLA"), or minus a "Generic" after the vendor ("Blocks Generic PLA" → "Blocks PLA").
+ */
+function renamedCandidates(name, vendor) {
+  const n = String(name), v = String(vendor), out = [];
+  if (n.toLowerCase().startsWith(v.toLowerCase() + ' ')) {
+    const bare = n.slice(v.length + 1);
+    out.push(bare);
+    if (/^generic /i.test(bare)) out.push(`${n.slice(0, v.length)} ${bare.slice(8)}`);
+  }
+  return out;
+}
+
+/**
+ * Continuity with the output being replaced (see CONTINUITY in the header). Mutates `profiles` and
+ * `presets`, copies dropped ids' files into the temp output, and returns the alias map.
+ */
+function carryOver(profiles, presets, prevManifest) {
+  if (!prevManifest) { console.log(`No previous manifest at ${PREV}: nothing to carry over.`); return {}; }
+  const prevAliases = readJson(path.join(PREV, 'aliases.json'))?.profiles || {};
+  const prevDir = path.join(PREV, 'profiles');
+  const prevFile = (id) => path.join(prevDir, `${id}.json`);
+  const prevFid = (id) => firstStr(readJson(prevFile(id))?.filament_id) ?? null;
+  const byId = new Map(profiles.map((p) => [p.id, p]));
+  const aliases = {};
+
+  // 1. Same id, new upstream filament_id: keep the old one.
+  // A previous preset WITHOUT a filament_id keeps having none (undefined → the key is dropped).
+  const keepFid = (id, fid) => {
+    const preset = presets.get(id);
+    if (!preset || firstStr(preset.filament_id) === fid) return;
+    if (fid == null) delete preset.filament_id;
+    else preset.filament_id = Array.isArray(preset.filament_id) ? [fid] : fid;
+    carried.filamentIds++;
+  };
+  for (const p of prevManifest.profiles) if (byId.has(p.id)) keepFid(p.id, prevFid(p.id));
+
+  // 2. Dropped ids: renamed → alias; otherwise legacy (stays listed).
+  const claimed = new Set(prevManifest.profiles.map((p) => p.id).filter((id) => byId.has(id)));
+  for (const p of prevManifest.profiles) {
+    if (byId.has(p.id)) continue;
+    let next = null;
+    for (const cand of renamedCandidates(p.name, p.vendor)) {
+      next = profiles.find((q) => q.vendor === p.vendor && q.type === p.type && q.name === cand && !claimed.has(q.id));
+      if (next) break;
+    }
+    if (next) {
+      claimed.add(next.id);
+      aliases[p.id] = next.id;
+      keepFid(next.id, prevFid(p.id));
+    } else {
+      aliases[p.id] = null;
+      profiles.push({ ...p, legacy: true });
+    }
+  }
+  // 3. Ids an earlier refresh already aliased: follow them to wherever their target went now.
+  for (const [id, to] of Object.entries(prevAliases)) {
+    if (byId.has(id) || id in aliases) continue;
+    let t = to;
+    for (let hops = 0; t && !byId.has(t) && hops < 20; hops++) t = aliases[t] ?? prevAliases[t] ?? null;
+    aliases[id] = t && byId.has(t) ? t : null;
+  }
+  // 4. Every dropped id keeps its old file, byte-for-byte.
+  for (const id of Object.keys(aliases)) {
+    if (!fs.existsSync(prevFile(id))) die(`Continuity: ${id} was in the previous output but profiles/${id}.json is missing there.`);
+    fs.copyFileSync(prevFile(id), path.join(OUT_PROFILES, `${id}.json`));
+  }
+  // A legacy entry is listed, so it must not also be produced fresh under the same id.
+  for (const p of profiles) if (p.legacy) presets.delete(p.id);
+  return aliases;
+}
+
+// The /orca-filaments/<slug> landing pages a manifest has: brands (not "Generic"), materials, and
+// brand×material combos with at least one profile. Mirrors src/lib/orca-filaments.ts.
+function facetsOf(m) {
+  const out = new Map(); // slug → { kind, vendor?, type? }
+  const brands = m.vendors.filter((v) => v && v.toLowerCase() !== 'generic');
+  const pairs = new Set(m.profiles.map((p) => `${p.vendor}\u0000${p.type}`));
+  for (const b of brands) out.set(slug(b), { kind: 'brand', vendor: b });
+  for (const t of m.types) if (!out.has(slug(t))) out.set(slug(t), { kind: 'material', type: t });
+  for (const b of brands) for (const t of m.types) {
+    const s = `${slug(b)}-${slug(t)}`;
+    if (pairs.has(`${b}\u0000${t}`) && !out.has(s)) out.set(s, { kind: 'combo', vendor: b, type: t });
+  }
+  return out;
+}
+
+/**
+ * A landing page the previous manifest had and this one does not (the 2.5.1 refresh folded type SILK
+ * into PLA, so /orca-filaments/silk would 404) → the page its profiles moved to. Dies if one has
+ * nowhere to go: the page must redirect somewhere real.
+ */
+function carryFacets(prevManifest, manifest, aliases) {
+  if (!prevManifest) return {};
+  const prevFacetAliases = readJson(path.join(PREV, 'aliases.json'))?.facets || {};
+  const before = facetsOf(prevManifest), now = facetsOf(manifest);
+  const current = new Map(manifest.profiles.map((p) => [p.id, p]));
+  const out = {};
+  const mode = (xs) => { const c = new Map(); for (const x of xs) c.set(x, (c.get(x) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1])[0]?.[0]; };
+  for (const [s, f] of before) {
+    if (now.has(s)) continue;
+    const members = prevManifest.profiles
+      .filter((p) => (!f.vendor || p.vendor === f.vendor) && (!f.type || p.type === f.type))
+      .map((p) => current.get(p.id) || current.get(aliases[p.id])).filter(Boolean);
+    const vendor = f.vendor && mode(members.map((p) => p.vendor));
+    const type = f.type && mode(members.map((p) => p.type));
+    const to = f.kind === 'brand' ? slug(vendor || '') : f.kind === 'material' ? slug(type || '') : `${slug(vendor || '')}-${slug(type || '')}`;
+    if (!now.has(to)) die(`Continuity: /orca-filaments/${s} disappears and its profiles map to no page ("${to}").`);
+    out[s] = to;
+  }
+  for (const [s, to] of Object.entries(prevFacetAliases)) {
+    if (now.has(s) || s in out) continue;
+    let t = to;
+    for (let hops = 0; t && !now.has(t) && hops < 20; hops++) t = out[t] ?? prevFacetAliases[t];
+    if (!t || !now.has(t)) die(`Continuity: the old redirect /orca-filaments/${s} → ${to} now leads nowhere.`);
+    out[s] = t;
+  }
   return out;
 }
 
@@ -321,6 +467,7 @@ function main() {
   if (parseFailures.length) die(`${parseFailures.length} filament file(s) failed to parse:\n  ` + parseFailures.slice(0, 20).join('\n  '));
 
   const profiles = [];
+  const presets = new Map();
   const usedIds = new Set();
   for (const { rec, byName, canon, vendor } of groups.values()) {
     const flat = flatten(rec, byName);
@@ -334,7 +481,7 @@ function main() {
     const family = familyOf(firstStr(preset.filament_type));
     const bed = toInt(preset.hot_plate_temp) ?? toInt(preset.bed_temperature)
       ?? toInt(preset.cool_plate_temp) ?? toInt(preset.textured_plate_temp);
-    fs.writeFileSync(path.join(OUT_PROFILES, `${id}.json`), JSON.stringify(preset, null, 2) + '\n');
+    presets.set(id, preset);
     profiles.push({
       id,
       name: canon,
@@ -345,6 +492,10 @@ function main() {
       file: `profiles/${id}.json`,
     });
   }
+
+  const prevManifest = readJson(path.join(PREV, 'manifest.json'));
+  const aliases = carryOver(profiles, presets, prevManifest);
+  for (const [id, preset] of presets) fs.writeFileSync(path.join(OUT_PROFILES, `${id}.json`), JSON.stringify(preset, null, 2) + '\n');
 
   profiles.sort((a, b) => a.vendor.localeCompare(b.vendor) || a.name.localeCompare(b.name));
   const vendors = [...new Set(profiles.map((p) => p.vendor))].sort((a, b) => a.localeCompare(b));
@@ -357,9 +508,13 @@ function main() {
   if (profiles.length < MIN_PROFILES) die(`Only ${profiles.length} presets built (expected >= ${MIN_PROFILES}). Committed output left untouched.`);
   const manifest = { machine: MACHINE, vendors, types, profiles };
   fs.writeFileSync(path.join(OUT_TMP, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  const facetAliases = carryFacets(prevManifest, manifest, aliases);
+  fs.writeFileSync(path.join(OUT_TMP, 'aliases.json'), JSON.stringify({ profiles: sortKeys(aliases), facets: sortKeys(facetAliases) }, null, 2) + '\n');
   fs.rmSync(OUT, { recursive: true, force: true });
   fs.renameSync(OUT_TMP, OUT);
 
+  const renamed = Object.values(aliases).filter((v) => v).length;
+  console.log(`Continuity: ${Object.keys(aliases).length} dropped id(s) kept downloadable (${renamed} renamed, ${Object.keys(aliases).length - renamed} legacy); ${carried.filamentIds} filament_id(s) kept from the previous bake.`);
   console.log(`Wrote ${profiles.length} profiles across ${vendors.length} vendors, ${types.length} types → public/orca-filaments/`);
   if (stripStats.size) {
     const top = [...stripStats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);

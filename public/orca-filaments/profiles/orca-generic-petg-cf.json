@@ -32,9 +32,19 @@
     "30"
   ],
   "fan_max_speed": [
+    "40",
+    "40",
+    "40",
+    "40",
+    "40",
     "40"
   ],
   "fan_min_speed": [
+    "5",
+    "5",
+    "5",
+    "5",
+    "5",
     "5"
   ],
   "filament_cost": [
@@ -59,10 +69,21 @@
     "nil"
   ],
   "filament_max_volumetric_speed": [
+    "11.5",
+    "11.5",
+    "11.5",
+    "11.5",
+    "11.5",
     "11.5"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "15"
+  ],
+  "filament_multitool_ramming": [
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5"
   ],
   "filament_retract_before_wipe": [
     "nil"
@@ -92,7 +113,7 @@
     "0"
   ],
   "filament_type": [
-    "PETG"
+    "PETG-CF"
   ],
   "filament_vendor": [
     "Generic"
@@ -187,12 +208,28 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "OGFG99",
+  "filament_multitool_ramming_flow": [
+    "13",
+    "13",
+    "13",
+    "13",
+    "13",
+    "13"
+  ],
   "nozzle_temperature_range_high": [
     "260"
   ],
   "nozzle_temperature_range_low": [
     "220"
+  ],
+  "filament_id": "OGFG99",
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow",
+    "Direct Drive Extra High Flow",
+    "Bowden Standard",
+    "Bowden High Flow",
+    "Bowden Extra High Flow"
   ],
   "from": "User",
   "instantiation": "true",

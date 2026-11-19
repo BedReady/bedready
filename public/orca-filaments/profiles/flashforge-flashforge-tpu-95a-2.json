@@ -1,6 +1,12 @@
 {
   "type": "filament",
   "name": "Flashforge TPU-95A",
+  "filament_extruder_variant": [
+    "Direct Drive Standard"
+  ],
+  "filament_vendor": [
+    "Flashforge"
+  ],
   "additional_cooling_fan_speed": [
     "40"
   ],

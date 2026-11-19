@@ -64,6 +64,12 @@
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
+  "filament_multitool_ramming": [
+    "0"
+  ],
+  "filament_multitool_ramming_volume": [
+    "0.1"
+  ],
   "filament_retract_before_wipe": [
     "nil"
   ],
@@ -190,6 +196,9 @@
   "additional_cooling_fan_speed": [
     "70"
   ],
+  "filament_multitool_ramming_flow": [
+    "3.2"
+  ],
   "nozzle_temperature_range_high": [
     "250"
   ],
@@ -198,6 +207,14 @@
   ],
   "renamed_from": "My Generic TPU",
   "filament_id": "OGFU99",
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow",
+    "Direct Drive Extra High Flow",
+    "Bowden Standard",
+    "Bowden High Flow",
+    "Bowden Extra High Flow"
+  ],
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

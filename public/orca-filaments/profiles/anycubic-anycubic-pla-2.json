@@ -142,6 +142,7 @@
   "additional_cooling_fan_speed": [
     "70"
   ],
+  "renamed_from": "Anycubic Generic PLA",
   "filament_id": "GFL93",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -185,9 +186,6 @@
   "filament_is_support": [
     "0"
   ],
-  "filament_load_time": [
-    "42"
-  ],
   "filament_loading_speed": [
     "28"
   ],
@@ -228,9 +226,6 @@
     "100%"
   ],
   "filament_toolchange_delay": [
-    "0"
-  ],
-  "filament_unload_time": [
     "0"
   ],
   "filament_unloading_speed": [

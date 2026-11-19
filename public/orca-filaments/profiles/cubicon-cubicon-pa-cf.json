@@ -92,7 +92,7 @@
     "nil"
   ],
   "filament_settings_id": [
-    "Cubicon PA-CF @base"
+    "Cubicon PA-CF @Cubicon xCeler-I 0.4 nozzle"
   ],
   "filament_soluble": [
     "0"
@@ -139,7 +139,6 @@
   "temperature_vitrification": [
     "108"
   ],
-  "filament_id": "P510cfd0",
   "activate_air_filtration": [
     "0"
   ],
@@ -158,15 +157,17 @@
   "required_nozzle_HRC": [
     "40"
   ],
+  "filament_id": "P510cfd0",
+  "default_filament_colour": "",
+  "additional_cooling_fan_speed": [
+    "0"
+  ],
+  "renamed_from": "Cubicon PA-CF @base",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
-  ],
-  "default_filament_colour": "",
-  "additional_cooling_fan_speed": [
-    "0"
   ],
   "from": "User",
   "instantiation": "true",

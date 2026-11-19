@@ -101,7 +101,7 @@
     "TPU"
   ],
   "filament_vendor": [
-    "Generic"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -139,12 +139,19 @@
   "temperature_vitrification": [
     "30"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "190"
   ],
   "nozzle_temperature_range_high": [
     "250"
   ],
+  "renamed_from": "Flashforge Generic PETG @G3U 0.6 Nozzle;Flashforge Generic PETG G3U 0.6 Nozzle",
   "filament_id": "GFB99",
   "support_material_interface_fan_speed": [
     "100"

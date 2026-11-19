@@ -1,0 +1,245 @@
+{
+  "type": "filament",
+  "name": "Snapmaker PETG Translucent",
+  "filament_vendor": [
+    "Snapmaker"
+  ],
+  "filament_start_gcode": [
+    ""
+  ],
+  "filament_end_gcode": [
+    ""
+  ],
+  "filament_is_support": [
+    "0"
+  ],
+  "filament_soluble": [
+    "0"
+  ],
+  "filament_settings_id": [
+    ""
+  ],
+  "required_nozzle_HRC": [
+    "3"
+  ],
+  "bed_type": [
+    "Hot Plate"
+  ],
+  "hot_plate_temp": [
+    "80"
+  ],
+  "hot_plate_temp_initial_layer": [
+    "70"
+  ],
+  "overhang_fan_threshold": [
+    "10%"
+  ],
+  "overhang_fan_speed": [
+    "90"
+  ],
+  "slow_down_for_layer_cooling": [
+    "1"
+  ],
+  "close_fan_the_first_x_layers": [
+    "3"
+  ],
+  "filament_flow_ratio": [
+    "0.98",
+    "0.98"
+  ],
+  "reduce_fan_stop_start_freq": [
+    "1"
+  ],
+  "fan_cooling_layer_time": [
+    "30"
+  ],
+  "filament_cost": [
+    "25"
+  ],
+  "filament_density": [
+    "1.25"
+  ],
+  "filament_deretraction_speed": [
+    "nil"
+  ],
+  "filament_diameter": [
+    "1.75"
+  ],
+  "filament_max_volumetric_speed": [
+    "1",
+    "1"
+  ],
+  "filament_minimal_purge_on_wipe_tower": [
+    "15",
+    "15"
+  ],
+  "filament_retraction_minimum_travel": [
+    "nil",
+    "nil"
+  ],
+  "filament_retract_before_wipe": [
+    "nil"
+  ],
+  "filament_retract_when_changing_layer": [
+    "nil"
+  ],
+  "filament_retraction_length": [
+    "1",
+    "1"
+  ],
+  "filament_z_hop": [
+    "nil"
+  ],
+  "filament_z_hop_types": [
+    "Slope Lift",
+    "Slope Lift"
+  ],
+  "filament_retract_restart_extra": [
+    "nil"
+  ],
+  "filament_retraction_speed": [
+    "50",
+    "50"
+  ],
+  "filament_wipe": [
+    "nil"
+  ],
+  "filament_wipe_distance": [
+    "nil"
+  ],
+  "filament_loading_speed_start": [
+    "3"
+  ],
+  "filament_loading_speed": [
+    "28"
+  ],
+  "filament_unloading_speed_start": [
+    "100"
+  ],
+  "filament_unloading_speed": [
+    "90"
+  ],
+  "filament_toolchange_delay": [
+    "0"
+  ],
+  "filament_cooling_moves": [
+    "4"
+  ],
+  "filament_cooling_initial_speed": [
+    "2.2"
+  ],
+  "filament_cooling_final_speed": [
+    "3.4"
+  ],
+  "filament_multitool_ramming": [
+    "1",
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5",
+    "5"
+  ],
+  "nozzle_temperature_initial_layer": [
+    "250",
+    "250"
+  ],
+  "nozzle_temperature": [
+    "245",
+    "245"
+  ],
+  "temperature_vitrification": [
+    "70"
+  ],
+  "full_fan_speed_layer": [
+    "0"
+  ],
+  "fan_max_speed": [
+    "40",
+    "40"
+  ],
+  "fan_min_speed": [
+    "20",
+    "20"
+  ],
+  "slow_down_min_speed": [
+    "10"
+  ],
+  "slow_down_layer_time": [
+    "8"
+  ],
+  "enable_pressure_advance": [
+    "0",
+    "1"
+  ],
+  "pressure_advance": [
+    "0.23",
+    "0.2875"
+  ],
+  "cool_plate_temp": [
+    "0"
+  ],
+  "eng_plate_temp": [
+    "0"
+  ],
+  "textured_plate_temp": [
+    "80"
+  ],
+  "cool_plate_temp_initial_layer": [
+    "0"
+  ],
+  "eng_plate_temp_initial_layer": [
+    "0"
+  ],
+  "textured_plate_temp_initial_layer": [
+    "80"
+  ],
+  "default_filament_colour": [
+    ""
+  ],
+  "filament_type": [
+    "PETG"
+  ],
+  "nozzle_temperature_range_low": [
+    "230",
+    "230"
+  ],
+  "nozzle_temperature_range_high": [
+    "270"
+  ],
+  "filament_id": "OFW8lqnb",
+  "compatible_printers": [
+    "Snapmaker U1 (0.4 nozzle)",
+    "Snapmaker U1 (0.2 nozzle)",
+    "Snapmaker U1 (0.6 nozzle)",
+    "Snapmaker U1 (0.8 nozzle)"
+  ],
+  "additional_cooling_fan_speed": [
+    "20",
+    "20"
+  ],
+  "complete_print_exhaust_fan_speed": [
+    "70",
+    "70"
+  ],
+  "during_print_exhaust_fan_speed": [
+    "70",
+    "70"
+  ],
+  "filament_multitool_ramming_flow": [
+    "5",
+    "5"
+  ],
+  "filament_retract_length_toolchange": [
+    "10",
+    "10"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
+  ],
+  "from": "User",
+  "instantiation": "true",
+  "compatible_printers_condition": "",
+  "setting_id": "",
+  "version": "02.03.01.10"
+}

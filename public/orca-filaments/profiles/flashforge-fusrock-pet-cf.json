@@ -2,34 +2,34 @@
   "type": "filament",
   "name": "FusRock PET-CF",
   "cool_plate_temp": [
-    "0"
+    "85"
   ],
   "eng_plate_temp": [
-    "80"
+    "85"
   ],
   "hot_plate_temp": [
-    "80"
+    "75"
   ],
   "textured_plate_temp": [
-    "80"
+    "85"
   ],
   "cool_plate_temp_initial_layer": [
-    "0"
+    "85"
   ],
   "eng_plate_temp_initial_layer": [
-    "80"
+    "85"
   ],
   "hot_plate_temp_initial_layer": [
     "80"
   ],
   "textured_plate_temp_initial_layer": [
-    "80"
+    "85"
   ],
   "overhang_fan_threshold": [
-    "50%"
+    "25%"
   ],
   "overhang_fan_speed": [
-    "60"
+    "30"
   ],
   "slow_down_for_layer_cooling": [
     "1"
@@ -38,7 +38,7 @@
     "1"
   ],
   "filament_end_gcode": [
-    "; filament end gcode \n"
+    "; filament end gcode\n"
   ],
   "filament_flow_ratio": [
     "0.97"
@@ -47,13 +47,13 @@
     "1"
   ],
   "fan_cooling_layer_time": [
-    "10"
+    "30"
   ],
   "filament_cost": [
-    "20"
+    "300"
   ],
   "filament_density": [
-    "1.24"
+    "1.27"
   ],
   "filament_deretraction_speed": [
     "nil"
@@ -62,10 +62,10 @@
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "8"
+    "18"
   ],
   "filament_minimal_purge_on_wipe_tower": [
-    "15"
+    "5"
   ],
   "filament_retraction_minimum_travel": [
     "nil"
@@ -77,7 +77,7 @@
     "nil"
   ],
   "filament_retraction_length": [
-    "1.2"
+    "nil"
   ],
   "filament_z_hop": [
     "nil"
@@ -92,7 +92,7 @@
     "nil"
   ],
   "filament_settings_id": [
-    "FusRock PET-CF @FF G4"
+    "FusRock PET-CF"
   ],
   "filament_soluble": [
     "0"
@@ -101,7 +101,7 @@
     "PET-CF"
   ],
   "filament_vendor": [
-    "Generic"
+    "FusRock"
   ],
   "filament_wipe": [
     "nil"
@@ -113,81 +113,141 @@
     "Textured PEI Plate"
   ],
   "nozzle_temperature_initial_layer": [
-    "280"
+    "290"
   ],
   "full_fan_speed_layer": [
     "0"
   ],
   "fan_max_speed": [
-    "60"
+    "30"
   ],
   "fan_min_speed": [
-    "30"
+    "10"
   ],
   "slow_down_min_speed": [
     "20"
   ],
   "slow_down_layer_time": [
-    "6"
+    "8"
   ],
   "filament_start_gcode": [
-    "; filament start gcode\n;right_extruder_material:PET-CF\n"
+    "; filament start gcode"
   ],
   "nozzle_temperature": [
-    "280"
+    "290"
   ],
   "temperature_vitrification": [
-    "110"
+    "90"
   ],
-  "additional_cooling_fan_speed": [
-    "0"
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
   ],
   "nozzle_temperature_range_low": [
-    "260"
+    "280"
   ],
   "nozzle_temperature_range_high": [
     "300"
   ],
+  "renamed_from": "FusRock Generic PET-CF",
   "filament_id": "GFG99",
-  "bed_temperature_difference": [
-    "10"
+  "support_material_interface_fan_speed": [
+    "30"
   ],
-  "chamber_temperature": "0",
+  "additional_cooling_fan_speed": [
+    "0"
+  ],
+  "enable_pressure_advance": [
+    "1"
+  ],
+  "pressure_advance": [
+    "0.03"
+  ],
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
+  "activate_air_filtration": [
+    "0"
+  ],
+  "activate_chamber_temp_control": [
+    "0"
+  ],
+  "chamber_temperature": [
+    "0"
+  ],
+  "complete_print_exhaust_fan_speed": [
+    "80"
+  ],
   "default_filament_colour": [
     ""
+  ],
+  "during_print_exhaust_fan_speed": [
+    "60"
   ],
   "enable_overhang_bridge_fan": [
     "1"
   ],
-  "enable_pressure_advance": [
-    "1"
+  "filament_cooling_final_speed": [
+    "3.4"
+  ],
+  "filament_cooling_initial_speed": [
+    "2.2"
+  ],
+  "filament_cooling_moves": [
+    "4"
   ],
   "filament_is_support": [
     "0"
   ],
+  "filament_loading_speed": [
+    "28"
+  ],
+  "filament_loading_speed_start": [
+    "3"
+  ],
+  "filament_multitool_ramming": [
+    "0"
+  ],
+  "filament_multitool_ramming_flow": [
+    "10"
+  ],
+  "filament_multitool_ramming_volume": [
+    "10"
+  ],
+  "filament_notes": [
+    ""
+  ],
+  "filament_ramming_parameters": [
+    "120 100 6.6 6.8 7.2 7.6 7.9 8.2 8.7 9.4 9.9 10.0| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
+  ],
+  "filament_retract_lift_above": [
+    "nil"
+  ],
+  "filament_retract_lift_below": [
+    "nil"
+  ],
+  "filament_retract_lift_enforce": [
+    "nil"
+  ],
   "filament_shrink": [
     "100%"
   ],
-  "pressure_advance": [
-    "0.02"
+  "filament_toolchange_delay": [
+    "0"
+  ],
+  "filament_unloading_speed": [
+    "35"
+  ],
+  "filament_unloading_speed_start": [
+    "40"
   ],
   "required_nozzle_HRC": [
     "0"
-  ],
-  "support_material_interface_fan_speed": [
-    "60"
-  ],
-  "complete_print_exhaust_fan_speed": [
-    "50"
-  ],
-  "during_print_exhaust_fan_speed": [
-    "40"
   ],
   "from": "User",
   "instantiation": "true",

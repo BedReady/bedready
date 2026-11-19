@@ -2,7 +2,7 @@
   "type": "filament",
   "name": "Generic PA-CF",
   "cool_plate_temp": [
-    "100"
+    "0"
   ],
   "eng_plate_temp": [
     "100"
@@ -38,7 +38,7 @@
     "3"
   ],
   "filament_end_gcode": [
-    ";filament end gcode \n"
+    "; filament end gcode \n"
   ],
   "filament_flow_ratio": [
     "1"
@@ -50,13 +50,13 @@
     "5"
   ],
   "filament_cost": [
-    "45"
+    "20"
   ],
   "filament_density": [
-    "1.24"
+    "1.04"
   ],
   "filament_deretraction_speed": [
-    "0"
+    "nil"
   ],
   "filament_diameter": [
     "1.75"
@@ -68,28 +68,28 @@
     "15"
   ],
   "filament_retraction_minimum_travel": [
-    "2"
+    "nil"
   ],
   "filament_retract_before_wipe": [
-    "100%"
+    "nil"
   ],
   "filament_retract_when_changing_layer": [
-    "0"
+    "nil"
   ],
   "filament_retraction_length": [
-    "0.8"
+    "nil"
   ],
   "filament_z_hop": [
-    "0.4"
+    "nil"
   ],
   "filament_z_hop_types": [
-    "Normal Lift"
+    "nil"
   ],
   "filament_retract_restart_extra": [
-    "0"
+    "nil"
   ],
   "filament_retraction_speed": [
-    "30"
+    "nil"
   ],
   "filament_settings_id": [
     ""
@@ -104,16 +104,16 @@
     "Generic"
   ],
   "filament_wipe": [
-    "0"
+    "nil"
   ],
   "filament_wipe_distance": [
-    "1"
+    "nil"
   ],
   "bed_type": [
     "Cool Plate"
   ],
   "nozzle_temperature_initial_layer": [
-    "280"
+    "290"
   ],
   "full_fan_speed_layer": [
     "2"
@@ -122,7 +122,7 @@
     "30"
   ],
   "fan_min_speed": [
-    "30"
+    "10"
   ],
   "slow_down_min_speed": [
     "20"
@@ -131,10 +131,10 @@
     "2"
   ],
   "filament_start_gcode": [
-    ";filament start gcode\n{if (layer_z > initial_layer_print_height) }\nM104 S[nozzle_temperature]\n{else} \nM104 S[first_layer_temperature]\n{endif}\n"
+    "; Filament gcode\n"
   ],
   "nozzle_temperature": [
-    "280"
+    "290"
   ],
   "temperature_vitrification": [
     "108"
@@ -151,51 +151,20 @@
   "required_nozzle_HRC": [
     "40"
   ],
-  "additional_cooling_fan_speed": [
-    "0"
+  "renamed_from": "Creality Generic PA-CF @Ender-3V3-all;Creality Generic PA-CF Ender-3V3-all",
+  "filament_id": "00009",
+  "enable_pressure_advance": [
+    "1"
   ],
-  "complete_print_exhaust_fan_speed": [
-    "80"
+  "pressure_advance": [
+    "0.01"
   ],
-  "during_print_exhaust_fan_speed": [
-    "60"
-  ],
-  "filament_is_support": [
-    "0"
-  ],
-  "activate_chamber_temp_control": "1",
-  "chamber_temperature": "50",
-  "default_filament_colour": "\"\"",
-  "enable_overhang_bridge_fan": "1",
-  "enable_pressure_advance": "0",
-  "filament_cooling_final_speed": "3.4",
-  "filament_cooling_initial_speed": "2.2",
-  "filament_cooling_moves": "4",
-  "filament_load_time": "0",
-  "filament_loading_speed": "28",
-  "filament_loading_speed_start": "3",
-  "filament_multitool_ramming": "0",
-  "filament_multitool_ramming_flow": "10",
-  "filament_multitool_ramming_volume": "10",
-  "filament_notes": "\"\"",
-  "filament_ramming_parameters": "\"120 100 6.6 6.8 7.2 7.6 7.9 8.2 8.7 9.4 9.9 10.0| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6\"",
-  "filament_retract_lift_above": "0",
-  "filament_retract_lift_below": "0",
-  "filament_retract_lift_enforce": "All Surfaces",
-  "filament_shrink": "100%",
-  "filament_toolchange_delay": "0",
-  "filament_unload_time": "0",
-  "filament_unloading_speed": "90",
-  "filament_unloading_speed_start": "100",
-  "pressure_advance": "0.01",
-  "support_material_interface_fan_speed": "-1",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "00009",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

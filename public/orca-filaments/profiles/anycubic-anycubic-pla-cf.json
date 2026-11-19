@@ -142,6 +142,7 @@
   "additional_cooling_fan_speed": [
     "85"
   ],
+  "renamed_from": "Anycubic Generic PLA-CF",
   "filament_id": "GFPLA-CF",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",

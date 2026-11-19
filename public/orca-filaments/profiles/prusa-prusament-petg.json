@@ -122,7 +122,7 @@
     "15"
   ],
   "filament_start_gcode": [
-    "M900 K{if nozzle_diameter[filament_extruder_id]==0.4}0.07{elsif nozzle_diameter[filament_extruder_id]==0.25}0.12{elsif nozzle_diameter[filament_extruder_id]==0.3}0.09{elsif nozzle_diameter[filament_extruder_id]==0.35}0.08{elsif nozzle_diameter[filament_extruder_id]==0.6}0.04{elsif nozzle_diameter[filament_extruder_id]==0.5}0.05{elsif nozzle_diameter[filament_extruder_id]==0.8}0.02{else}0{endif} ; Filament gcode\n\n{if printer_notes=~/.*(MK4IS|XLIS|MK4S|MK3.9S|CORE One).*/}\nM572 S{if nozzle_diameter[filament_extruder_id]==0.4}0.053{elsif nozzle_diameter[filament_extruder_id]==0.5}0.042{elsif nozzle_diameter[filament_extruder_id]==0.6}0.032{elsif nozzle_diameter[filament_extruder_id]==0.8}0.018{elsif nozzle_diameter[filament_extruder_id]==0.25}0.18{elsif nozzle_diameter[filament_extruder_id]==0.3}0.1{else}0{endif} ; Filament gcode\n{endif}\n\nM142 S36 ; set heatbreak target temp"
+    "M900 K{if nozzle_diameter[filament_extruder_id]==0.4}0.07{elsif nozzle_diameter[filament_extruder_id]==0.25}0.12{elsif nozzle_diameter[filament_extruder_id]==0.3}0.09{elsif nozzle_diameter[filament_extruder_id]==0.35}0.08{elsif nozzle_diameter[filament_extruder_id]==0.6}0.04{elsif nozzle_diameter[filament_extruder_id]==0.5}0.05{elsif nozzle_diameter[filament_extruder_id]==0.8}0.02{else}0{endif} ; Filament gcode\n\n{if printer_notes=~/.*(MK4IS|XLIS|MK4S|MK3.9S|COREONE).*/}\nM572 S{if nozzle_diameter[filament_extruder_id]==0.4}0.053{elsif nozzle_diameter[filament_extruder_id]==0.5}0.042{elsif nozzle_diameter[filament_extruder_id]==0.6}0.032{elsif nozzle_diameter[filament_extruder_id]==0.8}0.018{elsif nozzle_diameter[filament_extruder_id]==0.25}0.18{elsif nozzle_diameter[filament_extruder_id]==0.3}0.1{else}0{endif} ; Filament gcode\n{endif}\n\nM142 S36 ; set heatbreak target temp"
   ],
   "nozzle_temperature": [
     "245"
@@ -130,7 +130,6 @@
   "temperature_vitrification": [
     "80"
   ],
-  "filament_id": "Prusament PETG @CORE One 0.6",
   "idle_temperature": [
     "130"
   ],
@@ -140,6 +139,8 @@
   "nozzle_temperature_range_high": [
     "260"
   ],
+  "renamed_from": "Prusament PETG CORE One;Prusament PETG @CORE One MMU3;Prusament PETG CORE One MMU3",
+  "filament_id": "Prusament PETG @CORE One 0.6",
   "chamber_temperature": [
     "35"
   ],

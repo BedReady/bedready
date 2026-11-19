@@ -101,7 +101,7 @@
     "PA"
   ],
   "filament_vendor": [
-    "Generic"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -145,6 +145,7 @@
   "nozzle_temperature_range_high": [
     "295"
   ],
+  "renamed_from": "Flashforge Generic PLA",
   "filament_id": "FFG01",
   "support_material_interface_fan_speed": [
     "80"

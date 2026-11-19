@@ -98,10 +98,10 @@
     "0"
   ],
   "filament_type": [
-    "ABS"
+    "ABS-CF"
   ],
   "filament_vendor": [
-    "Generic"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -145,6 +145,7 @@
   "nozzle_temperature_range_high": [
     "280"
   ],
+  "renamed_from": "Flashforge Generic ABS",
   "filament_id": "GFB99",
   "support_material_interface_fan_speed": [
     "80"

@@ -139,6 +139,12 @@
   "temperature_vitrification": [
     "70"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "220"
   ],

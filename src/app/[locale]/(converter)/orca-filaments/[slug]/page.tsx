@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
+import { notFound, permanentRedirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import Link from "@/components/SiteLink";
 import { canonicalOnly } from "@/lib/seo";
@@ -31,6 +33,7 @@ export function generateStaticParams() {
   for (const b of orcaBrands()) slugs.add(b.slug);
   for (const t of orcaMaterials()) slugs.add(t.slug);
   for (const c of orcaCombos()) slugs.add(c.slug);
+  for (const old of Object.keys(facetAliases())) slugs.add(old); // prebuilt redirects, for the same reason
   return [...slugs].map((slug) => ({ slug }));
 }
 
@@ -60,7 +63,11 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
   const { locale, slug } = await params;
   setRequestLocale(locale);
   const r = resolveOrcaSlug(slug);
-  if (!r) notFound();
+  if (!r) {
+    const moved = facetAliases()[slug];
+    if (moved) permanentRedirect(`/orca-filaments/${moved}`);
+    notFound();
+  }
 
   const initialVendor = r.kind === "brand" ? r.name : r.kind === "combo" ? r.brand : "";
   const initialType = r.kind === "material" ? r.name : r.kind === "combo" ? r.material : "";
@@ -141,4 +148,20 @@ export default async function OrcaFacetPage({ params }: { params: Promise<{ loca
 // Local helper: the brand/material name → its own facet slug (for the combo breadcrumb links).
 function vendorSlugOf(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+// Landing pages a catalogue refresh removed → the page their profiles moved to (OrcaSlicer 2.5.1 folded
+// type SILK into PLA, so /orca-filaments/silk → /orca-filaments/pla). Written by
+// scripts/build-orca-filaments.mjs, which refuses to bake a refresh that would leave an old page with
+// nowhere to go. Read here rather than in lib/orca-filaments.ts, which makerrun keeps byte-identical.
+let _facetAliases: Record<string, string> | undefined;
+function facetAliases(): Record<string, string> {
+  if (_facetAliases) return _facetAliases;
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/orca-filaments/aliases.json"), "utf8"));
+    _facetAliases = (raw?.facets ?? {}) as Record<string, string>;
+  } catch {
+    _facetAliases = {};
+  }
+  return _facetAliases;
 }

@@ -112,12 +112,6 @@
   "filament_unloading_speed": [
     "35"
   ],
-  "filament_load_time": [
-    "2"
-  ],
-  "filament_unload_time": [
-    "2"
-  ],
   "filament_toolchange_delay": [
     "0"
   ],
@@ -143,15 +137,17 @@
     "220"
   ],
   "temperature_vitrification": [
-    "154"
+    "45"
   ],
   "full_fan_speed_layer": [
     "0"
   ],
   "fan_max_speed": [
+    "100",
     "100"
   ],
   "fan_min_speed": [
+    "100",
     "100"
   ],
   "slow_down_min_speed": [
@@ -197,6 +193,7 @@
     "240"
   ],
   "additional_cooling_fan_speed": [
+    "70",
     "70"
   ],
   "filament_id": "20299943460",
@@ -205,6 +202,10 @@
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
   ],
   "from": "User",
   "instantiation": "true",

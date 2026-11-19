@@ -64,6 +64,12 @@
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
+  "filament_multitool_ramming": [
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5"
+  ],
   "filament_retract_before_wipe": [
     "nil"
   ],
@@ -187,7 +193,14 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "OGFN98",
+  "filament_multitool_ramming_flow": [
+    "8",
+    "8",
+    "8",
+    "8",
+    "8",
+    "8"
+  ],
   "nozzle_temperature_range_high": [
     "300"
   ],
@@ -195,6 +208,15 @@
     "260"
   ],
   "renamed_from": "My Generic PA-CF",
+  "filament_id": "OGFN98",
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow",
+    "Direct Drive Extra High Flow",
+    "Bowden Standard",
+    "Bowden High Flow",
+    "Bowden Extra High Flow"
+  ],
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

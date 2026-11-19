@@ -101,7 +101,7 @@
     "PA-CF"
   ],
   "filament_vendor": [
-    "FusRock"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -139,12 +139,19 @@
   "temperature_vitrification": [
     "90"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "250"
   ],
   "nozzle_temperature_range_high": [
     "280"
   ],
+  "renamed_from": "FusRock Generic PET-CF",
   "filament_id": "GFB99",
   "support_material_interface_fan_speed": [
     "20"
@@ -197,9 +204,6 @@
   "filament_is_support": [
     "0"
   ],
-  "filament_load_time": [
-    "0"
-  ],
   "filament_loading_speed": [
     "28"
   ],
@@ -234,9 +238,6 @@
     "100%"
   ],
   "filament_toolchange_delay": [
-    "0"
-  ],
-  "filament_unload_time": [
     "0"
   ],
   "filament_unloading_speed": [
