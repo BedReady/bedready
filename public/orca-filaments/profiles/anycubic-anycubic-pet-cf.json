@@ -133,6 +133,12 @@
   "temperature_vitrification": [
     "45"
   ],
+  "supertack_plate_temp": [
+    "35"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "35"
+  ],
   "nozzle_temperature_range_low": [
     "260"
   ],
@@ -274,12 +280,6 @@
   ],
   "required_nozzle_HRC": [
     "3"
-  ],
-  "supertack_plate_temp": [
-    "35"
-  ],
-  "supertack_plate_temp_initial_layer": [
-    "35"
   ],
   "support_material_interface_fan_speed": [
     "-1"

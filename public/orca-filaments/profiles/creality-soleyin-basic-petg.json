@@ -5,16 +5,16 @@
     "3"
   ],
   "cool_plate_temp": [
-    "80"
+    "70"
   ],
   "cool_plate_temp_initial_layer": [
-    "80"
+    "70"
   ],
   "eng_plate_temp": [
-    "80"
+    "70"
   ],
   "eng_plate_temp_initial_layer": [
-    "80"
+    "70"
   ],
   "fan_cooling_layer_time": [
     "30"
@@ -23,7 +23,7 @@
     "80"
   ],
   "fan_min_speed": [
-    "60"
+    "40"
   ],
   "filament_cost": [
     "15.9"
@@ -32,22 +32,22 @@
     "1.25"
   ],
   "filament_deretraction_speed": [
-    "30"
+    "40"
   ],
   "filament_diameter": [
     "1.75"
   ],
   "filament_flow_ratio": [
-    "0.96"
+    "1"
   ],
   "filament_max_volumetric_speed": [
-    "16"
+    "9"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
   "filament_retract_before_wipe": [
-    "90%"
+    "70%"
   ],
   "filament_retract_restart_extra": [
     "nil"
@@ -56,13 +56,13 @@
     "nil"
   ],
   "filament_retraction_length": [
-    "0.4"
+    "0.8"
   ],
   "filament_retraction_minimum_travel": [
     "2"
   ],
   "filament_retraction_speed": [
-    "30"
+    "40"
   ],
   "filament_settings_id": [
     ""
@@ -80,31 +80,31 @@
     "nil"
   ],
   "filament_wipe_distance": [
-    "2"
+    "1"
   ],
   "filament_z_hop": [
-    "nil"
+    "0.4"
   ],
   "filament_z_hop_types": [
-    "Slope Lift"
+    "nil"
   ],
   "full_fan_speed_layer": [
     "0"
   ],
   "hot_plate_temp": [
-    "80"
+    "70"
   ],
   "hot_plate_temp_initial_layer": [
-    "80"
+    "70"
   ],
   "nozzle_temperature": [
-    "250"
+    "240"
   ],
   "nozzle_temperature_initial_layer": [
-    "250"
+    "240"
   ],
   "overhang_fan_speed": [
-    "100"
+    "90"
   ],
   "overhang_fan_threshold": [
     "25%"
@@ -116,19 +116,19 @@
     "1"
   ],
   "slow_down_layer_time": [
-    "12"
+    "8"
   ],
   "slow_down_min_speed": [
-    "20"
+    "10"
   ],
   "temperature_vitrification": [
     "100"
   ],
   "textured_plate_temp": [
-    "80"
+    "70"
   ],
   "textured_plate_temp_initial_layer": [
-    "80"
+    "70"
   ],
   "filament_start_gcode": [
     "; Filament gcode\n"
@@ -142,6 +142,7 @@
   "bed_type": [
     "Cool Plate"
   ],
+  "filament_id": "06005",
   "complete_print_exhaust_fan_speed": [
     "0"
   ],
@@ -154,11 +155,12 @@
   "nozzle_temperature_range_low": [
     "220"
   ],
+  "chamber_temperature": "35",
   "enable_pressure_advance": "0",
   "filament_retract_lift_above": "nil",
   "filament_retract_lift_below": "nil",
   "filament_retract_lift_enforce": "nil",
-  "pressure_advance": "0.06",
+  "pressure_advance": "0.09",
   "default_filament_colour": "\"\"",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -166,7 +168,6 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "06005",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

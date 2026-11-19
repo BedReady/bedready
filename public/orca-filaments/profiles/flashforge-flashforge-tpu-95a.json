@@ -101,7 +101,7 @@
     "TPU"
   ],
   "filament_vendor": [
-    "Generic"
+    "Flashforge"
   ],
   "filament_wipe": [
     "nil"
@@ -148,10 +148,8 @@
   "nozzle_temperature_range_high": [
     "250"
   ],
+  "renamed_from": "Flashforge Generic TPU",
   "filament_id": "GFG99",
-  "bed_temperature_difference": [
-    "10"
-  ],
   "chamber_temperature": "0",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",

@@ -1,8 +1,10 @@
 {
   "machine": "Snapmaker U1 (0.4 nozzle)",
   "vendors": [
+    "3D-Fuel",
     "addnorth",
     "Afinia",
+    "AliZ",
     "Anker",
     "Anycubic",
     "Artillery",
@@ -11,6 +13,7 @@
     "Blocks",
     "Chuanying",
     "Co Print",
+    "COEX",
     "CoLiDo",
     "Comgrow",
     "CONSTRUCT3D",
@@ -24,7 +27,9 @@
     "Eolas Prints",
     "Eryone",
     "eSUN",
+    "EverLoop",
     "FDplast",
+    "FELIX Printers",
     "FilAr",
     "FILL3D",
     "Flashforge",
@@ -32,12 +37,17 @@
     "FlyingBear",
     "FusRock",
     "Ginger Additive",
+    "Goofoo",
     "GreenGate3D",
+    "IdeaFormer",
     "InfiMech",
+    "INSLOGIC",
     "iQ",
+    "JAYO",
     "LH",
     "LONGER",
     "MagicMaker",
+    "Meltingplot",
     "NIT",
     "Numakers",
     "Orca",
@@ -47,11 +57,16 @@
     "Peopoly",
     "Phrozen",
     "Polymaker",
+    "Pragostroj",
+    "Printalot",
+    "Printcepts",
     "Prusa",
     "Qidi",
     "Ratrig",
     "re3D",
+    "Recycling Fabrik",
     "RH3D",
+    "SchoolHouseSpools",
     "SecKit",
     "SeeMeCNC",
     "Snapmaker",
@@ -85,10 +100,126 @@
     "BVOH",
     "EVA",
     "PE",
-    "SBS",
-    "SILK"
+    "SBS"
   ],
   "profiles": [
+    {
+      "id": "3d-fuel-3d-fuel-pet-cf",
+      "name": "3D-Fuel PET CF",
+      "vendor": "3D-Fuel",
+      "type": "PET",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pet-cf.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg",
+      "name": "3D-Fuel Pro PCTG",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 270,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg-esd",
+      "name": "3D-Fuel Pro PCTG ESD",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 270,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg-esd.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg-matte",
+      "name": "3D-Fuel Pro PCTG Matte",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 260,
+      "bedTemp": 60,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg-matte.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg-refuel",
+      "name": "3D-Fuel Pro PCTG Refuel",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 270,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg-refuel.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg-cf",
+      "name": "3D-Fuel Pro PCTG-CF",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 270,
+      "bedTemp": 70,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg-cf.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-pctg-gf",
+      "name": "3D-Fuel Pro PCTG-GF",
+      "vendor": "3D-Fuel",
+      "type": "PCTG",
+      "nozzleTemp": 260,
+      "bedTemp": 60,
+      "file": "profiles/3d-fuel-3d-fuel-pro-pctg-gf.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-petg",
+      "name": "3D-Fuel Pro PETG",
+      "vendor": "3D-Fuel",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pro-petg.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-pro-petg-refuel",
+      "name": "3D-Fuel Pro PETG Refuel",
+      "vendor": "3D-Fuel",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/3d-fuel-3d-fuel-pro-petg-refuel.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-standard-pla",
+      "name": "3D-Fuel Standard PLA",
+      "vendor": "3D-Fuel",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 70,
+      "file": "profiles/3d-fuel-3d-fuel-standard-pla.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-standard-pla-refuel",
+      "name": "3D-Fuel Standard PLA Refuel",
+      "vendor": "3D-Fuel",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 70,
+      "file": "profiles/3d-fuel-3d-fuel-standard-pla-refuel.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-tough-pro-pla",
+      "name": "3D-Fuel Tough Pro PLA",
+      "vendor": "3D-Fuel",
+      "type": "PLA",
+      "nozzleTemp": 240,
+      "bedTemp": 70,
+      "file": "profiles/3d-fuel-3d-fuel-tough-pro-pla.json"
+    },
+    {
+      "id": "3d-fuel-3d-fuel-tough-pro-refuel",
+      "name": "3D-Fuel Tough Pro Refuel",
+      "vendor": "3D-Fuel",
+      "type": "PLA",
+      "nozzleTemp": 240,
+      "bedTemp": 70,
+      "file": "profiles/3d-fuel-3d-fuel-tough-pro-refuel.json"
+    },
     {
       "id": "addnorth-addnorth-abs-rabs",
       "name": "addnorth ABS rABS",
@@ -387,121 +518,211 @@
       "file": "profiles/afinia-afinia-value-pla.json"
     },
     {
-      "id": "anker-anker-generic-abs",
-      "name": "Anker Generic ABS",
+      "id": "aliz-aliz-pa-cf",
+      "name": "AliZ PA-CF",
+      "vendor": "AliZ",
+      "type": "PA",
+      "nozzleTemp": 290,
+      "bedTemp": 100,
+      "file": "profiles/aliz-aliz-pa-cf.json"
+    },
+    {
+      "id": "aliz-aliz-petg",
+      "name": "AliZ PETG",
+      "vendor": "AliZ",
+      "type": "PETG",
+      "nozzleTemp": 250,
+      "bedTemp": 79,
+      "file": "profiles/aliz-aliz-petg.json"
+    },
+    {
+      "id": "aliz-aliz-petg-cf",
+      "name": "AliZ PETG-CF",
+      "vendor": "AliZ",
+      "type": "PETG",
+      "nozzleTemp": 275,
+      "bedTemp": 79,
+      "file": "profiles/aliz-aliz-petg-cf.json"
+    },
+    {
+      "id": "aliz-aliz-petg-metal",
+      "name": "AliZ PETG-Metal",
+      "vendor": "AliZ",
+      "type": "PETG",
+      "nozzleTemp": 260,
+      "bedTemp": 79,
+      "file": "profiles/aliz-aliz-petg-metal.json"
+    },
+    {
+      "id": "aliz-aliz-pla",
+      "name": "AliZ PLA",
+      "vendor": "AliZ",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/aliz-aliz-pla.json"
+    },
+    {
+      "id": "anker-ankermake-pla-basic",
+      "name": "AnkerMake PLA+ Basic",
+      "vendor": "Anker",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 65,
+      "file": "profiles/anker-ankermake-pla-basic.json"
+    },
+    {
+      "id": "anker-ankermake-pla-glitter",
+      "name": "AnkerMake PLA+ Glitter",
+      "vendor": "Anker",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 65,
+      "file": "profiles/anker-ankermake-pla-glitter.json"
+    },
+    {
+      "id": "anker-ankermake-pla-matte",
+      "name": "AnkerMake PLA+ Matte",
+      "vendor": "Anker",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 65,
+      "file": "profiles/anker-ankermake-pla-matte.json"
+    },
+    {
+      "id": "anker-ankermake-pla-metallic",
+      "name": "AnkerMake PLA+ Metallic",
+      "vendor": "Anker",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 60,
+      "file": "profiles/anker-ankermake-pla-metallic.json"
+    },
+    {
+      "id": "anker-ankermake-pla-silk",
+      "name": "AnkerMake PLA+ Silk",
+      "vendor": "Anker",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 65,
+      "file": "profiles/anker-ankermake-pla-silk.json"
+    },
+    {
+      "id": "anker-generic-abs",
+      "name": "Generic ABS",
       "vendor": "Anker",
       "type": "ABS",
       "nozzleTemp": 240,
       "bedTemp": 100,
-      "file": "profiles/anker-anker-generic-abs.json"
+      "file": "profiles/anker-generic-abs.json"
     },
     {
-      "id": "anker-anker-generic-asa",
-      "name": "Anker Generic ASA",
+      "id": "anker-generic-asa",
+      "name": "Generic ASA",
       "vendor": "Anker",
       "type": "ASA",
       "nozzleTemp": 240,
       "bedTemp": 100,
-      "file": "profiles/anker-anker-generic-asa.json"
+      "file": "profiles/anker-generic-asa.json"
     },
     {
-      "id": "anker-anker-generic-pa",
-      "name": "Anker Generic PA",
+      "id": "anker-generic-pa",
+      "name": "Generic PA",
       "vendor": "Anker",
       "type": "PA",
       "nozzleTemp": 290,
       "bedTemp": 95,
-      "file": "profiles/anker-anker-generic-pa.json"
+      "file": "profiles/anker-generic-pa.json"
     },
     {
-      "id": "anker-anker-generic-pa-cf",
-      "name": "Anker Generic PA-CF",
+      "id": "anker-generic-pa-cf",
+      "name": "Generic PA-CF",
       "vendor": "Anker",
       "type": "PA",
       "nozzleTemp": 290,
       "bedTemp": 95,
-      "file": "profiles/anker-anker-generic-pa-cf.json"
+      "file": "profiles/anker-generic-pa-cf.json"
     },
     {
-      "id": "anker-anker-generic-pc",
-      "name": "Anker Generic PC",
+      "id": "anker-generic-pc",
+      "name": "Generic PC",
       "vendor": "Anker",
       "type": "PC",
       "nozzleTemp": 270,
       "bedTemp": 100,
-      "file": "profiles/anker-anker-generic-pc.json"
+      "file": "profiles/anker-generic-pc.json"
     },
     {
-      "id": "anker-anker-generic-petg",
-      "name": "Anker Generic PETG",
+      "id": "anker-generic-petg",
+      "name": "Generic PETG",
       "vendor": "Anker",
       "type": "PETG",
       "nozzleTemp": 240,
       "bedTemp": 80,
-      "file": "profiles/anker-anker-generic-petg.json"
+      "file": "profiles/anker-generic-petg.json"
     },
     {
-      "id": "anker-anker-generic-petg-cf",
-      "name": "Anker Generic PETG-CF",
+      "id": "anker-generic-petg-cf",
+      "name": "Generic PETG-CF",
       "vendor": "Anker",
       "type": "PETG",
       "nozzleTemp": 240,
       "bedTemp": 80,
-      "file": "profiles/anker-anker-generic-petg-cf.json"
+      "file": "profiles/anker-generic-petg-cf.json"
     },
     {
-      "id": "anker-anker-generic-pla",
-      "name": "Anker Generic PLA",
+      "id": "anker-generic-pla",
+      "name": "Generic PLA",
       "vendor": "Anker",
       "type": "PLA",
       "nozzleTemp": 210,
       "bedTemp": 60,
-      "file": "profiles/anker-anker-generic-pla.json"
+      "file": "profiles/anker-generic-pla.json"
     },
     {
-      "id": "anker-anker-generic-pla-silk",
-      "name": "Anker Generic PLA Silk",
+      "id": "anker-generic-pla-silk",
+      "name": "Generic PLA Silk",
       "vendor": "Anker",
       "type": "PLA",
       "nozzleTemp": 225,
       "bedTemp": 60,
-      "file": "profiles/anker-anker-generic-pla-silk.json"
+      "file": "profiles/anker-generic-pla-silk.json"
     },
     {
-      "id": "anker-anker-generic-pla-cf",
-      "name": "Anker Generic PLA-CF",
+      "id": "anker-generic-pla-cf",
+      "name": "Generic PLA-CF",
       "vendor": "Anker",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 65,
-      "file": "profiles/anker-anker-generic-pla-cf.json"
+      "file": "profiles/anker-generic-pla-cf.json"
     },
     {
-      "id": "anker-anker-generic-pla-2",
-      "name": "Anker Generic PLA+",
+      "id": "anker-generic-pla-2",
+      "name": "Generic PLA+",
       "vendor": "Anker",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/anker-anker-generic-pla-2.json"
+      "file": "profiles/anker-generic-pla-2.json"
     },
     {
-      "id": "anker-anker-generic-pva",
-      "name": "Anker Generic PVA",
+      "id": "anker-generic-pva",
+      "name": "Generic PVA",
       "vendor": "Anker",
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 65,
-      "file": "profiles/anker-anker-generic-pva.json"
+      "file": "profiles/anker-generic-pva.json"
     },
     {
-      "id": "anker-anker-generic-tpu",
-      "name": "Anker Generic TPU",
+      "id": "anker-generic-tpu",
+      "name": "Generic TPU",
       "vendor": "Anker",
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 25,
-      "file": "profiles/anker-anker-generic-tpu.json"
+      "file": "profiles/anker-generic-tpu.json"
     },
     {
       "id": "anycubic-anycubic-abs",
@@ -528,43 +749,8 @@
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/anycubic-anycubic-generic-abs.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-asa",
-      "name": "Anycubic Generic ASA",
-      "vendor": "Anycubic",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/anycubic-anycubic-generic-asa.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pa",
-      "name": "Anycubic Generic PA",
-      "vendor": "Anycubic",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/anycubic-anycubic-generic-pa.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pa-cf",
-      "name": "Anycubic Generic PA-CF",
-      "vendor": "Anycubic",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/anycubic-anycubic-generic-pa-cf.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pc",
-      "name": "Anycubic Generic PC",
-      "vendor": "Anycubic",
-      "type": "PC",
-      "nozzleTemp": 280,
-      "bedTemp": 110,
-      "file": "profiles/anycubic-anycubic-generic-pc.json"
+      "file": "profiles/anycubic-anycubic-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "anycubic-anycubic-generic-petg",
@@ -573,34 +759,8 @@
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 80,
-      "file": "profiles/anycubic-anycubic-generic-petg.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pla",
-      "name": "Anycubic Generic PLA",
-      "vendor": "Anycubic",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/anycubic-anycubic-generic-pla.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pla-cf",
-      "name": "Anycubic Generic PLA-CF",
-      "vendor": "Anycubic",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/anycubic-anycubic-generic-pla-cf.json"
-    },
-    {
-      "id": "anycubic-anycubic-generic-pva",
-      "name": "Anycubic Generic PVA",
-      "vendor": "Anycubic",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/anycubic-anycubic-generic-pva.json"
+      "file": "profiles/anycubic-anycubic-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "anycubic-anycubic-generic-tpu",
@@ -609,7 +769,8 @@
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 35,
-      "file": "profiles/anycubic-anycubic-generic-tpu.json"
+      "file": "profiles/anycubic-anycubic-generic-tpu.json",
+      "legacy": true
     },
     {
       "id": "anycubic-anycubic-pa",
@@ -720,6 +881,15 @@
       "file": "profiles/anycubic-anycubic-pla.json"
     },
     {
+      "id": "anycubic-anycubic-pla-galaxy",
+      "name": "Anycubic PLA Galaxy",
+      "vendor": "Anycubic",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 60,
+      "file": "profiles/anycubic-anycubic-pla-galaxy.json"
+    },
+    {
       "id": "anycubic-anycubic-pla-glow",
       "name": "Anycubic PLA Glow",
       "vendor": "Anycubic",
@@ -747,6 +917,15 @@
       "file": "profiles/anycubic-anycubic-pla-luminous.json"
     },
     {
+      "id": "anycubic-anycubic-pla-marble",
+      "name": "Anycubic PLA Marble",
+      "vendor": "Anycubic",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 60,
+      "file": "profiles/anycubic-anycubic-pla-marble.json"
+    },
+    {
       "id": "anycubic-anycubic-pla-matte",
       "name": "Anycubic PLA Matte",
       "vendor": "Anycubic",
@@ -754,6 +933,15 @@
       "nozzleTemp": 210,
       "bedTemp": 65,
       "file": "profiles/anycubic-anycubic-pla-matte.json"
+    },
+    {
+      "id": "anycubic-anycubic-pla-metal",
+      "name": "Anycubic PLA Metal",
+      "vendor": "Anycubic",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 60,
+      "file": "profiles/anycubic-anycubic-pla-metal.json"
     },
     {
       "id": "anycubic-anycubic-pla-se",
@@ -787,7 +975,7 @@
       "name": "Anycubic PLA Translucent",
       "vendor": "Anycubic",
       "type": "PLA",
-      "nozzleTemp": 220,
+      "nozzleTemp": 210,
       "bedTemp": 60,
       "file": "profiles/anycubic-anycubic-pla-translucent.json"
     },
@@ -859,17 +1047,53 @@
       "name": "Generic ABS",
       "vendor": "Anycubic",
       "type": "ABS",
-      "nozzleTemp": 250,
-      "bedTemp": 90,
+      "nozzleTemp": 260,
+      "bedTemp": 105,
       "file": "profiles/anycubic-generic-abs.json"
+    },
+    {
+      "id": "anycubic-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "Anycubic",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 105,
+      "file": "profiles/anycubic-generic-asa.json"
+    },
+    {
+      "id": "anycubic-generic-pa",
+      "name": "Generic PA",
+      "vendor": "Anycubic",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/anycubic-generic-pa.json"
+    },
+    {
+      "id": "anycubic-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "Anycubic",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/anycubic-generic-pa-cf.json"
+    },
+    {
+      "id": "anycubic-generic-pc",
+      "name": "Generic PC",
+      "vendor": "Anycubic",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 110,
+      "file": "profiles/anycubic-generic-pc.json"
     },
     {
       "id": "anycubic-generic-petg",
       "name": "Generic PETG",
       "vendor": "Anycubic",
       "type": "PETG",
-      "nozzleTemp": 235,
-      "bedTemp": 70,
+      "nozzleTemp": 255,
+      "bedTemp": 80,
       "file": "profiles/anycubic-generic-petg.json"
     },
     {
@@ -882,12 +1106,39 @@
       "file": "profiles/anycubic-generic-petg-basic.json"
     },
     {
+      "id": "anycubic-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Anycubic",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/anycubic-generic-pla.json"
+    },
+    {
+      "id": "anycubic-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Anycubic",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/anycubic-generic-pla-cf.json"
+    },
+    {
+      "id": "anycubic-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Anycubic",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/anycubic-generic-pva.json"
+    },
+    {
       "id": "anycubic-generic-tpu",
       "name": "Generic TPU",
       "vendor": "Anycubic",
       "type": "TPU",
-      "nozzleTemp": 210,
-      "bedTemp": 60,
+      "nozzleTemp": 240,
+      "bedTemp": 35,
       "file": "profiles/anycubic-generic-tpu.json"
     },
     {
@@ -934,60 +1185,6 @@
       "nozzleTemp": 270,
       "bedTemp": 100,
       "file": "profiles/artillery-artillery-asa.json"
-    },
-    {
-      "id": "artillery-artillery-generic-abs",
-      "name": "Artillery Generic ABS",
-      "vendor": "Artillery",
-      "type": "ABS",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/artillery-artillery-generic-abs.json"
-    },
-    {
-      "id": "artillery-artillery-generic-asa",
-      "name": "Artillery Generic ASA",
-      "vendor": "Artillery",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/artillery-artillery-generic-asa.json"
-    },
-    {
-      "id": "artillery-artillery-generic-petg",
-      "name": "Artillery Generic PETG",
-      "vendor": "Artillery",
-      "type": "PETG",
-      "nozzleTemp": 255,
-      "bedTemp": 80,
-      "file": "profiles/artillery-artillery-generic-petg.json"
-    },
-    {
-      "id": "artillery-artillery-generic-pla",
-      "name": "Artillery Generic PLA",
-      "vendor": "Artillery",
-      "type": "PLA",
-      "nozzleTemp": 200,
-      "bedTemp": 60,
-      "file": "profiles/artillery-artillery-generic-pla.json"
-    },
-    {
-      "id": "artillery-artillery-generic-pla-cf",
-      "name": "Artillery Generic PLA-CF",
-      "vendor": "Artillery",
-      "type": "PLA",
-      "nozzleTemp": 200,
-      "bedTemp": 60,
-      "file": "profiles/artillery-artillery-generic-pla-cf.json"
-    },
-    {
-      "id": "artillery-artillery-generic-tpu",
-      "name": "Artillery Generic TPU",
-      "vendor": "Artillery",
-      "type": "TPU",
-      "nozzleTemp": 240,
-      "bedTemp": 35,
-      "file": "profiles/artillery-artillery-generic-tpu.json"
     },
     {
       "id": "artillery-artillery-pa",
@@ -1134,6 +1331,60 @@
       "file": "profiles/artillery-artillery-tpu.json"
     },
     {
+      "id": "artillery-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "Artillery",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 105,
+      "file": "profiles/artillery-generic-abs.json"
+    },
+    {
+      "id": "artillery-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "Artillery",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 105,
+      "file": "profiles/artillery-generic-asa.json"
+    },
+    {
+      "id": "artillery-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Artillery",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/artillery-generic-petg.json"
+    },
+    {
+      "id": "artillery-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Artillery",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 60,
+      "file": "profiles/artillery-generic-pla.json"
+    },
+    {
+      "id": "artillery-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Artillery",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 60,
+      "file": "profiles/artillery-generic-pla-cf.json"
+    },
+    {
+      "id": "artillery-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Artillery",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/artillery-generic-tpu.json"
+    },
+    {
       "id": "bambu-lab-bambu-abs",
       "name": "Bambu ABS",
       "vendor": "Bambu Lab",
@@ -1260,6 +1511,15 @@
       "file": "profiles/bambu-lab-bambu-petg-hf.json"
     },
     {
+      "id": "bambu-lab-bambu-petg-matte",
+      "name": "Bambu PETG Matte",
+      "vendor": "Bambu Lab",
+      "type": "PETG",
+      "nozzleTemp": 235,
+      "bedTemp": 70,
+      "file": "profiles/bambu-lab-bambu-petg-matte.json"
+    },
+    {
       "id": "bambu-lab-bambu-petg-translucent",
       "name": "Bambu PETG Translucent",
       "vendor": "Bambu Lab",
@@ -1366,6 +1626,15 @@
       "nozzleTemp": 220,
       "bedTemp": 65,
       "file": "profiles/bambu-lab-bambu-pla-metal.json"
+    },
+    {
+      "id": "bambu-lab-bambu-pla-pure",
+      "name": "Bambu PLA Pure",
+      "vendor": "Bambu Lab",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/bambu-lab-bambu-pla-pure.json"
     },
     {
       "id": "bambu-lab-bambu-pla-silk",
@@ -1571,7 +1840,7 @@
       "vendor": "Bambu Lab",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 55,
+      "bedTemp": 65,
       "file": "profiles/bambu-lab-esun-pla.json"
     },
     {
@@ -1824,7 +2093,8 @@
       "type": "SBS",
       "nozzleTemp": 235,
       "bedTemp": 70,
-      "file": "profiles/bambu-lab-generic-sbs.json"
+      "file": "profiles/bambu-lab-generic-sbs.json",
+      "legacy": true
     },
     {
       "id": "bambu-lab-generic-tpu",
@@ -1850,7 +2120,7 @@
       "vendor": "Bambu Lab",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 55,
+      "bedTemp": 65,
       "file": "profiles/bambu-lab-overture-matte-pla.json"
     },
     {
@@ -1868,7 +2138,7 @@
       "vendor": "Bambu Lab",
       "type": "ABS",
       "nozzleTemp": 270,
-      "bedTemp": 90,
+      "bedTemp": 100,
       "file": "profiles/bambu-lab-polylite-abs.json"
     },
     {
@@ -1886,7 +2156,7 @@
       "vendor": "Bambu Lab",
       "type": "PETG",
       "nozzleTemp": 255,
-      "bedTemp": 70,
+      "bedTemp": 80,
       "file": "profiles/bambu-lab-polylite-petg.json"
     },
     {
@@ -1895,7 +2165,7 @@
       "vendor": "Bambu Lab",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 55,
+      "bedTemp": 65,
       "file": "profiles/bambu-lab-polylite-pla.json"
     },
     {
@@ -1904,7 +2174,7 @@
       "vendor": "Bambu Lab",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 55,
+      "bedTemp": 65,
       "file": "profiles/bambu-lab-polyterra-pla.json"
     },
     {
@@ -2304,103 +2574,103 @@
       "file": "profiles/beta-beta-tpu-matte.json"
     },
     {
-      "id": "blocks-blocks-generic-abs",
-      "name": "Blocks Generic ABS",
+      "id": "blocks-blocks-abs",
+      "name": "Blocks ABS",
       "vendor": "Blocks",
       "type": "ABS",
       "nozzleTemp": 255,
       "bedTemp": 90,
-      "file": "profiles/blocks-blocks-generic-abs.json"
+      "file": "profiles/blocks-blocks-abs.json"
     },
     {
-      "id": "blocks-blocks-generic-asa",
-      "name": "Blocks Generic ASA",
+      "id": "blocks-blocks-asa",
+      "name": "Blocks ASA",
       "vendor": "Blocks",
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 90,
-      "file": "profiles/blocks-blocks-generic-asa.json"
+      "file": "profiles/blocks-blocks-asa.json"
     },
     {
-      "id": "blocks-blocks-generic-asa-cf",
-      "name": "Blocks Generic ASA-CF",
+      "id": "blocks-blocks-asa-cf",
+      "name": "Blocks ASA-CF",
       "vendor": "Blocks",
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 95,
-      "file": "profiles/blocks-blocks-generic-asa-cf.json"
+      "file": "profiles/blocks-blocks-asa-cf.json"
     },
     {
-      "id": "blocks-blocks-generic-pa",
-      "name": "Blocks Generic PA",
+      "id": "blocks-blocks-pa",
+      "name": "Blocks PA",
       "vendor": "Blocks",
       "type": "PA",
       "nozzleTemp": 270,
       "bedTemp": 100,
-      "file": "profiles/blocks-blocks-generic-pa.json"
+      "file": "profiles/blocks-blocks-pa.json"
     },
     {
-      "id": "blocks-blocks-generic-pa-cf",
-      "name": "Blocks Generic PA-CF",
+      "id": "blocks-blocks-pa-cf",
+      "name": "Blocks PA-CF",
       "vendor": "Blocks",
       "type": "PA",
       "nozzleTemp": 250,
       "bedTemp": 90,
-      "file": "profiles/blocks-blocks-generic-pa-cf.json"
+      "file": "profiles/blocks-blocks-pa-cf.json"
     },
     {
-      "id": "blocks-blocks-generic-pc",
-      "name": "Blocks Generic PC",
+      "id": "blocks-blocks-pc",
+      "name": "Blocks PC",
       "vendor": "Blocks",
       "type": "PC",
       "nozzleTemp": 270,
       "bedTemp": 100,
-      "file": "profiles/blocks-blocks-generic-pc.json"
+      "file": "profiles/blocks-blocks-pc.json"
     },
     {
-      "id": "blocks-blocks-generic-petg",
-      "name": "Blocks Generic PETG",
+      "id": "blocks-blocks-petg",
+      "name": "Blocks PETG",
       "vendor": "Blocks",
       "type": "PETG",
       "nozzleTemp": 245,
       "bedTemp": 70,
-      "file": "profiles/blocks-blocks-generic-petg.json"
+      "file": "profiles/blocks-blocks-petg.json"
     },
     {
-      "id": "blocks-blocks-generic-pla",
-      "name": "Blocks Generic PLA",
+      "id": "blocks-blocks-pla",
+      "name": "Blocks PLA",
       "vendor": "Blocks",
       "type": "PLA",
       "nozzleTemp": 210,
       "bedTemp": 50,
-      "file": "profiles/blocks-blocks-generic-pla.json"
+      "file": "profiles/blocks-blocks-pla.json"
     },
     {
-      "id": "blocks-blocks-generic-pla-cf",
-      "name": "Blocks Generic PLA-CF",
+      "id": "blocks-blocks-pla-cf",
+      "name": "Blocks PLA-CF",
       "vendor": "Blocks",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 50,
-      "file": "profiles/blocks-blocks-generic-pla-cf.json"
+      "file": "profiles/blocks-blocks-pla-cf.json"
     },
     {
-      "id": "blocks-blocks-generic-pva",
-      "name": "Blocks Generic PVA",
+      "id": "blocks-blocks-pva",
+      "name": "Blocks PVA",
       "vendor": "Blocks",
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 45,
-      "file": "profiles/blocks-blocks-generic-pva.json"
+      "file": "profiles/blocks-blocks-pva.json"
     },
     {
-      "id": "blocks-blocks-generic-tpu",
-      "name": "Blocks Generic TPU",
+      "id": "blocks-blocks-tpu",
+      "name": "Blocks TPU",
       "vendor": "Blocks",
       "type": "TPU",
       "nozzleTemp": 250,
       "bedTemp": 90,
-      "file": "profiles/blocks-blocks-generic-tpu.json"
+      "file": "profiles/blocks-blocks-tpu.json"
     },
     {
       "id": "chuanying-chuanying-asa",
@@ -2409,70 +2679,8 @@
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/chuanying-chuanying-asa.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-asa",
-      "name": "Chuanying Generic ASA",
-      "vendor": "Chuanying",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/chuanying-chuanying-generic-asa.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-hips",
-      "name": "Chuanying Generic HIPS",
-      "vendor": "Chuanying",
-      "type": "HIPS",
-      "nozzleTemp": 240,
-      "bedTemp": 105,
-      "file": "profiles/chuanying-chuanying-generic-hips.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-hs-pla",
-      "name": "Chuanying Generic HS PLA",
-      "vendor": "Chuanying",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/chuanying-chuanying-generic-hs-pla.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-petg-cf10",
-      "name": "Chuanying Generic PETG-CF10",
-      "vendor": "Chuanying",
-      "type": "PETG",
-      "nozzleTemp": 245,
-      "bedTemp": 70,
-      "file": "profiles/chuanying-chuanying-generic-petg-cf10.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-pla-cf10",
-      "name": "Chuanying Generic PLA-CF10",
-      "vendor": "Chuanying",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/chuanying-chuanying-generic-pla-cf10.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-pva",
-      "name": "Chuanying Generic PVA",
-      "vendor": "Chuanying",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/chuanying-chuanying-generic-pva.json"
-    },
-    {
-      "id": "chuanying-chuanying-generic-tpu",
-      "name": "Chuanying Generic TPU",
-      "vendor": "Chuanying",
-      "type": "TPU",
-      "nozzleTemp": 235,
-      "bedTemp": 45,
-      "file": "profiles/chuanying-chuanying-generic-tpu.json"
+      "file": "profiles/chuanying-chuanying-asa.json",
+      "legacy": true
     },
     {
       "id": "chuanying-chuanying-hs-pla",
@@ -2481,7 +2689,71 @@
       "type": "PLA",
       "nozzleTemp": 210,
       "bedTemp": 45,
-      "file": "profiles/chuanying-chuanying-hs-pla.json"
+      "file": "profiles/chuanying-chuanying-hs-pla.json",
+      "legacy": true
+    },
+    {
+      "id": "chuanying-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "Chuanying",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 105,
+      "file": "profiles/chuanying-generic-asa.json"
+    },
+    {
+      "id": "chuanying-generic-hips",
+      "name": "Generic HIPS",
+      "vendor": "Chuanying",
+      "type": "HIPS",
+      "nozzleTemp": 240,
+      "bedTemp": 105,
+      "file": "profiles/chuanying-generic-hips.json"
+    },
+    {
+      "id": "chuanying-generic-hs-pla",
+      "name": "Generic HS PLA",
+      "vendor": "Chuanying",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/chuanying-generic-hs-pla.json"
+    },
+    {
+      "id": "chuanying-generic-petg-cf10",
+      "name": "Generic PETG-CF10",
+      "vendor": "Chuanying",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 70,
+      "file": "profiles/chuanying-generic-petg-cf10.json"
+    },
+    {
+      "id": "chuanying-generic-pla-cf10",
+      "name": "Generic PLA-CF10",
+      "vendor": "Chuanying",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/chuanying-generic-pla-cf10.json"
+    },
+    {
+      "id": "chuanying-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Chuanying",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/chuanying-generic-pva.json"
+    },
+    {
+      "id": "chuanying-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Chuanying",
+      "type": "TPU",
+      "nozzleTemp": 235,
+      "bedTemp": 45,
+      "file": "profiles/chuanying-generic-tpu.json"
     },
     {
       "id": "co-print-coprint-generic-abs",
@@ -2490,7 +2762,8 @@
       "type": "ABS",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/co-print-coprint-generic-abs.json"
+      "file": "profiles/co-print-coprint-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "co-print-coprint-generic-petg",
@@ -2499,7 +2772,8 @@
       "type": "PETG",
       "nozzleTemp": 240,
       "bedTemp": 70,
-      "file": "profiles/co-print-coprint-generic-petg.json"
+      "file": "profiles/co-print-coprint-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "co-print-coprint-generic-pla",
@@ -2508,7 +2782,8 @@
       "type": "PLA",
       "nozzleTemp": 210,
       "bedTemp": 60,
-      "file": "profiles/co-print-coprint-generic-pla.json"
+      "file": "profiles/co-print-coprint-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "co-print-coprint-generic-tpu",
@@ -2517,7 +2792,170 @@
       "type": "TPU",
       "nozzleTemp": 230,
       "bedTemp": 50,
-      "file": "profiles/co-print-coprint-generic-tpu.json"
+      "file": "profiles/co-print-coprint-generic-tpu.json",
+      "legacy": true
+    },
+    {
+      "id": "co-print-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "Co Print",
+      "type": "ABS",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/co-print-generic-abs.json"
+    },
+    {
+      "id": "co-print-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Co Print",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 70,
+      "file": "profiles/co-print-generic-petg.json"
+    },
+    {
+      "id": "co-print-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Co Print",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 60,
+      "file": "profiles/co-print-generic-pla.json"
+    },
+    {
+      "id": "co-print-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Co Print",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 50,
+      "file": "profiles/co-print-generic-tpu.json"
+    },
+    {
+      "id": "coex-coex-abs",
+      "name": "COEX ABS",
+      "vendor": "COEX",
+      "type": "ABS",
+      "nozzleTemp": 255,
+      "bedTemp": 100,
+      "file": "profiles/coex-coex-abs.json"
+    },
+    {
+      "id": "coex-coex-abs-prime",
+      "name": "COEX ABS PRIME",
+      "vendor": "COEX",
+      "type": "ABS",
+      "nozzleTemp": 255,
+      "bedTemp": 100,
+      "file": "profiles/coex-coex-abs-prime.json"
+    },
+    {
+      "id": "coex-coex-asa-prime",
+      "name": "COEX ASA PRIME",
+      "vendor": "COEX",
+      "type": "ASA",
+      "nozzleTemp": 265,
+      "bedTemp": 100,
+      "file": "profiles/coex-coex-asa-prime.json"
+    },
+    {
+      "id": "coex-coex-nylex-pa6-cf",
+      "name": "COEX NYLEX PA6-CF",
+      "vendor": "COEX",
+      "type": "PA",
+      "nozzleTemp": 285,
+      "bedTemp": 100,
+      "file": "profiles/coex-coex-nylex-pa6-cf.json"
+    },
+    {
+      "id": "coex-coex-nylex-unfilled",
+      "name": "COEX NYLEX UNFILLED",
+      "vendor": "COEX",
+      "type": "PA",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/coex-coex-nylex-unfilled.json"
+    },
+    {
+      "id": "coex-coex-pctg-prime",
+      "name": "COEX PCTG PRIME",
+      "vendor": "COEX",
+      "type": "PCTG",
+      "nozzleTemp": 275,
+      "bedTemp": 80,
+      "file": "profiles/coex-coex-pctg-prime.json"
+    },
+    {
+      "id": "coex-coex-petg",
+      "name": "COEX PETG",
+      "vendor": "COEX",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 80,
+      "file": "profiles/coex-coex-petg.json"
+    },
+    {
+      "id": "coex-coex-pla",
+      "name": "COEX PLA",
+      "vendor": "COEX",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 55,
+      "file": "profiles/coex-coex-pla.json"
+    },
+    {
+      "id": "coex-coex-pla-prime",
+      "name": "COEX PLA PRIME",
+      "vendor": "COEX",
+      "type": "PLA",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/coex-coex-pla-prime.json"
+    },
+    {
+      "id": "coex-coex-pla-silk",
+      "name": "COEX PLA+Silk",
+      "vendor": "COEX",
+      "type": "PLA",
+      "nozzleTemp": 240,
+      "bedTemp": 55,
+      "file": "profiles/coex-coex-pla-silk.json"
+    },
+    {
+      "id": "coex-coex-tpe-30d",
+      "name": "COEX TPE 30D",
+      "vendor": "COEX",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/coex-coex-tpe-30d.json"
+    },
+    {
+      "id": "coex-coex-tpe-40d",
+      "name": "COEX TPE 40D",
+      "vendor": "COEX",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/coex-coex-tpe-40d.json"
+    },
+    {
+      "id": "coex-coex-tpe-60d",
+      "name": "COEX TPE 60D",
+      "vendor": "COEX",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/coex-coex-tpe-60d.json"
+    },
+    {
+      "id": "coex-coex-tpu-60a",
+      "name": "COEX TPU 60A",
+      "vendor": "COEX",
+      "type": "TPU",
+      "nozzleTemp": 225,
+      "bedTemp": 35,
+      "file": "profiles/coex-coex-tpu-60a.json"
     },
     {
       "id": "colido-colido-abs",
@@ -2527,42 +2965,6 @@
       "nozzleTemp": 245,
       "bedTemp": 100,
       "file": "profiles/colido-colido-abs.json"
-    },
-    {
-      "id": "colido-colido-generic-abs",
-      "name": "CoLiDo Generic ABS",
-      "vendor": "CoLiDo",
-      "type": "ABS",
-      "nozzleTemp": 240,
-      "bedTemp": 100,
-      "file": "profiles/colido-colido-generic-abs.json"
-    },
-    {
-      "id": "colido-colido-generic-petg",
-      "name": "CoLiDo Generic PETG",
-      "vendor": "CoLiDo",
-      "type": "PETG",
-      "nozzleTemp": 255,
-      "bedTemp": 70,
-      "file": "profiles/colido-colido-generic-petg.json"
-    },
-    {
-      "id": "colido-colido-generic-pla",
-      "name": "CoLiDo Generic PLA",
-      "vendor": "CoLiDo",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/colido-colido-generic-pla.json"
-    },
-    {
-      "id": "colido-colido-generic-tpu",
-      "name": "CoLiDo Generic TPU",
-      "vendor": "CoLiDo",
-      "type": "TPU",
-      "nozzleTemp": 230,
-      "bedTemp": 45,
-      "file": "profiles/colido-colido-generic-tpu.json"
     },
     {
       "id": "colido-colido-petg",
@@ -2601,31 +3003,40 @@
       "file": "profiles/colido-colido-pla-2.json"
     },
     {
-      "id": "comgrow-comgrow-generic-abs",
-      "name": "Comgrow Generic ABS",
-      "vendor": "Comgrow",
+      "id": "colido-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "CoLiDo",
       "type": "ABS",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/comgrow-comgrow-generic-abs.json"
+      "nozzleTemp": 240,
+      "bedTemp": 100,
+      "file": "profiles/colido-generic-abs.json"
     },
     {
-      "id": "comgrow-comgrow-generic-petg",
-      "name": "Comgrow Generic PETG",
-      "vendor": "Comgrow",
+      "id": "colido-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "CoLiDo",
       "type": "PETG",
       "nozzleTemp": 255,
-      "bedTemp": 80,
-      "file": "profiles/comgrow-comgrow-generic-petg.json"
+      "bedTemp": 70,
+      "file": "profiles/colido-generic-petg.json"
     },
     {
-      "id": "comgrow-comgrow-generic-pla",
-      "name": "Comgrow Generic PLA",
-      "vendor": "Comgrow",
+      "id": "colido-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "CoLiDo",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/comgrow-comgrow-generic-pla.json"
+      "file": "profiles/colido-generic-pla.json"
+    },
+    {
+      "id": "colido-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "CoLiDo",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 45,
+      "file": "profiles/colido-generic-tpu.json"
     },
     {
       "id": "comgrow-comgrow-t300-pla",
@@ -2634,7 +3045,35 @@
       "type": "PLA",
       "nozzleTemp": 200,
       "bedTemp": 65,
-      "file": "profiles/comgrow-comgrow-t300-pla.json"
+      "file": "profiles/comgrow-comgrow-t300-pla.json",
+      "legacy": true
+    },
+    {
+      "id": "comgrow-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "Comgrow",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 105,
+      "file": "profiles/comgrow-generic-abs.json"
+    },
+    {
+      "id": "comgrow-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Comgrow",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/comgrow-generic-petg.json"
+    },
+    {
+      "id": "comgrow-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Comgrow",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 65,
+      "file": "profiles/comgrow-generic-pla.json"
     },
     {
       "id": "construct3d-c1-generic-high-flow-petg",
@@ -2643,7 +3082,8 @@
       "type": "PETG",
       "nozzleTemp": 270,
       "bedTemp": 80,
-      "file": "profiles/construct3d-c1-generic-high-flow-petg.json"
+      "file": "profiles/construct3d-c1-generic-high-flow-petg.json",
+      "legacy": true
     },
     {
       "id": "construct3d-c1-generic-petg",
@@ -2652,7 +3092,8 @@
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 80,
-      "file": "profiles/construct3d-c1-generic-petg.json"
+      "file": "profiles/construct3d-c1-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "construct3d-c1-generic-pla",
@@ -2661,14 +3102,42 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 62,
-      "file": "profiles/construct3d-c1-generic-pla.json"
+      "file": "profiles/construct3d-c1-generic-pla.json",
+      "legacy": true
+    },
+    {
+      "id": "construct3d-generic-high-flow-petg",
+      "name": "Generic High Flow PETG",
+      "vendor": "CONSTRUCT3D",
+      "type": "PETG",
+      "nozzleTemp": 270,
+      "bedTemp": 80,
+      "file": "profiles/construct3d-generic-high-flow-petg.json"
+    },
+    {
+      "id": "construct3d-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "CONSTRUCT3D",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/construct3d-generic-petg.json"
+    },
+    {
+      "id": "construct3d-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "CONSTRUCT3D",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 62,
+      "file": "profiles/construct3d-generic-pla.json"
     },
     {
       "id": "creality-cr-abs",
       "name": "CR-ABS",
       "vendor": "Creality",
       "type": "ABS",
-      "nozzleTemp": 260,
+      "nozzleTemp": 250,
       "bedTemp": 100,
       "file": "profiles/creality-cr-abs.json"
     },
@@ -2677,8 +3146,8 @@
       "name": "CR-Nylon",
       "vendor": "Creality",
       "type": "PA",
-      "nozzleTemp": 250,
-      "bedTemp": 45,
+      "nozzleTemp": 260,
+      "bedTemp": 50,
       "file": "profiles/creality-cr-nylon.json"
     },
     {
@@ -2687,7 +3156,7 @@
       "vendor": "Creality",
       "type": "PETG",
       "nozzleTemp": 250,
-      "bedTemp": 80,
+      "bedTemp": 70,
       "file": "profiles/creality-cr-petg.json"
     },
     {
@@ -2695,7 +3164,7 @@
       "name": "CR-PLA",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
+      "nozzleTemp": 200,
       "bedTemp": 60,
       "file": "profiles/creality-cr-pla.json"
     },
@@ -2714,7 +3183,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 230,
-      "bedTemp": 50,
+      "bedTemp": 65,
       "file": "profiles/creality-cr-pla-fluo.json"
     },
     {
@@ -2722,8 +3191,8 @@
       "name": "CR-PLA Matte",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
+      "nozzleTemp": 230,
+      "bedTemp": 50,
       "file": "profiles/creality-cr-pla-matte.json"
     },
     {
@@ -2731,8 +3200,8 @@
       "name": "CR-Silk",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
+      "nozzleTemp": 230,
+      "bedTemp": 65,
       "file": "profiles/creality-cr-silk.json"
     },
     {
@@ -2740,8 +3209,8 @@
       "name": "CR-TPU",
       "vendor": "Creality",
       "type": "TPU",
-      "nozzleTemp": 220,
-      "bedTemp": 40,
+      "nozzleTemp": 230,
+      "bedTemp": 35,
       "file": "profiles/creality-cr-tpu.json"
     },
     {
@@ -2750,7 +3219,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 230,
-      "bedTemp": 50,
+      "bedTemp": 65,
       "file": "profiles/creality-cr-wood.json"
     },
     {
@@ -2760,7 +3229,8 @@
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/creality-creality-generic-abs.json"
+      "file": "profiles/creality-creality-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-asa",
@@ -2769,7 +3239,8 @@
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/creality-creality-generic-asa.json"
+      "file": "profiles/creality-creality-generic-asa.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-asa-cf",
@@ -2778,7 +3249,8 @@
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/creality-creality-generic-asa-cf.json"
+      "file": "profiles/creality-creality-generic-asa-cf.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pa",
@@ -2787,7 +3259,8 @@
       "type": "PA",
       "nozzleTemp": 250,
       "bedTemp": 45,
-      "file": "profiles/creality-creality-generic-pa.json"
+      "file": "profiles/creality-creality-generic-pa.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pa-cf",
@@ -2796,7 +3269,8 @@
       "type": "PA",
       "nozzleTemp": 290,
       "bedTemp": 100,
-      "file": "profiles/creality-creality-generic-pa-cf.json"
+      "file": "profiles/creality-creality-generic-pa-cf.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pc",
@@ -2805,7 +3279,8 @@
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 110,
-      "file": "profiles/creality-creality-generic-pc.json"
+      "file": "profiles/creality-creality-generic-pc.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-petg",
@@ -2814,7 +3289,8 @@
       "type": "PETG",
       "nozzleTemp": 250,
       "bedTemp": 70,
-      "file": "profiles/creality-creality-generic-petg.json"
+      "file": "profiles/creality-creality-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-petg-cf",
@@ -2823,7 +3299,8 @@
       "type": "PETG",
       "nozzleTemp": 250,
       "bedTemp": 70,
-      "file": "profiles/creality-creality-generic-petg-cf.json"
+      "file": "profiles/creality-creality-generic-petg-cf.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pla",
@@ -2832,25 +3309,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/creality-creality-generic-pla.json"
-    },
-    {
-      "id": "creality-creality-generic-pla-high-speed",
-      "name": "Creality Generic PLA High Speed",
-      "vendor": "Creality",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/creality-creality-generic-pla-high-speed.json"
-    },
-    {
-      "id": "creality-creality-generic-pla-matte",
-      "name": "Creality Generic PLA Matte",
-      "vendor": "Creality",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/creality-creality-generic-pla-matte.json"
+      "file": "profiles/creality-creality-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pla-silk",
@@ -2859,16 +3319,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/creality-creality-generic-pla-silk.json"
-    },
-    {
-      "id": "creality-creality-generic-pla-wood",
-      "name": "Creality Generic PLA Wood",
-      "vendor": "Creality",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/creality-creality-generic-pla-wood.json"
+      "file": "profiles/creality-creality-generic-pla-silk.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-pla-cf",
@@ -2877,7 +3329,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/creality-creality-generic-pla-cf.json"
+      "file": "profiles/creality-creality-generic-pla-cf.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-generic-tpu",
@@ -2886,7 +3339,8 @@
       "type": "TPU",
       "nozzleTemp": 230,
       "bedTemp": 30,
-      "file": "profiles/creality-creality-generic-tpu.json"
+      "file": "profiles/creality-creality-generic-tpu.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-hf-generic-pla",
@@ -2895,7 +3349,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/creality-creality-hf-generic-pla.json"
+      "file": "profiles/creality-creality-hf-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-hf-generic-speed-pla",
@@ -2904,7 +3359,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/creality-creality-hf-generic-speed-pla.json"
+      "file": "profiles/creality-creality-hf-generic-speed-pla.json",
+      "legacy": true
     },
     {
       "id": "creality-creality-hyper-abs",
@@ -2947,8 +3403,8 @@
       "name": "EN-PLA+",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
+      "nozzleTemp": 230,
+      "bedTemp": 65,
       "file": "profiles/creality-en-pla.json"
     },
     {
@@ -2965,7 +3421,7 @@
       "name": "Ender-PLA",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
+      "nozzleTemp": 200,
       "bedTemp": 60,
       "file": "profiles/creality-ender-pla.json"
     },
@@ -3092,7 +3548,7 @@
       "vendor": "Creality",
       "type": "ABS",
       "nozzleTemp": 260,
-      "bedTemp": 90,
+      "bedTemp": 100,
       "file": "profiles/creality-generic-abs.json"
     },
     {
@@ -3101,7 +3557,7 @@
       "vendor": "Creality",
       "type": "ASA",
       "nozzleTemp": 260,
-      "bedTemp": 90,
+      "bedTemp": 105,
       "file": "profiles/creality-generic-asa.json"
     },
     {
@@ -3109,8 +3565,8 @@
       "name": "Generic ASA-CF",
       "vendor": "Creality",
       "type": "ASA",
-      "nozzleTemp": 270,
-      "bedTemp": 90,
+      "nozzleTemp": 260,
+      "bedTemp": 105,
       "file": "profiles/creality-generic-asa-cf.json"
     },
     {
@@ -3118,7 +3574,7 @@
       "name": "Generic BVOH",
       "vendor": "Creality",
       "type": "BVOH",
-      "nozzleTemp": 220,
+      "nozzleTemp": 210,
       "bedTemp": 60,
       "file": "profiles/creality-generic-bvoh.json"
     },
@@ -3136,8 +3592,8 @@
       "name": "Generic PA",
       "vendor": "Creality",
       "type": "PA",
-      "nozzleTemp": 260,
-      "bedTemp": 50,
+      "nozzleTemp": 250,
+      "bedTemp": 45,
       "file": "profiles/creality-generic-pa.json"
     },
     {
@@ -3145,7 +3601,7 @@
       "name": "Generic PA-CF",
       "vendor": "Creality",
       "type": "PA",
-      "nozzleTemp": 280,
+      "nozzleTemp": 290,
       "bedTemp": 100,
       "file": "profiles/creality-generic-pa-cf.json"
     },
@@ -3199,8 +3655,8 @@
       "name": "Generic PC",
       "vendor": "Creality",
       "type": "PC",
-      "nozzleTemp": 260,
-      "bedTemp": 100,
+      "nozzleTemp": 280,
+      "bedTemp": 110,
       "file": "profiles/creality-generic-pc.json"
     },
     {
@@ -3236,7 +3692,7 @@
       "vendor": "Creality",
       "type": "PETG",
       "nozzleTemp": 250,
-      "bedTemp": 80,
+      "bedTemp": 70,
       "file": "profiles/creality-generic-petg.json"
     },
     {
@@ -3245,7 +3701,7 @@
       "vendor": "Creality",
       "type": "PETG",
       "nozzleTemp": 250,
-      "bedTemp": 80,
+      "bedTemp": 70,
       "file": "profiles/creality-generic-petg-cf.json"
     },
     {
@@ -3262,9 +3718,54 @@
       "name": "Generic PLA",
       "vendor": "Creality",
       "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 50,
+      "file": "profiles/creality-generic-pla.json"
+    },
+    {
+      "id": "creality-generic-pla-hf",
+      "name": "Generic PLA HF",
+      "vendor": "Creality",
+      "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/creality-generic-pla.json"
+      "file": "profiles/creality-generic-pla-hf.json"
+    },
+    {
+      "id": "creality-generic-pla-high-speed",
+      "name": "Generic PLA High Speed",
+      "vendor": "Creality",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/creality-generic-pla-high-speed.json"
+    },
+    {
+      "id": "creality-generic-pla-matte",
+      "name": "Generic PLA Matte",
+      "vendor": "Creality",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/creality-generic-pla-matte.json"
+    },
+    {
+      "id": "creality-generic-pla-silk",
+      "name": "Generic PLA Silk",
+      "vendor": "Creality",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/creality-generic-pla-silk.json"
+    },
+    {
+      "id": "creality-generic-pla-wood",
+      "name": "Generic PLA Wood",
+      "vendor": "Creality",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/creality-generic-pla-wood.json"
     },
     {
       "id": "creality-generic-pla-cf",
@@ -3276,13 +3777,13 @@
       "file": "profiles/creality-generic-pla-cf.json"
     },
     {
-      "id": "creality-generic-pla-silk",
+      "id": "creality-generic-pla-silk-2",
       "name": "Generic PLA-Silk",
       "vendor": "Creality",
       "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/creality-generic-pla-silk.json"
+      "nozzleTemp": 200,
+      "bedTemp": 50,
+      "file": "profiles/creality-generic-pla-silk-2.json"
     },
     {
       "id": "creality-generic-pp",
@@ -3330,6 +3831,15 @@
       "file": "profiles/creality-generic-pva.json"
     },
     {
+      "id": "creality-generic-speed-pla",
+      "name": "Generic Speed PLA",
+      "vendor": "Creality",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/creality-generic-speed-pla.json"
+    },
+    {
       "id": "creality-generic-support-for-pa",
       "name": "Generic Support for PA",
       "vendor": "Creality",
@@ -3352,8 +3862,8 @@
       "name": "Generic TPU",
       "vendor": "Creality",
       "type": "TPU",
-      "nozzleTemp": 220,
-      "bedTemp": 40,
+      "nozzleTemp": 230,
+      "bedTemp": 35,
       "file": "profiles/creality-generic-tpu.json"
     },
     {
@@ -3371,7 +3881,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 230,
-      "bedTemp": 50,
+      "bedTemp": 65,
       "file": "profiles/creality-hp-ultra-pla.json"
     },
     {
@@ -3388,8 +3898,8 @@
       "name": "HP-TPU",
       "vendor": "Creality",
       "type": "TPU",
-      "nozzleTemp": 220,
-      "bedTemp": 40,
+      "nozzleTemp": 210,
+      "bedTemp": 60,
       "file": "profiles/creality-hp-tpu.json"
     },
     {
@@ -3416,7 +3926,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/creality-hyper-luminous.json"
     },
     {
@@ -3469,8 +3979,8 @@
       "name": "Hyper PETG",
       "vendor": "Creality",
       "type": "PETG",
-      "nozzleTemp": 250,
-      "bedTemp": 80,
+      "nozzleTemp": 240,
+      "bedTemp": 70,
       "file": "profiles/creality-hyper-petg.json"
     },
     {
@@ -3497,7 +4007,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/creality-hyper-pla.json"
     },
     {
@@ -3506,7 +4016,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
+      "bedTemp": 65,
       "file": "profiles/creality-hyper-pla-cf.json"
     },
     {
@@ -3568,8 +4078,8 @@
       "name": "Soleyin Basic PETG",
       "vendor": "Creality",
       "type": "PETG",
-      "nozzleTemp": 250,
-      "bedTemp": 80,
+      "nozzleTemp": 240,
+      "bedTemp": 70,
       "file": "profiles/creality-soleyin-basic-petg.json"
     },
     {
@@ -3578,7 +4088,7 @@
       "vendor": "Creality",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/creality-soleyin-ultra-pla.json"
     },
     {
@@ -3596,7 +4106,7 @@
       "vendor": "Cubicon",
       "type": "ABS",
       "nozzleTemp": 230,
-      "bedTemp": 100,
+      "bedTemp": 105,
       "file": "profiles/cubicon-cubicon-abs-a100.json"
     },
     {
@@ -3622,7 +4132,7 @@
       "name": "Cubicon PC",
       "vendor": "Cubicon",
       "type": "PC",
-      "nozzleTemp": 280,
+      "nozzleTemp": 250,
       "bedTemp": 110,
       "file": "profiles/cubicon-cubicon-pc.json"
     },
@@ -3672,31 +4182,40 @@
       "file": "profiles/deltamaker-deltamaker-brand-pla.json"
     },
     {
-      "id": "deltamaker-deltamaker-generic-petg",
-      "name": "DeltaMaker Generic PETG",
+      "id": "deltamaker-generic-petg",
+      "name": "Generic PETG",
       "vendor": "DeltaMaker",
       "type": "PETG",
       "nozzleTemp": 250,
       "bedTemp": 0,
-      "file": "profiles/deltamaker-deltamaker-generic-petg.json"
+      "file": "profiles/deltamaker-generic-petg.json"
     },
     {
-      "id": "deltamaker-deltamaker-generic-pla",
-      "name": "DeltaMaker Generic PLA",
+      "id": "deltamaker-generic-pla",
+      "name": "Generic PLA",
       "vendor": "DeltaMaker",
       "type": "PLA",
       "nozzleTemp": 210,
       "bedTemp": 0,
-      "file": "profiles/deltamaker-deltamaker-generic-pla.json"
+      "file": "profiles/deltamaker-generic-pla.json"
     },
     {
-      "id": "deltamaker-deltamaker-generic-tpu",
-      "name": "DeltaMaker Generic TPU",
+      "id": "deltamaker-generic-tpu",
+      "name": "Generic TPU",
       "vendor": "DeltaMaker",
       "type": "TPU",
       "nozzleTemp": 235,
       "bedTemp": 0,
-      "file": "profiles/deltamaker-deltamaker-generic-tpu.json"
+      "file": "profiles/deltamaker-generic-tpu.json"
+    },
+    {
+      "id": "dremc-dremc-abs",
+      "name": "DREMC ABS",
+      "vendor": "DREMC",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/dremc-dremc-abs.json"
     },
     {
       "id": "dremc-dremc-abs-gf",
@@ -3708,6 +4227,51 @@
       "file": "profiles/dremc-dremc-abs-gf.json"
     },
     {
+      "id": "dremc-dremc-abs-2",
+      "name": "DREMC ABS+",
+      "vendor": "DREMC",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/dremc-dremc-abs-2.json"
+    },
+    {
+      "id": "dremc-dremc-asa",
+      "name": "DREMC ASA",
+      "vendor": "DREMC",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/dremc-dremc-asa.json"
+    },
+    {
+      "id": "dremc-dremc-asa-cf",
+      "name": "DREMC ASA CF",
+      "vendor": "DREMC",
+      "type": "ASA",
+      "nozzleTemp": 265,
+      "bedTemp": 110,
+      "file": "profiles/dremc-dremc-asa-cf.json"
+    },
+    {
+      "id": "dremc-dremc-asa-gf",
+      "name": "DREMC ASA GF",
+      "vendor": "DREMC",
+      "type": "ASA",
+      "nozzleTemp": 270,
+      "bedTemp": 110,
+      "file": "profiles/dremc-dremc-asa-gf.json"
+    },
+    {
+      "id": "dremc-dremc-pa12-cf",
+      "name": "DREMC PA12-CF",
+      "vendor": "DREMC",
+      "type": "PA",
+      "nozzleTemp": 290,
+      "bedTemp": 100,
+      "file": "profiles/dremc-dremc-pa12-cf.json"
+    },
+    {
       "id": "dremc-dremc-pa6-cf",
       "name": "DREMC PA6-CF",
       "vendor": "DREMC",
@@ -3715,6 +4279,42 @@
       "nozzleTemp": 270,
       "bedTemp": 100,
       "file": "profiles/dremc-dremc-pa6-cf.json"
+    },
+    {
+      "id": "dremc-dremc-pet-cf",
+      "name": "DREMC PET-CF",
+      "vendor": "DREMC",
+      "type": "PET",
+      "nozzleTemp": 300,
+      "bedTemp": 70,
+      "file": "profiles/dremc-dremc-pet-cf.json"
+    },
+    {
+      "id": "dremc-dremc-petg",
+      "name": "DREMC PETG",
+      "vendor": "DREMC",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/dremc-dremc-petg.json"
+    },
+    {
+      "id": "dremc-dremc-pla",
+      "name": "DREMC PLA+",
+      "vendor": "DREMC",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/dremc-dremc-pla.json"
+    },
+    {
+      "id": "dremc-dremc-pla-hs",
+      "name": "DREMC PLA+ HS",
+      "vendor": "DREMC",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/dremc-dremc-pla-hs.json"
     },
     {
       "id": "dremc-dremc-ppa-cf",
@@ -3726,13 +4326,22 @@
       "file": "profiles/dremc-dremc-ppa-cf.json"
     },
     {
-      "id": "dremel-dremel-generic-pla",
-      "name": "Dremel Generic PLA",
+      "id": "dremc-dremc-tpu-95a",
+      "name": "DREMC TPU 95A",
+      "vendor": "DREMC",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 35,
+      "file": "profiles/dremc-dremc-tpu-95a.json"
+    },
+    {
+      "id": "dremel-generic-pla",
+      "name": "Generic PLA",
       "vendor": "Dremel",
       "type": "PLA",
       "nozzleTemp": 225,
       "bedTemp": 55,
-      "file": "profiles/dremel-dremel-generic-pla.json"
+      "file": "profiles/dremel-generic-pla.json"
     },
     {
       "id": "elas-elas-asa",
@@ -4356,6 +4965,24 @@
       "file": "profiles/eryone-eryone-abs-cf.json"
     },
     {
+      "id": "eryone-eryone-abs-gf",
+      "name": "Eryone ABS-GF",
+      "vendor": "Eryone",
+      "type": "ABS",
+      "nozzleTemp": 265,
+      "bedTemp": 90,
+      "file": "profiles/eryone-eryone-abs-gf.json"
+    },
+    {
+      "id": "eryone-eryone-abs-hs",
+      "name": "Eryone ABS+-HS",
+      "vendor": "Eryone",
+      "type": "ABS",
+      "nozzleTemp": 255,
+      "bedTemp": 90,
+      "file": "profiles/eryone-eryone-abs-hs.json"
+    },
+    {
       "id": "eryone-eryone-asa",
       "name": "Eryone ASA",
       "vendor": "Eryone",
@@ -4372,6 +4999,15 @@
       "nozzleTemp": 260,
       "bedTemp": 110,
       "file": "profiles/eryone-eryone-asa-cf.json"
+    },
+    {
+      "id": "eryone-eryone-asa-hs",
+      "name": "Eryone ASA-HS",
+      "vendor": "Eryone",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 90,
+      "file": "profiles/eryone-eryone-asa-hs.json"
     },
     {
       "id": "eryone-eryone-pa",
@@ -4410,6 +5046,15 @@
       "file": "profiles/eryone-eryone-petg.json"
     },
     {
+      "id": "eryone-eryone-petg-hs",
+      "name": "Eryone PETG HS",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 70,
+      "file": "profiles/eryone-eryone-petg-hs.json"
+    },
+    {
       "id": "eryone-eryone-petg-cf",
       "name": "Eryone PETG-CF",
       "vendor": "Eryone",
@@ -4417,6 +5062,51 @@
       "nozzleTemp": 245,
       "bedTemp": 80,
       "file": "profiles/eryone-eryone-petg-cf.json"
+    },
+    {
+      "id": "eryone-eryone-petg-galaxy",
+      "name": "Eryone petg-Galaxy",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 70,
+      "file": "profiles/eryone-eryone-petg-galaxy.json"
+    },
+    {
+      "id": "eryone-eryone-petg-gf",
+      "name": "Eryone PETG-GF",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 250,
+      "bedTemp": 70,
+      "file": "profiles/eryone-eryone-petg-gf.json"
+    },
+    {
+      "id": "eryone-eryone-petg-lite",
+      "name": "Eryone PETG-Lite",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 70,
+      "file": "profiles/eryone-eryone-petg-lite.json"
+    },
+    {
+      "id": "eryone-eryone-petg-matte",
+      "name": "Eryone PETG-Matte",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 250,
+      "bedTemp": 80,
+      "file": "profiles/eryone-eryone-petg-matte.json"
+    },
+    {
+      "id": "eryone-eryone-petg-translucent",
+      "name": "Eryone PETG-Translucent",
+      "vendor": "Eryone",
+      "type": "PETG",
+      "nozzleTemp": 215,
+      "bedTemp": 70,
+      "file": "profiles/eryone-eryone-petg-translucent.json"
     },
     {
       "id": "eryone-eryone-pla",
@@ -4435,6 +5125,42 @@
       "nozzleTemp": 225,
       "bedTemp": 55,
       "file": "profiles/eryone-eryone-pla-cf.json"
+    },
+    {
+      "id": "eryone-eryone-pla-matte",
+      "name": "Eryone PLA-Matte",
+      "vendor": "Eryone",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 55,
+      "file": "profiles/eryone-eryone-pla-matte.json"
+    },
+    {
+      "id": "eryone-eryone-pla-matte-hs",
+      "name": "Eryone PLA-Matte HS",
+      "vendor": "Eryone",
+      "type": "PLA",
+      "nozzleTemp": 225,
+      "bedTemp": 55,
+      "file": "profiles/eryone-eryone-pla-matte-hs.json"
+    },
+    {
+      "id": "eryone-eryone-pla-ultra-silk",
+      "name": "Eryone pla-Ultra Silk",
+      "vendor": "Eryone",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 55,
+      "file": "profiles/eryone-eryone-pla-ultra-silk.json"
+    },
+    {
+      "id": "eryone-eryone-pla-hs",
+      "name": "Eryone PLA+HS",
+      "vendor": "Eryone",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 55,
+      "file": "profiles/eryone-eryone-pla-hs.json"
     },
     {
       "id": "eryone-eryone-pp",
@@ -4523,8 +5249,35 @@
       "vendor": "eSUN",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 65,
+      "bedTemp": 55,
       "file": "profiles/esun-esun-pla.json"
+    },
+    {
+      "id": "everloop-everloop-rpetg-premium",
+      "name": "EverLoop rPETG Premium",
+      "vendor": "EverLoop",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/everloop-everloop-rpetg-premium.json"
+    },
+    {
+      "id": "everloop-everloop-rpla-premium",
+      "name": "EverLoop rPLA Premium",
+      "vendor": "EverLoop",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 60,
+      "file": "profiles/everloop-everloop-rpla-premium.json"
+    },
+    {
+      "id": "everloop-everloop-rpla-premium-matte",
+      "name": "EverLoop rPLA Premium Matte",
+      "vendor": "EverLoop",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 60,
+      "file": "profiles/everloop-everloop-rpla-premium-matte.json"
     },
     {
       "id": "fdplast-fdplast-abs",
@@ -4579,6 +5332,258 @@
       "nozzleTemp": 180,
       "bedTemp": 60,
       "file": "profiles/fdplast-fdplast-tpu.json"
+    },
+    {
+      "id": "felix-printers-felix-flex-brass",
+      "name": "FELIX FLEX  Brass",
+      "vendor": "FELIX Printers",
+      "type": "Other",
+      "nozzleTemp": 215,
+      "bedTemp": 40,
+      "file": "profiles/felix-printers-felix-flex-brass.json"
+    },
+    {
+      "id": "felix-printers-felix-flex-hardened-steel",
+      "name": "FELIX FLEX Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "Other",
+      "nozzleTemp": 225,
+      "bedTemp": 40,
+      "file": "profiles/felix-printers-felix-flex-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-felix-petg-brass",
+      "name": "FELIX PETG Brass",
+      "vendor": "FELIX Printers",
+      "type": "PETG",
+      "nozzleTemp": 220,
+      "bedTemp": 75,
+      "file": "profiles/felix-printers-felix-petg-brass.json"
+    },
+    {
+      "id": "felix-printers-felix-petg-hardened-steel",
+      "name": "FELIX PETG Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "PETG",
+      "nozzleTemp": 235,
+      "bedTemp": 75,
+      "file": "profiles/felix-printers-felix-petg-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-felix-premium-pla-brass",
+      "name": "FELIX Premium PLA Brass",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 190,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-felix-premium-pla-brass.json"
+    },
+    {
+      "id": "felix-printers-felix-premium-pla-hardened-steel",
+      "name": "FELIX Premium PLA Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 205,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-felix-premium-pla-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-felix-wood-brass",
+      "name": "FELIX Wood  Brass",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 185,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-felix-wood-brass.json"
+    },
+    {
+      "id": "felix-printers-felix-wood-brass-2",
+      "name": "FELIX Wood Brass",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 185,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-felix-wood-brass-2.json"
+    },
+    {
+      "id": "felix-printers-felix-wood-hardened-steel",
+      "name": "FELIX Wood Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-felix-wood-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-food-medium-plastic-syringe",
+      "name": "Food Medium Plastic Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-medium-plastic-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-medium-stainless-steel-syringe",
+      "name": "Food Medium Stainless Steel Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-medium-stainless-steel-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-thick-stainless-steel-syringe",
+      "name": "Food Thick Stainless Steel Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-thick-stainless-steel-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-thin-plastic-syringe",
+      "name": "Food Thin Plastic Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-thin-plastic-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-thin-stainless-steel-syringe",
+      "name": "Food Thin Stainless Steel Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-thin-stainless-steel-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-very-thick-stainless-steel-syringe",
+      "name": "Food Very Thick Stainless Steel Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-very-thick-stainless-steel-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-very-thin-plastic-syringe",
+      "name": "Food Very Thin Plastic Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-very-thin-plastic-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-very-thin-stainless-steel-syringe",
+      "name": "Food Very Thin Stainless Steel  Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-very-thin-stainless-steel-syringe.json"
+    },
+    {
+      "id": "felix-printers-food-very-thin-stainless-steel-syringe-2",
+      "name": "Food Very Thin Stainless Steel Syringe",
+      "vendor": "FELIX Printers",
+      "type": "PVB",
+      "nozzleTemp": 0,
+      "bedTemp": 0,
+      "file": "profiles/felix-printers-food-very-thin-stainless-steel-syringe-2.json"
+    },
+    {
+      "id": "felix-printers-formfutura-appolox-asa-brass",
+      "name": "FORMFUTURA AppoloX ASA Brass",
+      "vendor": "FELIX Printers",
+      "type": "ASA",
+      "nozzleTemp": 235,
+      "bedTemp": 90,
+      "file": "profiles/felix-printers-formfutura-appolox-asa-brass.json"
+    },
+    {
+      "id": "felix-printers-formfutura-appolox-asa-hardened-steel",
+      "name": "FORMFUTURA AppoloX ASA Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "ASA",
+      "nozzleTemp": 245,
+      "bedTemp": 90,
+      "file": "profiles/felix-printers-formfutura-appolox-asa-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-formfutura-aquasolve-pva-brass",
+      "name": "FORMFUTURA Aquasolve PVA Brass",
+      "vendor": "FELIX Printers",
+      "type": "PVA",
+      "nozzleTemp": 195,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-formfutura-aquasolve-pva-brass.json"
+    },
+    {
+      "id": "felix-printers-formfutura-aquasolve-pva-hardened-steel",
+      "name": "FORMFUTURA Aquasolve PVA Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "PVA",
+      "nozzleTemp": 205,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-formfutura-aquasolve-pva-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-formfutura-epla-brass",
+      "name": "FORMFUTURA ePLA Brass",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 205,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-formfutura-epla-brass.json"
+    },
+    {
+      "id": "felix-printers-formfutura-epla-hardened-steel",
+      "name": "FORMFUTURA ePLA Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 55,
+      "file": "profiles/felix-printers-formfutura-epla-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-formfutura-titanx-abs-brass",
+      "name": "FORMFUTURA TitanX ABS Brass",
+      "vendor": "FELIX Printers",
+      "type": "ABS",
+      "nozzleTemp": 245,
+      "bedTemp": 85,
+      "file": "profiles/felix-printers-formfutura-titanx-abs-brass.json"
+    },
+    {
+      "id": "felix-printers-formfutura-titanx-abs-hardened-steel",
+      "name": "FORMFUTURA TitanX ABS Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "ABS",
+      "nozzleTemp": 250,
+      "bedTemp": 85,
+      "file": "profiles/felix-printers-formfutura-titanx-abs-hardened-steel.json"
+    },
+    {
+      "id": "felix-printers-ultrafuse-abs-fusion-brass",
+      "name": "Ultrafuse ABS Fusion+ Brass",
+      "vendor": "FELIX Printers",
+      "type": "ABS",
+      "nozzleTemp": 265,
+      "bedTemp": 90,
+      "file": "profiles/felix-printers-ultrafuse-abs-fusion-brass.json"
+    },
+    {
+      "id": "felix-printers-ultrafuse-abs-fusion-hardened-steel",
+      "name": "Ultrafuse ABS Fusion+ Hardened Steel",
+      "vendor": "FELIX Printers",
+      "type": "ABS",
+      "nozzleTemp": 275,
+      "bedTemp": 90,
+      "file": "profiles/felix-printers-ultrafuse-abs-fusion-hardened-steel.json"
     },
     {
       "id": "filar-filar-petg-amarillo-lima",
@@ -4973,7 +5978,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-amarillo.json"
     },
     {
@@ -4982,7 +5987,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-azul.json"
     },
     {
@@ -4991,7 +5996,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-beige.json"
     },
     {
@@ -5000,7 +6005,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-blanco.json"
     },
     {
@@ -5009,7 +6014,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-bordo.json"
     },
     {
@@ -5018,7 +6023,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-celeste-cielo.json"
     },
     {
@@ -5027,7 +6032,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-chocolate.json"
     },
     {
@@ -5036,7 +6041,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-gris.json"
     },
     {
@@ -5045,7 +6050,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-marron.json"
     },
     {
@@ -5054,7 +6059,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-naranja.json"
     },
     {
@@ -5063,7 +6068,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-negro.json"
     },
     {
@@ -5072,7 +6077,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-piel.json"
     },
     {
@@ -5081,7 +6086,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-rojo.json"
     },
     {
@@ -5090,7 +6095,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-rosa.json"
     },
     {
@@ -5099,7 +6104,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-uva.json"
     },
     {
@@ -5108,7 +6113,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-verde.json"
     },
     {
@@ -5117,7 +6122,7 @@
       "vendor": "FilAr",
       "type": "PLA",
       "nozzleTemp": 200,
-      "bedTemp": 60,
+      "bedTemp": 50,
       "file": "profiles/filar-filar-pla-mate-violeta.json"
     },
     {
@@ -5223,7 +6228,7 @@
       "id": "flashforge-flashforge-asa-basic",
       "name": "Flashforge ASA Basic",
       "vendor": "Flashforge",
-      "type": "ABS",
+      "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 100,
       "file": "profiles/flashforge-flashforge-asa-basic.json"
@@ -5253,7 +6258,8 @@
       "type": "ABS",
       "nozzleTemp": 230,
       "bedTemp": 105,
-      "file": "profiles/flashforge-flashforge-generic-abs.json"
+      "file": "profiles/flashforge-flashforge-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-asa",
@@ -5262,25 +6268,8 @@
       "type": "ASA",
       "nozzleTemp": 240,
       "bedTemp": 105,
-      "file": "profiles/flashforge-flashforge-generic-asa.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-hips",
-      "name": "Flashforge Generic HIPS",
-      "vendor": "Flashforge",
-      "type": "HIPS",
-      "nozzleTemp": 240,
-      "bedTemp": 105,
-      "file": "profiles/flashforge-flashforge-generic-hips.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-hs-pla",
-      "name": "Flashforge Generic HS PLA",
-      "vendor": "Flashforge",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-hs-pla.json"
+      "file": "profiles/flashforge-flashforge-generic-asa.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-petg",
@@ -5289,16 +6278,8 @@
       "type": "PETG",
       "nozzleTemp": 250,
       "bedTemp": 75,
-      "file": "profiles/flashforge-flashforge-generic-petg.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-petg-cf",
-      "name": "Flashforge Generic PETG-CF",
-      "vendor": "Flashforge",
-      "type": "PETG",
-      "nozzleTemp": 220,
-      "bedTemp": 70,
-      "file": "profiles/flashforge-flashforge-generic-petg-cf.json"
+      "file": "profiles/flashforge-flashforge-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-petg-cf10",
@@ -5307,7 +6288,8 @@
       "type": "PETG",
       "nozzleTemp": 245,
       "bedTemp": 70,
-      "file": "profiles/flashforge-flashforge-generic-petg-cf10.json"
+      "file": "profiles/flashforge-flashforge-generic-petg-cf10.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-pla",
@@ -5316,16 +6298,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-pla.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-pla-cf",
-      "name": "Flashforge Generic PLA-CF",
-      "vendor": "Flashforge",
-      "type": "PLA",
-      "nozzleTemp": 210,
-      "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-pla-cf.json"
+      "file": "profiles/flashforge-flashforge-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-pla-cf10",
@@ -5334,34 +6308,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-pla-cf10.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-pla-silk-2",
-      "name": "Flashforge Generic PLA-Silk",
-      "vendor": "Flashforge",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-pla-silk-2.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-pla-silk",
-      "name": "Flashforge Generic PLA-SILK",
-      "vendor": "Flashforge",
-      "type": "PLA",
-      "nozzleTemp": 217,
-      "bedTemp": 45,
-      "file": "profiles/flashforge-flashforge-generic-pla-silk.json"
-    },
-    {
-      "id": "flashforge-flashforge-generic-pva",
-      "name": "Flashforge Generic PVA",
-      "vendor": "Flashforge",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-generic-pva.json"
+      "file": "profiles/flashforge-flashforge-generic-pla-cf10.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-generic-tpu",
@@ -5370,7 +6318,8 @@
       "type": "TPU",
       "nozzleTemp": 225,
       "bedTemp": 45,
-      "file": "profiles/flashforge-flashforge-generic-tpu.json"
+      "file": "profiles/flashforge-flashforge-generic-tpu.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-hs-petg",
@@ -5398,6 +6347,15 @@
       "nozzleTemp": 200,
       "bedTemp": 55,
       "file": "profiles/flashforge-flashforge-hs-pla-burnt-ti.json"
+    },
+    {
+      "id": "flashforge-flashforge-hs-pla-2",
+      "name": "Flashforge HS PLA+",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/flashforge-flashforge-hs-pla-2.json"
     },
     {
       "id": "flashforge-flashforge-pa",
@@ -5442,11 +6400,12 @@
       "type": "PA",
       "nozzleTemp": 310,
       "bedTemp": 80,
-      "file": "profiles/flashforge-flashforge-paht-cf.json"
+      "file": "profiles/flashforge-flashforge-paht-cf.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-pc",
-      "name": "FlashForge PC",
+      "name": "Flashforge PC",
       "vendor": "Flashforge",
       "type": "PC",
       "nozzleTemp": 275,
@@ -5532,7 +6491,8 @@
       "type": "PLA",
       "nozzleTemp": 200,
       "bedTemp": 50,
-      "file": "profiles/flashforge-flashforge-pla-buint-ti.json"
+      "file": "profiles/flashforge-flashforge-pla-buint-ti.json",
+      "legacy": true
     },
     {
       "id": "flashforge-flashforge-pla-color-change",
@@ -5551,6 +6511,15 @@
       "nozzleTemp": 210,
       "bedTemp": 60,
       "file": "profiles/flashforge-flashforge-pla-galaxy.json"
+    },
+    {
+      "id": "flashforge-flashforge-pla-lite",
+      "name": "Flashforge PLA LITE",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/flashforge-flashforge-pla-lite.json"
     },
     {
       "id": "flashforge-flashforge-pla-luminous",
@@ -5592,7 +6561,7 @@
       "id": "flashforge-flashforge-pla-silk",
       "name": "Flashforge PLA Silk",
       "vendor": "Flashforge",
-      "type": "SILK",
+      "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
       "file": "profiles/flashforge-flashforge-pla-silk.json"
@@ -5625,22 +6594,32 @@
       "file": "profiles/flashforge-flashforge-ppa-gf.json"
     },
     {
+      "id": "flashforge-flashforge-pps",
+      "name": "Flashforge PPS",
+      "vendor": "Flashforge",
+      "type": "PPS",
+      "nozzleTemp": 315,
+      "bedTemp": 110,
+      "file": "profiles/flashforge-flashforge-pps.json"
+    },
+    {
       "id": "flashforge-flashforge-pps-2",
       "name": "Flashforge PPS",
       "vendor": "Flashforge",
       "type": "PPS",
       "nozzleTemp": 320,
       "bedTemp": 100,
-      "file": "profiles/flashforge-flashforge-pps-2.json"
+      "file": "profiles/flashforge-flashforge-pps-2.json",
+      "legacy": true
     },
     {
-      "id": "flashforge-flashforge-pps",
-      "name": "FlashForge PPS",
+      "id": "flashforge-flashforge-pps-cf",
+      "name": "Flashforge PPS-CF",
       "vendor": "Flashforge",
       "type": "PPS",
-      "nozzleTemp": 315,
+      "nozzleTemp": 320,
       "bedTemp": 110,
-      "file": "profiles/flashforge-flashforge-pps.json"
+      "file": "profiles/flashforge-flashforge-pps-cf.json"
     },
     {
       "id": "flashforge-flashforge-pps-cf-2",
@@ -5649,16 +6628,17 @@
       "type": "PPS",
       "nozzleTemp": 320,
       "bedTemp": 110,
-      "file": "profiles/flashforge-flashforge-pps-cf-2.json"
+      "file": "profiles/flashforge-flashforge-pps-cf-2.json",
+      "legacy": true
     },
     {
-      "id": "flashforge-flashforge-pps-cf",
-      "name": "FlashForge PPS-CF",
+      "id": "flashforge-flashforge-r-pla",
+      "name": "Flashforge R PLA",
       "vendor": "Flashforge",
-      "type": "PPS",
-      "nozzleTemp": 315,
-      "bedTemp": 110,
-      "file": "profiles/flashforge-flashforge-pps-cf.json"
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/flashforge-flashforge-r-pla.json"
     },
     {
       "id": "flashforge-flashforge-tpu-65d",
@@ -5712,7 +6692,8 @@
       "type": "PA",
       "nozzleTemp": 295,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-nexpa-cf25.json"
+      "file": "profiles/flashforge-fusrock-generic-nexpa-cf25.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-paht-cf",
@@ -5721,7 +6702,8 @@
       "type": "PA",
       "nozzleTemp": 295,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-paht-cf.json"
+      "file": "profiles/flashforge-fusrock-generic-paht-cf.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-paht-gf",
@@ -5730,7 +6712,8 @@
       "type": "PA",
       "nozzleTemp": 295,
       "bedTemp": 70,
-      "file": "profiles/flashforge-fusrock-generic-paht-gf.json"
+      "file": "profiles/flashforge-fusrock-generic-paht-gf.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-pet-cf",
@@ -5739,7 +6722,8 @@
       "type": "PET",
       "nozzleTemp": 290,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-pet-cf.json"
+      "file": "profiles/flashforge-fusrock-generic-pet-cf.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-pet-gf",
@@ -5748,7 +6732,8 @@
       "type": "PET",
       "nozzleTemp": 290,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-pet-gf.json"
+      "file": "profiles/flashforge-fusrock-generic-pet-gf.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-s-multi",
@@ -5757,7 +6742,8 @@
       "type": "Other",
       "nozzleTemp": 270,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-s-multi.json"
+      "file": "profiles/flashforge-fusrock-generic-s-multi.json",
+      "legacy": true
     },
     {
       "id": "flashforge-fusrock-generic-s-paht",
@@ -5766,7 +6752,17 @@
       "type": "Other",
       "nozzleTemp": 275,
       "bedTemp": 75,
-      "file": "profiles/flashforge-fusrock-generic-s-paht.json"
+      "file": "profiles/flashforge-fusrock-generic-s-paht.json",
+      "legacy": true
+    },
+    {
+      "id": "flashforge-fusrock-nexpa-cf25",
+      "name": "FusRock NexPA-CF25",
+      "vendor": "Flashforge",
+      "type": "PA",
+      "nozzleTemp": 295,
+      "bedTemp": 75,
+      "file": "profiles/flashforge-fusrock-nexpa-cf25.json"
     },
     {
       "id": "flashforge-fusrock-paht",
@@ -5782,9 +6778,18 @@
       "name": "FusRock PAHT-CF",
       "vendor": "Flashforge",
       "type": "PA",
-      "nozzleTemp": 310,
-      "bedTemp": 80,
+      "nozzleTemp": 295,
+      "bedTemp": 75,
       "file": "profiles/flashforge-fusrock-paht-cf.json"
+    },
+    {
+      "id": "flashforge-fusrock-paht-gf",
+      "name": "FusRock PAHT-GF",
+      "vendor": "Flashforge",
+      "type": "PA",
+      "nozzleTemp": 295,
+      "bedTemp": 70,
+      "file": "profiles/flashforge-fusrock-paht-gf.json"
     },
     {
       "id": "flashforge-fusrock-pet",
@@ -5800,18 +6805,36 @@
       "name": "FusRock PET-CF",
       "vendor": "Flashforge",
       "type": "PET",
-      "nozzleTemp": 280,
-      "bedTemp": 80,
+      "nozzleTemp": 290,
+      "bedTemp": 75,
       "file": "profiles/flashforge-fusrock-pet-cf.json"
+    },
+    {
+      "id": "flashforge-fusrock-pet-gf",
+      "name": "FusRock PET-GF",
+      "vendor": "Flashforge",
+      "type": "PET",
+      "nozzleTemp": 290,
+      "bedTemp": 75,
+      "file": "profiles/flashforge-fusrock-pet-gf.json"
     },
     {
       "id": "flashforge-fusrock-s-multi",
       "name": "FusRock S-Multi",
       "vendor": "Flashforge",
-      "type": "Other",
-      "nozzleTemp": 280,
-      "bedTemp": 0,
+      "type": "PA",
+      "nozzleTemp": 270,
+      "bedTemp": 75,
       "file": "profiles/flashforge-fusrock-s-multi.json"
+    },
+    {
+      "id": "flashforge-fusrock-s-paht",
+      "name": "FusRock S-PAHT",
+      "vendor": "Flashforge",
+      "type": "PA",
+      "nozzleTemp": 275,
+      "bedTemp": 75,
+      "file": "profiles/flashforge-fusrock-s-paht.json"
     },
     {
       "id": "flashforge-generic-abs",
@@ -5832,6 +6855,24 @@
       "file": "profiles/flashforge-generic-asa.json"
     },
     {
+      "id": "flashforge-generic-hips",
+      "name": "Generic HIPS",
+      "vendor": "Flashforge",
+      "type": "HIPS",
+      "nozzleTemp": 240,
+      "bedTemp": 105,
+      "file": "profiles/flashforge-generic-hips.json"
+    },
+    {
+      "id": "flashforge-generic-hs-pla",
+      "name": "Generic HS PLA",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/flashforge-generic-hs-pla.json"
+    },
+    {
       "id": "flashforge-generic-pet",
       "name": "Generic PET",
       "vendor": "Flashforge",
@@ -5848,6 +6889,15 @@
       "nozzleTemp": 235,
       "bedTemp": 80,
       "file": "profiles/flashforge-generic-petg.json"
+    },
+    {
+      "id": "flashforge-generic-petg-cf",
+      "name": "Generic PETG-CF",
+      "vendor": "Flashforge",
+      "type": "PETG",
+      "nozzleTemp": 220,
+      "bedTemp": 70,
+      "file": "profiles/flashforge-generic-petg-cf.json"
     },
     {
       "id": "flashforge-generic-petg-cf10",
@@ -5871,10 +6921,19 @@
       "id": "flashforge-generic-pla-silk",
       "name": "Generic PLA Silk",
       "vendor": "Flashforge",
-      "type": "SILK",
+      "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 65,
       "file": "profiles/flashforge-generic-pla-silk.json"
+    },
+    {
+      "id": "flashforge-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 50,
+      "file": "profiles/flashforge-generic-pla-cf.json"
     },
     {
       "id": "flashforge-generic-pla-cf10",
@@ -5884,6 +6943,33 @@
       "nozzleTemp": 220,
       "bedTemp": 50,
       "file": "profiles/flashforge-generic-pla-cf10.json"
+    },
+    {
+      "id": "flashforge-generic-pla-silk-3",
+      "name": "Generic PLA-Silk",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/flashforge-generic-pla-silk-3.json"
+    },
+    {
+      "id": "flashforge-generic-pla-silk-2",
+      "name": "Generic PLA-SILK",
+      "vendor": "Flashforge",
+      "type": "PLA",
+      "nozzleTemp": 217,
+      "bedTemp": 45,
+      "file": "profiles/flashforge-generic-pla-silk-2.json"
+    },
+    {
+      "id": "flashforge-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Flashforge",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/flashforge-generic-pva.json"
     },
     {
       "id": "flashforge-generic-tpu",
@@ -5931,12 +7017,21 @@
       "file": "profiles/flashforge-generic-tpu-95a.json"
     },
     {
+      "id": "flashforge-kexcelled-tpu-64d",
+      "name": "Kexcelled TPU 64D",
+      "vendor": "Flashforge",
+      "type": "TPU",
+      "nozzleTemp": 225,
+      "bedTemp": 45,
+      "file": "profiles/flashforge-kexcelled-tpu-64d.json"
+    },
+    {
       "id": "flashforge-polymaker-copa",
       "name": "Polymaker CoPA",
       "vendor": "Flashforge",
       "type": "PA",
       "nozzleTemp": 260,
-      "bedTemp": 55,
+      "bedTemp": 50,
       "file": "profiles/flashforge-polymaker-copa.json"
     },
     {
@@ -5946,7 +7041,8 @@
       "type": "PA",
       "nozzleTemp": 260,
       "bedTemp": 50,
-      "file": "profiles/flashforge-polymaker-generic-copa.json"
+      "file": "profiles/flashforge-polymaker-generic-copa.json",
+      "legacy": true
     },
     {
       "id": "flashforge-polymaker-generic-s1",
@@ -5955,7 +7051,17 @@
       "type": "PA",
       "nozzleTemp": 220,
       "bedTemp": 50,
-      "file": "profiles/flashforge-polymaker-generic-s1.json"
+      "file": "profiles/flashforge-polymaker-generic-s1.json",
+      "legacy": true
+    },
+    {
+      "id": "flashforge-polymaker-s1",
+      "name": "Polymaker S1",
+      "vendor": "Flashforge",
+      "type": "PA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/flashforge-polymaker-s1.json"
     },
     {
       "id": "flashforge-sunlu-petg",
@@ -6021,103 +7127,14 @@
       "file": "profiles/flashforge-sunlu-wood-pla.json"
     },
     {
-      "id": "flsun-flsun-generic-abs",
-      "name": "FLSun Generic ABS",
-      "vendor": "FLSun",
-      "type": "ABS",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/flsun-flsun-generic-abs.json"
-    },
-    {
-      "id": "flsun-flsun-generic-asa",
-      "name": "FLSun Generic ASA",
-      "vendor": "FLSun",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 105,
-      "file": "profiles/flsun-flsun-generic-asa.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pa",
-      "name": "FLSun Generic PA",
-      "vendor": "FLSun",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/flsun-flsun-generic-pa.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pa-cf",
-      "name": "FLSun Generic PA-CF",
-      "vendor": "FLSun",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/flsun-flsun-generic-pa-cf.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pc",
-      "name": "FLSun Generic PC",
-      "vendor": "FLSun",
-      "type": "PC",
-      "nozzleTemp": 280,
-      "bedTemp": 110,
-      "file": "profiles/flsun-flsun-generic-pc.json"
-    },
-    {
-      "id": "flsun-flsun-generic-petg",
-      "name": "FLSun Generic PETG",
-      "vendor": "FLSun",
-      "type": "PETG",
-      "nozzleTemp": 255,
-      "bedTemp": 80,
-      "file": "profiles/flsun-flsun-generic-petg.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pla",
-      "name": "FLSun Generic PLA",
-      "vendor": "FLSun",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/flsun-flsun-generic-pla.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pla-cf",
-      "name": "FLSun Generic PLA-CF",
-      "vendor": "FLSun",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/flsun-flsun-generic-pla-cf.json"
-    },
-    {
-      "id": "flsun-flsun-generic-pva",
-      "name": "FLSun Generic PVA",
-      "vendor": "FLSun",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/flsun-flsun-generic-pva.json"
-    },
-    {
-      "id": "flsun-flsun-generic-tpu",
-      "name": "FLSun Generic TPU",
-      "vendor": "FLSun",
-      "type": "TPU",
-      "nozzleTemp": 240,
-      "bedTemp": 35,
-      "file": "profiles/flsun-flsun-generic-tpu.json"
-    },
-    {
       "id": "flsun-flsun-s1-abs",
       "name": "FLSun S1 ABS",
       "vendor": "FLSun",
       "type": "ABS",
       "nozzleTemp": 280,
       "bedTemp": 90,
-      "file": "profiles/flsun-flsun-s1-abs.json"
+      "file": "profiles/flsun-flsun-s1-abs.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-asa",
@@ -6126,7 +7143,8 @@
       "type": "ASA",
       "nozzleTemp": 280,
       "bedTemp": 90,
-      "file": "profiles/flsun-flsun-s1-asa.json"
+      "file": "profiles/flsun-flsun-s1-asa.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-petg",
@@ -6135,7 +7153,8 @@
       "type": "PETG",
       "nozzleTemp": 260,
       "bedTemp": 80,
-      "file": "profiles/flsun-flsun-s1-petg.json"
+      "file": "profiles/flsun-flsun-s1-petg.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-pla-generic",
@@ -6144,7 +7163,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-s1-pla-generic.json"
+      "file": "profiles/flsun-flsun-s1-pla-generic.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-pla-high-speed",
@@ -6153,7 +7173,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-s1-pla-high-speed.json"
+      "file": "profiles/flsun-flsun-s1-pla-high-speed.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-pla-silk",
@@ -6162,7 +7183,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-s1-pla-silk.json"
+      "file": "profiles/flsun-flsun-s1-pla-silk.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-s1-tpu",
@@ -6171,7 +7193,8 @@
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 35,
-      "file": "profiles/flsun-flsun-s1-tpu.json"
+      "file": "profiles/flsun-flsun-s1-tpu.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-abs",
@@ -6180,7 +7203,8 @@
       "type": "ABS",
       "nozzleTemp": 280,
       "bedTemp": 90,
-      "file": "profiles/flsun-flsun-t1-abs.json"
+      "file": "profiles/flsun-flsun-t1-abs.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-asa",
@@ -6189,7 +7213,8 @@
       "type": "ASA",
       "nozzleTemp": 280,
       "bedTemp": 90,
-      "file": "profiles/flsun-flsun-t1-asa.json"
+      "file": "profiles/flsun-flsun-t1-asa.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-petg",
@@ -6198,7 +7223,8 @@
       "type": "PETG",
       "nozzleTemp": 260,
       "bedTemp": 80,
-      "file": "profiles/flsun-flsun-t1-petg.json"
+      "file": "profiles/flsun-flsun-t1-petg.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-pla-generic",
@@ -6207,7 +7233,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-t1-pla-generic.json"
+      "file": "profiles/flsun-flsun-t1-pla-generic.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-pla-high-speed",
@@ -6216,7 +7243,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-t1-pla-high-speed.json"
+      "file": "profiles/flsun-flsun-t1-pla-high-speed.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-pla-silk",
@@ -6225,7 +7253,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/flsun-flsun-t1-pla-silk.json"
+      "file": "profiles/flsun-flsun-t1-pla-silk.json",
+      "legacy": true
     },
     {
       "id": "flsun-flsun-t1-tpu",
@@ -6234,7 +7263,98 @@
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 35,
-      "file": "profiles/flsun-flsun-t1-tpu.json"
+      "file": "profiles/flsun-flsun-t1-tpu.json",
+      "legacy": true
+    },
+    {
+      "id": "flsun-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "FLSun",
+      "type": "ABS",
+      "nozzleTemp": 280,
+      "bedTemp": 90,
+      "file": "profiles/flsun-generic-abs.json"
+    },
+    {
+      "id": "flsun-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "FLSun",
+      "type": "ASA",
+      "nozzleTemp": 280,
+      "bedTemp": 90,
+      "file": "profiles/flsun-generic-asa.json"
+    },
+    {
+      "id": "flsun-generic-pa",
+      "name": "Generic PA",
+      "vendor": "FLSun",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/flsun-generic-pa.json"
+    },
+    {
+      "id": "flsun-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "FLSun",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/flsun-generic-pa-cf.json"
+    },
+    {
+      "id": "flsun-generic-pc",
+      "name": "Generic PC",
+      "vendor": "FLSun",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 110,
+      "file": "profiles/flsun-generic-pc.json"
+    },
+    {
+      "id": "flsun-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "FLSun",
+      "type": "PETG",
+      "nozzleTemp": 260,
+      "bedTemp": 80,
+      "file": "profiles/flsun-generic-petg.json"
+    },
+    {
+      "id": "flsun-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "FLSun",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 60,
+      "file": "profiles/flsun-generic-pla.json"
+    },
+    {
+      "id": "flsun-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "FLSun",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/flsun-generic-pla-cf.json"
+    },
+    {
+      "id": "flsun-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "FLSun",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/flsun-generic-pva.json"
+    },
+    {
+      "id": "flsun-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "FLSun",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/flsun-generic-tpu.json"
     },
     {
       "id": "flyingbear-flyingbear-abs",
@@ -6244,60 +7364,6 @@
       "nozzleTemp": 260,
       "bedTemp": 100,
       "file": "profiles/flyingbear-flyingbear-abs.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-abs",
-      "name": "FlyingBear Generic ABS",
-      "vendor": "FlyingBear",
-      "type": "ABS",
-      "nozzleTemp": 250,
-      "bedTemp": 105,
-      "file": "profiles/flyingbear-flyingbear-generic-abs.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-pa-cf",
-      "name": "FlyingBear Generic PA-CF",
-      "vendor": "FlyingBear",
-      "type": "PA",
-      "nozzleTemp": 260,
-      "bedTemp": 110,
-      "file": "profiles/flyingbear-flyingbear-generic-pa-cf.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-pc",
-      "name": "FlyingBear Generic PC",
-      "vendor": "FlyingBear",
-      "type": "PC",
-      "nozzleTemp": 260,
-      "bedTemp": 110,
-      "file": "profiles/flyingbear-flyingbear-generic-pc.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-petg",
-      "name": "FlyingBear Generic PETG",
-      "vendor": "FlyingBear",
-      "type": "PETG",
-      "nozzleTemp": 245,
-      "bedTemp": 75,
-      "file": "profiles/flyingbear-flyingbear-generic-petg.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-pla",
-      "name": "FlyingBear Generic PLA",
-      "vendor": "FlyingBear",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/flyingbear-flyingbear-generic-pla.json"
-    },
-    {
-      "id": "flyingbear-flyingbear-generic-tpu",
-      "name": "FlyingBear Generic TPU",
-      "vendor": "FlyingBear",
-      "type": "TPU",
-      "nozzleTemp": 230,
-      "bedTemp": 40,
-      "file": "profiles/flyingbear-flyingbear-generic-tpu.json"
     },
     {
       "id": "flyingbear-flyingbear-pa-cf",
@@ -6381,6 +7447,60 @@
       "file": "profiles/flyingbear-flyingbear-tpu-basic.json"
     },
     {
+      "id": "flyingbear-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "FlyingBear",
+      "type": "ABS",
+      "nozzleTemp": 250,
+      "bedTemp": 105,
+      "file": "profiles/flyingbear-generic-abs.json"
+    },
+    {
+      "id": "flyingbear-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "FlyingBear",
+      "type": "PA",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/flyingbear-generic-pa-cf.json"
+    },
+    {
+      "id": "flyingbear-generic-pc",
+      "name": "Generic PC",
+      "vendor": "FlyingBear",
+      "type": "PC",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/flyingbear-generic-pc.json"
+    },
+    {
+      "id": "flyingbear-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "FlyingBear",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 75,
+      "file": "profiles/flyingbear-generic-petg.json"
+    },
+    {
+      "id": "flyingbear-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "FlyingBear",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/flyingbear-generic-pla.json"
+    },
+    {
+      "id": "flyingbear-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "FlyingBear",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 40,
+      "file": "profiles/flyingbear-generic-tpu.json"
+    },
+    {
       "id": "flyingbear-other-abs",
       "name": "Other ABS",
       "vendor": "FlyingBear",
@@ -6453,13 +7573,32 @@
       "file": "profiles/fusrock-fusrock-abs-gf.json"
     },
     {
+      "id": "ginger-additive-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Ginger Additive",
+      "type": "PETG",
+      "nozzleTemp": 220,
+      "bedTemp": 80,
+      "file": "profiles/ginger-additive-generic-petg.json"
+    },
+    {
+      "id": "ginger-additive-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Ginger Additive",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 50,
+      "file": "profiles/ginger-additive-generic-pla.json"
+    },
+    {
       "id": "ginger-additive-ginger-generic-petg",
       "name": "Ginger Generic PETG",
       "vendor": "Ginger Additive",
       "type": "PETG",
       "nozzleTemp": 220,
       "bedTemp": 80,
-      "file": "profiles/ginger-additive-ginger-generic-petg.json"
+      "file": "profiles/ginger-additive-ginger-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "ginger-additive-ginger-generic-pla",
@@ -6468,7 +7607,188 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 50,
-      "file": "profiles/ginger-additive-ginger-generic-pla.json"
+      "file": "profiles/ginger-additive-ginger-generic-pla.json",
+      "legacy": true
+    },
+    {
+      "id": "goofoo-goofoo-90a-tpu",
+      "name": "Goofoo 90A TPU",
+      "vendor": "Goofoo",
+      "type": "TPU",
+      "nozzleTemp": 220,
+      "bedTemp": 40,
+      "file": "profiles/goofoo-goofoo-90a-tpu.json"
+    },
+    {
+      "id": "goofoo-goofoo-95a-tpu",
+      "name": "Goofoo 95A TPU",
+      "vendor": "Goofoo",
+      "type": "TPU",
+      "nozzleTemp": 220,
+      "bedTemp": 40,
+      "file": "profiles/goofoo-goofoo-95a-tpu.json"
+    },
+    {
+      "id": "goofoo-goofoo-abs",
+      "name": "Goofoo ABS",
+      "vendor": "Goofoo",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/goofoo-goofoo-abs.json"
+    },
+    {
+      "id": "goofoo-goofoo-asa",
+      "name": "Goofoo ASA",
+      "vendor": "Goofoo",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/goofoo-goofoo-asa.json"
+    },
+    {
+      "id": "goofoo-goofoo-pa",
+      "name": "Goofoo PA",
+      "vendor": "Goofoo",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/goofoo-goofoo-pa.json"
+    },
+    {
+      "id": "goofoo-goofoo-pa-cf",
+      "name": "Goofoo PA-CF",
+      "vendor": "Goofoo",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/goofoo-goofoo-pa-cf.json"
+    },
+    {
+      "id": "goofoo-goofoo-pa-gf10",
+      "name": "Goofoo PA-GF10",
+      "vendor": "Goofoo",
+      "type": "PA",
+      "nozzleTemp": 230,
+      "bedTemp": 100,
+      "file": "profiles/goofoo-goofoo-pa-gf10.json"
+    },
+    {
+      "id": "goofoo-goofoo-pe",
+      "name": "Goofoo PE",
+      "vendor": "Goofoo",
+      "type": "PE",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pe.json"
+    },
+    {
+      "id": "goofoo-goofoo-pe-cf",
+      "name": "Goofoo PE-CF",
+      "vendor": "Goofoo",
+      "type": "PE",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pe-cf.json"
+    },
+    {
+      "id": "goofoo-goofoo-petg",
+      "name": "Goofoo PETG",
+      "vendor": "Goofoo",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 80,
+      "file": "profiles/goofoo-goofoo-petg.json"
+    },
+    {
+      "id": "goofoo-goofoo-petg-hf",
+      "name": "Goofoo PETG HF",
+      "vendor": "Goofoo",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/goofoo-goofoo-petg-hf.json"
+    },
+    {
+      "id": "goofoo-goofoo-petg-cf",
+      "name": "Goofoo PETG-CF",
+      "vendor": "Goofoo",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/goofoo-goofoo-petg-cf.json"
+    },
+    {
+      "id": "goofoo-goofoo-pha",
+      "name": "Goofoo PHA",
+      "vendor": "Goofoo",
+      "type": "PHA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pha.json"
+    },
+    {
+      "id": "goofoo-goofoo-pla",
+      "name": "Goofoo PLA",
+      "vendor": "Goofoo",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 40,
+      "file": "profiles/goofoo-goofoo-pla.json"
+    },
+    {
+      "id": "goofoo-goofoo-pla-silk",
+      "name": "Goofoo PLA Silk",
+      "vendor": "Goofoo",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pla-silk.json"
+    },
+    {
+      "id": "goofoo-goofoo-pla-cf",
+      "name": "Goofoo PLA-CF",
+      "vendor": "Goofoo",
+      "type": "PLA",
+      "nozzleTemp": 240,
+      "bedTemp": 40,
+      "file": "profiles/goofoo-goofoo-pla-cf.json"
+    },
+    {
+      "id": "goofoo-goofoo-pp",
+      "name": "Goofoo PP",
+      "vendor": "Goofoo",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pp.json"
+    },
+    {
+      "id": "goofoo-goofoo-pp-cf",
+      "name": "Goofoo PP-CF",
+      "vendor": "Goofoo",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pp-cf.json"
+    },
+    {
+      "id": "goofoo-goofoo-pp-gf",
+      "name": "Goofoo PP-GF",
+      "vendor": "Goofoo",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pp-gf.json"
+    },
+    {
+      "id": "goofoo-goofoo-pva",
+      "name": "Goofoo PVA",
+      "vendor": "Goofoo",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/goofoo-goofoo-pva.json"
     },
     {
       "id": "greengate3d-greengate3d-petg",
@@ -6480,6 +7800,87 @@
       "file": "profiles/greengate3d-greengate3d-petg.json"
     },
     {
+      "id": "ideaformer-esun-pla",
+      "name": "eSUN PLA",
+      "vendor": "IdeaFormer",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 75,
+      "file": "profiles/ideaformer-esun-pla.json"
+    },
+    {
+      "id": "ideaformer-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "IdeaFormer",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 80,
+      "file": "profiles/ideaformer-generic-petg.json"
+    },
+    {
+      "id": "ideaformer-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "IdeaFormer",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 75,
+      "file": "profiles/ideaformer-generic-pla.json"
+    },
+    {
+      "id": "infimech-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "InfiMech",
+      "type": "ABS",
+      "nozzleTemp": 250,
+      "bedTemp": 105,
+      "file": "profiles/infimech-generic-abs.json"
+    },
+    {
+      "id": "infimech-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "InfiMech",
+      "type": "PA",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/infimech-generic-pa-cf.json"
+    },
+    {
+      "id": "infimech-generic-pc",
+      "name": "Generic PC",
+      "vendor": "InfiMech",
+      "type": "PC",
+      "nozzleTemp": 260,
+      "bedTemp": 110,
+      "file": "profiles/infimech-generic-pc.json"
+    },
+    {
+      "id": "infimech-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "InfiMech",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 75,
+      "file": "profiles/infimech-generic-petg.json"
+    },
+    {
+      "id": "infimech-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "InfiMech",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/infimech-generic-pla.json"
+    },
+    {
+      "id": "infimech-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "InfiMech",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 40,
+      "file": "profiles/infimech-generic-tpu.json"
+    },
+    {
       "id": "infimech-infimech-abs",
       "name": "InfiMech ABS",
       "vendor": "InfiMech",
@@ -6487,60 +7888,6 @@
       "nozzleTemp": 270,
       "bedTemp": 100,
       "file": "profiles/infimech-infimech-abs.json"
-    },
-    {
-      "id": "infimech-infimech-generic-abs",
-      "name": "InfiMech Generic ABS",
-      "vendor": "InfiMech",
-      "type": "ABS",
-      "nozzleTemp": 250,
-      "bedTemp": 105,
-      "file": "profiles/infimech-infimech-generic-abs.json"
-    },
-    {
-      "id": "infimech-infimech-generic-pa-cf",
-      "name": "InfiMech Generic PA-CF",
-      "vendor": "InfiMech",
-      "type": "PA",
-      "nozzleTemp": 260,
-      "bedTemp": 110,
-      "file": "profiles/infimech-infimech-generic-pa-cf.json"
-    },
-    {
-      "id": "infimech-infimech-generic-pc",
-      "name": "InfiMech Generic PC",
-      "vendor": "InfiMech",
-      "type": "PC",
-      "nozzleTemp": 260,
-      "bedTemp": 110,
-      "file": "profiles/infimech-infimech-generic-pc.json"
-    },
-    {
-      "id": "infimech-infimech-generic-petg",
-      "name": "InfiMech Generic PETG",
-      "vendor": "InfiMech",
-      "type": "PETG",
-      "nozzleTemp": 245,
-      "bedTemp": 75,
-      "file": "profiles/infimech-infimech-generic-petg.json"
-    },
-    {
-      "id": "infimech-infimech-generic-pla",
-      "name": "InfiMech Generic PLA",
-      "vendor": "InfiMech",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/infimech-infimech-generic-pla.json"
-    },
-    {
-      "id": "infimech-infimech-generic-tpu",
-      "name": "InfiMech Generic TPU",
-      "vendor": "InfiMech",
-      "type": "TPU",
-      "nozzleTemp": 230,
-      "bedTemp": 40,
-      "file": "profiles/infimech-infimech-generic-tpu.json"
     },
     {
       "id": "infimech-infimech-pa-cf",
@@ -6678,6 +8025,42 @@
       "file": "profiles/infimech-other-tpu.json"
     },
     {
+      "id": "inslogic-inslogic-pa6-66",
+      "name": "INSLOGIC PA6-66",
+      "vendor": "INSLOGIC",
+      "type": "PA",
+      "nozzleTemp": 255,
+      "bedTemp": 50,
+      "file": "profiles/inslogic-inslogic-pa6-66.json"
+    },
+    {
+      "id": "inslogic-inslogic-pa6-cf",
+      "name": "INSLOGIC PA6-CF",
+      "vendor": "INSLOGIC",
+      "type": "PA",
+      "nozzleTemp": 275,
+      "bedTemp": 65,
+      "file": "profiles/inslogic-inslogic-pa6-cf.json"
+    },
+    {
+      "id": "inslogic-inslogic-petg-pro",
+      "name": "INSLOGIC PETG Pro",
+      "vendor": "INSLOGIC",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 70,
+      "file": "profiles/inslogic-inslogic-petg-pro.json"
+    },
+    {
+      "id": "inslogic-inslogic-pla-pro",
+      "name": "INSLOGIC PLA Pro",
+      "vendor": "INSLOGIC",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 55,
+      "file": "profiles/inslogic-inslogic-pla-pro.json"
+    },
+    {
       "id": "iq-fiberthree-pacf-pro-p1",
       "name": "Fiberthree PACF Pro P1",
       "vendor": "iQ",
@@ -6730,6 +8113,33 @@
       "nozzleTemp": 235,
       "bedTemp": 100,
       "file": "profiles/iq-vxl90-tiq2-p2.json"
+    },
+    {
+      "id": "jayo-jayo-petg",
+      "name": "JAYO PETG",
+      "vendor": "JAYO",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 55,
+      "file": "profiles/jayo-jayo-petg.json"
+    },
+    {
+      "id": "jayo-jayo-pla",
+      "name": "JAYO PLA",
+      "vendor": "JAYO",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 55,
+      "file": "profiles/jayo-jayo-pla.json"
+    },
+    {
+      "id": "jayo-jayo-pla-classic",
+      "name": "JAYO PLA Classic",
+      "vendor": "JAYO",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 55,
+      "file": "profiles/jayo-jayo-pla-classic.json"
     },
     {
       "id": "lh-lhs-abs",
@@ -6822,13 +8232,32 @@
       "file": "profiles/longer-generic-pla.json"
     },
     {
+      "id": "magicmaker-generic-peek",
+      "name": "Generic PEEK",
+      "vendor": "MagicMaker",
+      "type": "PEEK",
+      "nozzleTemp": 420,
+      "bedTemp": 60,
+      "file": "profiles/magicmaker-generic-peek.json"
+    },
+    {
       "id": "magicmaker-mm-generic-peek",
       "name": "MM Generic PEEK",
       "vendor": "MagicMaker",
       "type": "PEEK",
       "nozzleTemp": 420,
       "bedTemp": 60,
-      "file": "profiles/magicmaker-mm-generic-peek.json"
+      "file": "profiles/magicmaker-mm-generic-peek.json",
+      "legacy": true
+    },
+    {
+      "id": "meltingplot-meltingplot-pet-cf15",
+      "name": "Meltingplot PET-CF15",
+      "vendor": "Meltingplot",
+      "type": "PET",
+      "nozzleTemp": 280,
+      "bedTemp": 90,
+      "file": "profiles/meltingplot-meltingplot-pet-cf15.json"
     },
     {
       "id": "nit-nit-abs",
@@ -7299,112 +8728,112 @@
       "file": "profiles/orcaarena-arena-tpu-95a.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-abs",
-      "name": "OrcaArena Generic ABS",
+      "id": "orcaarena-generic-abs",
+      "name": "Generic ABS",
       "vendor": "OrcaArena",
       "type": "ABS",
       "nozzleTemp": 270,
       "bedTemp": 90,
-      "file": "profiles/orcaarena-orcaarena-generic-abs.json"
+      "file": "profiles/orcaarena-generic-abs.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-asa",
-      "name": "OrcaArena Generic ASA",
+      "id": "orcaarena-generic-asa",
+      "name": "Generic ASA",
       "vendor": "OrcaArena",
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 90,
-      "file": "profiles/orcaarena-orcaarena-generic-asa.json"
+      "file": "profiles/orcaarena-generic-asa.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pa",
-      "name": "OrcaArena Generic PA",
+      "id": "orcaarena-generic-pa",
+      "name": "Generic PA",
       "vendor": "OrcaArena",
       "type": "PA",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/orcaarena-orcaarena-generic-pa.json"
+      "file": "profiles/orcaarena-generic-pa.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pa-cf",
-      "name": "OrcaArena Generic PA-CF",
+      "id": "orcaarena-generic-pa-cf",
+      "name": "Generic PA-CF",
       "vendor": "OrcaArena",
       "type": "PA",
       "nozzleTemp": 290,
       "bedTemp": 100,
-      "file": "profiles/orcaarena-orcaarena-generic-pa-cf.json"
+      "file": "profiles/orcaarena-generic-pa-cf.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pc",
-      "name": "OrcaArena Generic PC",
+      "id": "orcaarena-generic-pc",
+      "name": "Generic PC",
       "vendor": "OrcaArena",
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 110,
-      "file": "profiles/orcaarena-orcaarena-generic-pc.json"
+      "file": "profiles/orcaarena-generic-pc.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-petg",
-      "name": "OrcaArena Generic PETG",
+      "id": "orcaarena-generic-petg",
+      "name": "Generic PETG",
       "vendor": "OrcaArena",
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 70,
-      "file": "profiles/orcaarena-orcaarena-generic-petg.json"
+      "file": "profiles/orcaarena-generic-petg.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-petg-cf",
-      "name": "OrcaArena Generic PETG-CF",
+      "id": "orcaarena-generic-petg-cf",
+      "name": "Generic PETG-CF",
       "vendor": "OrcaArena",
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 70,
-      "file": "profiles/orcaarena-orcaarena-generic-petg-cf.json"
+      "file": "profiles/orcaarena-generic-petg-cf.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pla",
-      "name": "OrcaArena Generic PLA",
+      "id": "orcaarena-generic-pla",
+      "name": "Generic PLA",
       "vendor": "OrcaArena",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/orcaarena-orcaarena-generic-pla.json"
+      "file": "profiles/orcaarena-generic-pla.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pla-silk",
-      "name": "OrcaArena Generic PLA Silk",
+      "id": "orcaarena-generic-pla-silk",
+      "name": "Generic PLA Silk",
       "vendor": "OrcaArena",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/orcaarena-orcaarena-generic-pla-silk.json"
+      "file": "profiles/orcaarena-generic-pla-silk.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pla-cf",
-      "name": "OrcaArena Generic PLA-CF",
+      "id": "orcaarena-generic-pla-cf",
+      "name": "Generic PLA-CF",
       "vendor": "OrcaArena",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/orcaarena-orcaarena-generic-pla-cf.json"
+      "file": "profiles/orcaarena-generic-pla-cf.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-pva",
-      "name": "OrcaArena Generic PVA",
+      "id": "orcaarena-generic-pva",
+      "name": "Generic PVA",
       "vendor": "OrcaArena",
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/orcaarena-orcaarena-generic-pva.json"
+      "file": "profiles/orcaarena-generic-pva.json"
     },
     {
-      "id": "orcaarena-orcaarena-generic-tpu",
-      "name": "OrcaArena Generic TPU",
+      "id": "orcaarena-generic-tpu",
+      "name": "Generic TPU",
       "vendor": "OrcaArena",
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 35,
-      "file": "profiles/orcaarena-orcaarena-generic-tpu.json"
+      "file": "profiles/orcaarena-generic-tpu.json"
     },
     {
       "id": "orcaarena-polylite-pla",
@@ -7434,12 +8863,39 @@
       "file": "profiles/overture-overture-abs-basic.json"
     },
     {
+      "id": "overture-overture-air-pla",
+      "name": "Overture Air PLA",
+      "vendor": "Overture",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/overture-overture-air-pla.json"
+    },
+    {
+      "id": "overture-overture-asa",
+      "name": "Overture ASA",
+      "vendor": "Overture",
+      "type": "ASA",
+      "nozzleTemp": 270,
+      "bedTemp": 100,
+      "file": "profiles/overture-overture-asa.json"
+    },
+    {
+      "id": "overture-overture-easy-pla",
+      "name": "Overture Easy PLA",
+      "vendor": "Overture",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/overture-overture-easy-pla.json"
+    },
+    {
       "id": "overture-overture-matte-pla",
       "name": "Overture Matte PLA",
       "vendor": "Overture",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 65,
+      "bedTemp": 55,
       "file": "profiles/overture-overture-matte-pla.json"
     },
     {
@@ -7459,6 +8915,42 @@
       "nozzleTemp": 220,
       "bedTemp": 55,
       "file": "profiles/overture-overture-pla-pro.json"
+    },
+    {
+      "id": "overture-overture-rock-pla",
+      "name": "Overture Rock PLA",
+      "vendor": "Overture",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/overture-overture-rock-pla.json"
+    },
+    {
+      "id": "overture-overture-silk-pla",
+      "name": "Overture Silk PLA",
+      "vendor": "Overture",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/overture-overture-silk-pla.json"
+    },
+    {
+      "id": "overture-overture-super-pla",
+      "name": "Overture Super PLA+",
+      "vendor": "Overture",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/overture-overture-super-pla.json"
+    },
+    {
+      "id": "overture-overture-tpu",
+      "name": "Overture TPU",
+      "vendor": "Overture",
+      "type": "TPU",
+      "nozzleTemp": 220,
+      "bedTemp": 35,
+      "file": "profiles/overture-overture-tpu.json"
     },
     {
       "id": "p1p-bambu-abs",
@@ -7785,31 +9277,31 @@
       "file": "profiles/p1p-polyterra-pla.json"
     },
     {
-      "id": "peopoly-peopoly-generic-abs",
-      "name": "Peopoly Generic ABS",
+      "id": "peopoly-generic-abs",
+      "name": "Generic ABS",
       "vendor": "Peopoly",
       "type": "ABS",
       "nozzleTemp": 270,
       "bedTemp": 90,
-      "file": "profiles/peopoly-peopoly-generic-abs.json"
+      "file": "profiles/peopoly-generic-abs.json"
     },
     {
-      "id": "peopoly-peopoly-generic-petg",
-      "name": "Peopoly Generic PETG",
+      "id": "peopoly-generic-petg",
+      "name": "Generic PETG",
       "vendor": "Peopoly",
       "type": "PETG",
       "nozzleTemp": 235,
       "bedTemp": 70,
-      "file": "profiles/peopoly-peopoly-generic-petg.json"
+      "file": "profiles/peopoly-generic-petg.json"
     },
     {
-      "id": "peopoly-peopoly-generic-pla",
-      "name": "Peopoly Generic PLA",
+      "id": "peopoly-generic-pla",
+      "name": "Generic PLA",
       "vendor": "Peopoly",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/peopoly-peopoly-generic-pla.json"
+      "file": "profiles/peopoly-generic-pla.json"
     },
     {
       "id": "peopoly-peopoly-lancer-abs-gf",
@@ -7854,7 +9346,8 @@
       "type": "PLA",
       "nozzleTemp": 205,
       "bedTemp": 55,
-      "file": "profiles/phrozen-phrozen-pla.json"
+      "file": "profiles/phrozen-phrozen-pla.json",
+      "legacy": true
     },
     {
       "id": "polymaker-fiberon-pa12-cf",
@@ -8122,7 +9615,7 @@
       "name": "PolyLite ABS",
       "vendor": "Polymaker",
       "type": "ABS",
-      "nozzleTemp": 270,
+      "nozzleTemp": 260,
       "bedTemp": 100,
       "file": "profiles/polymaker-polylite-abs.json"
     },
@@ -8159,7 +9652,7 @@
       "vendor": "Polymaker",
       "type": "PETG",
       "nozzleTemp": 255,
-      "bedTemp": 80,
+      "bedTemp": 70,
       "file": "profiles/polymaker-polylite-petg.json"
     },
     {
@@ -8168,7 +9661,7 @@
       "vendor": "Polymaker",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
+      "bedTemp": 55,
       "file": "profiles/polymaker-polylite-pla.json"
     },
     {
@@ -8253,6 +9746,15 @@
       "file": "profiles/polymaker-polymaker-ht-pla-gf.json"
     },
     {
+      "id": "polymaker-polymaker-pla-pro",
+      "name": "Polymaker PLA Pro",
+      "vendor": "Polymaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/polymaker-polymaker-pla-pro.json"
+    },
+    {
       "id": "polymaker-polyterra-dual-pla",
       "name": "PolyTerra Dual PLA",
       "vendor": "Polymaker",
@@ -8262,13 +9764,13 @@
       "file": "profiles/polymaker-polyterra-dual-pla.json"
     },
     {
-      "id": "polymaker-polyterra-pla",
+      "id": "polymaker-polyterra-pla-2",
       "name": "PolyTerra PLA",
       "vendor": "Polymaker",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/polymaker-polyterra-pla.json"
+      "bedTemp": 55,
+      "file": "profiles/polymaker-polyterra-pla-2.json"
     },
     {
       "id": "polymaker-polyterra-pla-marble",
@@ -8280,31 +9782,274 @@
       "file": "profiles/polymaker-polyterra-pla-marble.json"
     },
     {
-      "id": "polymaker-polyterra-pla-2",
+      "id": "polymaker-polyterra-pla",
       "name": "PolyTerra PLA+",
       "vendor": "Polymaker",
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/polymaker-polyterra-pla-2.json"
+      "file": "profiles/polymaker-polyterra-pla.json"
     },
     {
-      "id": "prusa-prusa-generic-abs",
-      "name": "Prusa Generic ABS",
+      "id": "pragostroj-fillamentum-pla-concret-grey",
+      "name": "Fillamentum PLA Concret Grey",
+      "vendor": "Pragostroj",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/pragostroj-fillamentum-pla-concret-grey.json"
+    },
+    {
+      "id": "pragostroj-pragostroj-hips",
+      "name": "Pragostroj hips",
+      "vendor": "Pragostroj",
+      "type": "HIPS",
+      "nozzleTemp": 245,
+      "bedTemp": 90,
+      "file": "profiles/pragostroj-pragostroj-hips.json"
+    },
+    {
+      "id": "pragostroj-pragostroj-petg",
+      "name": "Pragostroj PETG",
+      "vendor": "Pragostroj",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 80,
+      "file": "profiles/pragostroj-pragostroj-petg.json"
+    },
+    {
+      "id": "pragostroj-pragostroj-plap",
+      "name": "Pragostroj PLAP",
+      "vendor": "Pragostroj",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 60,
+      "file": "profiles/pragostroj-pragostroj-plap.json"
+    },
+    {
+      "id": "pragostroj-pragostroj-pp",
+      "name": "Pragostroj PP",
+      "vendor": "Pragostroj",
+      "type": "PP",
+      "nozzleTemp": 240,
+      "bedTemp": 40,
+      "file": "profiles/pragostroj-pragostroj-pp.json"
+    },
+    {
+      "id": "printalot-plastar-pla",
+      "name": "PlastAR PLA",
+      "vendor": "Printalot",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/printalot-plastar-pla.json"
+    },
+    {
+      "id": "printalot-printalot-abs",
+      "name": "PrintaLot ABS",
+      "vendor": "Printalot",
+      "type": "ABS",
+      "nozzleTemp": 250,
+      "bedTemp": 100,
+      "file": "profiles/printalot-printalot-abs.json"
+    },
+    {
+      "id": "printalot-printalot-petg",
+      "name": "PrintaLot PETG",
+      "vendor": "Printalot",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 80,
+      "file": "profiles/printalot-printalot-petg.json"
+    },
+    {
+      "id": "printalot-printalot-pla",
+      "name": "PrintaLot PLA",
+      "vendor": "Printalot",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/printalot-printalot-pla.json"
+    },
+    {
+      "id": "printcepts-esun-pla",
+      "name": "eSUN PLA",
+      "vendor": "Printcepts",
+      "type": "PLA",
+      "nozzleTemp": 200,
+      "bedTemp": 75,
+      "file": "profiles/printcepts-esun-pla.json"
+    },
+    {
+      "id": "printcepts-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Printcepts",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 80,
+      "file": "profiles/printcepts-generic-petg.json"
+    },
+    {
+      "id": "printcepts-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Printcepts",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 75,
+      "file": "profiles/printcepts-generic-pla.json"
+    },
+    {
+      "id": "prusa-generic-abs",
+      "name": "Generic ABS",
       "vendor": "Prusa",
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 110,
-      "file": "profiles/prusa-prusa-generic-abs.json"
+      "file": "profiles/prusa-generic-abs.json"
     },
     {
-      "id": "prusa-prusa-generic-abs-hf",
-      "name": "Prusa Generic ABS HF",
+      "id": "prusa-generic-abs-hf",
+      "name": "Generic ABS HF",
       "vendor": "Prusa",
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 100,
-      "file": "profiles/prusa-prusa-generic-abs-hf.json"
+      "file": "profiles/prusa-generic-abs-hf.json"
+    },
+    {
+      "id": "prusa-generic-asa-hf",
+      "name": "Generic ASA HF",
+      "vendor": "Prusa",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/prusa-generic-asa-hf.json"
+    },
+    {
+      "id": "prusa-generic-flex",
+      "name": "Generic FLEX",
+      "vendor": "Prusa",
+      "type": "Other",
+      "nozzleTemp": 230,
+      "bedTemp": 50,
+      "file": "profiles/prusa-generic-flex.json"
+    },
+    {
+      "id": "prusa-generic-pa",
+      "name": "Generic PA",
+      "vendor": "Prusa",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/prusa-generic-pa.json"
+    },
+    {
+      "id": "prusa-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "Prusa",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 100,
+      "file": "profiles/prusa-generic-pa-cf.json"
+    },
+    {
+      "id": "prusa-generic-pc",
+      "name": "Generic PC",
+      "vendor": "Prusa",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 110,
+      "file": "profiles/prusa-generic-pc.json"
+    },
+    {
+      "id": "prusa-generic-pc-hf",
+      "name": "Generic PC HF",
+      "vendor": "Prusa",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 110,
+      "file": "profiles/prusa-generic-pc-hf.json"
+    },
+    {
+      "id": "prusa-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Prusa",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 85,
+      "file": "profiles/prusa-generic-petg.json"
+    },
+    {
+      "id": "prusa-generic-petg-hf",
+      "name": "Generic PETG HF",
+      "vendor": "Prusa",
+      "type": "PETG",
+      "nozzleTemp": 240,
+      "bedTemp": 85,
+      "file": "profiles/prusa-generic-petg-hf.json"
+    },
+    {
+      "id": "prusa-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Prusa",
+      "type": "PLA",
+      "nozzleTemp": 210,
+      "bedTemp": 60,
+      "file": "profiles/prusa-generic-pla.json"
+    },
+    {
+      "id": "prusa-generic-pla-hf",
+      "name": "Generic PLA HF",
+      "vendor": "Prusa",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/prusa-generic-pla-hf.json"
+    },
+    {
+      "id": "prusa-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Prusa",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/prusa-generic-pla-cf.json"
+    },
+    {
+      "id": "prusa-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Prusa",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/prusa-generic-pva.json"
+    },
+    {
+      "id": "prusa-generic-pva-hf",
+      "name": "Generic PVA HF",
+      "vendor": "Prusa",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 45,
+      "file": "profiles/prusa-generic-pva-hf.json"
+    },
+    {
+      "id": "prusa-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Prusa",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 50,
+      "file": "profiles/prusa-generic-tpu.json"
+    },
+    {
+      "id": "prusa-generic-tpu-hf",
+      "name": "Generic TPU HF",
+      "vendor": "Prusa",
+      "type": "TPU",
+      "nozzleTemp": 210,
+      "bedTemp": 50,
+      "file": "profiles/prusa-generic-tpu-hf.json"
     },
     {
       "id": "prusa-prusa-generic-asa",
@@ -8313,97 +10058,8 @@
       "type": "ASA",
       "nozzleTemp": 255,
       "bedTemp": 110,
-      "file": "profiles/prusa-prusa-generic-asa.json"
-    },
-    {
-      "id": "prusa-prusa-generic-asa-hf",
-      "name": "Prusa Generic ASA HF",
-      "vendor": "Prusa",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 100,
-      "file": "profiles/prusa-prusa-generic-asa-hf.json"
-    },
-    {
-      "id": "prusa-prusa-generic-flex",
-      "name": "Prusa Generic FLEX",
-      "vendor": "Prusa",
-      "type": "Other",
-      "nozzleTemp": 230,
-      "bedTemp": 50,
-      "file": "profiles/prusa-prusa-generic-flex.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pa",
-      "name": "Prusa Generic PA",
-      "vendor": "Prusa",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/prusa-prusa-generic-pa.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pa-cf",
-      "name": "Prusa Generic PA-CF",
-      "vendor": "Prusa",
-      "type": "PA",
-      "nozzleTemp": 280,
-      "bedTemp": 100,
-      "file": "profiles/prusa-prusa-generic-pa-cf.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pc",
-      "name": "Prusa Generic PC",
-      "vendor": "Prusa",
-      "type": "PC",
-      "nozzleTemp": 280,
-      "bedTemp": 110,
-      "file": "profiles/prusa-prusa-generic-pc.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pc-hf",
-      "name": "Prusa Generic PC HF",
-      "vendor": "Prusa",
-      "type": "PC",
-      "nozzleTemp": 280,
-      "bedTemp": 110,
-      "file": "profiles/prusa-prusa-generic-pc-hf.json"
-    },
-    {
-      "id": "prusa-prusa-generic-petg",
-      "name": "Prusa Generic PETG",
-      "vendor": "Prusa",
-      "type": "PETG",
-      "nozzleTemp": 240,
-      "bedTemp": 85,
-      "file": "profiles/prusa-prusa-generic-petg.json"
-    },
-    {
-      "id": "prusa-prusa-generic-petg-hf",
-      "name": "Prusa Generic PETG HF",
-      "vendor": "Prusa",
-      "type": "PETG",
-      "nozzleTemp": 240,
-      "bedTemp": 85,
-      "file": "profiles/prusa-prusa-generic-petg-hf.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pla",
-      "name": "Prusa Generic PLA",
-      "vendor": "Prusa",
-      "type": "PLA",
-      "nozzleTemp": 210,
-      "bedTemp": 60,
-      "file": "profiles/prusa-prusa-generic-pla.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pla-hf",
-      "name": "Prusa Generic PLA HF",
-      "vendor": "Prusa",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/prusa-prusa-generic-pla-hf.json"
+      "file": "profiles/prusa-prusa-generic-asa.json",
+      "legacy": true
     },
     {
       "id": "prusa-prusa-generic-pla-silk",
@@ -8412,34 +10068,8 @@
       "type": "PLA",
       "nozzleTemp": 215,
       "bedTemp": 60,
-      "file": "profiles/prusa-prusa-generic-pla-silk.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pla-cf",
-      "name": "Prusa Generic PLA-CF",
-      "vendor": "Prusa",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/prusa-prusa-generic-pla-cf.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pva",
-      "name": "Prusa Generic PVA",
-      "vendor": "Prusa",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/prusa-prusa-generic-pva.json"
-    },
-    {
-      "id": "prusa-prusa-generic-pva-hf",
-      "name": "Prusa Generic PVA HF",
-      "vendor": "Prusa",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 45,
-      "file": "profiles/prusa-prusa-generic-pva-hf.json"
+      "file": "profiles/prusa-prusa-generic-pla-silk.json",
+      "legacy": true
     },
     {
       "id": "prusa-prusa-generic-tpu",
@@ -8448,7 +10078,8 @@
       "type": "Other",
       "nozzleTemp": 230,
       "bedTemp": 50,
-      "file": "profiles/prusa-prusa-generic-tpu.json"
+      "file": "profiles/prusa-prusa-generic-tpu.json",
+      "legacy": true
     },
     {
       "id": "prusa-prusa-generic-tpu-hf",
@@ -8457,7 +10088,8 @@
       "type": "Other",
       "nozzleTemp": 210,
       "bedTemp": 50,
-      "file": "profiles/prusa-prusa-generic-tpu-hf.json"
+      "file": "profiles/prusa-prusa-generic-tpu-hf.json",
+      "legacy": true
     },
     {
       "id": "prusa-prusament-asa",
@@ -8475,7 +10107,17 @@
       "type": "PA",
       "nozzleTemp": 285,
       "bedTemp": 115,
-      "file": "profiles/prusa-prusament-pa-cf.json"
+      "file": "profiles/prusa-prusament-pa-cf.json",
+      "legacy": true
+    },
+    {
+      "id": "prusa-prusament-pa11-carbon-fiber",
+      "name": "Prusament PA11 Carbon Fiber",
+      "vendor": "Prusa",
+      "type": "PA",
+      "nozzleTemp": 285,
+      "bedTemp": 115,
+      "file": "profiles/prusa-prusament-pa11-carbon-fiber.json"
     },
     {
       "id": "prusa-prusament-pc-blend",
@@ -8487,13 +10129,23 @@
       "file": "profiles/prusa-prusament-pc-blend.json"
     },
     {
+      "id": "prusa-prusament-pc-blend-carbon-fiber",
+      "name": "Prusament PC Blend Carbon Fiber",
+      "vendor": "Prusa",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 115,
+      "file": "profiles/prusa-prusament-pc-blend-carbon-fiber.json"
+    },
+    {
       "id": "prusa-prusament-pc-cf",
       "name": "Prusament PC-CF",
       "vendor": "Prusa",
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 115,
-      "file": "profiles/prusa-prusament-pc-cf.json"
+      "file": "profiles/prusa-prusament-pc-cf.json",
+      "legacy": true
     },
     {
       "id": "prusa-prusament-petg",
@@ -8563,9 +10215,36 @@
       "name": "Generic ABS",
       "vendor": "Qidi",
       "type": "ABS",
-      "nozzleTemp": 250,
+      "nozzleTemp": 260,
       "bedTemp": 90,
       "file": "profiles/qidi-generic-abs.json"
+    },
+    {
+      "id": "qidi-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "Qidi",
+      "type": "ASA",
+      "nozzleTemp": 270,
+      "bedTemp": 90,
+      "file": "profiles/qidi-generic-asa.json"
+    },
+    {
+      "id": "qidi-generic-pa",
+      "name": "Generic PA",
+      "vendor": "Qidi",
+      "type": "PA",
+      "nozzleTemp": 310,
+      "bedTemp": 80,
+      "file": "profiles/qidi-generic-pa.json"
+    },
+    {
+      "id": "qidi-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "Qidi",
+      "type": "PA",
+      "nozzleTemp": 290,
+      "bedTemp": 80,
+      "file": "profiles/qidi-generic-pa-cf.json"
     },
     {
       "id": "qidi-generic-pc",
@@ -8586,6 +10265,15 @@
       "file": "profiles/qidi-generic-petg.json"
     },
     {
+      "id": "qidi-generic-petg-cf",
+      "name": "Generic PETG-CF",
+      "vendor": "Qidi",
+      "type": "PETG",
+      "nozzleTemp": 280,
+      "bedTemp": 80,
+      "file": "profiles/qidi-generic-petg-cf.json"
+    },
+    {
       "id": "qidi-generic-pla",
       "name": "Generic PLA",
       "vendor": "Qidi",
@@ -8593,6 +10281,15 @@
       "nozzleTemp": 220,
       "bedTemp": 60,
       "file": "profiles/qidi-generic-pla.json"
+    },
+    {
+      "id": "qidi-generic-pla-high-speed",
+      "name": "Generic PLA High Speed",
+      "vendor": "Qidi",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/qidi-generic-pla-high-speed.json"
     },
     {
       "id": "qidi-generic-pla-silk",
@@ -8604,6 +10301,15 @@
       "file": "profiles/qidi-generic-pla-silk.json"
     },
     {
+      "id": "qidi-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Qidi",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/qidi-generic-pla-cf.json"
+    },
+    {
       "id": "qidi-generic-pla-2",
       "name": "Generic PLA+",
       "vendor": "Qidi",
@@ -8611,6 +10317,24 @@
       "nozzleTemp": 230,
       "bedTemp": 60,
       "file": "profiles/qidi-generic-pla-2.json"
+    },
+    {
+      "id": "qidi-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Qidi",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/qidi-generic-pva.json"
+    },
+    {
+      "id": "qidi-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Qidi",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 35,
+      "file": "profiles/qidi-generic-tpu.json"
     },
     {
       "id": "qidi-generic-tpu-95a",
@@ -8683,6 +10407,15 @@
       "nozzleTemp": 220,
       "bedTemp": 60,
       "file": "profiles/qidi-polylite-pla.json"
+    },
+    {
+      "id": "qidi-polymaker-pla-ht",
+      "name": "Polymaker PLA-HT",
+      "vendor": "Qidi",
+      "type": "PLA",
+      "nozzleTemp": 215,
+      "bedTemp": 60,
+      "file": "profiles/qidi-polymaker-pla-ht.json"
     },
     {
       "id": "qidi-qidi-abs-odorless",
@@ -8775,40 +10508,23 @@
       "file": "profiles/qidi-qidi-asa-cf.json"
     },
     {
+      "id": "qidi-qidi-asa-cf20-core",
+      "name": "QIDI ASA-CF20 Core",
+      "vendor": "Qidi",
+      "type": "ASA",
+      "nozzleTemp": 275,
+      "bedTemp": 90,
+      "file": "profiles/qidi-qidi-asa-cf20-core.json"
+    },
+    {
       "id": "qidi-qidi-generic-abs",
       "name": "Qidi Generic ABS",
       "vendor": "Qidi",
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 90,
-      "file": "profiles/qidi-qidi-generic-abs.json"
-    },
-    {
-      "id": "qidi-qidi-generic-asa",
-      "name": "Qidi Generic ASA",
-      "vendor": "Qidi",
-      "type": "ASA",
-      "nozzleTemp": 270,
-      "bedTemp": 90,
-      "file": "profiles/qidi-qidi-generic-asa.json"
-    },
-    {
-      "id": "qidi-qidi-generic-pa",
-      "name": "Qidi Generic PA",
-      "vendor": "Qidi",
-      "type": "PA",
-      "nozzleTemp": 310,
-      "bedTemp": 80,
-      "file": "profiles/qidi-qidi-generic-pa.json"
-    },
-    {
-      "id": "qidi-qidi-generic-pa-cf",
-      "name": "Qidi Generic PA-CF",
-      "vendor": "Qidi",
-      "type": "PA",
-      "nozzleTemp": 290,
-      "bedTemp": 80,
-      "file": "profiles/qidi-qidi-generic-pa-cf.json"
+      "file": "profiles/qidi-qidi-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-pc",
@@ -8817,7 +10533,8 @@
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 110,
-      "file": "profiles/qidi-qidi-generic-pc.json"
+      "file": "profiles/qidi-qidi-generic-pc.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-petg",
@@ -8826,16 +10543,8 @@
       "type": "PETG",
       "nozzleTemp": 250,
       "bedTemp": 80,
-      "file": "profiles/qidi-qidi-generic-petg.json"
-    },
-    {
-      "id": "qidi-qidi-generic-petg-cf",
-      "name": "Qidi Generic PETG-CF",
-      "vendor": "Qidi",
-      "type": "PETG",
-      "nozzleTemp": 280,
-      "bedTemp": 80,
-      "file": "profiles/qidi-qidi-generic-petg-cf.json"
+      "file": "profiles/qidi-qidi-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-pla",
@@ -8844,16 +10553,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/qidi-qidi-generic-pla.json"
-    },
-    {
-      "id": "qidi-qidi-generic-pla-high-speed",
-      "name": "Qidi Generic PLA High Speed",
-      "vendor": "Qidi",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/qidi-qidi-generic-pla-high-speed.json"
+      "file": "profiles/qidi-qidi-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-pla-silk",
@@ -8862,16 +10563,8 @@
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 55,
-      "file": "profiles/qidi-qidi-generic-pla-silk.json"
-    },
-    {
-      "id": "qidi-qidi-generic-pla-cf",
-      "name": "Qidi Generic PLA-CF",
-      "vendor": "Qidi",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/qidi-qidi-generic-pla-cf.json"
+      "file": "profiles/qidi-qidi-generic-pla-silk.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-pla-2",
@@ -8880,25 +10573,8 @@
       "type": "PLA",
       "nozzleTemp": 230,
       "bedTemp": 60,
-      "file": "profiles/qidi-qidi-generic-pla-2.json"
-    },
-    {
-      "id": "qidi-qidi-generic-pva",
-      "name": "Qidi Generic PVA",
-      "vendor": "Qidi",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/qidi-qidi-generic-pva.json"
-    },
-    {
-      "id": "qidi-qidi-generic-tpu",
-      "name": "Qidi Generic TPU",
-      "vendor": "Qidi",
-      "type": "TPU",
-      "nozzleTemp": 230,
-      "bedTemp": 35,
-      "file": "profiles/qidi-qidi-generic-tpu.json"
+      "file": "profiles/qidi-qidi-generic-pla-2.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-generic-tpu-95a",
@@ -8907,7 +10583,8 @@
       "type": "TPU",
       "nozzleTemp": 230,
       "bedTemp": 35,
-      "file": "profiles/qidi-qidi-generic-tpu-95a.json"
+      "file": "profiles/qidi-qidi-generic-tpu-95a.json",
+      "legacy": true
     },
     {
       "id": "qidi-qidi-pa-ultra",
@@ -8926,6 +10603,15 @@
       "nozzleTemp": 290,
       "bedTemp": 80,
       "file": "profiles/qidi-qidi-pa12-cf.json"
+    },
+    {
+      "id": "qidi-qidi-pa6-cf",
+      "name": "QIDI PA6-CF",
+      "vendor": "Qidi",
+      "type": "PA",
+      "nozzleTemp": 280,
+      "bedTemp": 80,
+      "file": "profiles/qidi-qidi-pa6-cf.json"
     },
     {
       "id": "qidi-qidi-paht-cf",
@@ -9108,6 +10794,15 @@
       "file": "profiles/qidi-qidi-pla-rapido-silk.json"
     },
     {
+      "id": "qidi-qidi-pla-silk",
+      "name": "QIDI PLA Silk",
+      "vendor": "Qidi",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 55,
+      "file": "profiles/qidi-qidi-pla-silk.json"
+    },
+    {
       "id": "qidi-qidi-pla-cf-2",
       "name": "Qidi PLA-CF",
       "vendor": "Qidi",
@@ -9234,13 +10929,41 @@
       "file": "profiles/qidi-tinmorry-petg-eco.json"
     },
     {
+      "id": "ratrig-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "Ratrig",
+      "type": "PA",
+      "nozzleTemp": 270,
+      "bedTemp": 80,
+      "file": "profiles/ratrig-generic-pa-cf.json"
+    },
+    {
+      "id": "ratrig-generic-pctg",
+      "name": "Generic PCTG",
+      "vendor": "Ratrig",
+      "type": "PCTG",
+      "nozzleTemp": 255,
+      "bedTemp": 75,
+      "file": "profiles/ratrig-generic-pctg.json"
+    },
+    {
+      "id": "ratrig-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Ratrig",
+      "type": "PLA",
+      "nozzleTemp": 205,
+      "bedTemp": 55,
+      "file": "profiles/ratrig-generic-pla-cf.json"
+    },
+    {
       "id": "ratrig-ratrig-bignozzle-abs",
       "name": "RatRig BigNozzle ABS",
       "vendor": "Ratrig",
       "type": "ABS",
       "nozzleTemp": 265,
       "bedTemp": 105,
-      "file": "profiles/ratrig-ratrig-bignozzle-abs.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-abs.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-bignozzle-asa",
@@ -9249,7 +10972,8 @@
       "type": "ASA",
       "nozzleTemp": 265,
       "bedTemp": 105,
-      "file": "profiles/ratrig-ratrig-bignozzle-asa.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-asa.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-bignozzle-pctg",
@@ -9258,7 +10982,8 @@
       "type": "PETG",
       "nozzleTemp": 275,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-bignozzle-pctg.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-pctg.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-bignozzle-petg",
@@ -9267,7 +10992,8 @@
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-bignozzle-petg.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-petg.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-bignozzle-pla",
@@ -9276,7 +11002,8 @@
       "type": "PLA",
       "nozzleTemp": 235,
       "bedTemp": 60,
-      "file": "profiles/ratrig-ratrig-bignozzle-pla.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-pla.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-bignozzle-tpu",
@@ -9285,7 +11012,8 @@
       "type": "TPU",
       "nozzleTemp": 245,
       "bedTemp": 35,
-      "file": "profiles/ratrig-ratrig-bignozzle-tpu.json"
+      "file": "profiles/ratrig-ratrig-bignozzle-tpu.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-abs",
@@ -9294,7 +11022,8 @@
       "type": "ABS",
       "nozzleTemp": 243,
       "bedTemp": 105,
-      "file": "profiles/ratrig-ratrig-generic-abs.json"
+      "file": "profiles/ratrig-ratrig-generic-abs.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-asa",
@@ -9303,7 +11032,8 @@
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/ratrig-ratrig-generic-asa.json"
+      "file": "profiles/ratrig-ratrig-generic-asa.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-pa",
@@ -9312,16 +11042,8 @@
       "type": "PA",
       "nozzleTemp": 270,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-generic-pa.json"
-    },
-    {
-      "id": "ratrig-ratrig-generic-pa-cf",
-      "name": "RatRig Generic PA-CF",
-      "vendor": "Ratrig",
-      "type": "PA",
-      "nozzleTemp": 270,
-      "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-generic-pa-cf.json"
+      "file": "profiles/ratrig-ratrig-generic-pa.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-pc",
@@ -9330,7 +11052,8 @@
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/ratrig-ratrig-generic-pc.json"
+      "file": "profiles/ratrig-ratrig-generic-pc.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-pctg",
@@ -9339,7 +11062,8 @@
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-generic-pctg.json"
+      "file": "profiles/ratrig-ratrig-generic-pctg.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-petg",
@@ -9348,7 +11072,8 @@
       "type": "PETG",
       "nozzleTemp": 235,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-generic-petg.json"
+      "file": "profiles/ratrig-ratrig-generic-petg.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-pla",
@@ -9357,16 +11082,8 @@
       "type": "PLA",
       "nozzleTemp": 200,
       "bedTemp": 60,
-      "file": "profiles/ratrig-ratrig-generic-pla.json"
-    },
-    {
-      "id": "ratrig-ratrig-generic-pla-cf",
-      "name": "RatRig Generic PLA-CF",
-      "vendor": "Ratrig",
-      "type": "PLA",
-      "nozzleTemp": 205,
-      "bedTemp": 60,
-      "file": "profiles/ratrig-ratrig-generic-pla-cf.json"
+      "file": "profiles/ratrig-ratrig-generic-pla.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-pva",
@@ -9375,7 +11092,8 @@
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 45,
-      "file": "profiles/ratrig-ratrig-generic-pva.json"
+      "file": "profiles/ratrig-ratrig-generic-pva.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-generic-tpu",
@@ -9384,7 +11102,8 @@
       "type": "TPU",
       "nozzleTemp": 220,
       "bedTemp": 35,
-      "file": "profiles/ratrig-ratrig-generic-tpu.json"
+      "file": "profiles/ratrig-ratrig-generic-tpu.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-punkfil-abs",
@@ -9393,7 +11112,8 @@
       "type": "ABS",
       "nozzleTemp": 260,
       "bedTemp": 110,
-      "file": "profiles/ratrig-ratrig-punkfil-abs.json"
+      "file": "profiles/ratrig-ratrig-punkfil-abs.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-punkfil-petg",
@@ -9402,7 +11122,8 @@
       "type": "PETG",
       "nozzleTemp": 235,
       "bedTemp": 80,
-      "file": "profiles/ratrig-ratrig-punkfil-petg.json"
+      "file": "profiles/ratrig-ratrig-punkfil-petg.json",
+      "legacy": true
     },
     {
       "id": "ratrig-ratrig-punkfil-petg-cf",
@@ -9420,7 +11141,8 @@
       "type": "PETG",
       "nozzleTemp": 0,
       "bedTemp": 70,
-      "file": "profiles/re3d-re3d-greengate-rpetg.json"
+      "file": "profiles/re3d-re3d-greengate-rpetg.json",
+      "legacy": true
     },
     {
       "id": "re3d-re3d-pc",
@@ -9450,6 +11172,15 @@
       "file": "profiles/re3d-re3d-pla.json"
     },
     {
+      "id": "re3d-re3d-rpetg",
+      "name": "re3D rPETG",
+      "vendor": "re3D",
+      "type": "PETG",
+      "nozzleTemp": 0,
+      "bedTemp": 70,
+      "file": "profiles/re3d-re3d-rpetg.json"
+    },
+    {
       "id": "re3d-re3d-rpp",
       "name": "re3D rPP",
       "vendor": "re3D",
@@ -9457,6 +11188,33 @@
       "nozzleTemp": 190,
       "bedTemp": 110,
       "file": "profiles/re3d-re3d-rpp.json"
+    },
+    {
+      "id": "recycling-fabrik-recycling-fabrik-rabs",
+      "name": "Recycling Fabrik rABS",
+      "vendor": "Recycling Fabrik",
+      "type": "ABS",
+      "nozzleTemp": 260,
+      "bedTemp": 90,
+      "file": "profiles/recycling-fabrik-recycling-fabrik-rabs.json"
+    },
+    {
+      "id": "recycling-fabrik-recycling-fabrik-rpetg",
+      "name": "Recycling Fabrik rPETG",
+      "vendor": "Recycling Fabrik",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/recycling-fabrik-recycling-fabrik-rpetg.json"
+    },
+    {
+      "id": "recycling-fabrik-recycling-fabrik-rpla",
+      "name": "Recycling Fabrik rPLA",
+      "vendor": "Recycling Fabrik",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 60,
+      "file": "profiles/recycling-fabrik-recycling-fabrik-rpla.json"
     },
     {
       "id": "rh3d-generic-abs",
@@ -9513,94 +11271,166 @@
       "file": "profiles/rh3d-generic-tpu.json"
     },
     {
-      "id": "seckit-seckit-generic-abs",
-      "name": "SecKit Generic ABS",
+      "id": "schoolhousespools-school-house-spools-marble-pla",
+      "name": "School House Spools Marble PLA",
+      "vendor": "SchoolHouseSpools",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/schoolhousespools-school-house-spools-marble-pla.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-matte-petg",
+      "name": "School House Spools Matte PETG",
+      "vendor": "SchoolHouseSpools",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/schoolhousespools-school-house-spools-matte-petg.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-matte-pla",
+      "name": "School House Spools Matte PLA",
+      "vendor": "SchoolHouseSpools",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/schoolhousespools-school-house-spools-matte-pla.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-petg",
+      "name": "School House Spools PETG",
+      "vendor": "SchoolHouseSpools",
+      "type": "PETG",
+      "nozzleTemp": 252,
+      "bedTemp": 70,
+      "file": "profiles/schoolhousespools-school-house-spools-petg.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-pla",
+      "name": "School House Spools PLA",
+      "vendor": "SchoolHouseSpools",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/schoolhousespools-school-house-spools-pla.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-silk-pla",
+      "name": "School House Spools Silk PLA",
+      "vendor": "SchoolHouseSpools",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 55,
+      "file": "profiles/schoolhousespools-school-house-spools-silk-pla.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-tpu-95a",
+      "name": "School House Spools TPU 95A",
+      "vendor": "SchoolHouseSpools",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 35,
+      "file": "profiles/schoolhousespools-school-house-spools-tpu-95a.json"
+    },
+    {
+      "id": "schoolhousespools-school-house-spools-transparent-petg",
+      "name": "School House Spools Transparent PETG",
+      "vendor": "SchoolHouseSpools",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 70,
+      "file": "profiles/schoolhousespools-school-house-spools-transparent-petg.json"
+    },
+    {
+      "id": "seckit-generic-abs",
+      "name": "Generic ABS",
       "vendor": "SecKit",
       "type": "ABS",
       "nozzleTemp": 243,
       "bedTemp": 105,
-      "file": "profiles/seckit-seckit-generic-abs.json"
+      "file": "profiles/seckit-generic-abs.json"
     },
     {
-      "id": "seckit-seckit-generic-asa",
-      "name": "SecKit Generic ASA",
+      "id": "seckit-generic-asa",
+      "name": "Generic ASA",
       "vendor": "SecKit",
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/seckit-seckit-generic-asa.json"
+      "file": "profiles/seckit-generic-asa.json"
     },
     {
-      "id": "seckit-seckit-generic-pa",
-      "name": "SecKit Generic PA",
+      "id": "seckit-generic-pa",
+      "name": "Generic PA",
       "vendor": "SecKit",
       "type": "PA",
       "nozzleTemp": 270,
       "bedTemp": 80,
-      "file": "profiles/seckit-seckit-generic-pa.json"
+      "file": "profiles/seckit-generic-pa.json"
     },
     {
-      "id": "seckit-seckit-generic-pa-cf",
-      "name": "SecKit Generic PA-CF",
+      "id": "seckit-generic-pa-cf",
+      "name": "Generic PA-CF",
       "vendor": "SecKit",
       "type": "PA",
       "nozzleTemp": 270,
       "bedTemp": 80,
-      "file": "profiles/seckit-seckit-generic-pa-cf.json"
+      "file": "profiles/seckit-generic-pa-cf.json"
     },
     {
-      "id": "seckit-seckit-generic-pc",
-      "name": "SecKit Generic PC",
+      "id": "seckit-generic-pc",
+      "name": "Generic PC",
       "vendor": "SecKit",
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/seckit-seckit-generic-pc.json"
+      "file": "profiles/seckit-generic-pc.json"
     },
     {
-      "id": "seckit-seckit-generic-petg",
-      "name": "SecKit Generic PETG",
+      "id": "seckit-generic-petg",
+      "name": "Generic PETG",
       "vendor": "SecKit",
       "type": "PETG",
       "nozzleTemp": 235,
       "bedTemp": 80,
-      "file": "profiles/seckit-seckit-generic-petg.json"
+      "file": "profiles/seckit-generic-petg.json"
     },
     {
-      "id": "seckit-seckit-generic-pla",
-      "name": "SecKit Generic PLA",
+      "id": "seckit-generic-pla",
+      "name": "Generic PLA",
       "vendor": "SecKit",
       "type": "PLA",
       "nozzleTemp": 200,
       "bedTemp": 60,
-      "file": "profiles/seckit-seckit-generic-pla.json"
+      "file": "profiles/seckit-generic-pla.json"
     },
     {
-      "id": "seckit-seckit-generic-pla-cf",
-      "name": "SecKit Generic PLA-CF",
+      "id": "seckit-generic-pla-cf",
+      "name": "Generic PLA-CF",
       "vendor": "SecKit",
       "type": "PLA",
       "nozzleTemp": 205,
       "bedTemp": 60,
-      "file": "profiles/seckit-seckit-generic-pla-cf.json"
+      "file": "profiles/seckit-generic-pla-cf.json"
     },
     {
-      "id": "seckit-seckit-generic-pva",
-      "name": "SecKit Generic PVA",
+      "id": "seckit-generic-pva",
+      "name": "Generic PVA",
       "vendor": "SecKit",
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 45,
-      "file": "profiles/seckit-seckit-generic-pva.json"
+      "file": "profiles/seckit-generic-pva.json"
     },
     {
-      "id": "seckit-seckit-generic-tpu",
-      "name": "SecKit Generic TPU",
+      "id": "seckit-generic-tpu",
+      "name": "Generic TPU",
       "vendor": "SecKit",
       "type": "TPU",
       "nozzleTemp": 220,
       "bedTemp": 35,
-      "file": "profiles/seckit-seckit-generic-tpu.json"
+      "file": "profiles/seckit-generic-tpu.json"
     },
     {
       "id": "seemecnc-seemecnc-abs",
@@ -9618,7 +11448,8 @@
       "type": "ABS",
       "nozzleTemp": 240,
       "bedTemp": 100,
-      "file": "profiles/seemecnc-seemecnc-abs-1-0-nozzle.json"
+      "file": "profiles/seemecnc-seemecnc-abs-1-0-nozzle.json",
+      "legacy": true
     },
     {
       "id": "seemecnc-seemecnc-pa-cf",
@@ -9636,7 +11467,8 @@
       "type": "PA",
       "nozzleTemp": 265,
       "bedTemp": 90,
-      "file": "profiles/seemecnc-seemecnc-pa-cf-1-0-nozzle.json"
+      "file": "profiles/seemecnc-seemecnc-pa-cf-1-0-nozzle.json",
+      "legacy": true
     },
     {
       "id": "seemecnc-seemecnc-petg",
@@ -9654,7 +11486,8 @@
       "type": "PETG",
       "nozzleTemp": 230,
       "bedTemp": 70,
-      "file": "profiles/seemecnc-seemecnc-petg-1-0-nozzle.json"
+      "file": "profiles/seemecnc-seemecnc-petg-1-0-nozzle.json",
+      "legacy": true
     },
     {
       "id": "seemecnc-seemecnc-petg-cf",
@@ -9672,7 +11505,8 @@
       "type": "PETG",
       "nozzleTemp": 235,
       "bedTemp": 70,
-      "file": "profiles/seemecnc-seemecnc-petg-cf-1-0-nozzle.json"
+      "file": "profiles/seemecnc-seemecnc-petg-cf-1-0-nozzle.json",
+      "legacy": true
     },
     {
       "id": "seemecnc-seemecnc-pla",
@@ -9690,7 +11524,8 @@
       "type": "PLA",
       "nozzleTemp": 190,
       "bedTemp": 55,
-      "file": "profiles/seemecnc-seemecnc-pla-1-0-nozzle.json"
+      "file": "profiles/seemecnc-seemecnc-pla-1-0-nozzle.json",
+      "legacy": true
     },
     {
       "id": "seemecnc-seemecnc-tpu",
@@ -9707,7 +11542,7 @@
       "vendor": "Snapmaker",
       "type": "ASA",
       "nozzleTemp": 250,
-      "bedTemp": 105,
+      "bedTemp": 100,
       "file": "profiles/snapmaker-fiberon-asa-cf08.json"
     },
     {
@@ -9752,7 +11587,7 @@
       "vendor": "Snapmaker",
       "type": "ABS",
       "nozzleTemp": 300,
-      "bedTemp": 105,
+      "bedTemp": 100,
       "file": "profiles/snapmaker-fiberon-pps-gf20.json"
     },
     {
@@ -10026,6 +11861,15 @@
       "file": "profiles/snapmaker-polylite-pla-translucent.json"
     },
     {
+      "id": "snapmaker-polymaker-general-pla-family",
+      "name": "Polymaker General PLA Family",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/snapmaker-polymaker-general-pla-family.json"
+    },
+    {
       "id": "snapmaker-polymaker-ht-pla",
       "name": "Polymaker HT-PLA",
       "vendor": "Snapmaker",
@@ -10089,6 +11933,24 @@
       "file": "profiles/snapmaker-polymaker-pla-pro-metallic.json"
     },
     {
+      "id": "snapmaker-polymaker-silk-pla-family",
+      "name": "Polymaker Silk PLA Family",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 230,
+      "bedTemp": 55,
+      "file": "profiles/snapmaker-polymaker-silk-pla-family.json"
+    },
+    {
+      "id": "snapmaker-polymaker-tough-pla-family",
+      "name": "Polymaker Tough PLA Family",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/snapmaker-polymaker-tough-pla-family.json"
+    },
+    {
       "id": "snapmaker-polyterra-pla-marble",
       "name": "PolyTerra PLA Marble",
       "vendor": "Snapmaker",
@@ -10121,7 +11983,7 @@
       "vendor": "Snapmaker",
       "type": "ABS",
       "nozzleTemp": 250,
-      "bedTemp": 110,
+      "bedTemp": 100,
       "file": "profiles/snapmaker-snapmaker-abs-benchy.json"
     },
     {
@@ -10138,7 +12000,7 @@
       "name": "Snapmaker Breakaway Support For PLA",
       "vendor": "Snapmaker",
       "type": "PLA",
-      "nozzleTemp": 220,
+      "nozzleTemp": 210,
       "bedTemp": 65,
       "file": "profiles/snapmaker-snapmaker-breakaway-support-for-pla.json"
     },
@@ -10494,6 +12356,24 @@
       "file": "profiles/snapmaker-snapmaker-petg.json"
     },
     {
+      "id": "snapmaker-snapmaker-petg-hf",
+      "name": "Snapmaker PETG HF",
+      "vendor": "Snapmaker",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 80,
+      "file": "profiles/snapmaker-snapmaker-petg-hf.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-petg-translucent",
+      "name": "Snapmaker PETG Translucent",
+      "vendor": "Snapmaker",
+      "type": "PETG",
+      "nozzleTemp": 245,
+      "bedTemp": 80,
+      "file": "profiles/snapmaker-snapmaker-petg-translucent.json"
+    },
+    {
       "id": "snapmaker-snapmaker-petg-cf",
       "name": "Snapmaker PETG-CF",
       "vendor": "Snapmaker",
@@ -10512,6 +12392,15 @@
       "file": "profiles/snapmaker-snapmaker-pla.json"
     },
     {
+      "id": "snapmaker-snapmaker-pla-basic",
+      "name": "Snapmaker PLA Basic",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/snapmaker-snapmaker-pla-basic.json"
+    },
+    {
       "id": "snapmaker-snapmaker-pla-eco",
       "name": "Snapmaker PLA Eco",
       "vendor": "Snapmaker",
@@ -10519,6 +12408,24 @@
       "nozzleTemp": 200,
       "bedTemp": 60,
       "file": "profiles/snapmaker-snapmaker-pla-eco.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-pla-full-spectrum",
+      "name": "Snapmaker PLA Full Spectrum",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/snapmaker-snapmaker-pla-full-spectrum.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-pla-glow",
+      "name": "Snapmaker PLA Glow",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/snapmaker-snapmaker-pla-glow.json"
     },
     {
       "id": "snapmaker-snapmaker-pla-lite",
@@ -10534,8 +12441,8 @@
       "name": "Snapmaker PLA Matte",
       "vendor": "Snapmaker",
       "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
+      "nozzleTemp": 215,
+      "bedTemp": 65,
       "file": "profiles/snapmaker-snapmaker-pla-matte.json"
     },
     {
@@ -10562,16 +12469,34 @@
       "vendor": "Snapmaker",
       "type": "PLA",
       "nozzleTemp": 220,
-      "bedTemp": 55,
+      "bedTemp": 65,
       "file": "profiles/snapmaker-snapmaker-pla-snapspeed.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-pla-translucent",
+      "name": "Snapmaker PLA Translucent",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/snapmaker-snapmaker-pla-translucent.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-pla-wood",
+      "name": "Snapmaker PLA Wood",
+      "vendor": "Snapmaker",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/snapmaker-snapmaker-pla-wood.json"
     },
     {
       "id": "snapmaker-snapmaker-pla-cf",
       "name": "Snapmaker PLA-CF",
       "vendor": "Snapmaker",
       "type": "PLA",
-      "nozzleTemp": 230,
-      "bedTemp": 55,
+      "nozzleTemp": 210,
+      "bedTemp": 60,
       "file": "profiles/snapmaker-snapmaker-pla-cf.json"
     },
     {
@@ -10602,6 +12527,15 @@
       "file": "profiles/snapmaker-snapmaker-tpu.json"
     },
     {
+      "id": "snapmaker-snapmaker-tpu-90a",
+      "name": "Snapmaker TPU 90A",
+      "vendor": "Snapmaker",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 35,
+      "file": "profiles/snapmaker-snapmaker-tpu-90a.json"
+    },
+    {
       "id": "snapmaker-snapmaker-tpu-95a",
       "name": "Snapmaker TPU 95A",
       "vendor": "Snapmaker",
@@ -10609,6 +12543,15 @@
       "nozzleTemp": 225,
       "bedTemp": 55,
       "file": "profiles/snapmaker-snapmaker-tpu-95a.json"
+    },
+    {
+      "id": "snapmaker-snapmaker-tpu-95a-hf",
+      "name": "Snapmaker TPU 95A HF",
+      "vendor": "Snapmaker",
+      "type": "TPU",
+      "nozzleTemp": 230,
+      "bedTemp": 35,
+      "file": "profiles/snapmaker-snapmaker-tpu-95a-hf.json"
     },
     {
       "id": "snapmaker-snapmaker-tpu-high-flow",
@@ -10683,6 +12626,258 @@
       "file": "profiles/sunlu-sunlu-wood-pla.json"
     },
     {
+      "id": "tiertime-generic-abs",
+      "name": "Generic ABS",
+      "vendor": "Tiertime",
+      "type": "ABS",
+      "nozzleTemp": 270,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-abs.json"
+    },
+    {
+      "id": "tiertime-generic-asa",
+      "name": "Generic ASA",
+      "vendor": "Tiertime",
+      "type": "ASA",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-asa.json"
+    },
+    {
+      "id": "tiertime-generic-bvoh",
+      "name": "Generic BVOH",
+      "vendor": "Tiertime",
+      "type": "BVOH",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-bvoh.json"
+    },
+    {
+      "id": "tiertime-generic-eva",
+      "name": "Generic EVA",
+      "vendor": "Tiertime",
+      "type": "EVA",
+      "nozzleTemp": 210,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-eva.json"
+    },
+    {
+      "id": "tiertime-generic-hips",
+      "name": "Generic HIPS",
+      "vendor": "Tiertime",
+      "type": "HIPS",
+      "nozzleTemp": 240,
+      "bedTemp": 90,
+      "file": "profiles/tiertime-generic-hips.json"
+    },
+    {
+      "id": "tiertime-generic-pa",
+      "name": "Generic PA",
+      "vendor": "Tiertime",
+      "type": "PA",
+      "nozzleTemp": 260,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-pa.json"
+    },
+    {
+      "id": "tiertime-generic-pa-cf",
+      "name": "Generic PA-CF",
+      "vendor": "Tiertime",
+      "type": "PA",
+      "nozzleTemp": 290,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-pa-cf.json"
+    },
+    {
+      "id": "tiertime-generic-pc",
+      "name": "Generic PC",
+      "vendor": "Tiertime",
+      "type": "PC",
+      "nozzleTemp": 280,
+      "bedTemp": 110,
+      "file": "profiles/tiertime-generic-pc.json"
+    },
+    {
+      "id": "tiertime-generic-pctg",
+      "name": "Generic PCTG",
+      "vendor": "Tiertime",
+      "type": "PCTG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/tiertime-generic-pctg.json"
+    },
+    {
+      "id": "tiertime-generic-pe",
+      "name": "Generic PE",
+      "vendor": "Tiertime",
+      "type": "PE",
+      "nozzleTemp": 210,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pe.json"
+    },
+    {
+      "id": "tiertime-generic-pe-cf",
+      "name": "Generic PE-CF",
+      "vendor": "Tiertime",
+      "type": "PE",
+      "nozzleTemp": 210,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pe-cf.json"
+    },
+    {
+      "id": "tiertime-generic-petg",
+      "name": "Generic PETG",
+      "vendor": "Tiertime",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/tiertime-generic-petg.json"
+    },
+    {
+      "id": "tiertime-generic-petg-cf",
+      "name": "Generic PETG-CF",
+      "vendor": "Tiertime",
+      "type": "PETG",
+      "nozzleTemp": 255,
+      "bedTemp": 70,
+      "file": "profiles/tiertime-generic-petg-cf.json"
+    },
+    {
+      "id": "tiertime-generic-pha",
+      "name": "Generic PHA",
+      "vendor": "Tiertime",
+      "type": "PHA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pha.json"
+    },
+    {
+      "id": "tiertime-generic-pla",
+      "name": "Generic PLA",
+      "vendor": "Tiertime",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/tiertime-generic-pla.json"
+    },
+    {
+      "id": "tiertime-generic-pla-high-speed",
+      "name": "Generic PLA High Speed",
+      "vendor": "Tiertime",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/tiertime-generic-pla-high-speed.json"
+    },
+    {
+      "id": "tiertime-generic-pla-silk",
+      "name": "Generic PLA Silk",
+      "vendor": "Tiertime",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 60,
+      "file": "profiles/tiertime-generic-pla-silk.json"
+    },
+    {
+      "id": "tiertime-generic-pla-cf",
+      "name": "Generic PLA-CF",
+      "vendor": "Tiertime",
+      "type": "PLA",
+      "nozzleTemp": 220,
+      "bedTemp": 65,
+      "file": "profiles/tiertime-generic-pla-cf.json"
+    },
+    {
+      "id": "tiertime-generic-pp",
+      "name": "Generic PP",
+      "vendor": "Tiertime",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pp.json"
+    },
+    {
+      "id": "tiertime-generic-pp-cf",
+      "name": "Generic PP-CF",
+      "vendor": "Tiertime",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pp-cf.json"
+    },
+    {
+      "id": "tiertime-generic-pp-gf",
+      "name": "Generic PP-GF",
+      "vendor": "Tiertime",
+      "type": "PP",
+      "nozzleTemp": 235,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pp-gf.json"
+    },
+    {
+      "id": "tiertime-generic-ppa-cf",
+      "name": "Generic PPA-CF",
+      "vendor": "Tiertime",
+      "type": "PPA",
+      "nozzleTemp": 290,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-ppa-cf.json"
+    },
+    {
+      "id": "tiertime-generic-ppa-gf",
+      "name": "Generic PPA-GF",
+      "vendor": "Tiertime",
+      "type": "PPA",
+      "nozzleTemp": 290,
+      "bedTemp": 100,
+      "file": "profiles/tiertime-generic-ppa-gf.json"
+    },
+    {
+      "id": "tiertime-generic-pps",
+      "name": "Generic PPS",
+      "vendor": "Tiertime",
+      "type": "PPS",
+      "nozzleTemp": 320,
+      "bedTemp": 110,
+      "file": "profiles/tiertime-generic-pps.json"
+    },
+    {
+      "id": "tiertime-generic-pps-cf",
+      "name": "Generic PPS-CF",
+      "vendor": "Tiertime",
+      "type": "PPS",
+      "nozzleTemp": 320,
+      "bedTemp": 110,
+      "file": "profiles/tiertime-generic-pps-cf.json"
+    },
+    {
+      "id": "tiertime-generic-pva",
+      "name": "Generic PVA",
+      "vendor": "Tiertime",
+      "type": "PVA",
+      "nozzleTemp": 220,
+      "bedTemp": 55,
+      "file": "profiles/tiertime-generic-pva.json"
+    },
+    {
+      "id": "tiertime-generic-sbs",
+      "name": "Generic SBS",
+      "vendor": "Tiertime",
+      "type": "SBS",
+      "nozzleTemp": 235,
+      "bedTemp": 70,
+      "file": "profiles/tiertime-generic-sbs.json"
+    },
+    {
+      "id": "tiertime-generic-tpu",
+      "name": "Generic TPU",
+      "vendor": "Tiertime",
+      "type": "TPU",
+      "nozzleTemp": 240,
+      "bedTemp": 35,
+      "file": "profiles/tiertime-generic-tpu.json"
+    },
+    {
       "id": "tiertime-tiertime-abs",
       "name": "Tiertime ABS",
       "vendor": "Tiertime",
@@ -10699,258 +12894,6 @@
       "nozzleTemp": 270,
       "bedTemp": 90,
       "file": "profiles/tiertime-tiertime-asa.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-abs",
-      "name": "Tiertime Generic ABS",
-      "vendor": "Tiertime",
-      "type": "ABS",
-      "nozzleTemp": 270,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-abs.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-asa",
-      "name": "Tiertime Generic ASA",
-      "vendor": "Tiertime",
-      "type": "ASA",
-      "nozzleTemp": 260,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-asa.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-bvoh",
-      "name": "Tiertime Generic BVOH",
-      "vendor": "Tiertime",
-      "type": "BVOH",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-bvoh.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-eva",
-      "name": "Tiertime Generic EVA",
-      "vendor": "Tiertime",
-      "type": "EVA",
-      "nozzleTemp": 210,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-eva.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-hips",
-      "name": "Tiertime Generic HIPS",
-      "vendor": "Tiertime",
-      "type": "HIPS",
-      "nozzleTemp": 240,
-      "bedTemp": 90,
-      "file": "profiles/tiertime-tiertime-generic-hips.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pa",
-      "name": "Tiertime Generic PA",
-      "vendor": "Tiertime",
-      "type": "PA",
-      "nozzleTemp": 260,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-pa.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pa-cf",
-      "name": "Tiertime Generic PA-CF",
-      "vendor": "Tiertime",
-      "type": "PA",
-      "nozzleTemp": 290,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-pa-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pc",
-      "name": "Tiertime Generic PC",
-      "vendor": "Tiertime",
-      "type": "PC",
-      "nozzleTemp": 280,
-      "bedTemp": 110,
-      "file": "profiles/tiertime-tiertime-generic-pc.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pctg",
-      "name": "Tiertime Generic PCTG",
-      "vendor": "Tiertime",
-      "type": "PCTG",
-      "nozzleTemp": 255,
-      "bedTemp": 70,
-      "file": "profiles/tiertime-tiertime-generic-pctg.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pe",
-      "name": "Tiertime Generic PE",
-      "vendor": "Tiertime",
-      "type": "PE",
-      "nozzleTemp": 210,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pe.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pe-cf",
-      "name": "Tiertime Generic PE-CF",
-      "vendor": "Tiertime",
-      "type": "PE",
-      "nozzleTemp": 210,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pe-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-petg",
-      "name": "Tiertime Generic PETG",
-      "vendor": "Tiertime",
-      "type": "PETG",
-      "nozzleTemp": 255,
-      "bedTemp": 70,
-      "file": "profiles/tiertime-tiertime-generic-petg.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-petg-cf",
-      "name": "Tiertime Generic PETG-CF",
-      "vendor": "Tiertime",
-      "type": "PETG",
-      "nozzleTemp": 255,
-      "bedTemp": 70,
-      "file": "profiles/tiertime-tiertime-generic-petg-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pha",
-      "name": "Tiertime Generic PHA",
-      "vendor": "Tiertime",
-      "type": "PHA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pha.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pla",
-      "name": "Tiertime Generic PLA",
-      "vendor": "Tiertime",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/tiertime-tiertime-generic-pla.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pla-high-speed",
-      "name": "Tiertime Generic PLA High Speed",
-      "vendor": "Tiertime",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/tiertime-tiertime-generic-pla-high-speed.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pla-silk",
-      "name": "Tiertime Generic PLA Silk",
-      "vendor": "Tiertime",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 60,
-      "file": "profiles/tiertime-tiertime-generic-pla-silk.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pla-cf",
-      "name": "Tiertime Generic PLA-CF",
-      "vendor": "Tiertime",
-      "type": "PLA",
-      "nozzleTemp": 220,
-      "bedTemp": 65,
-      "file": "profiles/tiertime-tiertime-generic-pla-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pp",
-      "name": "Tiertime Generic PP",
-      "vendor": "Tiertime",
-      "type": "PP",
-      "nozzleTemp": 235,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pp.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pp-cf",
-      "name": "Tiertime Generic PP-CF",
-      "vendor": "Tiertime",
-      "type": "PP",
-      "nozzleTemp": 235,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pp-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pp-gf",
-      "name": "Tiertime Generic PP-GF",
-      "vendor": "Tiertime",
-      "type": "PP",
-      "nozzleTemp": 235,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pp-gf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-ppa-cf",
-      "name": "Tiertime Generic PPA-CF",
-      "vendor": "Tiertime",
-      "type": "PPA",
-      "nozzleTemp": 290,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-ppa-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-ppa-gf",
-      "name": "Tiertime Generic PPA-GF",
-      "vendor": "Tiertime",
-      "type": "PPA",
-      "nozzleTemp": 290,
-      "bedTemp": 100,
-      "file": "profiles/tiertime-tiertime-generic-ppa-gf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pps",
-      "name": "Tiertime Generic PPS",
-      "vendor": "Tiertime",
-      "type": "PPS",
-      "nozzleTemp": 320,
-      "bedTemp": 110,
-      "file": "profiles/tiertime-tiertime-generic-pps.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pps-cf",
-      "name": "Tiertime Generic PPS-CF",
-      "vendor": "Tiertime",
-      "type": "PPS",
-      "nozzleTemp": 320,
-      "bedTemp": 110,
-      "file": "profiles/tiertime-tiertime-generic-pps-cf.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-pva",
-      "name": "Tiertime Generic PVA",
-      "vendor": "Tiertime",
-      "type": "PVA",
-      "nozzleTemp": 220,
-      "bedTemp": 55,
-      "file": "profiles/tiertime-tiertime-generic-pva.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-sbs",
-      "name": "Tiertime Generic SBS",
-      "vendor": "Tiertime",
-      "type": "SBS",
-      "nozzleTemp": 235,
-      "bedTemp": 70,
-      "file": "profiles/tiertime-tiertime-generic-sbs.json"
-    },
-    {
-      "id": "tiertime-tiertime-generic-tpu",
-      "name": "Tiertime Generic TPU",
-      "vendor": "Tiertime",
-      "type": "TPU",
-      "nozzleTemp": 240,
-      "bedTemp": 35,
-      "file": "profiles/tiertime-tiertime-generic-tpu.json"
     },
     {
       "id": "tiertime-tiertime-pa6-cf",
@@ -11304,94 +13247,94 @@
       "file": "profiles/volumic-volumic-universal-ultra-performance.json"
     },
     {
-      "id": "vzbot-vzbot-generic-abs",
-      "name": "Vzbot Generic ABS",
+      "id": "vzbot-generic-abs",
+      "name": "Generic ABS",
       "vendor": "Vzbot",
       "type": "ABS",
       "nozzleTemp": 250,
       "bedTemp": 105,
-      "file": "profiles/vzbot-vzbot-generic-abs.json"
+      "file": "profiles/vzbot-generic-abs.json"
     },
     {
-      "id": "vzbot-vzbot-generic-asa",
-      "name": "Vzbot Generic ASA",
+      "id": "vzbot-generic-asa",
+      "name": "Generic ASA",
       "vendor": "Vzbot",
       "type": "ASA",
       "nozzleTemp": 260,
       "bedTemp": 105,
-      "file": "profiles/vzbot-vzbot-generic-asa.json"
+      "file": "profiles/vzbot-generic-asa.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pa",
-      "name": "Vzbot Generic PA",
+      "id": "vzbot-generic-pa",
+      "name": "Generic PA",
       "vendor": "Vzbot",
       "type": "PA",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/vzbot-vzbot-generic-pa.json"
+      "file": "profiles/vzbot-generic-pa.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pa-cf",
-      "name": "Vzbot Generic PA-CF",
+      "id": "vzbot-generic-pa-cf",
+      "name": "Generic PA-CF",
       "vendor": "Vzbot",
       "type": "PA",
       "nozzleTemp": 280,
       "bedTemp": 100,
-      "file": "profiles/vzbot-vzbot-generic-pa-cf.json"
+      "file": "profiles/vzbot-generic-pa-cf.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pc",
-      "name": "Vzbot Generic PC",
+      "id": "vzbot-generic-pc",
+      "name": "Generic PC",
       "vendor": "Vzbot",
       "type": "PC",
       "nozzleTemp": 280,
       "bedTemp": 110,
-      "file": "profiles/vzbot-vzbot-generic-pc.json"
+      "file": "profiles/vzbot-generic-pc.json"
     },
     {
-      "id": "vzbot-vzbot-generic-petg",
-      "name": "Vzbot Generic PETG",
+      "id": "vzbot-generic-petg",
+      "name": "Generic PETG",
       "vendor": "Vzbot",
       "type": "PETG",
       "nozzleTemp": 255,
       "bedTemp": 80,
-      "file": "profiles/vzbot-vzbot-generic-petg.json"
+      "file": "profiles/vzbot-generic-petg.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pla",
-      "name": "Vzbot Generic PLA",
+      "id": "vzbot-generic-pla",
+      "name": "Generic PLA",
       "vendor": "Vzbot",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/vzbot-vzbot-generic-pla.json"
+      "file": "profiles/vzbot-generic-pla.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pla-cf",
-      "name": "Vzbot Generic PLA-CF",
+      "id": "vzbot-generic-pla-cf",
+      "name": "Generic PLA-CF",
       "vendor": "Vzbot",
       "type": "PLA",
       "nozzleTemp": 220,
       "bedTemp": 60,
-      "file": "profiles/vzbot-vzbot-generic-pla-cf.json"
+      "file": "profiles/vzbot-generic-pla-cf.json"
     },
     {
-      "id": "vzbot-vzbot-generic-pva",
-      "name": "Vzbot Generic PVA",
+      "id": "vzbot-generic-pva",
+      "name": "Generic PVA",
       "vendor": "Vzbot",
       "type": "PVA",
       "nozzleTemp": 220,
       "bedTemp": 45,
-      "file": "profiles/vzbot-vzbot-generic-pva.json"
+      "file": "profiles/vzbot-generic-pva.json"
     },
     {
-      "id": "vzbot-vzbot-generic-tpu",
-      "name": "Vzbot Generic TPU",
+      "id": "vzbot-generic-tpu",
+      "name": "Generic TPU",
       "vendor": "Vzbot",
       "type": "TPU",
       "nozzleTemp": 240,
       "bedTemp": 35,
-      "file": "profiles/vzbot-vzbot-generic-tpu.json"
+      "file": "profiles/vzbot-generic-tpu.json"
     },
     {
       "id": "wanhao-france-yumi-petg",

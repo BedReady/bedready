@@ -64,6 +64,12 @@
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
+  "filament_multitool_ramming": [
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5"
+  ],
   "filament_retract_before_wipe": [
     "nil"
   ],
@@ -187,9 +193,11 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "FILL3D005",
   "additional_cooling_fan_speed": [
     "0"
+  ],
+  "filament_multitool_ramming_flow": [
+    "12"
   ],
   "nozzle_temperature_range_high": [
     "250"
@@ -197,6 +205,7 @@
   "nozzle_temperature_range_low": [
     "220"
   ],
+  "filament_id": "FILL3D005",
   "enable_pressure_advance": [
     "1"
   ],

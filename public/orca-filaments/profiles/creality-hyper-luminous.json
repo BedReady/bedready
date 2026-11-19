@@ -2,28 +2,28 @@
   "type": "filament",
   "name": "Hyper Luminous",
   "cool_plate_temp": [
-    "60"
+    "50"
   ],
   "eng_plate_temp": [
-    "60"
+    "50"
   ],
   "hot_plate_temp": [
-    "60"
+    "50"
   ],
   "textured_plate_temp": [
-    "60"
+    "50"
   ],
   "cool_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "eng_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "hot_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "textured_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "overhang_fan_threshold": [
     "50%"
@@ -41,7 +41,7 @@
     " ; filament end gcode"
   ],
   "filament_flow_ratio": [
-    "0.97"
+    "0.95"
   ],
   "reduce_fan_stop_start_freq": [
     "1"
@@ -68,10 +68,10 @@
     "15"
   ],
   "filament_retraction_minimum_travel": [
-    "2"
+    "1"
   ],
   "filament_retract_before_wipe": [
-    "90%"
+    "95%"
   ],
   "filament_retract_when_changing_layer": [
     "nil"
@@ -83,10 +83,10 @@
     "0.4"
   ],
   "filament_z_hop_types": [
-    "Slope Lift"
+    "nil"
   ],
   "filament_retract_restart_extra": [
-    "0"
+    "nil"
   ],
   "filament_retraction_speed": [
     "40"
@@ -107,7 +107,7 @@
     "nil"
   ],
   "filament_wipe_distance": [
-    "2"
+    "1.5"
   ],
   "bed_type": [
     "Cool Plate"
@@ -125,10 +125,10 @@
     "100"
   ],
   "slow_down_min_speed": [
-    "20"
+    "10"
   ],
   "slow_down_layer_time": [
-    "8"
+    "12"
   ],
   "filament_start_gcode": [
     ";filament start gcode"
@@ -148,6 +148,7 @@
   "additional_cooling_fan_speed": [
     "0"
   ],
+  "filament_id": "01003",
   "activate_air_filtration": [
     "0"
   ],
@@ -164,7 +165,7 @@
     "0"
   ],
   "activate_chamber_temp_control": "0",
-  "chamber_temperature": "0",
+  "chamber_temperature": "35",
   "cool_special_cds_fan_speed": "0",
   "default_filament_colour": "\"\"",
   "dont_slow_down_outer_wall": "0",
@@ -173,7 +174,6 @@
   "filament_cooling_final_speed": "3.4",
   "filament_cooling_initial_speed": "2.2",
   "filament_cooling_moves": "4",
-  "filament_load_time": "0",
   "filament_loading_speed": "28",
   "filament_loading_speed_start": "3",
   "filament_multitool_ramming": "0",
@@ -181,15 +181,14 @@
   "filament_multitool_ramming_volume": "10",
   "filament_notes": "\"\"",
   "filament_ramming_parameters": "\"120 100 6.6 6.8 7.2 7.6 7.9 8.2 8.7 9.4 9.9 10.0| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6\"",
-  "filament_retract_lift_above": "0",
-  "filament_retract_lift_below": "299",
-  "filament_retract_lift_enforce": "All Surfaces",
+  "filament_retract_lift_above": "nil",
+  "filament_retract_lift_below": "nil",
+  "filament_retract_lift_enforce": "nil",
   "filament_shrink": "100%",
   "filament_toolchange_delay": "0",
-  "filament_unload_time": "0",
   "filament_unloading_speed": "90",
   "filament_unloading_speed_start": "100",
-  "pressure_advance": "0.052",
+  "pressure_advance": "0.06",
   "support_material_interface_fan_speed": "-1",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -197,16 +196,15 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "01003",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",
   "setting_id": "",
   "version": "02.03.01.10",
   "graphic_effect_plate_temp": [
-    "60"
+    "50"
   ],
   "graphic_effect_plate_temp_initial_layer": [
-    "60"
+    "50"
   ]
 }

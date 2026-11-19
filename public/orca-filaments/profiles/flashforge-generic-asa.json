@@ -145,12 +145,10 @@
   "nozzle_temperature_range_high": [
     "270"
   ],
+  "renamed_from": "Generic ASA @AD4",
   "filament_id": "GFL99",
   "additional_cooling_fan_speed": [
     "0"
-  ],
-  "bed_temperature_difference": [
-    "10"
   ],
   "chamber_temperature": "40",
   "compatible_printers": [
@@ -183,7 +181,6 @@
   "support_material_interface_fan_speed": [
     "80"
   ],
-  "renamed_from": "Generic ASA @AD4",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

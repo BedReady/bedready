@@ -56,7 +56,7 @@
     "1.24"
   ],
   "filament_deretraction_speed": [
-    "nil"
+    "25"
   ],
   "filament_diameter": [
     "1.75"
@@ -71,16 +71,16 @@
     "nil"
   ],
   "filament_retract_before_wipe": [
-    "nil"
+    "70%"
   ],
   "filament_retract_when_changing_layer": [
     "nil"
   ],
   "filament_retraction_length": [
-    "nil"
+    "2.0"
   ],
   "filament_z_hop": [
-    "nil"
+    "0"
   ],
   "filament_z_hop_types": [
     "nil"
@@ -89,10 +89,10 @@
     "nil"
   ],
   "filament_retraction_speed": [
-    "nil"
+    "40"
   ],
   "filament_settings_id": [
-    "Cubicon PLAi21 @base"
+    ""
   ],
   "filament_soluble": [
     "0"
@@ -104,10 +104,10 @@
     "Cubicon"
   ],
   "filament_wipe": [
-    "nil"
+    "1"
   ],
   "filament_wipe_distance": [
-    "nil"
+    "2"
   ],
   "bed_type": [
     "Cool Plate"
@@ -149,13 +149,23 @@
     "80"
   ],
   "filament_id": "P510cfa2",
+  "default_filament_colour": "",
+  "activate_air_filtration": [
+    "1"
+  ],
+  "during_print_exhaust_fan_speed": [
+    "255"
+  ],
+  "complete_print_exhaust_fan_speed": [
+    "255"
+  ],
+  "renamed_from": "Cubicon PLAi21 @base",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "default_filament_colour": "",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

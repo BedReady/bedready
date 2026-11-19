@@ -142,6 +142,7 @@
   "bed_type": [
     "Cool Plate"
   ],
+  "filament_id": "E2001",
   "nozzle_temperature_range_high": [
     "270"
   ],
@@ -153,7 +154,6 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "E2001",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

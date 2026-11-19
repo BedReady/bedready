@@ -68,6 +68,7 @@
     "7.5"
   ],
   "filament_minimal_purge_on_wipe_tower": [
+    "15",
     "15"
   ],
   "filament_retraction_minimum_travel": [
@@ -112,12 +113,6 @@
   "filament_unloading_speed": [
     "25"
   ],
-  "filament_load_time": [
-    "0"
-  ],
-  "filament_unload_time": [
-    "0"
-  ],
   "filament_toolchange_delay": [
     "0"
   ],
@@ -149,9 +144,11 @@
     "0"
   ],
   "fan_max_speed": [
+    "40",
     "40"
   ],
   "fan_min_speed": [
+    "0",
     "0"
   ],
   "slow_down_min_speed": [
@@ -164,6 +161,7 @@
     "1"
   ],
   "pressure_advance": [
+    "0.05",
     "0.05"
   ],
   "cool_plate_temp": [
@@ -208,6 +206,10 @@
   ],
   "supertack_plate_temp_initial_layer": [
     "70"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
   ],
   "from": "User",
   "instantiation": "true",

@@ -64,6 +64,12 @@
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
+  "filament_multitool_ramming": [
+    "1"
+  ],
+  "filament_multitool_ramming_volume": [
+    "5"
+  ],
   "filament_retract_before_wipe": [
     "nil"
   ],
@@ -128,10 +134,10 @@
     "100%"
   ],
   "hot_plate_temp": [
-    "60"
+    "50"
   ],
   "hot_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "nozzle_temperature": [
     "200"
@@ -170,10 +176,10 @@
     "45"
   ],
   "textured_plate_temp": [
-    "60"
+    "50"
   ],
   "textured_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "filament_start_gcode": [
     "; Filament gcode\n"
@@ -187,9 +193,11 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "FILAR0046",
   "additional_cooling_fan_speed": [
     "70"
+  ],
+  "filament_multitool_ramming_flow": [
+    "20"
   ],
   "nozzle_temperature_range_low": [
     "195"
@@ -197,6 +205,7 @@
   "nozzle_temperature_range_high": [
     "210"
   ],
+  "filament_id": "FILAR0046",
   "default_filament_colour": [
     "#6B3FA0"
   ],
@@ -206,9 +215,9 @@
   "setting_id": "",
   "version": "02.03.01.10",
   "graphic_effect_plate_temp": [
-    "60"
+    "50"
   ],
   "graphic_effect_plate_temp_initial_layer": [
-    "60"
+    "50"
   ]
 }

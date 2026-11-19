@@ -139,18 +139,22 @@
   "temperature_vitrification": [
     "70"
   ],
+  "supertack_plate_temp": [
+    "60"
+  ],
+  "supertack_plate_temp_initial_layer": [
+    "60"
+  ],
   "nozzle_temperature_range_low": [
     "220"
   ],
   "nozzle_temperature_range_high": [
     "260"
   ],
+  "renamed_from": "Flashforge Generic PETG-CF10",
   "filament_id": "GFG99",
   "additional_cooling_fan_speed": [
     "100"
-  ],
-  "bed_temperature_difference": [
-    "10"
   ],
   "chamber_temperature": "0",
   "compatible_printers": [

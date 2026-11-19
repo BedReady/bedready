@@ -1,6 +1,12 @@
 {
   "type": "filament",
   "name": "Flashforge ASA-GF",
+  "filament_extruder_variant": [
+    "Direct Drive Standard"
+  ],
+  "filament_vendor": [
+    "Flashforge"
+  ],
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
     "Snapmaker U1 (0.2 nozzle)",

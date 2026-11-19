@@ -2,7 +2,7 @@
   "type": "filament",
   "name": "PolyLite J1 PLA",
   "filament_vendor": [
-    "Snapmaker"
+    "Polymaker"
   ],
   "filament_start_gcode": [
     ""
@@ -111,12 +111,6 @@
   ],
   "filament_unloading_speed": [
     "25"
-  ],
-  "filament_load_time": [
-    "0"
-  ],
-  "filament_unload_time": [
-    "0"
   ],
   "filament_toolchange_delay": [
     "0"

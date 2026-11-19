@@ -26,10 +26,10 @@
     "Hot Plate"
   ],
   "hot_plate_temp": [
-    "110"
+    "100"
   ],
   "hot_plate_temp_initial_layer": [
-    "105"
+    "100"
   ],
   "overhang_fan_threshold": [
     "25%"
@@ -59,12 +59,14 @@
     "1.04"
   ],
   "filament_deretraction_speed": [
+    "55",
     "55"
   ],
   "filament_diameter": [
     "1.75"
   ],
   "filament_max_volumetric_speed": [
+    "31",
     "31"
   ],
   "filament_minimal_purge_on_wipe_tower": [
@@ -77,12 +79,15 @@
     "nil"
   ],
   "filament_retract_when_changing_layer": [
+    "0",
     "0"
   ],
   "filament_retraction_length": [
+    "0.5",
     "0.5"
   ],
   "filament_z_hop": [
+    "0",
     "0"
   ],
   "filament_z_hop_types": [
@@ -92,9 +97,11 @@
     "nil"
   ],
   "filament_retraction_speed": [
+    "55",
     "55"
   ],
   "filament_wipe": [
+    "0",
     "0"
   ],
   "filament_wipe_distance": [
@@ -111,12 +118,6 @@
   ],
   "filament_unloading_speed": [
     "35"
-  ],
-  "filament_load_time": [
-    "2"
-  ],
-  "filament_unload_time": [
-    "2"
   ],
   "filament_toolchange_delay": [
     "0"
@@ -140,18 +141,21 @@
     "260"
   ],
   "nozzle_temperature": [
+    "250",
     "250"
   ],
   "temperature_vitrification": [
-    "189"
+    "100"
   ],
   "full_fan_speed_layer": [
     "0"
   ],
   "fan_max_speed": [
+    "50",
     "50"
   ],
   "fan_min_speed": [
+    "35",
     "35"
   ],
   "slow_down_min_speed": [
@@ -205,6 +209,10 @@
     "Snapmaker U1 (0.2 nozzle)",
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
+  ],
+  "filament_extruder_variant": [
+    "Direct Drive Standard",
+    "Direct Drive High Flow"
   ],
   "from": "User",
   "instantiation": "true",

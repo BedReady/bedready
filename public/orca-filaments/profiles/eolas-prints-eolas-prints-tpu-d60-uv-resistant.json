@@ -64,6 +64,12 @@
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
+  "filament_multitool_ramming": [
+    "0"
+  ],
+  "filament_multitool_ramming_volume": [
+    "0.1"
+  ],
   "filament_retract_before_wipe": [
     "nil"
   ],
@@ -189,6 +195,9 @@
   ],
   "additional_cooling_fan_speed": [
     "70"
+  ],
+  "filament_multitool_ramming_flow": [
+    "3.2"
   ],
   "nozzle_temperature_range_high": [
     "245"

@@ -2,28 +2,28 @@
   "type": "filament",
   "name": "Soleyin Ultra PLA",
   "cool_plate_temp": [
-    "55"
+    "50"
   ],
   "eng_plate_temp": [
     "50"
   ],
   "hot_plate_temp": [
-    "60"
+    "50"
   ],
   "textured_plate_temp": [
-    "60"
+    "50"
   ],
   "cool_plate_temp_initial_layer": [
-    "55"
+    "50"
   ],
   "eng_plate_temp_initial_layer": [
     "50"
   ],
   "hot_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "textured_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "overhang_fan_threshold": [
     "50%"
@@ -41,7 +41,7 @@
     "; filament end gcode \n"
   ],
   "filament_flow_ratio": [
-    "0.93"
+    "0.96"
   ],
   "reduce_fan_stop_start_freq": [
     "1"
@@ -56,13 +56,13 @@
     "1.25"
   ],
   "filament_deretraction_speed": [
-    "nil"
+    "40"
   ],
   "filament_diameter": [
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "14"
+    "16"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "15"
@@ -71,13 +71,13 @@
     "1"
   ],
   "filament_retract_before_wipe": [
-    "nil"
+    "100%"
   ],
   "filament_retract_when_changing_layer": [
     "nil"
   ],
   "filament_retraction_length": [
-    "nil"
+    "0.6"
   ],
   "filament_z_hop": [
     "nil"
@@ -89,7 +89,7 @@
     "nil"
   ],
   "filament_retraction_speed": [
-    "nil"
+    "40"
   ],
   "filament_settings_id": [
     ""
@@ -107,7 +107,7 @@
     "nil"
   ],
   "filament_wipe_distance": [
-    "nil"
+    "2"
   ],
   "bed_type": [
     "Cool Plate"
@@ -128,10 +128,10 @@
     "20"
   ],
   "slow_down_layer_time": [
-    "14"
+    "12"
   ],
   "filament_start_gcode": [
-    "; filament start gcode\n{if (layer_z > first_layer_height) }\nM104 S[nozzle_temperature]\n{else} \nM104 S[first_layer_temperature]\n{endif}\n"
+    "; filament start gcode\n"
   ],
   "nozzle_temperature": [
     "220"
@@ -146,8 +146,9 @@
     "240"
   ],
   "additional_cooling_fan_speed": [
-    "80"
+    "0"
   ],
+  "filament_id": "01601",
   "activate_air_filtration": [
     "0"
   ],
@@ -164,7 +165,7 @@
     "0"
   ],
   "activate_chamber_temp_control": "0",
-  "chamber_temperature": "35",
+  "chamber_temperature": "0",
   "cool_special_cds_fan_speed": "0",
   "default_filament_colour": "\"\"",
   "enable_overhang_bridge_fan": "1",
@@ -172,7 +173,6 @@
   "filament_cooling_final_speed": "3.4",
   "filament_cooling_initial_speed": "2.2",
   "filament_cooling_moves": "4",
-  "filament_load_time": "0",
   "filament_loading_speed": "28",
   "filament_loading_speed_start": "3",
   "filament_multitool_ramming": "0",
@@ -186,10 +186,9 @@
   "filament_shrink": "100%",
   "filament_shrinkage_compensation_z": "100%",
   "filament_toolchange_delay": "0",
-  "filament_unload_time": "0",
   "filament_unloading_speed": "90",
   "filament_unloading_speed_start": "100",
-  "pressure_advance": "0.024",
+  "pressure_advance": "0.05",
   "support_material_interface_fan_speed": "-1",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -197,16 +196,15 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "01601",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",
   "setting_id": "",
   "version": "02.03.01.10",
   "graphic_effect_plate_temp": [
-    "60"
+    "50"
   ],
   "graphic_effect_plate_temp_initial_layer": [
-    "60"
+    "50"
   ]
 }

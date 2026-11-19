@@ -2,10 +2,10 @@
   "type": "filament",
   "name": "Hyper ABS",
   "cool_plate_temp": [
-    "70"
+    "90"
   ],
   "eng_plate_temp": [
-    "0"
+    "45"
   ],
   "hot_plate_temp": [
     "90"
@@ -14,10 +14,10 @@
     "90"
   ],
   "cool_plate_temp_initial_layer": [
-    "70"
+    "90"
   ],
   "eng_plate_temp_initial_layer": [
-    "0"
+    "45"
   ],
   "hot_plate_temp_initial_layer": [
     "90"
@@ -26,70 +26,70 @@
     "90"
   ],
   "overhang_fan_threshold": [
-    "25%"
+    "95%"
   ],
   "overhang_fan_speed": [
-    "90"
+    "100"
   ],
   "slow_down_for_layer_cooling": [
     "1"
   ],
   "close_fan_the_first_x_layers": [
-    "3"
+    "1"
   ],
   "filament_end_gcode": [
-    "; filament end gcode \n"
+    "\" \""
   ],
   "filament_flow_ratio": [
-    "0.95"
+    "0.9"
   ],
   "reduce_fan_stop_start_freq": [
     "1"
   ],
   "fan_cooling_layer_time": [
-    "30"
+    "100"
   ],
   "filament_cost": [
     "22"
   ],
   "filament_density": [
-    "1.08"
+    "1.24"
   ],
   "filament_deretraction_speed": [
-    "nil"
+    "50"
   ],
   "filament_diameter": [
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "23"
+    "15"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "15"
   ],
   "filament_retraction_minimum_travel": [
-    "nil"
+    "0.05"
   ],
   "filament_retract_before_wipe": [
-    "nil"
+    "70"
   ],
   "filament_retract_when_changing_layer": [
-    "nil"
+    "0"
   ],
   "filament_retraction_length": [
-    "nil"
+    "1"
   ],
   "filament_z_hop": [
-    "nil"
+    "0.2"
   ],
   "filament_z_hop_types": [
-    "nil"
+    "Normal Lift"
   ],
   "filament_retract_restart_extra": [
-    "nil"
+    "0"
   ],
   "filament_retraction_speed": [
-    "nil"
+    "50"
   ],
   "filament_settings_id": [
     ""
@@ -104,10 +104,10 @@
     "Creality"
   ],
   "filament_wipe": [
-    "nil"
+    "0"
   ],
   "filament_wipe_distance": [
-    "nil"
+    "2"
   ],
   "bed_type": [
     "Cool Plate"
@@ -119,32 +119,33 @@
     "0"
   ],
   "fan_max_speed": [
-    "80"
+    "60"
   ],
   "fan_min_speed": [
-    "40"
+    "20"
   ],
   "slow_down_min_speed": [
-    "20"
+    "15"
   ],
   "slow_down_layer_time": [
     "10"
   ],
   "filament_start_gcode": [
-    "; filament start gcode\n{if (layer_z > first_layer_height) }\nM104 S[nozzle_temperature]\n{else} \nM104 S[first_layer_temperature]\n{endif}\n"
+    "\" \""
   ],
   "nozzle_temperature": [
     "260"
   ],
   "temperature_vitrification": [
-    "80"
+    "100"
   ],
   "nozzle_temperature_range_low": [
-    "230"
+    "240"
   ],
   "nozzle_temperature_range_high": [
     "270"
   ],
+  "filament_id": "03001",
   "activate_air_filtration": [
     "0"
   ],
@@ -164,15 +165,14 @@
     "0"
   ],
   "activate_chamber_temp_control": "0",
-  "chamber_temperature": "35",
+  "chamber_temperature": "0",
   "cool_special_cds_fan_speed": "0",
   "default_filament_colour": "\"\"",
   "enable_overhang_bridge_fan": "1",
-  "enable_pressure_advance": "0",
+  "enable_pressure_advance": "1",
   "filament_cooling_final_speed": "3.4",
   "filament_cooling_initial_speed": "2.2",
   "filament_cooling_moves": "4",
-  "filament_load_time": "0",
   "filament_loading_speed": "28",
   "filament_loading_speed_start": "3",
   "filament_multitool_ramming": "0",
@@ -180,16 +180,15 @@
   "filament_multitool_ramming_volume": "10",
   "filament_notes": "\"\"",
   "filament_ramming_parameters": "\"120 100 6.6 6.8 7.2 7.6 7.9 8.2 8.7 9.4 9.9 10.0| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6\"",
-  "filament_retract_lift_above": "nil",
-  "filament_retract_lift_below": "nil",
-  "filament_retract_lift_enforce": "nil",
+  "filament_retract_lift_above": "0",
+  "filament_retract_lift_below": "0",
+  "filament_retract_lift_enforce": "All Surfaces",
   "filament_shrink": "100%",
   "filament_shrinkage_compensation_z": "100%",
   "filament_toolchange_delay": "0",
-  "filament_unload_time": "0",
   "filament_unloading_speed": "90",
   "filament_unloading_speed_start": "100",
-  "pressure_advance": "0.038",
+  "pressure_advance": "0.04",
   "support_material_interface_fan_speed": "-1",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -197,7 +196,6 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "03001",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

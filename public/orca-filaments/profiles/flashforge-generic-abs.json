@@ -145,6 +145,7 @@
   "nozzle_temperature_range_high": [
     "270"
   ],
+  "renamed_from": "Flashforge Generic ABS",
   "filament_id": "GFB99",
   "support_material_interface_fan_speed": [
     "80"

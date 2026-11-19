@@ -145,7 +145,6 @@
   "nozzle_temperature_range_high": [
     "240"
   ],
-  "renamed_from": "SUNLU Marble PLA @base",
   "filament_id": "GFSNL06",
   "enable_pressure_advance": [
     "0"

@@ -2,10 +2,10 @@
   "type": "filament",
   "name": "Hyper L-W PLA",
   "cool_plate_temp": [
-    "60"
+    "50"
   ],
   "eng_plate_temp": [
-    "45"
+    "50"
   ],
   "hot_plate_temp": [
     "60"
@@ -14,10 +14,10 @@
     "60"
   ],
   "cool_plate_temp_initial_layer": [
-    "60"
+    "50"
   ],
   "eng_plate_temp_initial_layer": [
-    "45"
+    "50"
   ],
   "hot_plate_temp_initial_layer": [
     "60"
@@ -38,10 +38,10 @@
     "1"
   ],
   "filament_end_gcode": [
-    " ; filament end gcode"
+    "; filament end gcode \n"
   ],
   "filament_flow_ratio": [
-    "0.84"
+    "0.75"
   ],
   "reduce_fan_stop_start_freq": [
     "1"
@@ -56,13 +56,13 @@
     "1.21"
   ],
   "filament_deretraction_speed": [
-    "30"
+    "40"
   ],
   "filament_diameter": [
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "6"
+    "4"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "15"
@@ -71,7 +71,7 @@
     "3"
   ],
   "filament_retract_before_wipe": [
-    "100"
+    "100%"
   ],
   "filament_retract_when_changing_layer": [
     "nil"
@@ -80,7 +80,7 @@
     "0.6"
   ],
   "filament_z_hop": [
-    "nil"
+    "0.4"
   ],
   "filament_z_hop_types": [
     "nil"
@@ -89,7 +89,7 @@
     "nil"
   ],
   "filament_retraction_speed": [
-    "30"
+    "40"
   ],
   "filament_settings_id": [
     ""
@@ -107,7 +107,7 @@
     "nil"
   ],
   "filament_wipe_distance": [
-    "nil"
+    "2"
   ],
   "bed_type": [
     "Cool Plate"
@@ -131,7 +131,7 @@
     "10"
   ],
   "filament_start_gcode": [
-    "; filament start gcode\n{if (layer_z > first_layer_height) }\nM104 S[nozzle_temperature]\n{else} \nM104 S[first_layer_temperature]\n{endif}"
+    "; filament start gcode\n"
   ],
   "nozzle_temperature": [
     "220"
@@ -148,6 +148,7 @@
   "additional_cooling_fan_speed": [
     "0"
   ],
+  "filament_id": "01002",
   "activate_air_filtration": [
     "0"
   ],
@@ -167,13 +168,11 @@
   "chamber_temperature": "0",
   "cool_special_cds_fan_speed": "0",
   "default_filament_colour": "\"\"",
-  "dont_slow_down_outer_wall": "1",
   "enable_overhang_bridge_fan": "1",
-  "enable_pressure_advance": "0",
+  "enable_pressure_advance": "1",
   "filament_cooling_final_speed": "3.4",
   "filament_cooling_initial_speed": "2.2",
   "filament_cooling_moves": "4",
-  "filament_load_time": "0",
   "filament_loading_speed": "28",
   "filament_loading_speed_start": "3",
   "filament_multitool_ramming": "0",
@@ -186,10 +185,9 @@
   "filament_retract_lift_enforce": "nil",
   "filament_shrink": "100%",
   "filament_toolchange_delay": "0",
-  "filament_unload_time": "0",
   "filament_unloading_speed": "90",
   "filament_unloading_speed_start": "100",
-  "pressure_advance": "0.09",
+  "pressure_advance": "0.1",
   "support_material_interface_fan_speed": "-1",
   "compatible_printers": [
     "Snapmaker U1 (0.4 nozzle)",
@@ -197,7 +195,6 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "01002",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

@@ -1,6 +1,12 @@
 {
   "type": "filament",
   "name": "Flashforge TPU-64D",
+  "filament_extruder_variant": [
+    "Direct Drive Standard"
+  ],
+  "filament_vendor": [
+    "Flashforge"
+  ],
   "additional_cooling_fan_speed": [
     "40"
   ],

@@ -148,6 +148,7 @@
   "additional_cooling_fan_speed": [
     "80"
   ],
+  "filament_id": "E1006",
   "pressure_advance": "0.04",
   "default_filament_colour": "\"\"",
   "compatible_printers": [
@@ -156,7 +157,6 @@
     "Snapmaker U1 (0.6 nozzle)",
     "Snapmaker U1 (0.8 nozzle)"
   ],
-  "filament_id": "E1006",
   "from": "User",
   "instantiation": "true",
   "compatible_printers_condition": "",

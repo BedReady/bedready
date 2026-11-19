@@ -26,10 +26,10 @@
     "Hot Plate"
   ],
   "hot_plate_temp": [
-    "55"
+    "60"
   ],
   "hot_plate_temp_initial_layer": [
-    "55"
+    "60"
   ],
   "overhang_fan_threshold": [
     "0%"
@@ -44,7 +44,7 @@
     "1"
   ],
   "filament_flow_ratio": [
-    "0.98"
+    "0.95"
   ],
   "reduce_fan_stop_start_freq": [
     "1"
@@ -56,7 +56,7 @@
     "60"
   ],
   "filament_density": [
-    "1.22"
+    "1.24"
   ],
   "filament_deretraction_speed": [
     "nil"
@@ -65,7 +65,7 @@
     "1.75"
   ],
   "filament_max_volumetric_speed": [
-    "15"
+    "12"
   ],
   "filament_minimal_purge_on_wipe_tower": [
     "0"
@@ -101,34 +101,28 @@
     "nil"
   ],
   "filament_loading_speed_start": [
-    "35"
+    "3"
   ],
   "filament_loading_speed": [
-    "35"
+    "25"
   ],
   "filament_unloading_speed_start": [
-    "35"
+    "3"
   ],
   "filament_unloading_speed": [
-    "35"
-  ],
-  "filament_load_time": [
-    "2"
-  ],
-  "filament_unload_time": [
-    "2"
+    "25"
   ],
   "filament_toolchange_delay": [
     "0"
   ],
   "filament_cooling_moves": [
-    "2"
+    "0"
   ],
   "filament_cooling_initial_speed": [
-    "35"
+    "2.2"
   ],
   "filament_cooling_final_speed": [
-    "60"
+    "3.4"
   ],
   "filament_multitool_ramming": [
     "0"
@@ -137,10 +131,10 @@
     "0"
   ],
   "nozzle_temperature_initial_layer": [
-    "230"
+    "220"
   ],
   "nozzle_temperature": [
-    "230"
+    "210"
   ],
   "temperature_vitrification": [
     "150"
@@ -158,7 +152,7 @@
     "15"
   ],
   "slow_down_layer_time": [
-    "8"
+    "7"
   ],
   "enable_pressure_advance": [
     "1"
@@ -191,10 +185,10 @@
     "PLA-CF"
   ],
   "nozzle_temperature_range_low": [
-    "210"
+    "190"
   ],
   "nozzle_temperature_range_high": [
-    "250"
+    "240"
   ],
   "additional_cooling_fan_speed": [
     "0"
@@ -212,9 +206,9 @@
   "setting_id": "",
   "version": "02.03.01.10",
   "graphic_effect_plate_temp": [
-    "55"
+    "60"
   ],
   "graphic_effect_plate_temp_initial_layer": [
-    "55"
+    "60"
   ]
 }
