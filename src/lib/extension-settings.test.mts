@@ -3,7 +3,7 @@
 // storage is a thin try/catch around `storage.local`.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sanitize, DEFAULTS, TARGETS, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, machineOf } from "../../extension/src/settings.ts";
+import { sanitize, DEFAULTS, TARGETS, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, FRESH_DOWNLOAD_MS, alreadyFor, machineOf } from "../../extension/src/settings.ts";
 import { MACHINES, RETARGET_MACHINES } from "./targets.ts";
 
 test("a stored record the code no longer understands falls back field by field", () => {
@@ -54,4 +54,26 @@ test("already set up for the target: U1 by flag and nozzle, others by printer na
   assert.ok(alreadyFor(x1, { isU1: false, printer: `${MACHINES["bambu-x1c"].name} 0.4 nozzle` }));
   assert.ok(!alreadyFor(x1, { isU1: false, printer: "Bambu Lab P1S 0.4 nozzle" }));
   assert.ok(!alreadyFor({ ...DEFAULTS, target: "generic" }, { isU1: false, printer: "anything" }));
+});
+
+test("downloads Chrome restores from history at startup are not converted again", () => {
+  const now = Date.parse("2026-11-20T10:00:00Z");
+  const at = (msAgo: number) => new Date(now - msAgo).toISOString();
+  // A click: in progress, just started.
+  assert.equal(isFreshDownload({ state: "in_progress", startTime: at(500) }, "ext", now), true);
+  // History replayed at startup: finished or interrupted, started long ago.
+  assert.equal(isFreshDownload({ state: "complete", startTime: at(3_600_000) }, "ext", now), false);
+  assert.equal(isFreshDownload({ state: "interrupted", startTime: at(3_600_000) }, "ext", now), false);
+  // An interrupted download Chrome resumes on startup is in progress again, but old.
+  assert.equal(isFreshDownload({ state: "in_progress", startTime: at(FRESH_DOWNLOAD_MS + 1) }, "ext", now), false);
+  // Our own converted file.
+  assert.equal(isFreshDownload({ state: "in_progress", startTime: at(10), byExtensionId: "ext" }, "ext", now), false);
+  // Missing fields (Firefox may omit some): do not block a real click.
+  assert.equal(isFreshDownload({}, undefined, now), true);
+});
+
+test("a de-duplicated save of our own output is still recognised as ours", () => {
+  assert.equal(isOurOutput("benchy.u1 (1).3mf"), true);
+  assert.equal(isOurOutput("benchy.u1 (12).3mf"), true);
+  assert.equal(isOurOutput("benchy (1).3mf"), false);
 });

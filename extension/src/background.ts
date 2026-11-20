@@ -8,7 +8,7 @@
 // redirects and Firefox — for those, open the background console (Chrome: chrome://extensions →
 // "service worker"; Firefox: about:debugging → Inspect) and read the [BedReady] logs.
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
-import { loadSettings, machineOf, quickOpts, shortName, suffixOf, isOurOutput, alreadyFor, type Settings } from "./settings";
+import { loadSettings, machineOf, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, alreadyFor, type Settings } from "./settings";
 import { checkFit } from "../../src/lib/fit-check";
 import { stash, take, sweep, keptSource, SWEEP_ALARM, editorUrl, bytesToBase64 } from "./handoff";
 import { sourcePage } from "../../src/lib/source-page";
@@ -88,7 +88,9 @@ const inFlight = new Set<string>();
 if (!api?.downloads?.onCreated) {
   console.log("[BedReady] downloads API unavailable (e.g. Safari) — auto-conversion on download is off; use the popup or the in-page button.");
 }
-api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string; finalUrl?: string; filename?: string; referrer?: string }) => {
+api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string; finalUrl?: string; filename?: string; referrer?: string; state?: string; startTime?: string; byExtensionId?: string }) => {
+  // First: Chrome replays onCreated for every download in its history when it starts. See isFreshDownload.
+  if (!isFreshDownload(item, api.runtime?.id)) return;
   const url = item.finalUrl || item.url || "";
   const base = (item.filename || url).split(/[\\/?#]/).pop() || "model.3mf";
   // Our own converted output ends in .u1.3mf and is saved via a data: URL (no site referrer, so the

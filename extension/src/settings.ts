@@ -105,7 +105,8 @@ export function suffixOf(target: CleanTarget): string {
 
 /** Does this name look like something we already wrote? Guards the interceptor against its own output. */
 export function isOurOutput(name: string): boolean {
-  const n = name.toLowerCase();
+  // Chrome de-duplicates a second save as "model.u1 (1).3mf"; that is still ours.
+  const n = name.toLowerCase().replace(/ \(\d+\)(\.3mf)$/, "$1");
   return TARGETS.some((t) => n.endsWith(suffixOf(t.id).toLowerCase()));
 }
 
@@ -131,4 +132,26 @@ export function alreadyFor(s: Settings, info: { isU1: boolean; printer: string |
     const k = (n || "").toLowerCase();
     return !!k && (p === k || p.startsWith(k + " "));
   });
+}
+
+/** Started this long ago or more, a "new" download is a replay, not a click. */
+export const FRESH_DOWNLOAD_MS = 2 * 60 * 1000;
+
+/**
+ * Is this downloads.onCreated item a download the user just started? Chrome also fires onCreated for
+ * the items it restores from download history when it starts, every one of them, so without this
+ * check each restart re-converted every model downloaded before (a user report, Nov 20 2026). A
+ * restored item is complete or interrupted, and its startTime is when it first ran; a real click is
+ * in_progress and started moments ago. Our own saves (byExtensionId) are never a click to convert.
+ */
+export function isFreshDownload(
+  item: { state?: string; startTime?: string; byExtensionId?: string },
+  ownId: string | undefined,
+  now = Date.now(),
+): boolean {
+  if (item.state && item.state !== "in_progress") return false;
+  if (ownId && item.byExtensionId === ownId) return false;
+  const started = item.startTime ? Date.parse(item.startTime) : NaN;
+  if (Number.isFinite(started) && now - started > FRESH_DOWNLOAD_MS) return false;
+  return true;
 }
