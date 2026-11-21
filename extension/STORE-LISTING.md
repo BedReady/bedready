@@ -7,6 +7,8 @@ shipping an update.
 - **0.6.7** (in this repo): fixes models being converted again every time Chrome restarts. Chrome
   replays its whole download history to extensions at startup; the extension now only acts on a
   download that is in progress and started in the last two minutes.
+  Converted files from a MakerWorld download are also named after the model (the name Chrome gave
+  the original, or the server's Content-Disposition) instead of the CDN's random file key.
 - **0.6.6**: a "Check fit" control under "Download for U1" on MakerWorld model pages.
   On click (never on its own) it fetches the picked print profile's file the same way the Download
   button does, reads it with the converter's own analysis, and answers in one line for the printer

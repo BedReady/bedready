@@ -3,7 +3,7 @@
 // storage is a thin try/catch around `storage.local`.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sanitize, DEFAULTS, TARGETS, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, FRESH_DOWNLOAD_MS, alreadyFor, machineOf } from "../../extension/src/settings.ts";
+import { sanitize, DEFAULTS, TARGETS, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, FRESH_DOWNLOAD_MS, filenameFromDisposition, looksMachineNamed, alreadyFor, machineOf } from "../../extension/src/settings.ts";
 import { MACHINES, RETARGET_MACHINES } from "./targets.ts";
 
 test("a stored record the code no longer understands falls back field by field", () => {
@@ -76,4 +76,24 @@ test("a de-duplicated save of our own output is still recognised as ours", () =>
   assert.equal(isOurOutput("benchy.u1 (1).3mf"), true);
   assert.equal(isOurOutput("benchy.u1 (12).3mf"), true);
   assert.equal(isOurOutput("benchy (1).3mf"), false);
+});
+
+test("a CDN object key is not a name worth keeping", () => {
+  assert.equal(looksMachineNamed("3b9f0c1d2e4a5b6c7d8e9f00112233.3mf"), true);
+  assert.equal(looksMachineNamed("0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0.3mf"), true);
+  assert.equal(looksMachineNamed("aZ3kQ9pLm2Xv8Rt5Yw1Nb7Hc.3mf"), true);
+  assert.equal(looksMachineNamed("Benchy.3mf"), false);
+  assert.equal(looksMachineNamed("Articulated_Dragon_v2_4colors.3mf"), false);
+  assert.equal(looksMachineNamed("model.3mf"), false);
+});
+
+test("the server's file name is read from Content-Disposition, safely", () => {
+  assert.equal(filenameFromDisposition('attachment; filename="Benchy.3mf"'), "Benchy.3mf");
+  assert.equal(filenameFromDisposition("attachment; filename=Benchy.3mf"), "Benchy.3mf");
+  assert.equal(filenameFromDisposition("attachment; filename=\"x.3mf\"; filename*=UTF-8''%E9%BE%99.3mf"), "龙.3mf");
+  assert.equal(filenameFromDisposition('attachment; filename="../../etc/Benchy.3mf"'), "Benchy.3mf");
+  assert.equal(filenameFromDisposition('attachment; filename="a:b.3mf"'), "a_b.3mf");
+  assert.equal(filenameFromDisposition('attachment; filename="evil.exe"'), null);
+  assert.equal(filenameFromDisposition('attachment; filename=".3mf"'), null);
+  assert.equal(filenameFromDisposition(null), null);
 });
