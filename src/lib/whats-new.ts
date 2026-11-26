@@ -38,6 +38,12 @@ export const WHATS_NEW: WhatsNewEntry[] = [
   {
     date: "2026-11-26",
     area: "converter",
+    text: "PrusaSlicer files keep the creator’s layer height, walls, top and bottom layers, infill, supports and temperatures. They used to take the U1’s defaults.",
+    pr: 140,
+  },
+  {
+    date: "2026-11-26",
+    area: "converter",
     text: "This page: what changed on bedready.io, newest first. Every change you’ll notice gets a line here when it goes live.",
   },
   {

@@ -9,6 +9,8 @@ shipping an update.
   Snapmaker Orca refused to slice it ("process not compatible with printer"). Converted U1 files
   also carry Snapmaker Orca 2.4.1's own start, end and tool-change G-code (chamber purifier,
   pre-extrusion, chamber-temperature wait), and parked heads cool down while another prints.
+  PrusaSlicer files keep the creator's layer height, walls, shells, infill, supports and
+  temperatures.
 - **0.6.8**: converted files from a MakerWorld download are named after the model
   (the name Chrome gave the original, or the server's Content-Disposition) instead of the CDN's
   random file key.
