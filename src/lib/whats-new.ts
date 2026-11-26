@@ -38,6 +38,12 @@ export const WHATS_NEW: WhatsNewEntry[] = [
   {
     date: "2026-11-26",
     area: "converter",
+    text: "Filaments set up for another printer (“Bambu PLA Matte @BBL X1C”) arrive as the U1 library’s Generic preset of that material, with the creator’s temperatures and flow kept. A clear filament shows as white instead of black.",
+    pr: 142,
+  },
+  {
+    date: "2026-11-26",
+    area: "converter",
     text: "Converting for a U1 with a 0.2, 0.6 or 0.8 mm nozzle uses Snapmaker’s own retraction, wipe and nozzle type for that nozzle. The 0.6 is stainless steel and retracts 1.4 mm; the 0.2 retracts 0.4 mm.",
     pr: 141,
   },
