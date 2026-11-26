@@ -4,7 +4,9 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.10** (in this repo): U1 files for a 0.2, 0.6 or 0.8 mm nozzle carry that nozzle's own
+- **0.6.11** (in this repo): converted U1 files use the U1's own retraction and wipe for the chosen
+  nozzle, instead of the source printer's.
+- **0.6.10** (Firefox submitted Nov 26; Chrome upload pending): U1 files for a 0.2, 0.6 or 0.8 mm nozzle carry that nozzle's own
   retraction, wipe and nozzle type from Snapmaker's presets (the 0.6 is stainless). Filaments set
   up for another printer arrive as the U1 library's Generic preset, keeping the creator's values,
   and a clear filament shows as white rather than black.
