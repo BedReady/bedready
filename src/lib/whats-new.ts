@@ -38,6 +38,12 @@ export const WHATS_NEW: WhatsNewEntry[] = [
   {
     date: "2026-11-26",
     area: "converter",
+    text: "Converting for a U1 with a 0.2, 0.6 or 0.8 mm nozzle uses Snapmaker’s own retraction, wipe and nozzle type for that nozzle. The 0.6 is stainless steel and retracts 1.4 mm; the 0.2 retracts 0.4 mm.",
+    pr: 141,
+  },
+  {
+    date: "2026-11-26",
+    area: "converter",
     text: "PrusaSlicer files keep the creator’s layer height, walls, top and bottom layers, infill, supports and temperatures. They used to take the U1’s defaults.",
     pr: 140,
   },

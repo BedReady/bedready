@@ -95,6 +95,16 @@ function scaleValue(v: unknown, ratio: number): unknown {
   return typeof v === "string" ? String(scaled) : scaled;
 }
 
+// Hardware values Snapmaker's own preset for each nozzle sets, that no ratio of the 0.4 reproduces:
+// read from the Snapmaker Orca 2.4.1 bundle, profiles/Snapmaker/machine/"Snapmaker U1 (<n> nozzle).json"
+// resolved through fdm_U1 (2026-11-26). The 0.6 ships stainless with a shorter wipe and retraction; the
+// 0.2 retracts 0.4 mm, not 1.5. The 0.8 matches the 0.4 and is listed so the table says so.
+const U1_NOZZLE_STOCK: Record<number, { retraction_length: string; wipe_distance: string; nozzle_type: string; retraction_minimum_travel: string }> = {
+  0.2: { retraction_length: "0.4", wipe_distance: "2", nozzle_type: "hardened_steel", retraction_minimum_travel: "1" },
+  0.6: { retraction_length: "1.4", wipe_distance: "1", nozzle_type: "stainless_steel", retraction_minimum_travel: "3" },
+  0.8: { retraction_length: "1.5", wipe_distance: "2", nozzle_type: "hardened_steel", retraction_minimum_travel: "1" },
+};
+
 const variantCache = new Map<number, Machine>();
 
 /**
@@ -119,6 +129,14 @@ export function u1NozzleVariant(nozzle: number): Machine {
   profile.printer_variant = String(nozzle);
   // The process must name THIS printer as compatible, or Snapmaker Orca refuses to slice it.
   profile.print_compatible_printers = [settingsId];
+  // Per-head keys keep the reference's shape (one entry per head); nozzle_type is one value.
+  const stock = U1_NOZZLE_STOCK[nozzle];
+  if (stock) {
+    for (const [k, v] of Object.entries(stock)) {
+      const cur = profile[k];
+      profile[k] = Array.isArray(cur) ? cur.map(() => v) : v;
+    }
+  }
 
   const m: Machine = {
     ...U1,

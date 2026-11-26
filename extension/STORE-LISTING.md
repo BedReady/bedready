@@ -4,7 +4,9 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.9** (in this repo): converted Bambu Lab files open and slice in Snapmaker Orca again. The
+- **0.6.10** (in this repo): U1 files for a 0.2, 0.6 or 0.8 mm nozzle carry that nozzle's own
+  retraction, wipe and nozzle type from Snapmaker's presets (the 0.6 is stainless).
+- **0.6.9** (Firefox submitted Nov 26): converted Bambu Lab files open and slice in Snapmaker Orca again. The
   converted file still listed the source's Bambu printers as the only ones its settings fit, so
   Snapmaker Orca refused to slice it ("process not compatible with printer"). Converted U1 files
   also carry Snapmaker Orca 2.4.1's own start, end and tool-change G-code (chamber purifier,
