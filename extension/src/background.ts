@@ -8,7 +8,7 @@
 // redirects and Firefox — for those, open the background console (Chrome: chrome://extensions →
 // "service worker"; Firefox: about:debugging → Inspect) and read the [BedReady] logs.
 import { cleanThreeMF, detectProfile } from "../../src/lib/convert";
-import { loadSettings, machineOf, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, alreadyFor, type Settings } from "./settings";
+import { loadSettings, machineOf, quickOpts, shortName, suffixOf, isOurOutput, isFreshDownload, filenameFromDisposition, looksMachineNamed, alreadyFor, type Settings } from "./settings";
 import { checkFit } from "../../src/lib/fit-check";
 import { stash, take, sweep, keptSource, SWEEP_ALARM, editorUrl, bytesToBase64 } from "./handoff";
 import { sourcePage } from "../../src/lib/source-page";
@@ -127,13 +127,30 @@ api?.downloads?.onCreated?.addListener?.(async (item: { id: number; url?: string
     // The model page, for the editor's `src`: the referrer when it is one, else the active tab when
     // that is a model page (a MakerWorld download's referrer is often just the site's origin).
     const src = sourcePage(item.referrer) ?? sourcePage(await activeTabUrl());
-    await convertRemote(url, base, settings, async () => {
+    const named = looksMachineNamed(base) ? await chromeFilename(item.id) : null;
+    await convertRemote(url, named ?? base, settings, async () => {
       if (!settings.keepOriginal) await api.downloads.cancel(item.id).catch(() => {});
     }, src);
   } finally {
     inFlight.delete(key);
   }
 });
+
+/**
+ * The name Chrome settled on for a download (from the server's headers, or what the user typed in a
+ * Save As dialog), once it has one. onCreated fires before that, with only the URL to go on. Waits up
+ * to ~6 s, then gives up: the caller keeps its own name.
+ */
+async function chromeFilename(id: number): Promise<string | null> {
+  for (let i = 0; i < 20; i++) {
+    const [d] = (await api.downloads.search({ id }).catch(() => [])) as { filename?: string }[];
+    const leaf = (d?.filename || "").split(/[\\/]/).pop() || "";
+    if (leaf && /\.3mf$/i.test(leaf) && !looksMachineNamed(leaf)) return leaf.replace(/ \(\d+\)(\.3mf)$/i, "$1");
+    if (leaf) return null;
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  return null;
+}
 
 /**
  * Fetch a model file, convert it for the chosen printer and save the result, with the badge, toast and
@@ -152,6 +169,9 @@ async function convertRemote(url: string, base: string, settings: Settings, befo
     // credentials breaks against a wildcard ACAO response.
     const res = await fetch(url);
     if (!res.ok) throw new Error("download fetch " + res.status);
+    // An intercepted download often only has the CDN's object key for a name. The server's own
+    // Content-Disposition (what Chrome named the original) is the title the user saw; prefer it.
+    if (looksMachineNamed(base)) base = filenameFromDisposition(res.headers.get("content-disposition")) ?? base;
     const name = base.toLowerCase().endsWith(".3mf") ? base : base + ".3mf";
     const file = new File([await res.arrayBuffer()], name);
     // Keep the ORIGINAL for the toast's "Edit colours" link: the editor should start from the

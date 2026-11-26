@@ -155,3 +155,35 @@ export function isFreshDownload(
   if (Number.isFinite(started) && now - started > FRESH_DOWNLOAD_MS) return false;
   return true;
 }
+
+/**
+ * The file name a server gave a download (Content-Disposition), cleaned for saving, or null. RFC 6266:
+ * filename* (RFC 5987, percent-encoded UTF-8) wins over filename. Only a .3mf name is accepted, and any
+ * path in it is dropped, so a header can never steer the save outside the downloads folder.
+ */
+export function filenameFromDisposition(header: string | null | undefined): string | null {
+  if (!header) return null;
+  let name: string | null = null;
+  const star = /filename\*\s*=\s*([^;]+)/i.exec(header);
+  if (star) {
+    const v = star[1].trim().replace(/^"(.*)"$/, "$1");
+    const m = /^[\w!#$%&+.^`|~-]*'[^']*'(.*)$/.exec(v);
+    try { name = decodeURIComponent(m ? m[1] : v); } catch { name = null; }
+  }
+  if (!name) {
+    const plain = /filename\s*=\s*("((?:[^"\\]|\\.)*)"|[^;]+)/i.exec(header);
+    if (plain) name = (plain[2] !== undefined ? plain[2].replace(/\\(.)/g, "$1") : plain[1]).trim();
+  }
+  if (!name) return null;
+  name = name.split(/[\\/]/).pop()!.replace(/[\u0000-\u001f:*?"<>|]/g, "_").trim();
+  return /^[^.].*\.3mf$/i.test(name) ? name : null;
+}
+
+/**
+ * Does a name look like a CDN object key rather than a person's title? MakerWorld's CDN serves files
+ * under hex or random keys ("a3f9…e1.3mf"), which made converted files arrive as "a3f9…e1.u1.3mf".
+ */
+export function looksMachineNamed(name: string): boolean {
+  const stem = name.replace(/\.3mf$/i, "");
+  return /^[0-9a-f-]{16,}$/i.test(stem) || (/^[A-Za-z0-9_-]{20,}$/.test(stem) && !/[ _-][A-Za-z]{3,}/.test(stem) && /\d/.test(stem));
+}
