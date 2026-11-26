@@ -1,0 +1,26 @@
+name: What's new
+
+# Every user-visible PR adds a line to src/lib/whats-new.ts, which is the /changes page on
+# bedready.io. A PR that users won't notice says "What's new: none" in its description instead.
+# The rule and how to write an entry are at the top of that file; scripts/check-whats-new.mjs
+# decides which paths count as user-visible.
+#
+# This is its own workflow, not a step in CI: editing the PR description (to add the opt-out line)
+# re-runs this check in seconds, without re-running the whole build and browser suite.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  whats-new:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: A user-visible change has a What's new entry
+        run: node scripts/check-whats-new.mjs

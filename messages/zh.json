@@ -1738,5 +1738,17 @@
     "error": "无法生成此透光浮雕。请尝试更小的尺寸或换一张照片。",
     "metaTitle": "Snapmaker U1 彩色透光浮雕生成器",
     "metaDescription": "用任意照片制作全彩背光透光浮雕。免费，在浏览器中运行，不上传任何内容。"
+  },
+  "changes": {
+    "metaTitle": "更新内容 — BedReady",
+    "metaDescription": "BedReady 转换器、图像工具和浏览器扩展的更新，最新的在前。",
+    "title": "更新内容",
+    "intro": "转换器、图像工具和浏览器扩展的更新，最新的在前。每一行都说明了对你有什么变化。",
+    "areas": {
+      "converter": "转换器",
+      "image": "图像工具",
+      "extension": "扩展"
+    },
+    "note": "条目以英文撰写。2026 年 11 月之前的更改见 GitHub 上的项目历史。"
   }
 }

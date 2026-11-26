@@ -1738,5 +1738,17 @@
     "error": "Diese Lithophanie konnte nicht erstellt werden. Versuche eine kleinere Größe oder ein anderes Foto.",
     "metaTitle": "Farb-Lithophanie-Generator für die Snapmaker U1",
     "metaDescription": "Erstelle aus jedem Foto eine vollfarbige, hinterleuchtete Lithophanie. Kostenlos, läuft in deinem Browser, nichts wird hochgeladen."
+  },
+  "changes": {
+    "metaTitle": "Neuigkeiten — BedReady",
+    "metaDescription": "Änderungen am BedReady-Konverter, an den Bildwerkzeugen und an der Browser-Erweiterung, die neuesten zuerst.",
+    "title": "Neuigkeiten",
+    "intro": "Änderungen am Konverter, an den Bildwerkzeugen und an der Browser-Erweiterung, die neuesten zuerst. Jede Zeile sagt, was sich für dich geändert hat.",
+    "areas": {
+      "converter": "Konverter",
+      "image": "Bildwerkzeuge",
+      "extension": "Erweiterung"
+    },
+    "note": "Die Einträge sind auf Englisch. Änderungen vor November 2026 stehen im Verlauf des Projekts auf GitHub."
   }
 }

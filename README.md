@@ -153,13 +153,19 @@ MakerRun's data.
 
 ## Contributing
 
-Issues and pull requests are welcome. Two things worth knowing before you open one:
+Issues and pull requests are welcome. Three things worth knowing before you open one:
 
 - **The no-upload property is load-bearing.** A change that moves conversion work to a server, or
   adds a fifth endpoint to `convert-api.ts`, is a change to what this project *is* — worth
   discussing in an issue first. The guard test will tell you before CI does.
 - **Prefer a test that inspects the output file.** The bug that motivated most of this suite was a
   package our own parser read happily and Snapmaker Orca refused.
+- **A change users will notice gets a What's new line, in the same PR.** Add it at the top of
+  `src/lib/whats-new.ts`, which is the [/changes](https://bedready.io/changes) page. Write one plain
+  sentence about what changed for the person using it, in English, dated the day it lands. The
+  rules are at the top of that file. If users won't notice the change, put a line `What's new: none`
+  in the PR description. The *What's new* check (`.github/workflows/whats-new.yml`) fails a PR that
+  touches pages, components, the engine, the extension or translations and does neither.
 
 ## Licence
 

@@ -81,7 +81,7 @@ export default function SiteFooter() {
             <ul className="mt-2 space-y-0.5">
               <li><Link href="/guides" className="block py-1 hover:text-fg">{t("guides")}</Link></li>
               <li><Link href="/compare-u1-converters" className="block py-1 hover:text-fg">{t("compareConverters")}</Link></li>
-              <li><Link href="/changelog" className="block py-1 hover:text-fg">{t("changelog")}</Link></li>
+              <li><Link href="/changes" className="block py-1 hover:text-fg">{t("changelog")}</Link></li>
               <li><Link href="/help" className="block py-1 hover:text-fg">{t("help")}</Link></li>
               <li><FeedbackLink className="block py-1 hover:text-fg">{t("feedback")}</FeedbackLink></li>
             </ul>

@@ -36,6 +36,7 @@ const PRIORITY: Record<string, number> = {
   "compare-multicolor-printers": 0.7,
   stickers: 0.6,
   extension: 0.6,
+  changes: 0.5,
 };
 
 // hreflang alternates: en at the bare path, each other locale at /<loc><path>.
