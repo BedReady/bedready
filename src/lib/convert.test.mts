@@ -305,6 +305,47 @@ test("PrusaSlicer source: a layer height the nozzle cannot print, or a percentag
   assert.equal(c.initial_layer_print_height, "0.25");
   assert.equal(c.wall_loops, "3", "the rest still comes across");
 });
+// Brand "source" on the U1 (LayerHound side-by-side, report item 5): a Bambu preset NAME is not in
+// Snapmaker Orca's U1 library, so it becomes Generic <type>; the creator's VALUES stay, declared.
+test("library presets: a foreign preset name becomes the U1's Generic <type>, the creator's values kept and declared", async () => {
+  const f = file3mf({
+    "Metadata/project_settings.config": project({
+      filament_settings_id: ["Bambu PLA Matte @BBL X1C", "Bambu PLA Matte @BBL X1C"],
+      nozzle_temperature: ["210", "225"],
+      filament_max_volumetric_speed: ["22", "22"],
+    }),
+    "3D/3dmodel.model": model(),
+  });
+  const r = await cleanThreeMF(f, "u1", { mode: "preserve" });
+  const c = await cfgOf(r.blob);
+  const ids = c.filament_settings_id as string[];
+  assert.deepEqual(ids.slice(0, 2), ["Generic PLA", "Generic PLA"]);
+  assert.deepEqual((c.nozzle_temperature as string[]).slice(0, 2), ["210", "225"], "the creator's temperatures stay");
+  const dss = c.different_settings_to_system as string[];
+  assert.equal(dss.length, ids.length + 2, "[print, ...filaments, printer]");
+  for (const s of [1, 2]) {
+    const keys = dss[s].split(";");
+    assert.ok(keys.includes("nozzle_temperature"), `filament ${s}: temperature declared`);
+    assert.ok(keys.includes("filament_max_volumetric_speed"), `filament ${s}: flow declared`);
+    for (const k of ["filament_colour", "filament_settings_id", "filament_ids", "filament_vendor"]) assert.ok(!keys.includes(k), `${k} is the preset's identity, not a creator setting`);
+  }
+  assert.equal(r.diff?.libraryFilaments, 4);
+});
+test("library presets: a U1 or plain name stays, and the explicit brands are unchanged", async () => {
+  const f = file3mf({
+    "Metadata/project_settings.config": project({ filament_settings_id: ["Snapmaker PLA Basic @U1", "My Own PLA"] }),
+    "3D/3dmodel.model": model(),
+  });
+  const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
+  assert.deepEqual((c.filament_settings_id as string[]).slice(0, 2), ["Snapmaker PLA Basic @U1", "My Own PLA"]);
+  const g = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve", filamentBrand: "snapmaker" })).blob);
+  assert.equal((g.filament_settings_id as string[])[0], "Snapmaker PLA");
+});
+test("a clear Bambu filament (#00000000) reads as white, not black", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": project({ filament_colour: ["#000000", "#00000000"] }), "3D/3dmodel.model": model() });
+  const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
+  assert.deepEqual((c.filament_colour as string[]).slice(0, 2), ["#000000", "#FFFFFF"]);
+});
 test("value-clamp: speed above U1 ceiling is capped + reported", async () => {
   const f = file3mf({ "Metadata/project_settings.config": project({ outer_wall_speed: "350" }), "3D/3dmodel.model": model() });
   const r = await cleanThreeMF(f, "u1", { mode: "preserve" });

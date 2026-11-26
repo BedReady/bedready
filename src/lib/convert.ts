@@ -2,7 +2,7 @@
 // The three-dependent helpers (modelSizeMM, threeMFToSTL) live in ./convert-mesh.
 import { zipSync, strToU8, strFromU8 } from "fflate";
 import { U1, MACHINES, configFamily, type Machine, type Flavour } from "./targets";
-import { applyU1FilamentPreset, u1FilamentPreset } from "./u1-filament-presets";
+import { applyU1FilamentPreset, u1FilamentPreset, U1_FILAMENT_PRESETS } from "./u1-filament-presets";
 import { applyHighFlow, type HighFlowSlot } from "./u1-high-flow";
 
 // A .3mf is an untrusted zip. Guard against decompression bombs / oversized input BEFORE inflating it
@@ -192,6 +192,10 @@ function isStrippable(path: string): boolean {
 /** Normalize a hex color to #RRGGBB (drops alpha). */
 export function normalizeHex(h: string): string {
   const s = (h || "").replace("#", "");
+  // Bambu writes a clear filament as #00000000: black RGB at zero alpha. Dropping the alpha turned it
+  // into black filament (LayerHound side-by-side, 2026-11-26). Fully transparent reads as white, the
+  // nearest opaque stand-in for clear.
+  if (s.length === 8 && /^00$/i.test(s.slice(6))) return "#FFFFFF";
   if (s.length >= 6) return "#" + s.slice(0, 6).toUpperCase();
   return "#FFFFFF";
 }
@@ -796,6 +800,52 @@ function isPerFilamentKey(k: string, ref: unknown): boolean {
   return Array.isArray(ref) && ref.length === 4 && !isU1IdentityKey(k) && !PER_EXTRUDER_KEYS.has(k);
 }
 
+// ---------- library filament presets (brand "source" on the U1) ----------
+// Brand "source" kept the author's preset NAME, and on a Bambu file that names a Bambu preset ("Bambu
+// PLA Matte @BBL X1C") which Snapmaker Orca's U1 library does not have (LayerHound side-by-side,
+// 2026-11-26, report item 5). The slot then has no parent in the U1 library. So a foreign name becomes
+// the U1 library's own "Generic <type>", and only the name changes.
+//
+// The values stay the creator's, and that needs care: Orca rebuilds a NAMED library preset on import
+// and re-applies only the keys listed in different_settings_to_system. Every per-filament value that
+// differs from Generic <type> (the reference's value, or U1_FILAMENT_PRESETS[type] where it has one)
+// is therefore declared against that filament, or the import would replace the creator's temperatures
+// and flow with the preset's.
+// The slot's colour and type are set by the converter; the rest are the preset's own identity (its
+// library id and vendor), which the rename hands to Generic <type> by NOT declaring them.
+const SLOT_NAME_KEYS = new Set(["filament_colour", "filament_type", "filament_settings_id", "filament_ids", "filament_vendor"]);
+/** A preset name that belongs to another printer's library: "… @BBL X1C", "… @Creality K2", not "… @U1". */
+function isForeignPresetName(id: unknown): boolean {
+  return typeof id === "string" && id.includes("@") && !/@U1\b/.test(id);
+}
+function applyLibraryFilamentPresets(out: Record<string, unknown>, u1: Record<string, unknown>): number {
+  const ids = out.filament_settings_id as string[] | undefined;
+  const types = out.filament_type as string[] | undefined;
+  if (!Array.isArray(ids) || !Array.isArray(types)) return 0;
+  const n = ids.length;
+  const prev = Array.isArray(out.different_settings_to_system) ? (out.different_settings_to_system as string[]) : [];
+  const dss = Array.from({ length: n + 2 }, (_, i) => (prev.length === n + 2 ? prev[i] ?? "" : ""));
+  let renamed = 0;
+  for (let s = 0; s < n; s++) {
+    const t = String(types[s] ?? "").trim().toUpperCase();
+    const preset = U1_FILAMENT_PRESETS[t];
+    if (!isForeignPresetName(ids[s]) || !preset) continue; // a type the library has no Generic for keeps its name
+    const differs: string[] = [];
+    for (const [k, ref] of Object.entries(u1)) {
+      if (SLOT_NAME_KEYS.has(k) || !isPerFilamentKey(k, ref)) continue;
+      const v = out[k];
+      if (!Array.isArray(v) || s >= v.length) continue;
+      const want = preset[k] ?? (ref as unknown[])[0];
+      if (String(v[s]) !== String(want)) differs.push(k);
+    }
+    ids[s] = `Generic ${t}`;
+    dss[s + 1] = [...new Set([...dss[s + 1].split(";").filter(Boolean), ...differs])].sort().join(";");
+    renamed++;
+  }
+  if (renamed) out.different_settings_to_system = dss;
+  return renamed;
+}
+
 /** Map a source per-filament array (length = source filament count) to exactly 4 U1 slots. `sources` from slotSources. */
 function mapTo4<T>(arr: T[], sources: number[], u1Arr: T[]): T[] {
   const out: T[] = [];
@@ -895,6 +945,7 @@ export type DiffReport = {
   keptAllColours: number; // >4 pass-through: filaments written out untouched (0 = not this mode)
   filamentBrand: FilamentBrand | null; // relabelled the filament presets (null = kept the author's)
   sourceProcess?: string[]; // PrusaSlicer source: the Orca process/temperature keys taken from its Slic3r_PE.config
+  libraryFilaments?: number; // brand "source": slots whose foreign preset name became the U1 library's Generic <type>
 };
 
 // ---------- nozzle fit (preserve + Full Spectrum modes) ----------
@@ -1359,6 +1410,11 @@ function buildPreservedConfig(
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
+  // Last: the declared differences are measured against the final values.
+  if (brand === "source" && isU1Reference(machine)) {
+    const n = applyLibraryFilamentPresets(out, u1);
+    if (diff && n) diff.libraryFilaments = n;
+  }
   return JSON.stringify(out);
 }
 
@@ -1432,6 +1488,11 @@ function buildFullSpectrumConfig(
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
+  // Last: the declared differences are measured against the final values.
+  if (brand === "source" && isU1Reference(machine)) {
+    const n = applyLibraryFilamentPresets(out, u1);
+    if (diff && n) diff.libraryFilaments = n;
+  }
   return JSON.stringify(out);
 }
 
