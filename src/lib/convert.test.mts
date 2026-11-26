@@ -192,6 +192,28 @@ test("anti-clobber: print_settings_id suffixed; inherits_group dropped as a fore
   assert.equal(c.inherits_group, undefined);
   assert.equal(r.diff?.antiClobber, true);
 });
+// LayerHound side-by-side (2026-11-26): every preserve-mode Bambu conversion kept the source's
+// print_compatible_printers (X1C/X1/P1S/X1E), and Snapmaker Orca refused to slice it ("process not
+// compatible with printer", exit 239). scripts/slicer-golden.mjs checks the same thing in the slicer.
+const BAMBU_COMPAT = {
+  print_compatible_printers: ["Bambu Lab X1 Carbon 0.4 nozzle", "Bambu Lab X1 0.4 nozzle", "Bambu Lab P1S 0.4 nozzle", "Bambu Lab X1E 0.4 nozzle"],
+  upward_compatible_machine: ["Bambu Lab P1P 0.4 nozzle", "Bambu Lab A1 0.4 nozzle"],
+};
+for (const [label, opts, preset] of [
+  ["preserve", { mode: "preserve" }, "Snapmaker U1 (0.4 nozzle)"],
+  ["stamp", { mode: "stamp" }, "Snapmaker U1 (0.4 nozzle)"],
+  ["Full Spectrum", { mode: "preserve", fullSpectrum: true }, "Snapmaker U1 (0.4 nozzle)"],
+  ["preserve, 0.6 nozzle", { mode: "preserve", machine: u1NozzleVariant(0.6) }, "Snapmaker U1 (0.6 nozzle)"],
+  ["stamp, 0.2 nozzle", { mode: "stamp", machine: u1NozzleVariant(0.2) }, "Snapmaker U1 (0.2 nozzle)"],
+] as const) {
+  test(`compatible printers (${label}): the process names the U1 preset, never the source's Bambu printers`, async () => {
+    const f = file3mf({ "Metadata/project_settings.config": project(BAMBU_COMPAT), "3D/3dmodel.model": model() });
+    const c = await cfgOf((await cleanThreeMF(f, "u1", opts as never)).blob);
+    assert.deepEqual(c.print_compatible_printers, [preset]);
+    assert.equal(c.printer_settings_id, preset, "the compatible list must name the printer the file declares");
+    assert.deepEqual(c.upward_compatible_machine, []);
+  });
+}
 test("value-clamp: speed above U1 ceiling is capped + reported", async () => {
   const f = file3mf({ "Metadata/project_settings.config": project({ outer_wall_speed: "350" }), "3D/3dmodel.model": model() });
   const r = await cleanThreeMF(f, "u1", { mode: "preserve" });

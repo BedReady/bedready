@@ -45,6 +45,7 @@ const X1C = {
   change_filament_gcode: "M620 S[next_extruder]A", bed_exclude_area: ["0x0", "18x0", "18x28", "0x28"],
   machine_max_speed_x: ["500", "200"], retraction_length: ["0.8"], nozzle_diameter: ["0.4"],
   printable_area: ["0x0", "256x0", "256x256", "0x256"],
+  print_compatible_printers: ["Bambu Lab X1 Carbon 0.4 nozzle", "Bambu Lab P1S 0.4 nozzle"],
   filament_colour: ["#FF0000"], filament_type: ["PLA"], filament_start_gcode: ["; filament start"], layer_height: "0.16",
 };
 const bambuFile = () =>
@@ -67,6 +68,8 @@ for (const [target, preset, model_] of [
     assert.equal(o.layer_height, "0.16");
     assert.deepEqual(o.filament_start_gcode, ["; filament start"]);
     assert.deepEqual(o.nozzle_diameter, ["0.4"]);
+    // The process preset's printer list names the target, or Snapmaker/Bambu/Orca refuse to slice it.
+    assert.deepEqual(o.print_compatible_printers, [preset]);
   });
 }
 
@@ -82,4 +85,5 @@ test("retarget: a target with no known preset name gets no printer_settings_id r
   assert.ok(!("printer_variant" in o));
   assert.equal(o.printer_model, "Some Orca Printer");
   assert.ok(!("machine_start_gcode" in o));
+  assert.ok(!("print_compatible_printers" in o), "an unknown preset name cannot be listed as compatible");
 });

@@ -33,6 +33,7 @@ import { join, resolve } from "node:path";
 import { unzipSync, zipSync, strToU8, strFromU8 } from "fflate";
 
 import { cleanThreeMF } from "../src/lib/convert.ts";
+import { u1NozzleVariant } from "../src/lib/targets.ts";
 import { buildFlatU1_3mf } from "../src/lib/hueforge-3mf.ts";
 import { imageToHueForgeU1 } from "../src/lib/hueforge-pipeline.ts";
 import { planLithophane } from "../src/lib/lithophane.ts";
@@ -208,6 +209,11 @@ const P1S_PLA = (colors) => ({
   printer_model: "Bambu Lab P1S",
   printer_settings_id: "Bambu Lab P1S 0.4 nozzle",
   print_settings_id: "0.20mm Standard @BBL X1C",
+  // What a real Bambu export carries. Snapmaker Orca refuses a process whose list does not name its
+  // printer ("process not compatible with printer", exit 239), which every preserve-mode Bambu
+  // conversion hit until 2026-11-26 because this fixture left the key out.
+  print_compatible_printers: ["Bambu Lab X1 Carbon 0.4 nozzle", "Bambu Lab X1 0.4 nozzle", "Bambu Lab P1S 0.4 nozzle", "Bambu Lab X1E 0.4 nozzle"],
+  upward_compatible_machine: ["Bambu Lab P1P 0.4 nozzle", "Bambu Lab A1 0.4 nozzle"],
   printable_area: ["0x0", "256x0", "256x256", "0x256"],
   layer_height: "0.2",
   filament_colour: colors,
@@ -340,6 +346,21 @@ const CASES = [
       );
       const r = await cleanThreeMF(zipFile(files, "objects.3mf"), "u1");
       return { bytes: await blobBytes(r), expectTools: 2 };
+    },
+  },
+  {
+    name: "u1-0.6-preserve-painted-4",
+    what: "Bambu P1S project, one cube painted in four colors → U1 with a 0.6 nozzle, preserve mode",
+    slicer: "orca",
+    pla: true,
+    async build() {
+      const cols = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"];
+      const files = bambuProject(
+        [{ name: "cube", at: [128, 128], mesh: boxMesh([-15, -15, 0], [15, 15, 20], { front: "4", right: "8", back: "0C", left: "1C" }) }],
+        P1S_PLA(cols),
+      );
+      const r = await cleanThreeMF(zipFile(files, "painted.3mf"), "u1", { machine: u1NozzleVariant(0.6) });
+      return { bytes: await blobBytes(r), expectTools: 4 };
     },
   },
   {

@@ -4,7 +4,10 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.8** (in this repo): converted files from a MakerWorld download are named after the model
+- **0.6.9** (in this repo): converted Bambu Lab files open and slice in Snapmaker Orca again. The
+  converted file still listed the source's Bambu printers as the only ones its settings fit, so
+  Snapmaker Orca refused to slice it ("process not compatible with printer").
+- **0.6.8**: converted files from a MakerWorld download are named after the model
   (the name Chrome gave the original, or the server's Content-Disposition) instead of the CDN's
   random file key.
 - **0.6.7** (live on Chrome): fixes models being converted again every time Chrome restarts. Chrome
