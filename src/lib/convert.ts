@@ -614,6 +614,11 @@ const U1_IDENTITY_KEYS = new Set([
   "gcode_flavor", "emit_machine_limits_to_gcode", "before_layer_change_gcode", "layer_change_gcode",
   "change_filament_gcode", "change_extrusion_role_gcode", "time_lapse_gcode", "printing_by_object_gcode",
   "template_custom_gcode", "version", "name",
+  // Which printers the PROCESS preset may run on. A Bambu source names its own machines here ("Bambu Lab
+  // X1 Carbon 0.4 nozzle", …), and Snapmaker Orca refuses to slice a process that is not compatible with
+  // the printer: the CLI stops with "process not compatible with printer", exit 239 (LayerHound
+  // side-by-side, 2026-11-26). The reference names the target, nozzle variant included.
+  "print_compatible_printers", "upward_compatible_machine",
 ]);
 function isU1IdentityKey(k: string): boolean {
   if (k.startsWith("machine_")) return true; // limits, machine G-code, tool-change times
@@ -1779,6 +1784,11 @@ export function retargetPrinterIdentity(o: Record<string, unknown>, machine: Mac
   else delete o.printer_settings_id;
   if (machine.printerVariant) o.printer_variant = machine.printerVariant;
   else delete o.printer_variant;
+  // The process preset's printer list names the SOURCE machines; a slicer that checks it refuses the
+  // file on the target (Snapmaker Orca: "process not compatible with printer"). Name the target's own
+  // preset, or drop the list when we do not know that name.
+  if (machine.printerSettingsId) o.print_compatible_printers = [machine.printerSettingsId];
+  else delete o.print_compatible_printers;
   // [print, ...filaments, printer]: the printer entry is the last one in both lists.
   for (const k of ["inherits_group", "different_settings_to_system"]) {
     const v = o[k];

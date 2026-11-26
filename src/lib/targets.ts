@@ -117,6 +117,8 @@ export function u1NozzleVariant(nozzle: number): Machine {
   const settingsId = `Snapmaker U1 (${nozzle} nozzle)`;
   profile.printer_settings_id = settingsId;
   profile.printer_variant = String(nozzle);
+  // The process must name THIS printer as compatible, or Snapmaker Orca refuses to slice it.
+  profile.print_compatible_printers = [settingsId];
 
   const m: Machine = {
     ...U1,
