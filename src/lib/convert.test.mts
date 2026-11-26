@@ -214,6 +214,35 @@ for (const [label, opts, preset] of [
     assert.deepEqual(c.upward_compatible_machine, []);
   });
 }
+// Idle heads (LayerHound side-by-side, 2026-11-26): a single-nozzle source's ooze_prevention 0 /
+// standby -5 are its slicer's defaults, not a choice about the U1's parked heads.
+for (const [label, opts] of [["preserve", { mode: "preserve" }], ["Full Spectrum", { mode: "preserve", fullSpectrum: true }]] as const) {
+  test(`idle heads (${label}): a single-nozzle source takes the U1's ooze/standby/idle values`, async () => {
+    const f = file3mf({ "Metadata/project_settings.config": project({ nozzle_diameter: ["0.4"], ooze_prevention: "0", standby_temperature_delta: "-5", idle_temperature: ["0", "0"] }), "3D/3dmodel.model": model() });
+    const c = await cfgOf((await cleanThreeMF(f, "u1", opts as never)).blob);
+    assert.equal(c.ooze_prevention, "1");
+    assert.equal(c.standby_temperature_delta, "-150");
+    assert.ok(Array.isArray(c.idle_temperature) && (c.idle_temperature as unknown[]).length === (c.filament_colour as unknown[]).length, "one idle temperature per filament");
+  });
+}
+test("idle heads: a multi-nozzle source keeps its own choice (preserve)", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": project({ nozzle_diameter: ["0.4", "0.4", "0.4", "0.4"], ooze_prevention: "0", standby_temperature_delta: "-40" }), "3D/3dmodel.model": model() });
+  const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
+  assert.equal(c.ooze_prevention, "0");
+  assert.equal(c.standby_temperature_delta, "-40");
+});
+test("U1 machine G-code is Snapmaker Orca 2.4.1's stock (purifier, pre-extrude, chamber wait, by-object Z lift)", async () => {
+  const f = file3mf({ "Metadata/project_settings.config": project(), "3D/3dmodel.model": model() });
+  for (const mode of ["preserve", "stamp"] as const) {
+    const c = await cfgOf((await cleanThreeMF(f, "u1", { mode })).blob);
+    const start = String(c.machine_start_gcode), change = String(c.change_filament_gcode), end = String(c.machine_end_gcode);
+    for (const cmd of ["SET_PURIFIER_MODE", "SM_PRINT_PREEXTRUDE_FILAMENT", "WAIT_CHAMBER_TEMP"]) assert.ok(start.includes(cmd), `${mode}: start G-code lacks ${cmd}`);
+    assert.ok(start.includes('{if curr_bed_type=="Smooth PEI Plate"}'), `${mode}: bed-mesh Z_OFFSET branch tests the 2.4.1 plate`);
+    assert.match(change, /^;===== date: 20261003/);
+    assert.ok(change.includes('print_sequence == "by object"'), `${mode}: tool change lifts to clear finished objects`);
+    assert.match(end, /^;===== date: 20261003/);
+  }
+});
 test("value-clamp: speed above U1 ceiling is capped + reported", async () => {
   const f = file3mf({ "Metadata/project_settings.config": project({ outer_wall_speed: "350" }), "3D/3dmodel.model": model() });
   const r = await cleanThreeMF(f, "u1", { mode: "preserve" });

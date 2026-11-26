@@ -6,7 +6,9 @@ shipping an update.
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
 - **0.6.9** (in this repo): converted Bambu Lab files open and slice in Snapmaker Orca again. The
   converted file still listed the source's Bambu printers as the only ones its settings fit, so
-  Snapmaker Orca refused to slice it ("process not compatible with printer").
+  Snapmaker Orca refused to slice it ("process not compatible with printer"). Converted U1 files
+  also carry Snapmaker Orca 2.4.1's own start, end and tool-change G-code (chamber purifier,
+  pre-extrusion, chamber-temperature wait), and parked heads cool down while another prints.
 - **0.6.8**: converted files from a MakerWorld download are named after the model
   (the name Chrome gave the original, or the server's Content-Disposition) instead of the CDN's
   random file key.
