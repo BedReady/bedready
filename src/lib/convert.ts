@@ -569,8 +569,128 @@ function isU1Reference(machine: Machine): boolean {
   return machine.id === U1.id || machine.id.startsWith(`${U1.id}-`);
 }
 
+// ---------- PrusaSlicer process settings (stamp mode for a Prusa source) ----------
+// A PrusaSlicer project has no project_settings.config to preserve, so it took the stamp: the U1
+// reference's process wholesale. The creator's 0.15 mm layers, 3 walls, 6/4 shells and aligned infill
+// became 0.20 / 2 / 5/3 / grid (LayerHound side-by-side, 2026-11-26: the T-rex). These are the
+// settings a creator tunes per model, and Slic3r_PE.config carries them in its own names. Machine,
+// G-code, speeds and limits stay the U1's; only the keys below come across.
+const PRUSA_PROCESS_KEYS: [prusa: string, orca: string][] = [
+  ["layer_height", "layer_height"],
+  ["first_layer_height", "initial_layer_print_height"],
+  ["perimeters", "wall_loops"],
+  ["top_solid_layers", "top_shell_layers"],
+  ["bottom_solid_layers", "bottom_shell_layers"],
+  ["fill_density", "sparse_infill_density"],
+  ["skirts", "skirt_loops"],
+  ["support_material", "enable_support"],
+  ["support_material_buildplate_only", "support_on_build_plate_only"],
+];
+// PrusaSlicer pattern names → Orca's. Same name where both have it; anything unlisted is left at the U1's.
+const PRUSA_INFILL: Record<string, string> = Object.fromEntries(
+  ["rectilinear", "alignedrectilinear", "grid", "triangles", "cubic", "line", "concentric", "honeycomb", "3dhoneycomb", "gyroid",
+    "hilbertcurve", "archimedeanchords", "octagramspiral", "adaptivecubic", "supportcubic", "lightning"].map((n) => [n, n]).concat([["stars", "tri-hexagon"]]),
+);
+const PRUSA_SURFACE: Record<string, string> = {
+  monotonic: "monotonic", monotoniclines: "monotonicline", rectilinear: "rectilinear", alignedrectilinear: "alignedrectilinear",
+  concentric: "concentric", hilbertcurve: "hilbertcurve", archimedeanchords: "archimedeanchords", octagramspiral: "octagramspiral",
+};
+const PRUSA_SEAM: Record<string, string> = { aligned: "aligned", nearest: "nearest", random: "random", rear: "back" };
+// Which plate-temperature keys the U1's current plate reads.
+const PLATE_TEMP_KEY: Record<string, string> = {
+  "Textured PEI Plate": "textured_plate_temp", "Cool Plate": "cool_plate_temp", "Engineering Plate": "eng_plate_temp",
+  "High Temp Plate": "hot_plate_temp", "Smooth PEI Plate": "hot_plate_temp", "Graphic Effect Plate": "textured_plate_temp",
+};
+
+export type SourceProcess = { ini: string; slotSrc: number[] };
+
+/**
+ * Carry a PrusaSlicer project's process settings onto a stamped U1 config, in place. `slotSrc[s]` is the
+ * source extruder that U1 slot s prints (-1 = none), for the per-filament temperatures. Each key taken
+ * is declared in different_settings_to_system, because the stamp names a Snapmaker system preset and
+ * Orca rebuilds a named preset on import, re-applying only the listed differences (see withMixes).
+ * Returns the Orca keys that changed.
+ */
+function applySourceProcess(cfg: Record<string, unknown>, src: SourceProcess): string[] {
+  const { ini, slotSrc } = src;
+  const printKeys: string[] = [];
+  const filKeys: Set<string>[] = [0, 1, 2, 3].map(() => new Set());
+  const set = (k: string, v: string) => {
+    if (!(k in cfg) || String(cfg[k]) === v) return;
+    cfg[k] = v;
+    printKeys.push(k);
+  };
+  const num = (v: string | null) => (v != null && /^\d+(\.\d+)?$/.test(v.trim()) ? v.trim() : null);
+  const minL = parseFloat(String((cfg.min_layer_height as unknown[] | undefined)?.[0] ?? "0"));
+  const maxL = parseFloat(String((cfg.max_layer_height as unknown[] | undefined)?.[0] ?? "99"));
+  for (const [pk, ok] of PRUSA_PROCESS_KEYS) {
+    let v = iniValue(ini, pk);
+    if (v == null) continue;
+    if (ok === "sparse_infill_density") {
+      if (!/^\d+(\.\d+)?%$/.test(v)) continue;
+    } else if (ok === "layer_height" || ok === "initial_layer_print_height") {
+      // A percentage (of the nozzle) or a height the target nozzle cannot lay down stays the U1's.
+      const n = num(v);
+      if (!n || +n < minL || +n > maxL) continue;
+      v = n;
+    } else if (!num(v)) continue;
+    set(ok, v);
+  }
+  const fill = PRUSA_INFILL[iniValue(ini, "fill_pattern") ?? ""];
+  if (fill) set("sparse_infill_pattern", fill);
+  const top = PRUSA_SURFACE[iniValue(ini, "top_fill_pattern") ?? ""];
+  if (top) set("top_surface_pattern", top);
+  const bottom = PRUSA_SURFACE[iniValue(ini, "bottom_fill_pattern") ?? ""];
+  if (bottom) set("bottom_surface_pattern", bottom);
+  const seam = PRUSA_SEAM[iniValue(ini, "seam_position") ?? ""];
+  if (seam) set("seam_position", seam);
+  // Supports: style organic is Orca's tree; auto vs manual is whether the overhang angle decides.
+  const style = iniValue(ini, "support_material_style");
+  const auto = iniValue(ini, "support_material_auto");
+  if (style || auto) set("support_type", `${style === "organic" ? "tree" : "normal"}(${auto === "0" ? "manual" : "auto"})`);
+  const angle = num(iniValue(ini, "support_material_threshold"));
+  if (angle && +angle > 0) set("support_threshold_angle", angle);
+
+  // Temperatures, one per source extruder → the slot that prints it, within the U1's declared range.
+  const list = (k: string) => (iniValue(ini, k) ?? "").split(/[,;]/).map((x) => x.trim());
+  const plate = PLATE_TEMP_KEY[String(cfg.curr_bed_type ?? "")];
+  for (const [pk, ok] of [
+    ["temperature", "nozzle_temperature"], ["first_layer_temperature", "nozzle_temperature_initial_layer"],
+    ["bed_temperature", plate], ["first_layer_bed_temperature", plate && `${plate}_initial_layer`],
+  ] as const) {
+    if (!ok || !Array.isArray(cfg[ok])) continue;
+    const vals = list(pk);
+    const arr = cfg[ok] as unknown[];
+    for (let s = 0; s < 4; s++) {
+      const i = slotSrc[s];
+      const v = i >= 0 ? num(vals[i] ?? null) : null;
+      if (!v || +v <= 0) continue;
+      const hi = ok.startsWith("nozzle") ? parseFloat(String((cfg.nozzle_temperature_range_high as unknown[] | undefined)?.[s] ?? "")) : NaN;
+      const val = Number.isFinite(hi) && +v > hi ? String(hi) : v;
+      if (String(arr[s]) === val) continue;
+      arr[s] = val;
+      filKeys[s].add(ok);
+    }
+  }
+
+  const changed = [...printKeys, ...new Set(filKeys.flatMap((k) => [...k]))];
+  if (changed.length) {
+    // [print, ...filaments, printer]: declare each change against the preset it belongs to.
+    const filCount = Array.isArray(cfg.filament_colour) ? (cfg.filament_colour as unknown[]).length : 4;
+    const prev = Array.isArray(cfg.different_settings_to_system) ? (cfg.different_settings_to_system as string[]) : [];
+    const dss = Array.from({ length: filCount + 2 }, (_, i) => prev[i] ?? "");
+    const add = (i: number, keys: Iterable<string>) => {
+      dss[i] = [...new Set([...dss[i].split(";").filter(Boolean), ...keys])].sort().join(";");
+    };
+    add(0, printKeys);
+    for (let s = 0; s < 4 && s < filCount; s++) add(s + 1, filKeys[s]);
+    cfg.different_settings_to_system = dss;
+  }
+  return changed;
+}
+
 /** Build a complete U1 project_settings.config from the bundled profile + given colors/types. */
-function buildU1Config(colors: string[], types: string[], hasVLH = false, diff?: DiffReport, machine: Machine = U1, brand: FilamentBrand = "source"): string {
+function buildU1Config(colors: string[], types: string[], hasVLH = false, diff?: DiffReport, machine: Machine = U1, brand: FilamentBrand = "source", source?: SourceProcess): string {
   const cfg = JSON.parse(JSON.stringify(machine.profile)) as Record<string, unknown[]>;
   const baseId = (cfg.filament_settings_id?.[0] as string) ?? "Generic PLA";
 
@@ -601,6 +721,12 @@ function buildU1Config(colors: string[], types: string[], hasVLH = false, diff?:
   // values. Only on the U1 and its nozzle variants (`u1-0.6` …), which share its reference; these are
   // the 0.4 mm presets, so a variant keeps the reference's own nozzle scaling and nothing finer.
   if (isU1Reference(machine)) for (let i = 0; i < 4; i++) applyU1FilamentPreset(cfg, i, type[i]);
+  // After the material presets (the creator's temperatures win over the preset's), before the VLH
+  // guard (which must still have the last word on supports and the prime tower).
+  if (source && isU1Reference(machine)) {
+    const keys = applySourceProcess(cfg as Record<string, unknown>, source);
+    if (diff) diff.sourceProcess = keys;
+  }
   if (hasVLH) applyVlhGuard(cfg as Record<string, unknown>, diff);
   return JSON.stringify(cfg);
 }
@@ -768,6 +894,7 @@ export type DiffReport = {
   untestedProfile: boolean; // target profile is derived, not a real export anyone has printed from
   keptAllColours: number; // >4 pass-through: filaments written out untouched (0 = not this mode)
   filamentBrand: FilamentBrand | null; // relabelled the filament presets (null = kept the author's)
+  sourceProcess?: string[]; // PrusaSlicer source: the Orca process/temperature keys taken from its Slic3r_PE.config
 };
 
 // ---------- nozzle fit (preserve + Full Spectrum modes) ----------
@@ -2643,8 +2770,16 @@ export async function cleanThreeMF(file: File, target: CleanTarget, opts?: Clean
   }
 
   if (target === "u1" && !hadProject) {
-    // No source profile to preserve → always the bundled stamp.
-    out["Metadata/project_settings.config"] = strToU8(finishConfig(buildU1Config(useColours, useTypes, guardVlh, diff ?? undefined, machine, brand)));
+    // No project_settings.config to preserve → the bundled stamp. A PrusaSlicer project still carries
+    // the creator's process in Slic3r_PE.config, so its layer height, walls, shells, infill, supports
+    // and temperatures come across (applySourceProcess). Custom-palette Full Spectrum stamps a palette
+    // of the user's own filaments, so the source's per-extruder temperatures would not line up.
+    const iniEntry = Object.entries(entries).find(([p]) => (p.split("/").pop() ?? "").toLowerCase() === "slic3r_pe.config");
+    const source: SourceProcess | undefined =
+      iniEntry && !customFS && (opts?.mode ?? "preserve") === "preserve"
+        ? { ini: strFromU8(iniEntry[1]), slotSrc: slotSources(assignEff, 4, srcColours, useColours) }
+        : undefined;
+    out["Metadata/project_settings.config"] = strToU8(finishConfig(buildU1Config(useColours, useTypes, guardVlh, diff ?? undefined, machine, brand, source)));
   }
 
   // Painted band-swap: painted files have no custom_gcode_per_layer.xml, so add the synthesized one with
