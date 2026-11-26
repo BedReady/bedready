@@ -1207,6 +1207,29 @@ test("u1NozzleVariant: 0.4 is the bundled export itself, and says it is tested",
   assert.equal(u1NozzleVariant(NaN), U1);
 });
 
+test("u1NozzleVariant: each variant takes its stock preset's retraction, wipe, nozzle type and travel (Snapmaker Orca 2.4.1)", () => {
+  const want: Record<number, [string, string, string, string]> = {
+    0.2: ["0.4", "2", "hardened_steel", "1"],
+    0.6: ["1.4", "1", "stainless_steel", "3"],
+    0.8: ["1.5", "2", "hardened_steel", "1"],
+  };
+  for (const [n, [rl, wd, nt, rmt]] of Object.entries(want)) {
+    const p = u1NozzleVariant(Number(n)).profile as Record<string, unknown>;
+    assert.deepEqual(p.retraction_length, [rl, rl, rl, rl], `${n}: retraction_length`);
+    assert.deepEqual(p.wipe_distance, [wd, wd, wd, wd], `${n}: wipe_distance`);
+    assert.equal(p.nozzle_type, nt, `${n}: nozzle_type`);
+    assert.deepEqual(p.retraction_minimum_travel, [rmt, rmt, rmt, rmt], `${n}: retraction_minimum_travel`);
+  }
+  // The tested 0.4 is untouched.
+  assert.deepEqual((U1.profile as Record<string, unknown>).retraction_length, ["1.5", "1.5", "1.5", "1.5"]);
+});
+test("u1NozzleVariant: a 0.6 conversion declares a stainless nozzle in every mode (it is identity)", async () => {
+  for (const mode of ["preserve", "stamp"] as const) {
+    const f = file3mf({ "Metadata/project_settings.config": project({ nozzle_type: "hardened_steel" }), "3D/3dmodel.model": model() });
+    const c = await cfgOf((await cleanThreeMF(f, "u1", { mode, machine: u1NozzleVariant(0.6) })).blob);
+    assert.equal(c.nozzle_type, "stainless_steel", mode);
+  }
+});
 test("u1NozzleVariant: a derived variant carries that nozzle's identity and is flagged untested", () => {
   const m = u1NozzleVariant(0.2);
   const p = m.profile as Record<string, unknown>;
