@@ -1738,5 +1738,17 @@
     "error": "Couldn't build this lithophane. Try a smaller size or another photo.",
     "metaTitle": "Color lithophane maker for the Snapmaker U1",
     "metaDescription": "Make a full-color backlit lithophane from any photo. Free, runs in your browser, nothing is uploaded."
+  },
+  "changes": {
+    "metaTitle": "What's new — BedReady",
+    "metaDescription": "Changes to the BedReady converter, image tools and browser extension, newest first.",
+    "title": "What's new",
+    "intro": "Changes to the converter, the image tools and the browser extension, newest first. Each line says what changed for you.",
+    "areas": {
+      "converter": "Converter",
+      "image": "Image tools",
+      "extension": "Extension"
+    },
+    "note": "Entries are written in English. Changes before November 2026 are in the project’s history on GitHub."
   }
 }

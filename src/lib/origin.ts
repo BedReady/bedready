@@ -63,6 +63,7 @@ export const LIBRARY_ORIGIN = process.env.NEXT_PUBLIC_LIBRARY_ORIGIN || "https:/
 export const CONVERTER_ROUTES = [
   "bambu-to-snapmaker-u1",
   "calibrate",
+  "changes",
   "compare-multicolor-printers",
   "compare-u1-converters",
   "convert",

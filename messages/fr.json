@@ -1738,5 +1738,17 @@
     "error": "Impossible de créer cette lithophanie. Essayez une taille plus petite ou une autre photo.",
     "metaTitle": "Créateur de lithophanies couleur pour la Snapmaker U1",
     "metaDescription": "Créez une lithophanie rétroéclairée en couleurs à partir de n’importe quelle photo. Gratuit, fonctionne dans votre navigateur, rien n’est envoyé."
+  },
+  "changes": {
+    "metaTitle": "Nouveautés — BedReady",
+    "metaDescription": "Les changements du convertisseur BedReady, des outils d’image et de l’extension de navigateur, les plus récents en premier.",
+    "title": "Nouveautés",
+    "intro": "Les changements du convertisseur, des outils d’image et de l’extension de navigateur, les plus récents en premier. Chaque ligne dit ce qui a changé pour vous.",
+    "areas": {
+      "converter": "Convertisseur",
+      "image": "Outils d’image",
+      "extension": "Extension"
+    },
+    "note": "Les entrées sont rédigées en anglais. Les changements antérieurs à novembre 2026 figurent dans l’historique du projet sur GitHub."
   }
 }
