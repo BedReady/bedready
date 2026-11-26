@@ -633,6 +633,27 @@ function isU1IdentityKey(k: string): boolean {
   return U1_IDENTITY_KEYS.has(k);
 }
 
+// How the U1 parks the heads that are not printing. A single-nozzle source (Bambu X1C/A1, a Prusa MK4)
+// has no idle heads, so its 0 / -5 are not a choice about them, they are its slicer's defaults. Kept,
+// they left the U1's three parked heads hot (ooze_prevention 0) and its preheat off. Snapmaker's own
+// tool change (2.4.1) sets the next head with M104 and relies on that preheat to have it ready. A
+// multi-nozzle source made a real choice for its own idle heads, so preserve mode keeps it.
+const U1_IDLE_KEYS = ["ooze_prevention", "standby_temperature_delta", "idle_temperature"] as const;
+function sourceNozzleCount(src: Record<string, unknown>): number {
+  const d = src.nozzle_diameter;
+  return Array.isArray(d) ? d.length : d == null ? 0 : 1;
+}
+function applyU1IdleHeads(out: Record<string, unknown>, src: Record<string, unknown>, u1: Record<string, unknown>): void {
+  if (sourceNozzleCount(src) > 1) return;
+  for (const k of U1_IDLE_KEYS) {
+    if (!(k in u1)) continue;
+    const ref = u1[k], cur = out[k];
+    // idle_temperature is one per filament, and Full Spectrum can keep more than four: same length as
+    // the output's own list, each entry the reference's.
+    out[k] = Array.isArray(ref) && Array.isArray(cur) ? cur.map((_, i) => ref[i] ?? ref[0]) : JSON.parse(JSON.stringify(ref));
+  }
+}
+
 // The U1 has 4 heads AND 4 filament slots, so its reference profile's 4-long arrays are of two kinds.
 // These are per EXTRUDER (Orca's printer-preset extruder options): they stay one per head however
 // many filaments a file declares. Nozzle and extruder_offset keys are identity and excluded already.
@@ -1207,6 +1228,7 @@ function buildPreservedConfig(
     return filamentPresetId(t, brand, prevSid?.[s] ?? baseId.replace(/^Generic\s+\S+/, `Generic ${t}`));
   });
   fillMissingFromPreset(out, src, machine);
+  applyU1IdleHeads(out, src, u1);
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
@@ -1279,6 +1301,7 @@ function buildFullSpectrumConfig(
       if (v !== undefined && !PRESET_FILL_SKIP.has(k)) (out[k] as unknown[])[j] = v;
     }
   }
+  applyU1IdleHeads(out, src, u1);
   applyU1Safety(out, u1, diff);
   applyNozzleFit(out, src, u1, diff);
   if (hasVLH) applyVlhGuard(out, diff);
