@@ -346,6 +346,26 @@ test("a clear Bambu filament (#00000000) reads as white, not black", async () =>
   const c = await cfgOf((await cleanThreeMF(f, "u1", { mode: "preserve" })).blob);
   assert.deepEqual((c.filament_colour as string[]).slice(0, 2), ["#000000", "#FFFFFF"]);
 });
+// Retraction and wipe are the extruder's (Dev Hub, 2026-11-26): the target's, in every mode. The
+// creator's own filament-level overrides still come across.
+for (const [label, nozzle, rl, wd, rmt] of [["0.4", 0.4, "1.5", "2", "1"], ["0.6", 0.6, "1.4", "1", "3"], ["0.2", 0.2, "0.4", "2", "1"]] as const) {
+  test(`retraction is the U1's (${label} nozzle), and a filament override stays the creator's`, async () => {
+    const f = file3mf({
+      "Metadata/project_settings.config": project({
+        retraction_length: ["0.8", "0.8"], wipe_distance: ["1.5", "1.5"], retraction_minimum_travel: ["2", "2"],
+        filament_retraction_length: ["0.6", "nil"],
+      }),
+      "3D/3dmodel.model": model(),
+    });
+    for (const opts of [{ mode: "preserve" }, { mode: "preserve", fullSpectrum: true }] as const) {
+      const c = await cfgOf((await cleanThreeMF(f, "u1", { ...opts, machine: u1NozzleVariant(nozzle) } as never)).blob);
+      assert.deepEqual(c.retraction_length, [rl, rl, rl, rl], `${JSON.stringify(opts)}: retraction_length`);
+      assert.deepEqual(c.wipe_distance, [wd, wd, wd, wd]);
+      assert.deepEqual(c.retraction_minimum_travel, [rmt, rmt, rmt, rmt]);
+      assert.equal((c.filament_retraction_length as string[])[0], "0.6", "the creator's filament override");
+    }
+  });
+}
 test("value-clamp: speed above U1 ceiling is capped + reported", async () => {
   const f = file3mf({ "Metadata/project_settings.config": project({ outer_wall_speed: "350" }), "3D/3dmodel.model": model() });
   const r = await cleanThreeMF(f, "u1", { mode: "preserve" });

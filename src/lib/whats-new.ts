@@ -38,6 +38,12 @@ export const WHATS_NEW: WhatsNewEntry[] = [
   {
     date: "2026-11-26",
     area: "converter",
+    text: "Converted files retract and wipe the way the U1 does for your nozzle, not the way the source printer did: a Bambu A1 file on a 0.6 mm U1 retracts 1.4 mm instead of 0.8. A creator’s own filament retraction settings are still kept.",
+    pr: 143,
+  },
+  {
+    date: "2026-11-26",
+    area: "converter",
     text: "Filaments set up for another printer (“Bambu PLA Matte @BBL X1C”) arrive as the U1 library’s Generic preset of that material, with the creator’s temperatures and flow kept. A clear filament shows as white instead of black.",
     pr: 142,
   },

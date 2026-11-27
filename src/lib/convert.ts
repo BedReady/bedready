@@ -749,6 +749,12 @@ const U1_IDENTITY_KEYS = new Set([
   // the printer: the CLI stops with "process not compatible with printer", exit 239 (LayerHound
   // side-by-side, 2026-11-26). The reference names the target, nozzle variant included.
   "print_compatible_printers", "upward_compatible_machine",
+  // The extruder's retraction and wipe. In Orca these are printer (extruder) settings, describing the
+  // SOURCE machine's hot end and drive, not the creator's tuning of the model: a Bambu A1 file
+  // converted for a 0.6 U1 retracted 0.8 mm instead of the 0.6 preset's 1.4 (Dev Hub, 2026-11-26).
+  // A creator's own tuning lives in the filament overrides (filament_retraction_length,
+  // filament_wipe_distance, …), which are per-filament keys and still come across.
+  "retraction_length", "wipe_distance", "retraction_minimum_travel",
 ]);
 function isU1IdentityKey(k: string): boolean {
   if (k.startsWith("machine_")) return true; // limits, machine G-code, tool-change times
