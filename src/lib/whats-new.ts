@@ -36,6 +36,11 @@ export type WhatsNewEntry = {
 
 export const WHATS_NEW: WhatsNewEntry[] = [
   {
+    date: "2026-11-28",
+    area: "extension",
+    text: "The browser extension’s one-click conversions get every converter fix above: Bambu Lab files that slice in Snapmaker Orca again, Snapmaker’s own G-code and per-nozzle settings, PrusaSlicer settings kept, and U1 library filament presets. (0.6.11)",
+  },
+  {
     date: "2026-11-26",
     area: "converter",
     text: "Converted files retract and wipe the way the U1 does for your nozzle, not the way the source printer did: a Bambu A1 file on a 0.6 mm U1 retracts 1.4 mm instead of 0.8. A creator’s own filament retraction settings are still kept.",

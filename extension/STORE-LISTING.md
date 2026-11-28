@@ -4,13 +4,13 @@
 shipping an update.
 
 - Live: https://chromewebstore.google.com/detail/empadffogehgmbleajehbplobfajddnh
-- **0.6.11** (in this repo): converted U1 files use the U1's own retraction and wipe for the chosen
+- **0.6.11** (live on Chrome Nov 28; Firefox submitted Nov 27, AMO 6770402): converted U1 files use the U1's own retraction and wipe for the chosen
   nozzle, instead of the source printer's.
-- **0.6.10** (Firefox submitted Nov 26; Chrome upload pending): U1 files for a 0.2, 0.6 or 0.8 mm nozzle carry that nozzle's own
+- **0.6.10** (Chrome Nov 27; Firefox 6768830 superseded by 0.6.11): U1 files for a 0.2, 0.6 or 0.8 mm nozzle carry that nozzle's own
   retraction, wipe and nozzle type from Snapmaker's presets (the 0.6 is stainless). Filaments set
   up for another printer arrive as the U1 library's Generic preset, keeping the creator's values,
   and a clear filament shows as white rather than black.
-- **0.6.9** (Firefox submitted Nov 26): converted Bambu Lab files open and slice in Snapmaker Orca again. The
+- **0.6.9** (never on Chrome; Firefox 6768775 superseded by 0.6.11): converted Bambu Lab files open and slice in Snapmaker Orca again. The
   converted file still listed the source's Bambu printers as the only ones its settings fit, so
   Snapmaker Orca refused to slice it ("process not compatible with printer"). Converted U1 files
   also carry Snapmaker Orca 2.4.1's own start, end and tool-change G-code (chamber purifier,
